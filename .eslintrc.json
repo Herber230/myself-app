@@ -1,0 +1,17 @@
+{
+  "extends": ["eslint:recommended", "react-app"],
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "plugins": ["react", "simple-import-sort"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error"
+      }
+    }
+  ]
+}
