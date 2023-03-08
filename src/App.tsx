@@ -1,15 +1,18 @@
-import { HomePage } from '@pages/home';
-import { PostsPage } from '@pages/posts';
+import { HomePage } from '@presentation/pages/home';
+import { PostsPage } from '@presentation/pages/posts';
+import { ThemeProvider } from '@presentation/theming';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route index element={<HomePage />} />
-        <Route path="posts" element={<PostsPage />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<HomePage />} />
+          <Route path="posts" element={<PostsPage />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

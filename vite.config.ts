@@ -4,10 +4,19 @@ import eslint from 'vite-plugin-eslint';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), eslint()],
+  plugins: [
+    react({
+      jsxImportSource: '@emotion/react',
+    }),
+    eslint(),
+  ],
   resolve: {
     alias: {
-      '@pages': `${__dirname}/src/pages`,
+      '@config': `${__dirname}/src/config`,
+      '@domain': `${__dirname}/src/domain`,
+      '@implementation': `${__dirname}/src/implementation`,
+      '@presentation': `${__dirname}/src/presentation`,
+      '@utils': `${__dirname}/src/utils`,
     },
   },
 });
