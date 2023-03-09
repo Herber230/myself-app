@@ -14,6 +14,21 @@ export interface PaletteOptions {
   success?: Palette;
 }
 
+export interface Font {
+  family: string;
+  weights: {
+    light: number;
+    regular: number;
+    bold: number;
+  };
+}
+
+export interface FontOptions {
+  primary: Font;
+  secondary: Font;
+}
+
 export interface Theme {
   palettes: PaletteOptions;
+  fonts: FontOptions;
 }
