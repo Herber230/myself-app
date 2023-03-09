@@ -9,4 +9,22 @@ export const darkTheme: Theme = {
       contrastText: 'white',
     },
   },
+  fonts: {
+    primary: {
+      family: 'Share Tech Mono',
+      weights: {
+        light: 300,
+        regular: 400,
+        bold: 700,
+      },
+    },
+    secondary: {
+      family: 'Ubuntu',
+      weights: {
+        light: 300,
+        regular: 400,
+        bold: 700,
+      },
+    },
+  },
 };
