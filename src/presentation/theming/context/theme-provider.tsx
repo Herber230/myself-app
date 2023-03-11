@@ -13,9 +13,11 @@ export function ThemeProvider({ children }: ThemeProviderProps): JSX.Element {
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
-      <GlobalStyles />
-      <FontFaces />
-      <EmotionThemeProvider theme={theme}>{children}</EmotionThemeProvider>
+      <EmotionThemeProvider theme={theme}>
+        <GlobalStyles />
+        <FontFaces />
+        {children}
+      </EmotionThemeProvider>
     </ThemeContext.Provider>
   );
 }

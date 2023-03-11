@@ -48,9 +48,18 @@ export interface Spacing {
   (...args: number[]): string;
 }
 
+export interface Border {
+  radius: {
+    sm: string;
+    md: string;
+    lg: string;
+  };
+}
+
 export interface Theme {
   palettes: PaletteOptions;
   fonts: FontOptions;
   colors: ColorOptions;
   spacing: Spacing;
+  border: Border;
 }

@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
-import { MainHeader } from '@presentation/components/organisms';
+import { AboutSection, MainHeader } from '@presentation/components/organisms';
 import { PlainSections } from '@presentation/components/templates';
 
 const StyledSection = styled.section`
-  min-height: 60vh;
+  min-height: 70vh;
   width: 100%;
 
   border: 1px solid black;
@@ -14,8 +14,10 @@ const StyledSection = styled.section`
 
 export function HomePage(): JSX.Element {
   return (
-    <PlainSections header={<MainHeader />} navigationBarLimit={800}>
-      <StyledSection>About me</StyledSection>
+    <PlainSections header={<MainHeader />}>
+      <StyledSection>
+        <AboutSection />
+      </StyledSection>
       <StyledSection>Tech radar</StyledSection>
       <StyledSection>Posts</StyledSection>
       <StyledSection>Career</StyledSection>

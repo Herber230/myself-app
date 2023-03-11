@@ -76,4 +76,11 @@ export const baseTheme: Theme = {
     const s = 4; // base spacing unit
     return args.map((arg) => `${arg * s}px`).join(' ');
   },
+  border: {
+    radius: {
+      sm: '4px',
+      md: '8px',
+      lg: '12px',
+    },
+  },
 };
