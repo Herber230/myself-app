@@ -7,11 +7,27 @@ export interface Palette {
 
 export interface PaletteOptions {
   primary: Palette;
-  secondary?: Palette;
-  error?: Palette;
-  warning?: Palette;
-  info?: Palette;
-  success?: Palette;
+  secondary: Palette;
+  error: Palette;
+  warning: Palette;
+  info: Palette;
+  success: Palette;
+}
+
+export interface ColorOptions {
+  white: string;
+  black: string;
+  grayScale: {
+    100: string;
+    200: string;
+    300: string;
+    400: string;
+    500: string;
+    600: string;
+    700: string;
+    800: string;
+    900: string;
+  };
 }
 
 export interface Font {
@@ -28,7 +44,13 @@ export interface FontOptions {
   secondary: Font;
 }
 
+export interface Spacing {
+  (...args: number[]): string;
+}
+
 export interface Theme {
   palettes: PaletteOptions;
   fonts: FontOptions;
+  colors: ColorOptions;
+  spacing: Spacing;
 }
