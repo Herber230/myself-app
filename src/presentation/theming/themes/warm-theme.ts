@@ -1,4 +1,4 @@
 import { Theme } from '../types';
 import { baseTheme } from './base-theme';
 
-export const lightTheme: Theme = { ...baseTheme };
+export const warmTheme: Theme = { ...baseTheme };

@@ -1,5 +1,4 @@
-import { render } from '@testing-library/react';
-
+import { render } from '../../../../test/test-utils';
 import { HomePage } from './home-page';
 
 describe('pages:home', () => {

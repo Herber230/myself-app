@@ -1,0 +1,28 @@
+import { ThemeProvider } from '@emotion/react';
+import type { RenderOptions } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import React, { PropsWithChildren } from 'react';
+
+import { baseTheme } from '../src/presentation/theming/themes/base-theme';
+
+export type CustomRenderOptions = Omit<RenderOptions, 'queries'>;
+
+console.log(
+  '[>] baseTheme ==================================================================================================== ',
+  baseTheme,
+);
+
+export function AllTheProviders({ children }: PropsWithChildren) {
+  return <ThemeProvider theme={baseTheme}>{children}</ThemeProvider>;
+}
+const customRender = (
+  ui: React.ReactElement | JSX.Element,
+  options?: CustomRenderOptions,
+) =>
+  render(ui, {
+    wrapper: (props) => <AllTheProviders {...props} />,
+    ...options,
+  });
+
+export * from '@testing-library/react';
+export { customRender as render };
