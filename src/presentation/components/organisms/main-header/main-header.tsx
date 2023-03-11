@@ -1,5 +1,11 @@
 import styled from '@emotion/styled';
-import { HeadingOne, HeadingTwo } from '@presentation/components/atoms';
+import {
+  HeadingOne,
+  HeadingTwo,
+  ScrollDownIndicator,
+} from '@presentation/components/atoms';
+import { useScroll } from '@utils/hooks';
+import { useEffect, useState } from 'react';
 
 const StyledMainContainer = styled.div`
   position: relative;
@@ -47,7 +53,25 @@ const StyledTitleContainer = styled.div`
   }
 `;
 
+const scrollIndicatorPositionLimit = 300;
+const scrollIndicatorThreshold = 3000;
+
 export function MainHeader(): JSX.Element {
+  const { scrollPosition } = useScroll();
+  const [timeoutCompleted, setTimeoutCompleted] = useState(false);
+
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout> | undefined = undefined;
+    if (scrollPosition < scrollIndicatorPositionLimit)
+      timeout = setTimeout(
+        () => setTimeoutCompleted(true),
+        scrollIndicatorThreshold,
+      );
+    else setTimeoutCompleted(false);
+
+    return () => timeout && clearTimeout(timeout);
+  }, [scrollPosition]);
+
   return (
     <StyledMainContainer>
       <StyledFrame>
@@ -56,6 +80,9 @@ export function MainHeader(): JSX.Element {
           <HeadingTwo>Software Engineer</HeadingTwo>
         </StyledTitleContainer>
       </StyledFrame>
+      {scrollPosition < scrollIndicatorPositionLimit && timeoutCompleted && (
+        <ScrollDownIndicator />
+      )}
     </StyledMainContainer>
   );
 }

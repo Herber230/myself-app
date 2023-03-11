@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { SocialNetworks } from '@presentation/components/molecules';
 import { NavigationBar } from '@presentation/components/organisms';
 import { useScroll } from '@utils/hooks';
 import { useElementSize } from 'usehooks-ts';
@@ -11,9 +12,20 @@ const StyledNavBarContainer = styled.div`
   width: 100%;
 `;
 
+const StyledSocialNetworksContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  -transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+`;
+
 const StyledMainContainer = styled.div`
   width: 100%;
   height: 100%;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 export function PlainSections({
@@ -24,16 +36,21 @@ export function PlainSections({
   const { scrollPosition } = useScroll();
   const [headerRef, { height: headerHeight }] = useElementSize();
 
-  const showNavBar =
+  const showFixedElements =
     scrollPosition > 1 && scrollPosition > (navigationBarLimit || headerHeight);
 
   return (
     <StyledMainContainer>
       <div ref={headerRef}>{header}</div>
-      {showNavBar && (
-        <StyledNavBarContainer>
-          <NavigationBar />
-        </StyledNavBarContainer>
+      {showFixedElements && (
+        <>
+          <StyledNavBarContainer>
+            <NavigationBar />
+          </StyledNavBarContainer>
+          <StyledSocialNetworksContainer>
+            <SocialNetworks />
+          </StyledSocialNetworksContainer>
+        </>
       )}
       {children}
     </StyledMainContainer>
