@@ -1,6 +1,8 @@
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { AboutSection, MainHeader } from '@presentation/components/organisms';
 import { PlainSections } from '@presentation/components/templates';
+import { useBodyBackgroundColor } from '@utils/hooks';
 
 const StyledSection = styled.section`
   min-height: 70vh;
@@ -13,6 +15,9 @@ const StyledSection = styled.section`
 `;
 
 export function HomePage(): JSX.Element {
+  const theme = useTheme();
+  useBodyBackgroundColor(theme.palettes.primary.main);
+
   return (
     <PlainSections header={<MainHeader />}>
       <StyledSection>
