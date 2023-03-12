@@ -7,11 +7,6 @@ import { baseTheme } from '../src/presentation/theming/themes/base-theme';
 
 export type CustomRenderOptions = Omit<RenderOptions, 'queries'>;
 
-console.log(
-  '[>] baseTheme ==================================================================================================== ',
-  baseTheme,
-);
-
 export function AllTheProviders({ children }: PropsWithChildren) {
   return <ThemeProvider theme={baseTheme}>{children}</ThemeProvider>;
 }
