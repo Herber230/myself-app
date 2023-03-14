@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { forwardRef } from 'react';
 
 import { HeadingOneProps } from './heading-one.types';
 
@@ -10,6 +11,10 @@ const StyledHeadingOne = styled.h1`
   padding: 0;
 `;
 
-export function HeadingOne({ children }: HeadingOneProps): JSX.Element {
-  return <StyledHeadingOne>{children}</StyledHeadingOne>;
-}
+export const HeadingOne = forwardRef<HTMLHeadingElement, HeadingOneProps>(
+  ({ children, ...otherProps }, ref) => (
+    <StyledHeadingOne ref={ref} {...otherProps}>
+      {children}
+    </StyledHeadingOne>
+  ),
+);

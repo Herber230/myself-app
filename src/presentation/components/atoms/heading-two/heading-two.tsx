@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { forwardRef } from 'react';
 
 import { HeadingTwoProps } from './heading-two.types';
 
@@ -10,6 +11,10 @@ const StyledHeadingTwo = styled.h2`
   padding: 0;
 `;
 
-export function HeadingTwo({ children }: HeadingTwoProps): JSX.Element {
-  return <StyledHeadingTwo>{children}</StyledHeadingTwo>;
-}
+export const HeadingTwo = forwardRef<HTMLHeadingElement, HeadingTwoProps>(
+  ({ children, ...otherProps }, ref) => (
+    <StyledHeadingTwo ref={ref} {...otherProps}>
+      {children}
+    </StyledHeadingTwo>
+  ),
+);

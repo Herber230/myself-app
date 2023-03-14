@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { forwardRef } from 'react';
 
 import { HeadingThreeProps } from './heading-three.types';
 
@@ -10,6 +11,10 @@ const StyledHeadingThree = styled.h3`
   padding: 0;
 `;
 
-export function HeadingThree({ children }: HeadingThreeProps): JSX.Element {
-  return <StyledHeadingThree>{children}</StyledHeadingThree>;
-}
+export const HeadingThree = forwardRef<HTMLHeadingElement, HeadingThreeProps>(
+  ({ children, ...otherProps }, ref) => (
+    <StyledHeadingThree ref={ref} {...otherProps}>
+      {children}
+    </StyledHeadingThree>
+  ),
+);

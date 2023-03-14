@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { forwardRef } from 'react';
 
 import { HeadingFiveProps } from './heading-five.types';
 
@@ -10,6 +11,10 @@ const StyledHeadingFive = styled.h5`
   padding: 0;
 `;
 
-export function HeadingFive({ children }: HeadingFiveProps): JSX.Element {
-  return <StyledHeadingFive>{children}</StyledHeadingFive>;
-}
+export const HeadingFive = forwardRef<HTMLHeadingElement, HeadingFiveProps>(
+  ({ children, ...otherProps }, ref) => (
+    <StyledHeadingFive ref={ref} {...otherProps}>
+      {children}
+    </StyledHeadingFive>
+  ),
+);

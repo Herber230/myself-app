@@ -1,5 +1,6 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
+import { forwardRef } from 'react';
 
 import {
   ParagraphLineHeights,
@@ -7,18 +8,23 @@ import {
   ParagraphSizes,
 } from './paragraph.types';
 
-export function Paragraph({
-  children,
-  size = 'normal',
-  lineHeight = 'normal',
-}: ParagraphProps): JSX.Element {
-  const theme = useTheme();
+export const Paragraph = forwardRef<HTMLParagraphElement, ParagraphProps>(
+  (
+    { children, size = 'normal', lineHeight = 'normal', ...otherProps },
+    ref,
+  ) => {
+    const theme = useTheme();
 
-  const StyledParagraph = styled.p`
-    font-family: ${theme.fonts.secondary.family};
-    font-size: ${ParagraphSizes[size]};
-    line-height: ${ParagraphLineHeights[lineHeight]};
-  `;
+    const StyledParagraph = styled.p`
+      font-family: ${theme.fonts.secondary.family};
+      font-size: ${ParagraphSizes[size]};
+      line-height: ${ParagraphLineHeights[lineHeight]};
+    `;
 
-  return <StyledParagraph>{children}</StyledParagraph>;
-}
+    return (
+      <StyledParagraph ref={ref} {...otherProps}>
+        {children}
+      </StyledParagraph>
+    );
+  },
+);

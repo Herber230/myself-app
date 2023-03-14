@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { forwardRef } from 'react';
 
 import { HeadingSixProps } from './heading-six.types';
 
@@ -10,6 +11,10 @@ const StyledHeadingSix = styled.h6`
   padding: 0;
 `;
 
-export function HeadingSix({ children }: HeadingSixProps): JSX.Element {
-  return <StyledHeadingSix>{children}</StyledHeadingSix>;
-}
+export const HeadingSix = forwardRef<HTMLHeadingElement, HeadingSixProps>(
+  ({ children, ...otherProps }, ref) => (
+    <StyledHeadingSix ref={ref} {...otherProps}>
+      {children}
+    </StyledHeadingSix>
+  ),
+);
