@@ -1,4 +1,6 @@
-import { ReactNode } from 'react';
+import { HTMLProps, ReactNode } from 'react';
+
+type BaseProps = Omit<HTMLProps<HTMLParagraphElement>, 'as' | 'size'>;
 
 export const ParagraphSizes = {
   small: '1rem',
@@ -16,7 +18,7 @@ export const ParagraphLineHeights = {
 
 export type ParagraphLineHeight = keyof typeof ParagraphLineHeights;
 
-export interface ParagraphProps {
+export interface ParagraphProps extends BaseProps {
   children: ReactNode;
   size?: ParagraphSize;
   lineHeight?: ParagraphLineHeight;

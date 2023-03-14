@@ -1,11 +1,5 @@
 const config = {
   roots: ['<rootDir>/src'],
-  collectCoverageFrom: [
-    'src/**/*.{js,jsx,ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/mocks/**',
-  ],
-  coveragePathIgnorePatterns: [],
   setupFilesAfterEnv: ['./test/setup-tests.ts'],
   testEnvironment: 'jsdom',
   modulePaths: ['<rootDir>/src'],
@@ -47,6 +41,24 @@ const config = {
   globals: {
     'ts-jest': {
       tsConfig: 'tsconfig.test.json',
+    },
+  },
+  collectCoverage: true,
+  coverageProvider: 'v8',
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx,ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/mocks/**',
+  ],
+  coveragePathIgnorePatterns: [],
+  coverageReporters: ['json', 'lcov', 'text', 'clover'],
+  coverageThreshold: {
+    global: {
+      statements: 90,
+      branches: 85,
+      functions: 70,
+      lines: 90,
     },
   },
 };

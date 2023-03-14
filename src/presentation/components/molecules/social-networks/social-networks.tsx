@@ -20,25 +20,25 @@ const iconSize = 30;
 export function SocialNetworks(): JSX.Element {
   return (
     <StyledMainContainer>
-      <Button>
+      <Button data-testid="linkedin-button">
         <FaLinkedin size={iconSize} />
       </Button>
-      <Button>
+      <Button data-testid="github-button">
         <FaGithub size={iconSize} />
       </Button>
-      <Button>
+      <Button data-testid="stackoverflow-button">
         <FaStackOverflow size={iconSize} />
       </Button>
-      <Button>
+      <Button data-testid="medium-button">
         <FaMedium size={iconSize} />
       </Button>
-      <Button>
+      <Button data-testid="goodreads-button">
         <FaGoodreads size={iconSize} />
       </Button>
-      <Button>
+      <Button data-testid="twitter-button">
         <FaTwitter size={iconSize} />
       </Button>
-      <Button>
+      <Button data-testid="facebook-button">
         <FaFacebook size={iconSize} />
       </Button>
     </StyledMainContainer>

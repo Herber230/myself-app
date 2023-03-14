@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { forwardRef } from 'react';
 
 import { HeadingFourProps } from './heading-four.types';
 
@@ -10,6 +11,10 @@ const StyledHeadingFour = styled.h4`
   padding: 0;
 `;
 
-export function HeadingFour({ children }: HeadingFourProps): JSX.Element {
-  return <StyledHeadingFour>{children}</StyledHeadingFour>;
-}
+export const HeadingFour = forwardRef<HTMLHeadingElement, HeadingFourProps>(
+  ({ children, ...otherProps }, ref) => (
+    <StyledHeadingFour ref={ref} {...otherProps}>
+      {children}
+    </StyledHeadingFour>
+  ),
+);

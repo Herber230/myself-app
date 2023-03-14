@@ -1,3 +1,3 @@
-export interface HeadingTwoProps {
-  children: React.ReactNode;
-}
+import { HTMLProps } from 'react';
+
+export type HeadingTwoProps = Omit<HTMLProps<HTMLHeadingElement>, 'as'>;
