@@ -81,7 +81,7 @@ export function MainHeader(): JSX.Element {
         </StyledTitleContainer>
       </StyledFrame>
       {scrollPosition < scrollIndicatorPositionLimit && timeoutCompleted && (
-        <ScrollDownIndicator />
+        <ScrollDownIndicator data-testid="scroll-down-indicator" />
       )}
     </StyledMainContainer>
   );

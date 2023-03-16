@@ -1,0 +1,337 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`presentation:theming:themes It should check baseTheme snapshot 1`] = `
+{
+  "border": {
+    "radius": {
+      "lg": "12px",
+      "md": "8px",
+      "sm": "4px",
+    },
+  },
+  "colors": {
+    "black": "#000",
+    "grayScale": {
+      "100": "#f7f7f7",
+      "200": "#e1e1e1",
+      "300": "#cccccc",
+      "400": "#b7b7b7",
+      "500": "#a1a1a1",
+      "600": "#8c8c8c",
+      "700": "#767676",
+      "800": "#616161",
+      "900": "#4b4b4b",
+    },
+    "white": "#fff",
+  },
+  "fonts": {
+    "primary": {
+      "family": "Share Tech Mono",
+      "weights": {
+        "bold": 700,
+        "light": 300,
+        "regular": 400,
+      },
+    },
+    "secondary": {
+      "family": "Ubuntu",
+      "weights": {
+        "bold": 700,
+        "light": 300,
+        "regular": 400,
+      },
+    },
+  },
+  "palettes": {
+    "error": {
+      "contrastText": "#ffffff",
+      "dark": "#9d0208",
+      "light": "#dc2f02",
+      "main": "#d00000",
+    },
+    "info": {
+      "contrastText": "#343a40",
+      "dark": "#adb5bd",
+      "light": "#dee2e6",
+      "main": "#ced4da",
+    },
+    "primary": {
+      "contrastText": "#caf0f8",
+      "dark": "#000814",
+      "light": "#003566",
+      "main": "#001d3d",
+    },
+    "secondary": {
+      "contrastText": "#001d3d",
+      "dark": "##F2CA00",
+      "light": "#ffd60a",
+      "main": "#ffc300",
+    },
+    "success": {
+      "contrastText": "#ffffff",
+      "dark": "#38b000",
+      "light": "#9ef01a",
+      "main": "#70e000",
+    },
+    "warning": {
+      "contrastText": "#ffffff",
+      "dark": "#f48c06",
+      "light": "#ffba08",
+      "main": "#faa307",
+    },
+  },
+  "spacing": [Function],
+}
+`;
+
+exports[`presentation:theming:themes It should check darkTheme snapshot 1`] = `
+{
+  "border": {
+    "radius": {
+      "lg": "12px",
+      "md": "8px",
+      "sm": "4px",
+    },
+  },
+  "colors": {
+    "black": "#000",
+    "grayScale": {
+      "100": "#f7f7f7",
+      "200": "#e1e1e1",
+      "300": "#cccccc",
+      "400": "#b7b7b7",
+      "500": "#a1a1a1",
+      "600": "#8c8c8c",
+      "700": "#767676",
+      "800": "#616161",
+      "900": "#4b4b4b",
+    },
+    "white": "#fff",
+  },
+  "fonts": {
+    "primary": {
+      "family": "Share Tech Mono",
+      "weights": {
+        "bold": 700,
+        "light": 300,
+        "regular": 400,
+      },
+    },
+    "secondary": {
+      "family": "Ubuntu",
+      "weights": {
+        "bold": 700,
+        "light": 300,
+        "regular": 400,
+      },
+    },
+  },
+  "palettes": {
+    "error": {
+      "contrastText": "#ffffff",
+      "dark": "#9d0208",
+      "light": "#dc2f02",
+      "main": "#d00000",
+    },
+    "info": {
+      "contrastText": "#343a40",
+      "dark": "#adb5bd",
+      "light": "#dee2e6",
+      "main": "#ced4da",
+    },
+    "primary": {
+      "contrastText": "#caf0f8",
+      "dark": "#000814",
+      "light": "#003566",
+      "main": "#001d3d",
+    },
+    "secondary": {
+      "contrastText": "#001d3d",
+      "dark": "##F2CA00",
+      "light": "#ffd60a",
+      "main": "#ffc300",
+    },
+    "success": {
+      "contrastText": "#ffffff",
+      "dark": "#38b000",
+      "light": "#9ef01a",
+      "main": "#70e000",
+    },
+    "warning": {
+      "contrastText": "#ffffff",
+      "dark": "#f48c06",
+      "light": "#ffba08",
+      "main": "#faa307",
+    },
+  },
+  "spacing": [Function],
+}
+`;
+
+exports[`presentation:theming:themes It should check lightTheme snapshot 1`] = `
+{
+  "border": {
+    "radius": {
+      "lg": "12px",
+      "md": "8px",
+      "sm": "4px",
+    },
+  },
+  "colors": {
+    "black": "#000",
+    "grayScale": {
+      "100": "#f7f7f7",
+      "200": "#e1e1e1",
+      "300": "#cccccc",
+      "400": "#b7b7b7",
+      "500": "#a1a1a1",
+      "600": "#8c8c8c",
+      "700": "#767676",
+      "800": "#616161",
+      "900": "#4b4b4b",
+    },
+    "white": "#fff",
+  },
+  "fonts": {
+    "primary": {
+      "family": "Share Tech Mono",
+      "weights": {
+        "bold": 700,
+        "light": 300,
+        "regular": 400,
+      },
+    },
+    "secondary": {
+      "family": "Ubuntu",
+      "weights": {
+        "bold": 700,
+        "light": 300,
+        "regular": 400,
+      },
+    },
+  },
+  "palettes": {
+    "error": {
+      "contrastText": "#ffffff",
+      "dark": "#9d0208",
+      "light": "#dc2f02",
+      "main": "#d00000",
+    },
+    "info": {
+      "contrastText": "#343a40",
+      "dark": "#adb5bd",
+      "light": "#dee2e6",
+      "main": "#ced4da",
+    },
+    "primary": {
+      "contrastText": "#caf0f8",
+      "dark": "#000814",
+      "light": "#003566",
+      "main": "#001d3d",
+    },
+    "secondary": {
+      "contrastText": "#001d3d",
+      "dark": "##F2CA00",
+      "light": "#ffd60a",
+      "main": "#ffc300",
+    },
+    "success": {
+      "contrastText": "#ffffff",
+      "dark": "#38b000",
+      "light": "#9ef01a",
+      "main": "#70e000",
+    },
+    "warning": {
+      "contrastText": "#ffffff",
+      "dark": "#f48c06",
+      "light": "#ffba08",
+      "main": "#faa307",
+    },
+  },
+  "spacing": [Function],
+}
+`;
+
+exports[`presentation:theming:themes It should check warmTheme snapshot 1`] = `
+{
+  "border": {
+    "radius": {
+      "lg": "12px",
+      "md": "8px",
+      "sm": "4px",
+    },
+  },
+  "colors": {
+    "black": "#000",
+    "grayScale": {
+      "100": "#f7f7f7",
+      "200": "#e1e1e1",
+      "300": "#cccccc",
+      "400": "#b7b7b7",
+      "500": "#a1a1a1",
+      "600": "#8c8c8c",
+      "700": "#767676",
+      "800": "#616161",
+      "900": "#4b4b4b",
+    },
+    "white": "#fff",
+  },
+  "fonts": {
+    "primary": {
+      "family": "Share Tech Mono",
+      "weights": {
+        "bold": 700,
+        "light": 300,
+        "regular": 400,
+      },
+    },
+    "secondary": {
+      "family": "Ubuntu",
+      "weights": {
+        "bold": 700,
+        "light": 300,
+        "regular": 400,
+      },
+    },
+  },
+  "palettes": {
+    "error": {
+      "contrastText": "#ffffff",
+      "dark": "#9d0208",
+      "light": "#dc2f02",
+      "main": "#d00000",
+    },
+    "info": {
+      "contrastText": "#343a40",
+      "dark": "#adb5bd",
+      "light": "#dee2e6",
+      "main": "#ced4da",
+    },
+    "primary": {
+      "contrastText": "#caf0f8",
+      "dark": "#000814",
+      "light": "#003566",
+      "main": "#001d3d",
+    },
+    "secondary": {
+      "contrastText": "#001d3d",
+      "dark": "##F2CA00",
+      "light": "#ffd60a",
+      "main": "#ffc300",
+    },
+    "success": {
+      "contrastText": "#ffffff",
+      "dark": "#38b000",
+      "light": "#9ef01a",
+      "main": "#70e000",
+    },
+    "warning": {
+      "contrastText": "#ffffff",
+      "dark": "#f48c06",
+      "light": "#ffba08",
+      "main": "#faa307",
+    },
+  },
+  "spacing": [Function],
+}
+`;

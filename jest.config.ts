@@ -51,14 +51,14 @@ const config = {
     '!src/**/*.d.ts',
     '!src/mocks/**',
   ],
-  coveragePathIgnorePatterns: [],
+  coveragePathIgnorePatterns: ['index.ts', 'main.tsx', 'main-header.tsx'], // TODO: Complete coverage on main-header.tsx once finished
   coverageReporters: ['json', 'lcov', 'text', 'clover'],
   coverageThreshold: {
     global: {
-      statements: 90,
-      branches: 85,
-      functions: 70,
-      lines: 90,
+      statements: 100,
+      branches: 100,
+      functions: 100,
+      lines: 100,
     },
   },
 };
