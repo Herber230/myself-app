@@ -16,7 +16,9 @@ const config = {
     '@config/(.*)': '<rootDir>/src/config/$1',
     '@domain/(.*)': '<rootDir>/src/domain/$1',
     '@implementation/(.*)': '<rootDir>/src/implementation/$1',
-    '@presentation/(.*)': '<rootDir>/src/presentation/$1',
+    '@presentation-app/(.*)': '<rootDir>/src/presentation/app/$1',
+    '@presentation-core/(.*)': '<rootDir>/src/presentation/core/$1',
+    '@presentation-theming/(.*)': '<rootDir>/src/presentation/theming/$1',
     '@utils/(.*)': '<rootDir>/src/utils/$1',
   },
   moduleFileExtensions: [

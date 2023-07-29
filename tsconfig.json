@@ -20,7 +20,10 @@
       "@config/*": ["src/config/*"],
       "@domain/*": ["src/domain/*"],
       "@implementation/*": ["src/implementation/*"],
-      "@presentation/*": ["src/presentation/*"],
+      "@pages/*": ["src/pages/*"],
+      "@presentation-app/*": ["src/presentation/app/*"],
+      "@presentation-core/*": ["src/presentation/core/*"],
+      "@presentation-theming": ["src/presentation/theming"],
       "@utils/*": ["src/utils/*"]
     }
   },

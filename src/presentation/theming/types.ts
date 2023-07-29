@@ -14,6 +14,8 @@ export interface PaletteOptions {
   success: Palette;
 }
 
+export type PaletteOption = keyof PaletteOptions;
+
 export interface ColorOptions {
   white: string;
   black: string;
