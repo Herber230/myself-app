@@ -6,9 +6,6 @@ import { TechnologySearchPanelProps } from './technology-search-panel.types';
 
 const StyledTechnologySearchPanel = styled.div`
   display: flex;
-  justify-content: space-between;
-
-  width: 800px;
 `;
 
 export function TechnologySearchPanel({

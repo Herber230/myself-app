@@ -1,5 +1,17 @@
 import { Theme } from '../types';
 
+const grayScale = {
+  100: '#f7f7f7',
+  200: '#e1e1e1',
+  300: '#cccccc',
+  400: '#b7b7b7',
+  500: '#a1a1a1',
+  600: '#8c8c8c',
+  700: '#767676',
+  800: '#616161',
+  900: '#4b4b4b',
+} as const;
+
 export const baseTheme: Theme = {
   palettes: {
     primary: {
@@ -60,17 +72,7 @@ export const baseTheme: Theme = {
   colors: {
     white: '#fff',
     black: '#000',
-    grayScale: {
-      100: '#f7f7f7',
-      200: '#e1e1e1',
-      300: '#cccccc',
-      400: '#b7b7b7',
-      500: '#a1a1a1',
-      600: '#8c8c8c',
-      700: '#767676',
-      800: '#616161',
-      900: '#4b4b4b',
-    },
+    grayScale,
   },
   spacing: (...args: number[]) => {
     const s = 4; // base spacing unit
@@ -82,5 +84,15 @@ export const baseTheme: Theme = {
       md: '8px',
       lg: '12px',
     },
+    line: {
+      sm: `1px solid ${grayScale[100]}`,
+      md: `1px solid ${grayScale[300]}`,
+      lg: `1px solid ${grayScale[500]}`,
+    },
+  },
+  shadows: {
+    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
   },
 };

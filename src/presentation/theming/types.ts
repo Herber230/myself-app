@@ -56,6 +56,17 @@ export interface Border {
     md: string;
     lg: string;
   };
+  line: {
+    sm: string;
+    md: string;
+    lg: string;
+  };
+}
+
+export interface Shadows {
+  sm: string;
+  md: string;
+  lg: string;
 }
 
 export interface Theme {
@@ -64,4 +75,5 @@ export interface Theme {
   colors: ColorOptions;
   spacing: Spacing;
   border: Border;
+  shadows: Shadows;
 }

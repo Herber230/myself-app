@@ -1,11 +1,18 @@
 import { useTheme } from '@emotion/react';
-import styled from '@emotion/styled';
-import { Chip } from '@presentation-core/atoms/chip';
-import { Paragraph } from '@presentation-core/atoms/paragraph';
-import { AiFillCaretDown } from '@react-icons/all-files/ai/AiFillCaretDown';
+import { DropDownPanel } from '@presentation-core/atoms/drop-down-panel';
+import { useState } from 'react';
 
+import {
+  DropDownButton,
+  DropDownContainer,
+  DropDownOptions,
+  MainContainer,
+  SearchInput,
+  SelectionChips,
+} from './select-multiple.sections';
 import { SelectMultipleProps } from './select-multiple.types';
 
+//TODO: Implement theme parameters
 export function SelectMultiple<TOption>({
   keyProperty,
   displayProperty,
@@ -14,63 +21,44 @@ export function SelectMultiple<TOption>({
   onChange,
   palette = 'primary',
 }: SelectMultipleProps<TOption>): JSX.Element {
-  const handleRemove = () => {};
-
   const theme = useTheme();
+  const [dropDownOpen, setDropDownOpen] = useState(false);
+  const [search, setSearch] = useState('');
 
   const radius = theme.border.radius.md;
-  const StyledMainContainer = styled.div`
-    display: flex;
-    border: 1px solid ${theme.colors.grayScale[400]};
-    border-radius: ${radius};
-  `;
 
-  const StyledChips = styled.div`
-    display: flex;
-    > div {
-      margin: ${theme.spacing(1)};
-    }
-  `;
-
-  const StyledRight = styled.div`
-    border: none;
-    margin: 0;
-    width: 30px;
-    background-color: ${theme.palettes[palette].main};
-    border-radius: 0 ${radius} ${radius} 0;
-    button {
-      border: none;
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      background-color: transparent;
-    }
-    &:hover {
-      background-color: ${theme.palettes[palette].light};
-    }
-  `;
+  const handleRemove = () => {};
 
   return (
-    <StyledMainContainer>
-      <StyledChips>
-        {selection.map((item) => (
-          <Chip
-            key={`select-multiple-${String(item[keyProperty])}`}
-            onRemove={handleRemove}
-          >
-            <Paragraph>{String(item[displayProperty])}</Paragraph>
-          </Chip>
-        ))}
-      </StyledChips>
-      <StyledRight>
-        <button>
-          <AiFillCaretDown
-            size={20}
-            color={theme.palettes.primary.contrastText}
+    <MainContainer>
+      <SelectionChips
+        keyProperty={keyProperty}
+        displayProperty={displayProperty}
+        selection={selection}
+        onRemove={handleRemove}
+      />
+      <DropDownButton
+        onClick={() => setDropDownOpen(true)}
+        palette={palette}
+        radius={radius}
+      />
+      <DropDownContainer>
+        <DropDownPanel
+          open={dropDownOpen}
+          onClose={() => setDropDownOpen(false)}
+        >
+          <SearchInput
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
-        </button>
-      </StyledRight>
-    </StyledMainContainer>
+          <DropDownOptions
+            keyProperty={keyProperty}
+            displayProperty={displayProperty}
+            options={options}
+          />
+        </DropDownPanel>
+      </DropDownContainer>
+    </MainContainer>
   );
 }
