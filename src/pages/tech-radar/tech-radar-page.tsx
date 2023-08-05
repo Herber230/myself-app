@@ -1,7 +1,6 @@
-import { retrieveEntitySet } from '@domain/use-cases';
-import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { technologyStageHardcodedAdapter } from '@implementation/hardcoded-adapters';
+import { technologyAreaHardcodedAdapter } from '@implementation/hardcoded-adapters/technology-area-adapter';
+import { technologyStageHardcodedAdapter } from '@implementation/hardcoded-adapters/technology-stage-adapter';
 import { parseTechRadarRingsDefinition } from '@implementation/presentation-helpers';
 import {
   TechRadar,
@@ -9,17 +8,16 @@ import {
 } from '@presentation-app/organisms/tech-radar';
 import { TechnologySearchPanel } from '@presentation-app/organisms/technology-search-panel';
 import { NavigationWithBody } from '@presentation-app/templates';
-import { useBodyBackgroundColor } from '@utils/hooks';
+import { useObjectReducer } from '@utils/hooks/use-object-reducer';
 import { useEffect, useState } from 'react';
 
-import {
-  allTechnologyAreas,
-  allTechnologyStages,
-  areas,
-  entries,
-  selectedTechnologyAreas,
-  selectedTechnologyStages,
-} from './temp';
+import type { TechRadarPageSearch } from './tech-radar-page.types';
+import { areas, entries } from './temp';
+
+const initialSearch: TechRadarPageSearch = {
+  areaSelection: [],
+  stageSelection: [],
+};
 
 const StyledTechRadarContainer = styled.div`
   position: relative;
@@ -31,9 +29,6 @@ const StyledTechRadarContainer = styled.div`
 `;
 
 export function TechRadarPage(): JSX.Element {
-  const theme = useTheme();
-  useBodyBackgroundColor(theme.colors.white);
-
   const [techRadarRingsDefinition, setTechRadarRingsDefinition] = useState<
     TRRingDefinition[]
   >([]);
@@ -48,8 +43,16 @@ export function TechRadarPage(): JSX.Element {
     //   });
   }, []);
 
+  const [search, dispatchSearch] = useObjectReducer(initialSearch);
+
   return (
     <NavigationWithBody>
+      <TechnologySearchPanel
+        areaSource={technologyAreaHardcodedAdapter}
+        stageSource={technologyStageHardcodedAdapter}
+        state={search}
+        onChange={newSearch => dispatchSearch({ op: 'set', with: newSearch })}
+      />
       <StyledTechRadarContainer>
         {techRadarRingsDefinition.length > 0 && (
           <div>
@@ -61,25 +64,6 @@ export function TechRadarPage(): JSX.Element {
           </div>
         )}
       </StyledTechRadarContainer>
-      <br />
-      <br />
-      <br />
-      <TechnologySearchPanel
-        stageProps={{
-          selection: selectedTechnologyStages,
-          options: allTechnologyStages,
-          keyProperty: 'id',
-          displayProperty: 'name',
-          onChange: () => {},
-        }}
-        areaProps={{
-          selection: selectedTechnologyAreas,
-          options: allTechnologyAreas,
-          keyProperty: 'id',
-          displayProperty: 'name',
-          onChange: () => {},
-        }}
-      />
     </NavigationWithBody>
   );
 }

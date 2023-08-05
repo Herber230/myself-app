@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Button } from '@presentation-core/atoms';
+import { Button } from '@presentation-core/atoms/button';
 import { FaFacebook } from '@react-icons/all-files/fa/FaFacebook';
 import { FaGithub } from '@react-icons/all-files/fa/FaGithub';
 import { FaGoodreads } from '@react-icons/all-files/fa/FaGoodreads';

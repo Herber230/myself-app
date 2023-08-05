@@ -1,12 +1,14 @@
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { SocialNetworks } from '@presentation-app/molecules/social-networks';
 import { NavigationBar } from '@presentation-app/organisms/navigation-bar';
+import { useBodyBackgroundColor } from '@utils/hooks/use-body-background-color';
 
 import { NavigationWithBodyProps } from './navigation-with-body.types';
 
 const StyledMainContainer = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
@@ -26,9 +28,16 @@ const StyledSocialNetworksContainer = styled.div`
   -webkit-transform: translateY(-50%);
 `;
 
+const StyledContentContainer = styled.div`
+  padding: ${({ theme }) => theme.spacing(3)};
+`;
+
 export function NavigationWithBody({
   children,
 }: NavigationWithBodyProps): JSX.Element {
+  const theme = useTheme();
+  useBodyBackgroundColor(theme.palettes.primary.main);
+
   return (
     <StyledMainContainer>
       <StyledNavBarContainer>
@@ -37,7 +46,7 @@ export function NavigationWithBody({
       <StyledSocialNetworksContainer>
         <SocialNetworks />
       </StyledSocialNetworksContainer>
-      {children}
+      <StyledContentContainer>{children}</StyledContentContainer>
     </StyledMainContainer>
   );
 }

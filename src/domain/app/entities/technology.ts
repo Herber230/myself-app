@@ -1,4 +1,5 @@
-import type { EntityId } from './entity-base';
+import type { EntityId } from '@domain-generic/entities/entity-base';
+
 import type { TechnologyArea } from './technology-area';
 
 export interface Technology {

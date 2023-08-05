@@ -1,4 +1,4 @@
-import type { TechnologyStage } from '@domain/entities';
+import type { TechnologyStage } from '@domain-app/entities/technology-stage';
 
 export const technologyStageHardcodedData: TechnologyStage[] = [
   {

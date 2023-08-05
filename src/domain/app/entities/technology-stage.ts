@@ -1,4 +1,4 @@
-import type { EntityId } from './entity-base';
+import type { EntityId } from '@domain-generic/entities/entity-base';
 
 export interface TechnologyStage {
   id: EntityId;

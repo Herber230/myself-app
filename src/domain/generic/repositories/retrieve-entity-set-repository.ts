@@ -1,4 +1,6 @@
-import type { Entity, Filters, Sorting } from '../entities';
+import type { Entity } from '@domain-generic/entities/entity-base';
+import type { Filters } from '@domain-generic/entities/entity-filtering';
+import type { Sorting } from '@domain-generic/entities/entity-sorting';
 
 export interface RetrieveEntitySetRepositoryOptions<TEntity extends Entity> {
   filters?: Filters<TEntity>;

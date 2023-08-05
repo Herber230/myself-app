@@ -27,7 +27,14 @@ export function SelectMultiple<TOption>({
 
   const radius = theme.border.radius.md;
 
-  const handleRemove = () => {};
+  const actualOptions = options.filter(
+    op => selection.find(s => s[keyProperty] === op[keyProperty]) === undefined,
+  );
+
+  const handleOptionClick = (op: TOption) => onChange([...selection, op]);
+
+  const handleRemove = (op: TOption) =>
+    onChange(selection.filter(s => s[keyProperty] !== op[keyProperty]));
 
   return (
     <MainContainer>
@@ -50,12 +57,13 @@ export function SelectMultiple<TOption>({
           <SearchInput
             type="text"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => setSearch(e.target.value)}
           />
           <DropDownOptions
             keyProperty={keyProperty}
             displayProperty={displayProperty}
-            options={options}
+            options={actualOptions}
+            onClick={handleOptionClick}
           />
         </DropDownPanel>
       </DropDownContainer>

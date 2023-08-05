@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { AboutSection } from '@presentation-app/organisms/about-section';
 import { MainHeader } from '@presentation-app/organisms/main-header';
 import { PlainSections } from '@presentation-app/templates';
-import { useBodyBackgroundColor } from '@utils/hooks';
+import { useBodyBackgroundColor } from '@utils/hooks/use-body-background-color';
 
 const StyledSection = styled.section`
   min-height: 70vh;

@@ -31,11 +31,14 @@ export const DropDownContainer = styled.div`
 type DropDownOptionsProps<TOption> = Pick<
   SelectMultipleProps<TOption>,
   'options' | 'displayProperty' | 'keyProperty'
->;
+> & {
+  onClick: (option: TOption) => void;
+};
 export function DropDownOptions<TOption>({
   options,
   keyProperty,
   displayProperty,
+  onClick,
 }: DropDownOptionsProps<TOption>): JSX.Element {
   const StyledDropDownOptions = styled.div`
     margin: 0;
@@ -61,8 +64,11 @@ export function DropDownOptions<TOption>({
   return (
     <StyledDropDownOptions>
       <ul>
-        {options.map((item) => (
-          <li key={String(`select-multiple-op-${item[keyProperty]}`)}>
+        {options.map(item => (
+          <li
+            key={String(`select-multiple-op-${item[keyProperty]}`)}
+            onClick={() => onClick(item)}
+          >
             <Paragraph>{String(item[displayProperty])}</Paragraph>
           </li>
         ))}
@@ -85,7 +91,7 @@ export function DropDownButton({
 
   const StyledContainer = styled.div`
     border: none;
-    margin: 0;
+    margin: 0 0 0 auto;
     width: 30px;
     background-color: ${theme.palettes[palette].main};
     border-radius: 0 ${radius} ${radius} 0;
@@ -118,7 +124,7 @@ type SelectionChipsProps<TOption> = Pick<
   SelectMultipleProps<TOption>,
   'selection' | 'displayProperty' | 'keyProperty'
 > & {
-  onRemove: () => void;
+  onRemove: (option: TOption) => void;
 };
 export function SelectionChips<TOption>({
   selection,
@@ -135,10 +141,10 @@ export function SelectionChips<TOption>({
 
   return (
     <StyledChips>
-      {selection.map((item) => (
+      {selection.map(item => (
         <Chip
           key={`select-multiple-${String(item[keyProperty])}`}
-          onRemove={onRemove}
+          onRemove={() => onRemove(item)}
         >
           <Paragraph>{String(item[displayProperty])}</Paragraph>
         </Chip>

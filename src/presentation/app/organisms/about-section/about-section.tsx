@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Paragraph } from '@presentation-core/atoms';
+import { Paragraph } from '@presentation-core/atoms/paragraph';
 import { FaFileCode } from '@react-icons/all-files/fa/FaFileCode';
 
 const StyledMainContainer = styled.div`

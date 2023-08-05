@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useD3 } from '@utils/hooks';
+import { useD3 } from '@utils/hooks/use-d3';
 
 import { renderRadar } from './renderRadar';
 import type { TechRadarProps } from './TechRadar.types';

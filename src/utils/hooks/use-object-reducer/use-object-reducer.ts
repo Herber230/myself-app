@@ -1,40 +1,21 @@
+import type { Reducer } from 'react';
 import { useReducer } from 'react';
 
-type Action<T> =
-  | {
-      type: 'clear';
-    }
-  | {
-      type: 'set';
-      payload: T;
-    }
-  | {
-      type: 'update';
-      payload: Partial<T>;
-    }
-  | {
-      type: 'setProp';
-      payload: {
-        prop: keyof T;
-        value: T[keyof T];
-      };
-    };
+import type { Action } from './use-object-reducer.types';
 
 function reducer<T>(state: T, action: Action<T>): T {
-  switch (action.type) {
+  switch (action.op) {
     case 'clear':
       return {} as T;
     case 'set':
-      return action.payload;
+      return action.with;
     case 'update':
-      return { ...state, ...action.payload };
+      return { ...state, ...action.with };
     case 'setProp':
-      return { ...state, [action.payload.prop]: action.payload.value };
-    default:
-      return state;
+      return { ...state, [action.with.prop]: action.with.value };
   }
 }
 
 export function useObjectReducer<T>(initialValue: T) {
-  return useReducer(reducer, initialValue);
+  return useReducer<Reducer<T, Action<T>>>(reducer, initialValue);
 }

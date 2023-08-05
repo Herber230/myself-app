@@ -1,11 +1,12 @@
-import { AppError, type TechnologyStage } from '@domain/entities';
-import type { RetrieveEntitySetRepository } from '@domain/repositories';
+import type { TechnologyStage } from '@domain-app/entities/technology-stage';
+import { AppError } from '@domain-generic/entities/app-error';
+import type { RetrieveEntitySetRepository } from '@domain-generic/repositories/retrieve-entity-set-repository';
 
 import { technologyStageHardcodedData } from './data';
 
 export const technologyStageHardcodedAdapter: RetrieveEntitySetRepository<
   TechnologyStage
-> = (options) => {
+> = options => {
   if (options?.filters)
     Promise.reject(
       new AppError({

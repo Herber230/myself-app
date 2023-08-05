@@ -1,10 +1,8 @@
 import styled from '@emotion/styled';
-import {
-  HeadingOne,
-  HeadingTwo,
-  ScrollDownIndicator,
-} from '@presentation-core/atoms';
-import { useScroll } from '@utils/hooks';
+import { HeadingOne } from '@presentation-core/atoms/heading-one';
+import { HeadingTwo } from '@presentation-core/atoms/heading-two';
+import { ScrollDownIndicator } from '@presentation-core/atoms/scroll-down-indicator';
+import { useScroll } from '@utils/hooks/use-scroll';
 import { useEffect, useState } from 'react';
 
 const StyledMainContainer = styled.div`

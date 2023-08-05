@@ -13,12 +13,15 @@ export default defineConfig({
   resolve: {
     alias: {
       '@config': `${__dirname}/src/config`,
-      '@domain': `${__dirname}/src/domain`,
+      '@domain-app': `${__dirname}/src/domain/app`,
+      '@domain-generic': `${__dirname}/src/domain/generic`,
       '@implementation': `${__dirname}/src/implementation`,
       '@pages': `${__dirname}/src/pages`,
       '@presentation-app': `${__dirname}/src/presentation/app`,
       '@presentation-core': `${__dirname}/src/presentation/core`,
       '@presentation-theming': `${__dirname}/src/presentation/theming`,
+      '@use-cases-app': `${__dirname}/src/use-cases/app`,
+      '@use-cases-generic': `${__dirname}/src/use-cases/generic`,
       '@utils': `${__dirname}/src/utils`,
     },
   },

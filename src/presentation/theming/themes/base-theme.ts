@@ -76,7 +76,7 @@ export const baseTheme: Theme = {
   },
   spacing: (...args: number[]) => {
     const s = 4; // base spacing unit
-    return args.map((arg) => `${arg * s}px`).join(' ');
+    return args.map(arg => `${arg * s}px`).join(' ');
   },
   border: {
     radius: {
@@ -85,7 +85,7 @@ export const baseTheme: Theme = {
       lg: '12px',
     },
     line: {
-      sm: `1px solid ${grayScale[100]}`,
+      sm: `0.75px solid ${grayScale[200]}`,
       md: `1px solid ${grayScale[300]}`,
       lg: `1px solid ${grayScale[500]}`,
     },

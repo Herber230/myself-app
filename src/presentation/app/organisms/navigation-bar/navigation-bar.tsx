@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { HeadingFive } from '@presentation-core/atoms';
+import { HeadingFive } from '@presentation-core/atoms/heading-five';
 import { Link } from 'react-router-dom';
 
 //TODO: Use buttons insted of links and enable dropdowns

@@ -1,5 +1,8 @@
-import { TechnologyStage } from '@domain/entities';
-import { SelectMultipleProps } from '@presentation-core/molecules/select-multiple';
+import { TechnologyStage } from '@domain-app/entities/technology-stage';
+import { CollectionSourceRepository } from '@domain-generic/repositories/collection-source-repository';
 
-export type TechnologyStageSelectMultipleProps =
-  SelectMultipleProps<TechnologyStage>;
+export interface TechnologyStageSelectMultipleProps {
+  source: CollectionSourceRepository<TechnologyStage>;
+  selection: Array<TechnologyStage>;
+  onChange: (newSelection: Array<TechnologyStage>) => void;
+}

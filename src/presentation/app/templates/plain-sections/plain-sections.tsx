@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { SocialNetworks } from '@presentation-app/molecules/social-networks';
 import { NavigationBar } from '@presentation-app/organisms/navigation-bar';
-import { useScroll } from '@utils/hooks';
+import { useScroll } from '@utils/hooks/use-scroll';
 import { useElementSize } from 'usehooks-ts';
 
 import { PlainSectionsProps } from './plain-sections.types';
