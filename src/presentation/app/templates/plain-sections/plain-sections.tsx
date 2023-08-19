@@ -10,6 +10,7 @@ const StyledNavBarContainer = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
+  z-index: 1;
 `;
 
 const StyledSocialNetworksContainer = styled.div`
@@ -20,6 +21,7 @@ const StyledSocialNetworksContainer = styled.div`
   -transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   -webkit-transform: translateY(-50%);
+  z-index: 1;
 `;
 
 const StyledMainContainer = styled.div`

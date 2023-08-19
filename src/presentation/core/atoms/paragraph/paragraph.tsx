@@ -2,12 +2,8 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { forwardRef } from 'react';
 
-import type {
-  ParagraphProps} from './paragraph.types';
-import {
-  ParagraphLineHeights,
-  ParagraphSizes,
-} from './paragraph.types';
+import type { ParagraphProps } from './paragraph.types';
+import { ParagraphLineHeights, ParagraphSizes } from './paragraph.types';
 
 export const Paragraph = forwardRef<HTMLParagraphElement, ParagraphProps>(
   (
