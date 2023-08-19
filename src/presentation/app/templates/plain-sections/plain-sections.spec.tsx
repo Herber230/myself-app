@@ -4,7 +4,7 @@ import { PlainSections } from './plain-sections';
 jest.mock('usehooks-ts', () => ({
   useElementSize: () => [{}, { height: 100 }],
 }));
-jest.mock('@utils/hooks', () => ({
+jest.mock('@utils/hooks/use-scroll', () => ({
   useScroll: () => ({ scrollPosition: 101 }),
 }));
 

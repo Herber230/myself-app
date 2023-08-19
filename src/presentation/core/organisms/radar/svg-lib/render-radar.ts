@@ -1,153 +1,78 @@
+/* eslint-disable no-loop-func */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-// ************************************************************************************************************************************
-// THE CODE IN THIS FILE IS BASED ON:
-// https://github.com/zalando/tech-radar/blob/master/docs/radar.js
-//
-// The MIT License (MIT)
-// Copyright (c) 2017 Zalando SE
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-// ************************************************************************************************************************************
-
 import { forceCollide, forceSimulation, select } from 'd3';
 
-import type { TRBlip, TRRingDefinition } from './TechRadar.types';
-
-const config = {
-  svg_id: 'radar',
-  width: 1450,
-  height: 1000,
-  colors: {
-    background: '#fff',
-    grid: '#bbb',
-    inactive: '#ddd',
-  },
-  print_layout: true,
-};
-
-// radial_min / radial_max are multiples of PI
-const quadrants = [
-  { radial_min: 0, radial_max: 0.5, factor_x: 1, factor_y: 1 },
-  { radial_min: 0.5, radial_max: 1, factor_x: -1, factor_y: 1 },
-  { radial_min: -1, radial_max: -0.5, factor_x: -1, factor_y: -1 },
-  { radial_min: -0.5, radial_max: 0, factor_x: 1, factor_y: -1 },
-];
-
-const footer_offset = { x: -675, y: 420 };
-
-const legend_offset = [
-  { x: 450, y: 90 },
-  { x: -675, y: 90 },
-  { x: -675, y: -310 },
-  { x: 450, y: -310 },
-];
-
-function polar(cartesian) {
-  const x = cartesian.x;
-  const y = cartesian.y;
-  return {
-    t: Math.atan2(y, x),
-    r: Math.sqrt(x * x + y * y),
-  };
-}
-
-function cartesian(polar) {
-  return {
-    x: polar.r * Math.cos(polar.t),
-    y: polar.r * Math.sin(polar.t),
-  };
-}
-
-function bounded_interval(value, min, max) {
-  const low = Math.min(min, max);
-  const high = Math.max(min, max);
-  return Math.min(Math.max(value, low), high);
-}
-
-function bounded_ring(polar, r_min, r_max) {
-  return {
-    t: polar.t,
-    r: bounded_interval(polar.r, r_min, r_max),
-  };
-}
-
-function bounded_box(point, min, max) {
-  return {
-    x: bounded_interval(point.x, min.x, max.x),
-    y: bounded_interval(point.y, min.y, max.y),
-  };
-}
-
-function translate(x, y) {
-  return 'translate(' + x + ',' + y + ')';
-}
-
-function viewbox(quadrant) {
-  return [
-    Math.max(0, quadrants[quadrant].factor_x * 400) - 420,
-    Math.max(0, quadrants[quadrant].factor_y * 400) - 420,
-    440,
-    440,
-  ].join(' ');
-}
-
-function hideBubble() {
-  select('#bubble').attr('transform', translate(0, 0)).style('opacity', 0);
-}
-
-function highlightLegendItem(d) {
-  const legendItem = document.getElementById('legendItem' + d.id);
-  if (legendItem) {
-    legendItem.setAttribute('filter', 'url(#solid)');
-    legendItem.setAttribute('fill', 'white');
-  }
-}
-
-function unhighlightLegendItem(d) {
-  const legendItem = document.getElementById('legendItem' + d.id);
-  if (legendItem) {
-    legendItem.removeAttribute('filter');
-    legendItem.removeAttribute('fill');
-  }
-}
+import type { RenderOptions, TRBlip, TRRingDefinition } from './types';
+import {
+  bounded_box,
+  bounded_ring,
+  cartesian,
+  footer_offset,
+  getLegendOffset,
+  hideBubble,
+  highlightLegendItem,
+  polar,
+  quadrants,
+  translate,
+  unhighlightLegendItem,
+  viewbox,
+} from './utils';
 
 export function renderRadar(
   svg: ReturnType<typeof select>,
   entries: Array<TRBlip>,
-  ringsDefinition: Array<TRRingDefinition>,
+  inputRingsDefinition: Array<TRRingDefinition>,
   quadrantNames: Array<string>,
+  options: RenderOptions,
 ) {
+  // ========================================================================
+
+  const width = options.size;
+  const height = Math.floor(options.size * 0.8);
+
+  const lineLengthX = Math.floor(width * 0.38);
+  const lineLengthY = lineLengthX;
+
+  const config = {
+    svg_id: options?.svgId ?? 'radar',
+    width,
+    height,
+    colors: {
+      background: '#fff',
+      grid: '#bbb',
+      inactive: '#ddd',
+      ...options?.colors,
+    },
+    print_layout: options?.printLayout ?? true,
+  };
+
+  const ringsDefinition = inputRingsDefinition.map((ring, index) => ({
+    ...ring,
+    radius: (lineLengthY / inputRingsDefinition.length) * (index + 1),
+  }));
+
+  const legend_offset = getLegendOffset(options.size);
+
+  // ========================================================================
+
   let seed = 42;
   function random() {
     const x = Math.sin(seed++) * 10000;
     return x - Math.floor(x);
   }
 
-  function random_between(min, max) {
+  function random_between(min: any, max: any) {
     return min + random() * (max - min);
   }
 
-  function normal_between(min, max) {
+  function normal_between(min: any, max: any) {
     return min + (random() + random()) * 0.5 * (max - min);
   }
 
-  function segment(quadrant, ring) {
+  function segment(quadrant: any, ring: any) {
     const polar_min = {
       t: quadrants[quadrant].radial_min * Math.PI,
       r: ring === 0 ? 30 : ringsDefinition[ring - 1].radius,
@@ -165,13 +90,13 @@ export function renderRadar(
       y: ringsDefinition[3].radius * quadrants[quadrant].factor_y,
     };
     return {
-      clipx: function (d) {
+      clipx: function (d: any) {
         const c = bounded_box(d, cartesian_min, cartesian_max);
         const p = bounded_ring(polar(c), polar_min.r + 15, polar_max.r - 15);
         d.x = cartesian(p).x; // adjust data too!
         return d.x;
       },
-      clipy: function (d) {
+      clipy: function (d: any) {
         const c = bounded_box(d, cartesian_min, cartesian_max);
         const p = bounded_ring(polar(c), polar_min.r + 15, polar_max.r - 15);
         d.y = cartesian(p).y; // adjust data too!
@@ -216,7 +141,7 @@ export function renderRadar(
   for (const quadrant of [2, 3, 1, 0]) {
     for (let ring = 0; ring < 4; ring++) {
       const entries = segmented[quadrant][ring];
-      entries.sort(function (a, b) {
+      entries.sort(function (a: any, b: any) {
         return a.label.localeCompare(b.label);
       });
       for (let i = 0; i < entries.length; i++) {
@@ -240,9 +165,6 @@ export function renderRadar(
 
   const grid = radar.append('g');
 
-  // draw grid lines
-  const lineLengthX = 550;
-  const lineLengthY = 500;
   grid
     .append('line')
     .attr('x1', 0)
@@ -298,7 +220,7 @@ export function renderRadar(
     }
   }
 
-  function legend_transform(quadrant, ring, index = null) {
+  function legend_transform(quadrant: any, ring: any, index = null) {
     const dx = ring < 2 ? 0 : 120;
     let dy = index == null ? -16 : index * 12;
     if (ring % 2 === 1) {
@@ -351,7 +273,7 @@ export function renderRadar(
           })
           .append('text')
           .attr('transform', function (_d, i) {
-            return legend_transform(quadrant, ring, i);
+            return legend_transform(quadrant, ring, i as any);
           })
           .attr('class', 'legend' + quadrant + ring)
           .attr('id', function (d: any) {
@@ -394,7 +316,7 @@ export function renderRadar(
     .style('fill', '#fff');
   bubble.append('path').attr('d', 'M 0,0 10,0 5,8 z').style('fill', '#333');
 
-  function showBubble(d) {
+  function showBubble(d: any) {
     if (d.active || config.print_layout) {
       const tooltip = select('#bubble text').text(d.label);
       const bbox = (tooltip.node() as any).getBBox();
@@ -421,7 +343,7 @@ export function renderRadar(
     .append('g')
     .attr('class', 'blip')
     .attr('transform', function (d, i) {
-      return legend_transform(d.quadrant, d.ring, i);
+      return legend_transform(d.quadrant, d.ring, i as any);
     })
     .on('mouseover', function (d) {
       showBubble(d);

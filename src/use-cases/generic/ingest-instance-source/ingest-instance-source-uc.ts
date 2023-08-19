@@ -14,7 +14,7 @@ export function ingestInstanceSourceUC<TEntity extends Entity>(
     );
 
   if (source instanceof Promise)
-    return source.catch((e) => Promise.reject(AppError.handleError(e)));
+    return source.catch(e => Promise.reject(AppError.handleError(e)));
 
   if (typeof source === 'function') return ingestInstanceSourceUC(source());
 

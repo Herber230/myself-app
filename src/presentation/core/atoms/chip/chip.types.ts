@@ -1,4 +1,4 @@
-import { PaletteOption } from '@presentation-theming';
+import type { PaletteOption } from '@presentation-theming/types';
 import { ReactNode } from 'react';
 
 export interface ChipProps {

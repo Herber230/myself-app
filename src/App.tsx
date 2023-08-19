@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@presentation-theming';
+import { ThemeProvider } from '@presentation-theming/context';
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 

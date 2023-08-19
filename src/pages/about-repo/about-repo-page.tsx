@@ -1,5 +1,5 @@
 import { useTheme } from '@emotion/react';
-import { useBodyBackgroundColor } from '@utils/hooks';
+import { useBodyBackgroundColor } from '@utils/hooks/use-body-background-color';
 
 export function AboutRepoPage(): JSX.Element {
   const theme = useTheme();

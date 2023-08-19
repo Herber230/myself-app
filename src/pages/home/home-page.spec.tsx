@@ -1,4 +1,4 @@
-import { render } from '../../../../test/test-utils';
+import { render } from '../../../test/test-utils';
 import { HomePage } from './home-page';
 
 describe('pages:home', () => {

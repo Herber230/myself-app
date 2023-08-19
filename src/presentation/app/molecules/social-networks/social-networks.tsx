@@ -8,14 +8,13 @@ import { FaMedium } from '@react-icons/all-files/fa/FaMedium';
 import { FaStackOverflow } from '@react-icons/all-files/fa/FaStackOverflow';
 import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
 
+const iconSize = 30;
 const StyledMainContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border-radius: ${({ theme }) => theme.border.radius.md};
 `;
-
-const iconSize = 30;
 
 export function SocialNetworks(): JSX.Element {
   return (

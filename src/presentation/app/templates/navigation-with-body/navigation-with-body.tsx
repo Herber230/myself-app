@@ -26,6 +26,7 @@ const StyledSocialNetworksContainer = styled.div`
   -transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   -webkit-transform: translateY(-50%);
+  z-index: 1;
 `;
 
 const StyledContentContainer = styled.div`

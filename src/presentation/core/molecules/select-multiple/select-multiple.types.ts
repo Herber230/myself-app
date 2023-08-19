@@ -1,4 +1,4 @@
-import { PaletteOption } from '@presentation-theming';
+import type { PaletteOption } from '@presentation-theming/types';
 
 export interface SelectMultipleProps<TOption> {
   keyProperty: keyof TOption;

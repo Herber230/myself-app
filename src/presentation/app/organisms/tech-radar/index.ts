@@ -1,2 +1,2 @@
-export * from './TechRadar';
-export * from './TechRadar.types';
+export * from './tech-radar';
+export * from './tech-radar.types';

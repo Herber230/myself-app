@@ -1,4 +1,4 @@
-import { PaletteOptions } from '@presentation/theming';
+import type { PaletteOptions } from '@presentation-theming/types';
 import { HTMLProps } from 'react';
 
 // Base props to solve conflicts with Styled Components

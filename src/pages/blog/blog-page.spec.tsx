@@ -1,4 +1,4 @@
-import { render } from '../../../../test/test-utils';
+import { render } from '../../../test/test-utils';
 import { BlogPage } from './blog-page';
 
 describe('pages:posts', () => {

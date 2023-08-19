@@ -2,7 +2,7 @@ import type { TechnologyArea } from '@domain-app/entities/technology-area';
 import { AppError } from '@domain-generic/entities/app-error';
 import type { RetrieveEntitySetRepository } from '@domain-generic/repositories/retrieve-entity-set-repository';
 
-import { technologyAreaHardcodedData } from './data';
+import { technologyAreaHardcodedData } from '../data';
 
 export const technologyAreaHardcodedAdapter: RetrieveEntitySetRepository<
   TechnologyArea

@@ -12,7 +12,7 @@
       "@pages/*": ["src/pages/*"],
       "@presentation-app/*": ["src/presentation/app/*"],
       "@presentation-core/*": ["src/presentation/core/*"],
-      "@presentation-theming": ["src/presentation/theming"],
+      "@presentation-theming/*": ["src/presentation/theming/*"],
       "@use-cases-app/*": ["src/use-cases/app/*"],
       "@use-cases-generic/*": ["src/use-cases/generic/*"],
       "@utils/*": ["src/utils/*"]

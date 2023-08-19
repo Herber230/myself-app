@@ -2,7 +2,7 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Chip } from '@presentation-core/atoms/chip';
 import { Paragraph } from '@presentation-core/atoms/paragraph';
-import { PaletteOption } from '@presentation-theming';
+import type { PaletteOption } from '@presentation-theming/types';
 import { AiFillCaretDown } from '@react-icons/all-files/ai/AiFillCaretDown';
 
 import { SelectMultipleProps } from './select-multiple.types';

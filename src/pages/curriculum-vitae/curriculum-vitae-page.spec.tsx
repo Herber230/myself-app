@@ -1,4 +1,4 @@
-import { render } from '../../../../test/test-utils';
+import { render } from '../../../test/test-utils';
 import { CurriculumVitaePage } from './curriculum-vitae-page';
 
 describe('presentation:pages:curriculum-vitae', () => {

@@ -1,1 +1,5 @@
-export interface SelectProps {}
+import type { ReactNode } from 'react';
+
+export interface SelectProps {
+  children: ReactNode;
+}
