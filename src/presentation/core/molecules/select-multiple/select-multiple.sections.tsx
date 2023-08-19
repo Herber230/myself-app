@@ -5,7 +5,7 @@ import { Paragraph } from '@presentation-core/atoms/paragraph';
 import type { PaletteOption } from '@presentation-theming/types';
 import { AiFillCaretDown } from '@react-icons/all-files/ai/AiFillCaretDown';
 
-import { SelectMultipleProps } from './select-multiple.types';
+import type { SelectMultipleProps } from './select-multiple.types';
 
 export const MainContainer = styled.div`
   display: flex;

@@ -4,7 +4,7 @@ import { SocialNetworks } from '@presentation-app/molecules/social-networks';
 import { NavigationBar } from '@presentation-app/organisms/navigation-bar';
 import { useBodyBackgroundColor } from '@utils/hooks/use-body-background-color';
 
-import { NavigationWithBodyProps } from './navigation-with-body.types';
+import type { NavigationWithBodyProps } from './navigation-with-body.types';
 
 const StyledMainContainer = styled.div`
   width: 100%;

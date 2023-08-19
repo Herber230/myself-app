@@ -1,0 +1,27 @@
+{
+  "extends": ["../../.eslintrc.json"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              "@domain-app/*",
+              "@domain-generic/*",
+              "@implementation/*",
+              "@pages/*",
+              "@presentation-app/*",
+              "@presentation-core/*",
+              "@presentation-theming/*",
+              "@use-cases-app/*",
+              "@use-cases-generic/*",
+              "@utils/*"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

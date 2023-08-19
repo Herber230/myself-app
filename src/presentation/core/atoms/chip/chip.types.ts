@@ -1,5 +1,5 @@
 import type { PaletteOption } from '@presentation-theming/types';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export interface ChipProps {
   children: ReactNode;

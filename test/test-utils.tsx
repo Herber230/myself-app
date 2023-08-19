@@ -1,7 +1,8 @@
 import { ThemeProvider } from '@emotion/react';
 import type { RenderOptions } from '@testing-library/react';
 import { render } from '@testing-library/react';
-import React, { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
+import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
 import { baseTheme } from '../src/presentation/theming/themes/base-theme';

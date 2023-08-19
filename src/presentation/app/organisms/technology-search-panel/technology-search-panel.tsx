@@ -6,7 +6,7 @@ import { HeadingFive } from '@presentation-core/atoms/heading-five';
 import { Paragraph } from '@presentation-core/atoms/paragraph';
 import { useObjectReducer } from '@utils/hooks/use-object-reducer';
 
-import {
+import type {
   TechnologySearchPanelProps,
   TechnologySearchPanelState,
 } from './technology-search-panel.types';

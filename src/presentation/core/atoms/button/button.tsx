@@ -2,7 +2,7 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { forwardRef } from 'react';
 
-import { ButtonProps } from './button.types';
+import type { ButtonProps } from './button.types';
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ children, palette = 'primary', type, ...otherProps }, ref) => {

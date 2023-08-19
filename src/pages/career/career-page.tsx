@@ -1,13 +1,30 @@
-import { useTheme } from '@emotion/react';
-import { useBodyBackgroundColor } from '@utils/hooks/use-body-background-color';
+import styled from '@emotion/styled';
+import { NavigationWithBody } from '@presentation-app/templates';
+import { HeadingThree } from '@presentation-core/atoms/heading-three';
+
+const StyledContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  > h3 {
+    margin: 50px 0;
+  }
+  > img {
+    width: 800px;
+  }
+`;
 
 export function CareerPage(): JSX.Element {
-  const theme = useTheme();
-  useBodyBackgroundColor(theme.colors.white);
-
   return (
-    <div>
-      <h1>Career Page</h1>
-    </div>
+    <NavigationWithBody>
+      <StyledContent>
+        <HeadingThree>Career</HeadingThree>
+        <img
+          src="/images/under-construction-windows.jpg"
+          alt="Under construction"
+        />
+      </StyledContent>
+    </NavigationWithBody>
   );
 }

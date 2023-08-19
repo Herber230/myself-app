@@ -1,4 +1,4 @@
-import { Theme } from '../types';
+import type { Theme } from '../types';
 
 const grayScale = {
   100: '#f7f7f7',

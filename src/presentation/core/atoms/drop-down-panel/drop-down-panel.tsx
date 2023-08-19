@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useEffect, useRef } from 'react';
 
-import { DropDownPanelProps } from './drop-down-panel.types';
+import type { DropDownPanelProps } from './drop-down-panel.types';
 
 const StyledMainContainer = styled.div`
   position: absolute;

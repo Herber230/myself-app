@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { forwardRef } from 'react';
 
-import { HeadingThreeProps } from './heading-three.types';
+import type { HeadingThreeProps } from './heading-three.types';
 
 const StyledHeadingThree = styled.h3`
   font-family: ${({ theme }) => theme.fonts.primary.family};

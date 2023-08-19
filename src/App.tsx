@@ -1,10 +1,7 @@
+import { Loading } from '@presentation-core/molecules/loading';
 import { ThemeProvider } from '@presentation-theming/context';
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-
-function Loading() {
-  return <h1>Loading...</h1>;
-}
 
 const routes = [
   {
@@ -44,7 +41,7 @@ function App() {
               index={index}
               path={path}
               element={
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<Loading size="lg" />}>
                   <Page />
                 </Suspense>
               }
