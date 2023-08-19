@@ -1,9 +1,9 @@
-import { TechnologyStage } from '@domain-app/entities/technology-stage';
+import type { TechnologyStage } from '@domain-app/entities/technology-stage';
 import { SelectMultiple } from '@presentation-core/molecules/select-multiple';
 import { ingestCollectionSourceUC } from '@use-cases-generic/ingest-collection-source';
 import { useEffect, useState } from 'react';
 
-import { TechnologyStageSelectMultipleProps } from './technology-stage-select-multiple.types';
+import type { TechnologyStageSelectMultipleProps } from './technology-stage-select-multiple.types';
 
 export function TechnologyStageSelectMultiple({
   source,

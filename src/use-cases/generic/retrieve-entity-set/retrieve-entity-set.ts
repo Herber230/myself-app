@@ -1,5 +1,5 @@
 import { AppError } from '@domain-generic/entities/app-error';
-import { Entity } from '@domain-generic/entities/entity-base';
+import type { Entity } from '@domain-generic/entities/entity-base';
 import type {
   RetrieveEntitySetRepository,
   RetrieveEntitySetRepositoryOptions,

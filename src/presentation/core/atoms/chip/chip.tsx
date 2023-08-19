@@ -2,7 +2,7 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { AiOutlineCloseCircle } from '@react-icons/all-files/ai/AiOutlineCloseCircle';
 
-import { ChipProps } from './chip.types';
+import type { ChipProps } from './chip.types';
 
 export function Chip({
   children,

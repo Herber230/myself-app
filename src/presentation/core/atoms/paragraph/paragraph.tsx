@@ -2,9 +2,10 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { forwardRef } from 'react';
 
+import type {
+  ParagraphProps} from './paragraph.types';
 import {
   ParagraphLineHeights,
-  ParagraphProps,
   ParagraphSizes,
 } from './paragraph.types';
 

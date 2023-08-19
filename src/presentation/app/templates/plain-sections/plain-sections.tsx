@@ -4,7 +4,7 @@ import { NavigationBar } from '@presentation-app/organisms/navigation-bar';
 import { useScroll } from '@utils/hooks/use-scroll';
 import { useElementSize } from 'usehooks-ts';
 
-import { PlainSectionsProps } from './plain-sections.types';
+import type { PlainSectionsProps } from './plain-sections.types';
 
 const StyledNavBarContainer = styled.div`
   position: fixed;

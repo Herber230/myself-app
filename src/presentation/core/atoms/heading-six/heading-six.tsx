@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { forwardRef } from 'react';
 
-import { HeadingSixProps } from './heading-six.types';
+import type { HeadingSixProps } from './heading-six.types';
 
 const StyledHeadingSix = styled.h6`
   font-family: ${({ theme }) => theme.fonts.primary.family};

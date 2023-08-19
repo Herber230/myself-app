@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { forwardRef } from 'react';
 
-import { HeadingFourProps } from './heading-four.types';
+import type { HeadingFourProps } from './heading-four.types';
 
 const StyledHeadingFour = styled.h4`
   font-family: ${({ theme }) => theme.fonts.primary.family};

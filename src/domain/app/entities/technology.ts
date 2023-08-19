@@ -1,7 +1,7 @@
 import type { EntityId } from '@domain-generic/entities/entity-base';
 
 import type { TechnologyArea } from './technology-area';
-import { TechnologyStage } from './technology-stage';
+import type { TechnologyStage } from './technology-stage';
 
 export interface Technology {
   id: EntityId;

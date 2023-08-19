@@ -10,7 +10,7 @@ import {
   SearchInput,
   SelectionChips,
 } from './select-multiple.sections';
-import { SelectMultipleProps } from './select-multiple.types';
+import type { SelectMultipleProps } from './select-multiple.types';
 
 //TODO: Implement theme parameters
 export function SelectMultiple<TOption>({

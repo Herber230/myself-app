@@ -1,5 +1,5 @@
-import { TechnologyStage } from '@domain-app/entities/technology-stage';
-import { RingDefinition } from '@presentation-core/organisms/radar';
+import type { TechnologyStage } from '@domain-app/entities/technology-stage';
+import type { RingDefinition } from '@presentation-core/organisms/radar';
 
 const colors = [
   '#632ec7',

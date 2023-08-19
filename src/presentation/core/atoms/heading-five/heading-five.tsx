@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { forwardRef } from 'react';
 
-import { HeadingFiveProps } from './heading-five.types';
+import type { HeadingFiveProps } from './heading-five.types';
 
 const StyledHeadingFive = styled.h5`
   font-family: ${({ theme }) => theme.fonts.primary.family};
