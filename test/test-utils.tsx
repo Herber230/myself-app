@@ -20,7 +20,7 @@ const customRender = (
   options?: CustomRenderOptions,
 ) =>
   render(ui, {
-    wrapper: (props) => <AllTheProviders {...props} />,
+    wrapper: props => <AllTheProviders {...props} />,
     ...options,
   });
 

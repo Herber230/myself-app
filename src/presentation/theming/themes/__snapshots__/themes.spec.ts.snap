@@ -3,6 +3,11 @@
 exports[`presentation:theming:themes It should check baseTheme snapshot 1`] = `
 {
   "border": {
+    "line": {
+      "lg": "1px solid #a1a1a1",
+      "md": "1px solid #cccccc",
+      "sm": "0.75px solid #e1e1e1",
+    },
     "radius": {
       "lg": "12px",
       "md": "8px",
@@ -79,6 +84,11 @@ exports[`presentation:theming:themes It should check baseTheme snapshot 1`] = `
       "light": "#ffba08",
       "main": "#faa307",
     },
+  },
+  "shadows": {
+    "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+    "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
   },
   "spacing": [Function],
 }
@@ -87,6 +97,11 @@ exports[`presentation:theming:themes It should check baseTheme snapshot 1`] = `
 exports[`presentation:theming:themes It should check darkTheme snapshot 1`] = `
 {
   "border": {
+    "line": {
+      "lg": "1px solid #a1a1a1",
+      "md": "1px solid #cccccc",
+      "sm": "0.75px solid #e1e1e1",
+    },
     "radius": {
       "lg": "12px",
       "md": "8px",
@@ -163,6 +178,11 @@ exports[`presentation:theming:themes It should check darkTheme snapshot 1`] = `
       "light": "#ffba08",
       "main": "#faa307",
     },
+  },
+  "shadows": {
+    "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+    "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
   },
   "spacing": [Function],
 }
@@ -171,6 +191,11 @@ exports[`presentation:theming:themes It should check darkTheme snapshot 1`] = `
 exports[`presentation:theming:themes It should check lightTheme snapshot 1`] = `
 {
   "border": {
+    "line": {
+      "lg": "1px solid #a1a1a1",
+      "md": "1px solid #cccccc",
+      "sm": "0.75px solid #e1e1e1",
+    },
     "radius": {
       "lg": "12px",
       "md": "8px",
@@ -247,6 +272,11 @@ exports[`presentation:theming:themes It should check lightTheme snapshot 1`] = `
       "light": "#ffba08",
       "main": "#faa307",
     },
+  },
+  "shadows": {
+    "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+    "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
   },
   "spacing": [Function],
 }
@@ -255,6 +285,11 @@ exports[`presentation:theming:themes It should check lightTheme snapshot 1`] = `
 exports[`presentation:theming:themes It should check warmTheme snapshot 1`] = `
 {
   "border": {
+    "line": {
+      "lg": "1px solid #a1a1a1",
+      "md": "1px solid #cccccc",
+      "sm": "0.75px solid #e1e1e1",
+    },
     "radius": {
       "lg": "12px",
       "md": "8px",
@@ -331,6 +366,11 @@ exports[`presentation:theming:themes It should check warmTheme snapshot 1`] = `
       "light": "#ffba08",
       "main": "#faa307",
     },
+  },
+  "shadows": {
+    "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+    "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
   },
   "spacing": [Function],
 }

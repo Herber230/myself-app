@@ -6,9 +6,15 @@
     "baseUrl": ".",
     "paths": {
       "@config/*": ["src/config/*"],
-      "@domain/*": ["src/domain/*"],
+      "@domain-app/*": ["src/domain/app/*"],
+      "@domain-generic/*": ["src/domain/generic/*"],
       "@implementation/*": ["src/implementation/*"],
-      "@presentation/*": ["src/presentation/*"],
+      "@pages/*": ["src/pages/*"],
+      "@presentation-app/*": ["src/presentation/app/*"],
+      "@presentation-core/*": ["src/presentation/core/*"],
+      "@presentation-theming/*": ["src/presentation/theming/*"],
+      "@use-cases-app/*": ["src/use-cases/app/*"],
+      "@use-cases-generic/*": ["src/use-cases/generic/*"],
       "@utils/*": ["src/utils/*"]
     }
   }

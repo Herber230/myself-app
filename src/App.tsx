@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@presentation/theming';
+import { ThemeProvider } from '@presentation-theming/context';
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -9,27 +9,27 @@ function Loading() {
 const routes = [
   {
     index: true,
-    page: lazy(() => import('@presentation/pages/home')),
+    page: lazy(() => import('@pages/home')),
   },
   {
     path: 'about-repo',
-    page: lazy(() => import('@presentation/pages/about-repo')),
+    page: lazy(() => import('@pages/about-repo')),
   },
   {
     path: 'blog',
-    page: lazy(() => import('@presentation/pages/blog')),
+    page: lazy(() => import('@pages/blog')),
   },
   {
     path: 'career',
-    page: lazy(() => import('@presentation/pages/career')),
+    page: lazy(() => import('@pages/career')),
   },
   {
     path: 'cv',
-    page: lazy(() => import('@presentation/pages/curriculum-vitae')),
+    page: lazy(() => import('@pages/curriculum-vitae')),
   },
   {
     path: 'tech-radar',
-    page: lazy(() => import('@presentation/pages/tech-radar')),
+    page: lazy(() => import('@pages/tech-radar')),
   },
 ];
 
