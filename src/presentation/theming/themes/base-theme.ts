@@ -12,6 +12,12 @@ const grayScale = {
   900: '#4b4b4b',
 } as const;
 
+const colors = {
+  white: '#fff',
+  black: '#000',
+  grayScale,
+} as const;
+
 export const baseTheme: Theme = {
   palettes: {
     primary: {
@@ -69,14 +75,12 @@ export const baseTheme: Theme = {
       },
     },
   },
-  colors: {
-    white: '#fff',
-    black: '#000',
-    grayScale,
-  },
-  spacing: (...args: number[]) => {
-    const s = 4; // base spacing unit
-    return args.map(arg => `${arg * s}px`).join(' ');
+  colors,
+  spacing: (...args: (number | 'auto')[]) => {
+    const s = 4; // Constant for spacing
+    return args
+      .map(arg => (arg === 'auto' ? 'auto' : `${s * arg}px`))
+      .join(' ');
   },
   border: {
     radius: {
@@ -94,5 +98,10 @@ export const baseTheme: Theme = {
     sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+  },
+  backgrounds: {
+    primary: colors.white,
+    secondary: grayScale[400],
+    tertiary: grayScale[800],
   },
 };

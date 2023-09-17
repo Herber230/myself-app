@@ -16,7 +16,8 @@
               "@presentation-theming/*",
               "@use-cases-app/*",
               "@use-cases-generic/*",
-              "@utils/*"
+              "@utils/*",
+              "../*"
             ]
           }
         ]

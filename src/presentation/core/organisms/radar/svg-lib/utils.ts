@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { select } from 'd3';
 
 // radial_min / radial_max are multiples of PI

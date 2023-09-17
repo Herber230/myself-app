@@ -3,7 +3,7 @@ import type { HTMLProps, ReactNode } from 'react';
 type BaseProps = Omit<HTMLProps<HTMLParagraphElement>, 'as' | 'size'>;
 
 export const ParagraphSizes = {
-  small: '0.8rem',
+  small: '0.9rem',
   normal: '1rem',
   large: '1.5rem',
 } as const;
@@ -22,4 +22,5 @@ export interface ParagraphProps extends BaseProps {
   children: ReactNode;
   size?: ParagraphSize;
   lineHeight?: ParagraphLineHeight;
+  textAlign?: 'left' | 'center' | 'right';
 }

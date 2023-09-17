@@ -4,12 +4,16 @@ import { SocialNetworks } from '@presentation-app/molecules/social-networks';
 import { NavigationBar } from '@presentation-app/organisms/navigation-bar';
 import { useBodyBackgroundColor } from '@utils/hooks/use-body-background-color';
 
-import type { NavigationWithBodyProps } from './navigation-with-body.types';
+import type {
+  ContentContainerProps,
+  NavigationWithBodyProps,
+} from './navigation-with-body.types';
 
 const StyledMainContainer = styled.div`
   width: 100%;
   min-height: 100vh;
-  background-color: ${({ theme }) => theme.colors.white};
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledNavBarContainer = styled.div`
@@ -26,15 +30,19 @@ const StyledSocialNetworksContainer = styled.div`
   -transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   -webkit-transform: translateY(-50%);
-  z-index: 1;
+  z-index: ${({ theme }) => theme.spacing(1)};
 `;
 
-const StyledContentContainer = styled.div`
-  padding: ${({ theme }) => theme.spacing(3)};
+const StyledContentContainer = styled.div<ContentContainerProps>`
+  flex-grow: 1;
+  background-color: ${({ theme, background }) =>
+    theme.backgrounds[background ?? 'primary']};
+  padding: ${({ theme, padding }) => theme.spacing(padding ?? 3)};
 `;
 
 export function NavigationWithBody({
   children,
+  contentContainer,
 }: NavigationWithBodyProps): JSX.Element {
   const theme = useTheme();
   useBodyBackgroundColor(theme.palettes.primary.main);
@@ -47,7 +55,9 @@ export function NavigationWithBody({
       <StyledSocialNetworksContainer>
         <SocialNetworks />
       </StyledSocialNetworksContainer>
-      <StyledContentContainer>{children}</StyledContentContainer>
+      <StyledContentContainer {...contentContainer}>
+        {children}
+      </StyledContentContainer>
     </StyledMainContainer>
   );
 }
