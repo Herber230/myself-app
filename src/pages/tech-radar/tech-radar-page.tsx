@@ -23,7 +23,6 @@ export function TechRadarPage(): JSX.Element {
         stageSource={technologyStageHardcodedAdapter}
         state={search}
         onChange={newSearch => {
-          console.log('[>] newSearch: ', newSearch);
           dispatchSearch({ op: 'set', with: newSearch });
         }}
       />

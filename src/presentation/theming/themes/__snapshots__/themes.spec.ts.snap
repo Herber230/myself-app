@@ -2,6 +2,11 @@
 
 exports[`presentation:theming:themes It should check baseTheme snapshot 1`] = `
 {
+  "backgrounds": {
+    "primary": "#fff",
+    "secondary": "#b7b7b7",
+    "tertiary": "#616161",
+  },
   "border": {
     "line": {
       "lg": "1px solid #a1a1a1",
@@ -96,6 +101,11 @@ exports[`presentation:theming:themes It should check baseTheme snapshot 1`] = `
 
 exports[`presentation:theming:themes It should check darkTheme snapshot 1`] = `
 {
+  "backgrounds": {
+    "primary": "#fff",
+    "secondary": "#b7b7b7",
+    "tertiary": "#616161",
+  },
   "border": {
     "line": {
       "lg": "1px solid #a1a1a1",
@@ -190,6 +200,11 @@ exports[`presentation:theming:themes It should check darkTheme snapshot 1`] = `
 
 exports[`presentation:theming:themes It should check lightTheme snapshot 1`] = `
 {
+  "backgrounds": {
+    "primary": "#fff",
+    "secondary": "#b7b7b7",
+    "tertiary": "#616161",
+  },
   "border": {
     "line": {
       "lg": "1px solid #a1a1a1",
@@ -284,6 +299,11 @@ exports[`presentation:theming:themes It should check lightTheme snapshot 1`] = `
 
 exports[`presentation:theming:themes It should check warmTheme snapshot 1`] = `
 {
+  "backgrounds": {
+    "primary": "#fff",
+    "secondary": "#b7b7b7",
+    "tertiary": "#616161",
+  },
   "border": {
     "line": {
       "lg": "1px solid #a1a1a1",

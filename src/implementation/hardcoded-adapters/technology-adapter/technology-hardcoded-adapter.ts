@@ -7,7 +7,7 @@ import type {
 } from '@domain-generic/entities/entity-filtering';
 import type { Retrieving } from '@domain-generic/entities/entity-retrieving';
 
-import { technologyHardCodedData } from '../data';
+import { technologyHardCodedData } from '../data/technology-data';
 
 const applySingleFilter =
   (item: Technology) => (filter: Filter<Technology>) => {

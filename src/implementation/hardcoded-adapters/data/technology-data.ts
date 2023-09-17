@@ -1,6 +1,7 @@
 import type { Technology } from '@domain-app/entities/technology';
 import type { TechnologyArea } from '@domain-app/entities/technology-area';
 import type { TechnologyStage } from '@domain-app/entities/technology-stage';
+import type { TechnologyUsePeriod } from '@domain-app/entities/technology-use-period';
 
 export const technologyStageHardcodedData: TechnologyStage[] = [
   {
@@ -117,5 +118,29 @@ export const technologyHardCodedData: Array<Technology> = [
     description: 'Some description for NX',
     stage: technologyStageHardcodedData[2],
     areas: [technologyAreaHardcodedData[3]],
+  },
+];
+
+export const technologyUsePeriodHardCodedData: Array<TechnologyUsePeriod> = [
+  {
+    id: '1',
+    technology: technologyHardCodedData[0],
+    stage: technologyStageHardcodedData[0],
+    start: new Date('2020-01-01'),
+    end: new Date('2020-12-31'),
+  },
+  {
+    id: '2',
+    technology: technologyHardCodedData[1],
+    stage: technologyStageHardcodedData[0],
+    start: new Date('2020-01-01'),
+    end: new Date('2020-12-31'),
+  },
+  {
+    id: '3',
+    technology: technologyHardCodedData[2],
+    stage: technologyStageHardcodedData[3],
+    start: new Date('2020-01-01'),
+    end: new Date('2020-12-31'),
   },
 ];

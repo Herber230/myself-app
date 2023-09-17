@@ -1,10 +1,10 @@
 import type { TechnologyArea } from '@domain-app/entities/technology-area';
 import { AppError } from '@domain-generic/entities/app-error';
-import type { RetrieveEntitySetRepository } from '@domain-generic/repositories/retrieve-entity-set-repository';
+import type { GetEntityCollectionRepository } from '@domain-generic/repositories/get-entity-collection-repository';
 
-import { technologyAreaHardcodedData } from '../data';
+import { technologyAreaHardcodedData } from '../data/technology-data';
 
-export const technologyAreaHardcodedAdapter: RetrieveEntitySetRepository<
+export const technologyAreaHardcodedAdapter: GetEntityCollectionRepository<
   TechnologyArea
 > = options => {
   if (options?.filters)

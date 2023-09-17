@@ -7,7 +7,13 @@ import { ParagraphLineHeights, ParagraphSizes } from './paragraph.types';
 
 export const Paragraph = forwardRef<HTMLParagraphElement, ParagraphProps>(
   (
-    { children, size = 'normal', lineHeight = 'normal', ...otherProps },
+    {
+      children,
+      size = 'normal',
+      lineHeight = 'normal',
+      textAlign = 'left',
+      ...otherProps
+    },
     ref,
   ) => {
     const theme = useTheme();
@@ -18,6 +24,7 @@ export const Paragraph = forwardRef<HTMLParagraphElement, ParagraphProps>(
       line-height: ${ParagraphLineHeights[lineHeight]};
       margin: 0;
       padding: 0;
+      text-align: ${textAlign};
     `;
 
     return (

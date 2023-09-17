@@ -47,7 +47,7 @@ export interface FontOptions {
 }
 
 export interface Spacing {
-  (...args: number[]): string;
+  (...args: (number | 'auto')[]): string;
 }
 
 export interface Border {
@@ -69,6 +69,12 @@ export interface Shadows {
   lg: string;
 }
 
+export interface Backgrounds {
+  primary: string;
+  secondary: string;
+  tertiary: string;
+}
+
 export interface Theme {
   palettes: PaletteOptions;
   fonts: FontOptions;
@@ -76,4 +82,5 @@ export interface Theme {
   spacing: Spacing;
   border: Border;
   shadows: Shadows;
+  backgrounds: Backgrounds;
 }

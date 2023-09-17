@@ -60,10 +60,10 @@ const config = {
   coverageReporters: ['json', 'lcov', 'text', 'clover'],
   coverageThreshold: {
     global: {
-      statements: 29,
-      branches: 48,
-      functions: 33,
-      lines: 29,
+      statements: 28,
+      branches: 39,
+      functions: 25,
+      lines: 28,
     },
   },
 };

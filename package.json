@@ -11,6 +11,7 @@
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "NODE_ENV=test jest",
+    "test:update": "NODE_ENV=test jest --updateSnapshot",
     "validate": "pnpm run lint && pnpm run test && pnpm run build"
   },
   "dependencies": {
@@ -18,6 +19,7 @@
     "@emotion/styled": "^11.11.0",
     "@react-icons/all-files": "^4.1.0",
     "d3": "^7.8.5",
+    "ramda": "^0.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
@@ -35,6 +37,7 @@
     "@types/d3": "^7.4.0",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.5.1",
+    "@types/ramda": "^0.29.3",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.4",
@@ -55,7 +58,11 @@
     "vite-plugin-eslint": "^1.8.1"
   },
   "volta": {
-    "node": "20.5.1"
+    "node": "20.6.1"
+  },
+  "engines": {
+    "node": "20.6.1",
+    "pnpm": "8.7.5"
   },
   "lint-staged": {
     "**/*.{js,jsx,json}": [
