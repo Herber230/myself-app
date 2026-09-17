@@ -1,0 +1,385 @@
+name: Pull Request Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pr-checks-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# entifix's pull-request check, sized for one app, one e2e project and one tool:
+# no matrix chunking, the same install-once cache, affected scoping and gate.
+jobs:
+  # Installs once and saves the result, so every job below restores
+  # `node_modules` instead of spending its first half-minute on `pnpm install`.
+  initialize:
+    name: Initialize
+    runs-on: ubuntu-latest
+    outputs:
+      base: ${{ steps.shas.outputs.base }}
+      head: ${{ steps.shas.outputs.head }}
+      lint-projects: ${{ steps.projects.outputs.lint }}
+      build-projects: ${{ steps.projects.outputs.build }}
+      typecheck-projects: ${{ steps.projects.outputs.typecheck }}
+      test-projects: ${{ steps.projects.outputs.test }}
+      e2e-projects: ${{ steps.projects.outputs.e2e }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+
+      # The key must change whenever what `pnpm install` would produce changes:
+      # the lockfile, the workspace member globs, and the Node version native
+      # modules were resolved for. Every job below spells the same key.
+      #
+      # The paths are the root `node_modules`, which holds pnpm's virtual store
+      # in `.pnpm`, plus each workspace member's own `node_modules` of symlinks
+      # into it. A restore without the member directories resolves nothing.
+      - name: Restore dependencies
+        id: deps
+        uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+      - name: Install dependencies
+        if: steps.deps.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+      - name: Save dependencies
+        if: steps.deps.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          key: ${{ steps.deps.outputs.cache-primary-key }}
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+
+      - name: Resolve affected base/head
+        id: shas
+        uses: nrwl/nx-set-shas@v4
+
+      # A pull request runs what it affects; `main` runs everything.
+      - name: Compute projects per target
+        id: projects
+        run: |
+          # `tail -n1` is load-bearing: pnpm prints its warnings to STDOUT, so
+          # anything it has to say lands in front of the JSON and `jq` dies on
+          # it. nx prints the array as a single last line.
+          # A step's default shell is `bash -e` without `pipefail`, so a failing
+          # `nx show projects` piped into `tail` would report `tail`'s success.
+          set -o pipefail
+          projects() {
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              pnpm nx show projects --affected \
+                --base=${{ steps.shas.outputs.base }} \
+                --head=${{ steps.shas.outputs.head }} \
+                --withTarget "$1" --json | tail -n1
+            else
+              pnpm nx show projects --withTarget "$1" --json | tail -n1
+            fi
+          }
+
+          # Assigned before they are echoed, and that is load-bearing: a failure
+          # inside `$(…)` in an `echo` argument does not stop the step, so a
+          # project graph that fails to build would leave every list empty,
+          # every job `skipped`, and the gate free to pass a run in which
+          # nothing ran. An assignment's exit status is its substitution's.
+          for target in lint build typecheck test e2e; do
+            list=$(projects "$target")
+            echo "$target=$(jq -r 'join(",")' <<<"$list")" >> "$GITHUB_OUTPUT"
+          done
+
+  lint:
+    name: Lint
+    needs: initialize
+    if: needs.initialize.outputs.lint-projects != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+      # A miss fails the job rather than falling back to an install. Initialize
+      # saved this exact key moments ago, so a miss means the key expression
+      # drifted between jobs, and a silent reinstall would hide that.
+      - uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          fail-on-cache-miss: true
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+      - run: pnpm nx run-many -t lint --projects="${{ needs.initialize.outputs.lint-projects }}"
+
+  # The static export is the build: a page reaching for `headers()`, `cookies()`
+  # or a dynamic route handler fails `next build` here.
+  build:
+    name: Build & typecheck
+    needs: initialize
+    if: needs.initialize.outputs.build-projects != '' || needs.initialize.outputs.typecheck-projects != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+      - uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          fail-on-cache-miss: true
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+      - name: Build
+        if: needs.initialize.outputs.build-projects != ''
+        run: pnpm nx run-many -t build --projects="${{ needs.initialize.outputs.build-projects }}"
+      # `always()` so a failed build does not hide a type error beside it. The
+      # app's typecheck runs `next typegen` first, which needs no build.
+      - name: Typecheck
+        if: always() && needs.initialize.outputs.typecheck-projects != ''
+        run: pnpm nx run-many -t typecheck --projects="${{ needs.initialize.outputs.typecheck-projects }}"
+
+  test:
+    name: Test
+    needs: initialize
+    if: needs.initialize.outputs.test-projects != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+      - uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          fail-on-cache-miss: true
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+      # The plain `test` target does not collect coverage, so CI asks for it.
+      # Thresholds arrive with the first package under `packages/*` (M1), which
+      # is gated at 100%.
+      - run: pnpm nx run-many -t test --projects="${{ needs.initialize.outputs.test-projects }}" --coverage
+
+  # Against the export served like a bucket (`tools/serve-static.mjs`), never
+  # against a Next server. `e2e` depends on `myself-app:build`.
+  e2e:
+    name: E2E
+    needs: initialize
+    if: needs.initialize.outputs.e2e-projects != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+      - uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          fail-on-cache-miss: true
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+      - name: Resolve the Playwright version
+        id: playwright
+        run: |
+          VERSION=$(node -p "require('@playwright/test/package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      # ⚠️ Drop Google's Chrome apt repository before installing anything, as
+      # r10c does. Both install steps below shell out to `apt-get update`, which
+      # fails the whole job if *any* configured repository is inconsistent — and
+      # the runner image ships `dl.google.com/linux/chrome-stable`, whose index
+      # served a mismatched `Packages.gz` for over an hour on 2026-09-09.
+      # Playwright downloads its own Chromium; apt only supplies shared
+      # libraries, so this repository is a dependency the job never asked for.
+      # Matched by content, not filename: the image also ships it as `*.sources`.
+      - name: Drop apt sources this job does not need
+        run: |
+          sudo bash -euo pipefail -c '
+            for file in $(grep -rl "dl\.google\.com" /etc/apt/sources.list.d 2>/dev/null || true); do
+              echo "removing $file"
+              rm -f "$file"
+            done
+            sed -i "/dl\.google\.com/d" /etc/apt/sources.list 2>/dev/null || true
+          '
+      - name: Install Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Install Chromium system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+      - run: pnpm nx run-many -t e2e --projects="${{ needs.initialize.outputs.e2e-projects }}"
+      - name: Keep the report of a failed run
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/*-e2e/test-output
+          retention-days: 7
+
+  # NOTE: this job must stay unconditional, and its commands must not become
+  # affected-scoped. Formatting and the conventions are claims about the whole
+  # repository, and the pull request that breaks one need not touch the project
+  # that checks it.
+  conventions:
+    name: Formatting & conventions
+    needs: initialize
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+      - uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          fail-on-cache-miss: true
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+      # `always()` on every step, so one failure does not hide the next. The
+      # job still fails if any step does.
+      - name: Formatting
+        if: always()
+        run: pnpm exec prettier --check .
+      - name: The repository conventions
+        if: always()
+        run: pnpm nx test @myself-app/conventions
+
+  # A commit that slips past `.husky/commit-msg` — with `--no-verify`, from a
+  # clone where `pnpm install` never ran, or through the GitHub web editor — is
+  # caught here instead.
+  commits:
+    name: Commit conventions
+    needs: initialize
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+      - uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          fail-on-cache-miss: true
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+
+      - name: Every commit in the range
+        if: always()
+        run: |
+          pnpm exec commitlint \
+            --from ${{ github.event.pull_request.base.sha }} \
+            --to ${{ github.event.pull_request.head.sha }} \
+            --verbose
+
+      # Under a squash merge the pull request title becomes the commit message
+      # on `main`. Linting the commits without the title would check something
+      # that never lands.
+      - name: The pull request title
+        if: always()
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: printf '%s\n' "$PR_TITLE" | pnpm exec commitlint --verbose
+
+      # The one surface no git hook can see. Body and SHAs arrive through the
+      # environment, never interpolated into the script: a body is arbitrary
+      # text, and a backtick or `$(` in it would otherwise run.
+      - name: The pull request body and its commits carry no attribution
+        if: always()
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node tools/conventions/check-pull-request.mjs
+
+  # The single required check. A job absent from `needs` still reports its own
+  # status on the pull request but cannot block a merge, so every new job
+  # belongs here.
+  #
+  # `initialize` is listed although every other job already needs it: when it
+  # fails the rest are `skipped`, not `failed`, and a gate that only looked for
+  # failures would pass a run in which nothing ran. `skipped` is otherwise fine:
+  # it is what `commits` reports on a push, and what a job with no affected
+  # projects does.
+  #
+  # The repository is private on a free plan, so branch protection cannot make
+  # this check required: merging on red is prevented by this gate's visibility.
+  ci-gate:
+    name: CI Gate
+    needs: [initialize, lint, build, test, e2e, conventions, commits]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every required job succeeded or was skipped
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" || "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "One or more required jobs failed or were cancelled."
+            exit 1
+          fi

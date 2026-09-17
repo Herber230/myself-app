@@ -5,4 +5,4 @@ echo "┏━━━ husky: pre-commit ━━━━━━━━━━━━━━"
 git fetch --all -p
 pnpm exec lint-staged --relative
 
-pnpm nx affected --target=lint,build --base=origin/main --head=HEAD
+pnpm nx affected --target=lint,typecheck,test,build --base=origin/main --head=HEAD

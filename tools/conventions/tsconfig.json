@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "out-tsc/conventions",
+    "tsBuildInfoFile": "out-tsc/conventions/tsconfig.tsbuildinfo",
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["out-tsc", "test-output"]
+}

@@ -5,6 +5,12 @@
   "references": [
     {
       "path": "./apps/myself-app"
+    },
+    {
+      "path": "./apps/myself-app-e2e"
+    },
+    {
+      "path": "./tools/conventions"
     }
   ]
 }
