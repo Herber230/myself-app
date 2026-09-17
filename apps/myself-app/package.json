@@ -1,0 +1,76 @@
+{
+  "name": "myself-app",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The site: a Next app exported as static files.",
+  "dependencies": {
+    "@entifix/core": "catalog:",
+    "effect": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "outputs": [
+          "{projectRoot}/.next",
+          "{projectRoot}/out"
+        ],
+        "options": {
+          "forwardAllArgs": false
+        }
+      },
+      "dev": {
+        "executor": "nx:run-commands",
+        "continuous": true,
+        "options": {
+          "command": "next dev -p 3000",
+          "cwd": "apps/myself-app"
+        }
+      },
+      "typegen": {
+        "executor": "nx:run-commands",
+        "cache": true,
+        "inputs": [
+          "{projectRoot}/src/app/**/*",
+          "{projectRoot}/next.config.js"
+        ],
+        "outputs": [
+          "{projectRoot}/next-env.d.ts",
+          "{projectRoot}/.next/types"
+        ],
+        "options": {
+          "command": "next typegen",
+          "cwd": "apps/myself-app"
+        }
+      },
+      "typecheck": {
+        "executor": "nx:run-commands",
+        "cache": true,
+        "dependsOn": [
+          "typegen",
+          "^typecheck"
+        ],
+        "inputs": [
+          "default",
+          "^production"
+        ],
+        "options": {
+          "command": "tsc -p tsconfig.json --noEmit",
+          "cwd": "apps/myself-app"
+        }
+      },
+      "serve-out": {
+        "executor": "nx:run-commands",
+        "continuous": true,
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "command": "node tools/serve-static.mjs apps/myself-app/out 3100"
+        }
+      }
+    }
+  }
+}

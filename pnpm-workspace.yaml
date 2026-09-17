@@ -38,3 +38,8 @@ overrides:
   '@typescript-eslint/visitor-keys': 8.62.1
   '@typescript-eslint/project-service': 8.62.1
   '@typescript-eslint/tsconfig-utils': 8.62.1
+# pnpm 11 holds back versions published within its minimum release age. entifix
+# is released by the same author and adopted the day it ships, so its versions are
+# exempted one by one as the catalog moves.
+minimumReleaseAgeExclude:
+  - '@entifix/core@0.1.2'
