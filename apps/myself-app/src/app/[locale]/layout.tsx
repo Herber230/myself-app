@@ -1,7 +1,12 @@
+import '../global.css';
+
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { ThemeScript } from '../../components/theme-script';
+import { fontVariables } from '../../fonts';
 import { isSiteLocale, SITE_LOCALES } from '../../site-locales';
+import { Providers } from './providers';
 
 /** Every locale is known at build time; any other segment is a 404. */
 export const dynamicParams = false;
@@ -25,8 +30,17 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
   return (
-    <html lang={locale}>
-      <body>{children}</body>
+    // `suppressHydrationWarning`: `ThemeScript` sets `data-theme` on this
+    // element before hydration, which the static HTML cannot know.
+    <html lang={locale} className={fontVariables} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
+      <body>
+        {/* A client component, but `children` reaches it as a prop, so every
+            page below still renders at build. */}
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

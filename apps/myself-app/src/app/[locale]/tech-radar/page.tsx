@@ -1,3 +1,10 @@
+import {
+  Card,
+  Center,
+  Lead,
+  Stack,
+  Text,
+} from '@entifix/react-controls/primitives';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -28,10 +35,16 @@ export default async function TechRadarPage({
   return (
     <>
       <SiteNav locale={locale} path={PATH} />
-      <main>
-        <h1>{copy.techRadar}</h1>
-        <p>{copy.techRadarLead}</p>
-      </main>
+      <Center as="main" gutters className="py-2xl">
+        <Card>
+          <Stack gap="s">
+            <Text as="h1" step={3} weight="semibold">
+              {copy.techRadar}
+            </Text>
+            <Lead muted>{copy.techRadarLead}</Lead>
+          </Stack>
+        </Card>
+      </Center>
     </>
   );
 }

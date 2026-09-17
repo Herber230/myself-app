@@ -92,6 +92,36 @@ export default [
     },
   },
   {
+    // ADR 0006. The main barrel pulls the entity table and query machinery
+    // (~541 KB); `./preferences` brings Effect into the browser. Both resolve
+    // and build without complaint, so the ban is the only thing that notices.
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@entifix/react-controls',
+              message:
+                'Import from @entifix/react-controls/primitives (or /i18next). The main barrel is ~541 KB — see docs/adr/0006.',
+            },
+          ],
+          patterns: [
+            {
+              group: [
+                '@entifix/react-controls/preferences',
+                '@entifix/react-controls/preferences/*',
+              ],
+              message:
+                '@entifix/react-controls/preferences brings Effect into the browser — see docs/adr/0006.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: [
       '**/*.ts',
       '**/*.tsx',

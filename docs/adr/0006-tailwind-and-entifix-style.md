@@ -4,6 +4,7 @@
 - Date: 2026-09-17
 - Area: ui
 - Read when: styling anything, or when a primitive renders unstyled
+- Revised: 2026-09-17 by #16 — the primitives barrel ships Effect without `optimizePackageImports`; the theme is applied before first paint by a script
 
 ## Context
 
@@ -24,6 +25,17 @@ design system built for Tailwind v4.
 - ⚠️ **Never the main barrel** of `@entifix/react-controls` — it pulls in the
   entity table and query machinery, about 541 KB — **and never `./preferences`**,
   which brings Effect into the browser.
+- ⚠️ **`./primitives` is a barrel too**, and entifix's packages declare no
+  `sideEffects`. Imported as-is, one `Stack` puts every `'use client'` module of
+  the barrel on the page, `ThemeSwitcher`'s `@entifix/core` import with them,
+  and Effect reaches the browser (measured: ~300 KB of gzipped JavaScript on a
+  placeholder page instead of ~200 KB). `experimental.optimizePackageImports`
+  for `@entifix/react-controls` and `@entifix/core` in `next.config.js` is what
+  keeps a page to the modules it renders.
+- **The theme is applied before first paint** by an inline script that reads
+  the stored choice or `prefers-color-scheme`. entifix's `ThemeProvider` writes
+  its starting theme to `<html>` on mount, so it starts from the theme already
+  painted, and `ThemeSwitcher` renders only after hydration.
 - ⚠️ Tailwind v4 does not scan `node_modules`: an `@source` for the primitives'
   `dist`, or their classes produce no CSS and nothing reports it.
 - Fonts self-hosted with `next/font`, so they are present when a page prints.

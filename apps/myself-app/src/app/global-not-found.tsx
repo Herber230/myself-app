@@ -1,5 +1,10 @@
+import './global.css';
+
+import { Center, Stack, Text } from '@entifix/react-controls/primitives';
 import type { Metadata } from 'next';
 
+import { ThemeScript } from '../components/theme-script';
+import { fontVariables } from '../fonts';
 import { PLACEHOLDER_COPY } from '../placeholder-copy';
 import { localePath, SITE_LOCALES } from '../site-locales';
 
@@ -14,21 +19,33 @@ export const metadata: Metadata = {
  */
 export default function GlobalNotFound() {
   return (
-    <html lang="en">
+    <html lang="en" className={fontVariables} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body>
-        <main>
-          {SITE_LOCALES.map(locale => (
-            <section key={locale} lang={locale}>
-              <h1>{PLACEHOLDER_COPY[locale].notFoundTitle}</h1>
-              <p>{PLACEHOLDER_COPY[locale].notFoundLead}</p>
-              <p>
-                <a href={localePath(locale, '/')}>
-                  {PLACEHOLDER_COPY[locale].home}
-                </a>
-              </p>
-            </section>
-          ))}
-        </main>
+        <Center as="main" gutters className="py-2xl">
+          <Stack gap="2xl">
+            {SITE_LOCALES.map(locale => (
+              <section key={locale} lang={locale}>
+                <Stack gap="xs">
+                  <Text as="h1" step={3} weight="semibold">
+                    {PLACEHOLDER_COPY[locale].notFoundTitle}
+                  </Text>
+                  <Text muted>{PLACEHOLDER_COPY[locale].notFoundLead}</Text>
+                  <Text>
+                    <a
+                      className="text-primary underline focus-ring"
+                      href={localePath(locale, '/')}
+                    >
+                      {PLACEHOLDER_COPY[locale].home}
+                    </a>
+                  </Text>
+                </Stack>
+              </section>
+            ))}
+          </Stack>
+        </Center>
       </body>
     </html>
   );

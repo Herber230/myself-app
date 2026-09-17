@@ -1,3 +1,10 @@
+import {
+  Card,
+  Center,
+  Lead,
+  Stack,
+  Text,
+} from '@entifix/react-controls/primitives';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -26,10 +33,16 @@ export default async function CvPage({ params }: PageProps<'/[locale]/cv'>) {
   return (
     <>
       <SiteNav locale={locale} path={PATH} />
-      <main>
-        <h1>{copy.cv}</h1>
-        <p>{copy.cvLead}</p>
-      </main>
+      <Center as="main" gutters className="py-2xl">
+        <Card>
+          <Stack gap="s">
+            <Text as="h1" step={3} weight="semibold">
+              {copy.cv}
+            </Text>
+            <Lead muted>{copy.cvLead}</Lead>
+          </Stack>
+        </Card>
+      </Center>
     </>
   );
 }
