@@ -11,6 +11,9 @@
     "react-dom": "catalog:"
   },
   "nx": {
+    "tags": [
+      "layer:app"
+    ],
     "targets": {
       "build": {
         "outputs": [

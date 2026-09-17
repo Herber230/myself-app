@@ -14,9 +14,13 @@
  *
  * Every scan below **pins the number of things it expects to find**, so a check
  * whose file walk quietly stopped finding files fails instead of passing.
+ *
+ * The `test` target is uncached (`nx.targets.test.cache: false`): what this
+ * spec reads is the whole repository, which no project's inputs describe, so a
+ * cached pass would survive the very change it exists to catch.
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -308,5 +312,53 @@ describe('the enforcement surfaces are wired to that predicate', () => {
       'utf8',
     );
     expect(template.toLowerCase()).toContain('no ai attribution');
+  });
+});
+
+/**
+ * Module boundaries (ADR 0004). `@nx/enforce-module-boundaries` only reports an
+ * untagged project once it imports another one, so a new package would pass
+ * lint untagged until its first edge. This makes the tag part of creating it.
+ */
+describe('every project sits in one layer', () => {
+  const LAYERS = [
+    'layer:app',
+    'layer:domain',
+    'layer:static-adapter',
+    'layer:content',
+    'layer:e2e',
+    'layer:tooling',
+  ];
+
+  /** The workspace globs of `pnpm-workspace.yaml`, one level deep. */
+  const projects = ['apps', 'packages', 'tools'].flatMap(group => {
+    const dir = join(REPO_ROOT, group);
+    if (!existsSync(dir)) return [];
+    return readdirSync(dir, { withFileTypes: true })
+      .filter(entry => entry.isDirectory())
+      .map(entry => join(group, entry.name, 'package.json'))
+      .filter(path => existsSync(join(REPO_ROOT, path)));
+  });
+
+  it('finds the projects it means to check', () => {
+    // Pinned: a walk that stops finding manifests would pass vacuously.
+    expect(projects.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it.each(projects)('%s carries exactly one known layer tag', path => {
+    const manifest = JSON.parse(readFileSync(join(REPO_ROOT, path), 'utf8'));
+    const tags: string[] = manifest.nx?.tags ?? [];
+    const layers = tags.filter(tag => tag.startsWith('layer:'));
+    expect(layers, `${path} needs one "layer:*" in nx.tags`).toHaveLength(1);
+    expect(LAYERS).toContain(layers[0]);
+  });
+
+  it('each layer the spec knows has a constraint in the lint config', () => {
+    const config = readFileSync(join(REPO_ROOT, 'eslint.config.mjs'), 'utf8');
+    for (const layer of LAYERS) {
+      expect(config, layer).toContain(`sourceTag: '${layer}'`);
+    }
+    // The allow-all placeholder this replaced must not come back.
+    expect(config).not.toMatch(/sourceTag: '\*'/);
   });
 });

@@ -3,5 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "The repository's working conventions, asserted rather than stated."
+  "description": "The repository's working conventions, asserted rather than stated.",
+  "nx": {
+    "tags": [
+      "layer:tooling"
+    ],
+    "targets": {
+      "test": {
+        "cache": false
+      }
+    }
+  }
 }
