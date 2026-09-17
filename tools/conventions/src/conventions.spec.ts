@@ -261,6 +261,39 @@ describe('the enforcement surfaces are wired to that predicate', () => {
     expect(hook).toContain('commitlint --edit');
   });
 
+  it('CI checks the pull-request body, which no git hook can see', () => {
+    const workflow = readFileSync(
+      join(REPO_ROOT, '.github/workflows/pull_request_check.yml'),
+      'utf8',
+    );
+    expect(workflow).toContain('node tools/conventions/check-pull-request.mjs');
+    expect(workflow).toContain('pnpm nx test @myself-app/conventions');
+    // Each behind `if: always()`, so an earlier failing step cannot hide it.
+    for (const command of [
+      'node tools/conventions/check-pull-request.mjs',
+      'pnpm nx test @myself-app/conventions',
+    ]) {
+      const step = workflow.slice(0, workflow.indexOf(command));
+      const stepStart = step.lastIndexOf('- name:');
+      expect(step.slice(stepStart), command).toContain('if: always()');
+    }
+  });
+
+  it('CI Gate needs every job, so none of them is advisory', () => {
+    const workflow = readFileSync(
+      join(REPO_ROOT, '.github/workflows/pull_request_check.yml'),
+      'utf8',
+    );
+    const jobsBlock = workflow.slice(workflow.indexOf('\njobs:\n'));
+    const jobs = [...jobsBlock.matchAll(/^ {2}([a-z][a-z0-9-]*):\s*$/gm)]
+      .map(match => match[1])
+      .filter(job => job !== 'ci-gate');
+    // Pinned: a job-name matcher that stops matching would pass vacuously.
+    expect(jobs.length).toBeGreaterThanOrEqual(7);
+    const needs = workflow.match(/^ {4}needs: \[(.+)\]\s*$/m)?.[1] ?? '';
+    expect(needs.split(',').map(job => job.trim())).toEqual(jobs);
+  });
+
   it('the pull-request template asks for it too', () => {
     const template = readFileSync(
       join(REPO_ROOT, '.github/PULL_REQUEST_TEMPLATE.md'),
