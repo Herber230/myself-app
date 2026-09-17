@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { SiteNav } from '../../components/site-nav';
-import { PLACEHOLDER_COPY } from '../../placeholder-copy';
+import { siteT } from '../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../site-locales';
 
 const PATH = '/';
@@ -19,9 +19,9 @@ export async function generateMetadata({
 }: PageProps<'/[locale]'>): Promise<Metadata> {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const copy = PLACEHOLDER_COPY[locale];
+  const t = siteT(locale);
   return {
-    title: copy.siteName,
+    title: t('siteName'),
     alternates: localeAlternates(locale, PATH),
   };
 }
@@ -29,7 +29,7 @@ export async function generateMetadata({
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const copy = PLACEHOLDER_COPY[locale];
+  const t = siteT(locale);
   return (
     <>
       <SiteNav locale={locale} path={PATH} />
@@ -37,9 +37,9 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
         <Card>
           <Stack gap="s">
             <Text as="h1" step={3} weight="semibold">
-              {copy.siteName}
+              {t('siteName')}
             </Text>
-            <Lead muted>{copy.homeLead}</Lead>
+            <Lead muted>{t('homeLead')}</Lead>
           </Stack>
         </Card>
       </Center>

@@ -73,7 +73,7 @@ for (const scheme of ['light', 'dark'] as const) {
 
     await expectPainted(page, scheme);
     // Hydrated: the switcher renders on the client only.
-    await expect(page.getByRole('radio', { name: /dark/i })).toBeVisible();
+    await expect(page.getByRole('radio', { name: 'Dark' })).toBeVisible();
     const changes = await themeChanges(page);
     expect(changes.length).toBeGreaterThan(0);
     expect(changes.every(theme => theme === scheme)).toBe(true);
@@ -95,7 +95,15 @@ test('a stored theme wins over the system and never flashes', async ({
   await page.goto('/es/cv/');
 
   await expectPainted(page, 'dark');
-  await expect(page.getByRole('radio', { name: /dark|oscuro/i })).toBeChecked();
+  // Labels from the catalogs: entifix's `controls` for the group, the site's
+  // own for each theme.
+  await expect(
+    page
+      .getByRole('radiogroup', { name: 'Tema', exact: true })
+      .getByRole('radio', {
+        name: 'Oscuro',
+      }),
+  ).toBeChecked();
   const changes = await themeChanges(page);
   expect(changes.length).toBeGreaterThan(0);
   expect(changes.every(theme => theme === 'dark')).toBe(true);
@@ -108,12 +116,15 @@ test('the switcher changes the theme, and it survives a reload', async ({
   await page.goto('/en/');
   await expectPainted(page, 'light');
 
-  await page.getByRole('radio', { name: /dark/i }).click();
+  await page
+    .getByRole('radiogroup', { name: 'Theme', exact: true })
+    .getByRole('radio', { name: 'Dark' })
+    .click();
   await expectPainted(page, 'dark');
 
   await page.reload();
   await expectPainted(page, 'dark');
-  await expect(page.getByRole('radio', { name: /dark/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: 'Dark' })).toBeChecked();
 });
 
 test('the primitives are styled and the fonts are self-hosted', async ({

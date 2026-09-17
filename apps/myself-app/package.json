@@ -5,14 +5,17 @@
   "description": "The site: a Next app exported as static files.",
   "dependencies": {
     "@entifix/core": "catalog:",
+    "@entifix/i18n": "catalog:",
     "@entifix/react-controls": "catalog:",
     "@entifix/style": "catalog:",
     "@fontsource-variable/inter": "5.3.0",
     "@fontsource-variable/jetbrains-mono": "5.3.0",
     "effect": "catalog:",
+    "i18next": "26.4.2",
     "next": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "react-i18next": "17.0.14"
   },
   "nx": {
     "tags": [

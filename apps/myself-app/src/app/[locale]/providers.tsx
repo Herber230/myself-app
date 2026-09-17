@@ -1,9 +1,15 @@
 'use client';
 
+// Installs the catalogs for the **client** bundle. The server graph installs
+// its own through `i18n/server.ts`: separate bundles, separate module state.
+import '../../i18n/install';
+
+import { I18nProvider } from '@entifix/react-controls/i18next';
 import { ThemeProvider } from '@entifix/react-controls/primitives';
 import { type ReactNode, useState } from 'react';
 
-import { SITE_THEMES, THEME_STORAGE_KEY } from '../../theme';
+import type { SiteLocale } from '../../site-locales';
+import { SITE_THEMES, type SiteTheme, THEME_STORAGE_KEY } from '../../theme';
 
 /**
  * The theme a page is already painted in: `ThemeScript` wrote it before
@@ -19,16 +25,27 @@ function paintedTheme(): string | undefined {
     : document.documentElement.dataset['theme'];
 }
 
-export function Providers({ children }: { children: ReactNode }) {
+export function Providers({
+  children,
+  locale,
+  themeLabels,
+}: {
+  children: ReactNode;
+  locale: SiteLocale;
+  /** Translated by the layout, so the provider needs no catalog lookup. */
+  themeLabels: Record<SiteTheme, string>;
+}) {
   const [defaultTheme] = useState(paintedTheme);
-  const themes = SITE_THEMES.map(id => ({ id, label: id }));
+  const themes = SITE_THEMES.map(id => ({ id, label: themeLabels[id] }));
   return (
-    <ThemeProvider
-      themes={themes}
-      defaultTheme={defaultTheme}
-      storageKey={THEME_STORAGE_KEY}
-    >
-      {children}
-    </ThemeProvider>
+    <I18nProvider locale={locale}>
+      <ThemeProvider
+        themes={themes}
+        defaultTheme={defaultTheme}
+        storageKey={THEME_STORAGE_KEY}
+      >
+        {children}
+      </ThemeProvider>
+    </I18nProvider>
   );
 }

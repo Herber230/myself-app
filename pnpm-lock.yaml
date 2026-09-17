@@ -9,6 +9,9 @@ catalogs:
     '@entifix/core':
       specifier: 0.1.2
       version: 0.1.2
+    '@entifix/i18n':
+      specifier: 0.1.2
+      version: 0.1.2
     '@entifix/react-controls':
       specifier: 0.1.2
       version: 0.1.2
@@ -180,9 +183,12 @@ importers:
       '@entifix/core':
         specifier: 'catalog:'
         version: 0.1.2(effect@3.22.1)
+      '@entifix/i18n':
+        specifier: 'catalog:'
+        version: 0.1.2(effect@3.22.1)(i18next@26.4.2(typescript@6.0.3))
       '@entifix/react-controls':
         specifier: 'catalog:'
-        version: 0.1.2(effect@3.22.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 0.1.2(@entifix/i18n@0.1.2(effect@3.22.1)(i18next@26.4.2(typescript@6.0.3)))(effect@3.22.1)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react-i18next@17.0.14(i18next@26.4.2(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3))(react@19.2.8)
       '@entifix/style':
         specifier: 'catalog:'
         version: 0.1.2
@@ -195,6 +201,9 @@ importers:
       effect:
         specifier: 'catalog:'
         version: 3.22.1
+      i18next:
+        specifier: 26.4.2
+        version: 26.4.2(typescript@6.0.3)
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.7)(@playwright/test@1.61.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.104.1)
@@ -204,6 +213,9 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.2.8(react@19.2.8)
+      react-i18next:
+        specifier: 17.0.14
+        version: 17.0.14(i18next@26.4.2(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
     devDependencies:
       '@tailwindcss/postcss':
         specifier: 4.3.3
@@ -948,6 +960,11 @@ packages:
     resolution: {integrity: sha512-SAMo/JZKXT1R9b0Ra2XhLawY800RttondxAMf3/5su+Nat5DafjUhNqWb3X22h2N4DlItJR/zlxSLELNVnTCEg==}
     peerDependencies:
       effect: '>=3.22 <4'
+
+  '@entifix/i18n@0.1.2':
+    resolution: {integrity: sha512-aKs2TNXnA+gf2dnSl9iDZO8jfbaSXfP4FSPwtFMIGvD+uqEN5KYm9bnPFnFaamSsxVILmQ+tGk1xsocOWsiFCg==}
+    peerDependencies:
+      i18next: '>=26 <27'
 
   '@entifix/react-controls@0.1.2':
     resolution: {integrity: sha512-xjHWHnSSI20bJqgipw+GHeNQTQgQZJi0YZy9qyfDv4TE57iEE6MFim31wPeflXbM1yfHu/LabNxD/R9KKOMP1Q==}
@@ -4247,6 +4264,9 @@ packages:
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
 
+  html-parse-stringify@4.0.1:
+    resolution: {integrity: sha512-0zHsZJrK7S3K2aucXWL6ycoYJ/iNtIcFHC/nYQgFklPtrv5LpJctIiSCroWZWeuoXvuyFdzp6KzjJQ+OT5MfFw==}
+
   http-cache-semantics@4.2.0:
     resolution: {integrity: sha512-dTxcvPXqPvXBQpq5dUr6mEMJX4oIEFv6bwom3FDwKRDsuIjjJGANqhBuoAn9c1RQJIdAKav33ED65E2ys+87QQ==}
 
@@ -4283,6 +4303,14 @@ packages:
     resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
     engines: {node: '>=18'}
     hasBin: true
+
+  i18next@26.4.2:
+    resolution: {integrity: sha512-RX+R0VLg13IbvRuJSxnqykUFS9vQZTl8wYpWPCIUDWVrSGjsQywB5Y+pjzrkboxGAuYfJZVH1InFTdgBdxq6ug==}
+    peerDependencies:
+      typescript: ^5 || ^6 || ^7
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -5629,6 +5657,22 @@ packages:
     resolution: {integrity: sha512-rVprimfGBG3DR+Tq0IQG2DT5PxKth1WIGDmj5yPmlzr4YBe7uyE+Du4oVqTDXZSHGGGXRtTJEGSSePyQCMBglQ==}
     peerDependencies:
       react: ^19.2.8
+
+  react-i18next@17.0.14:
+    resolution: {integrity: sha512-ZpMBfJL3BiXPuYHj5QMY1GwvKJNhE1vCxOJQ8BoMBdHP5XONTfi/Qss1nuRlnFdIl72PKo2jPmw+fxuLjRFgaQ==}
+    peerDependencies:
+      i18next: '>= 26.2.0'
+      react: '>= 16.8.0'
+      react-dom: '*'
+      react-native: '*'
+      typescript: ^5 || ^6 || ^7
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+      typescript:
+        optional: true
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -7724,7 +7768,15 @@ snapshots:
       '@swc/helpers': 0.5.23
       effect: 3.22.1
 
-  '@entifix/react-controls@0.1.2(effect@3.22.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@entifix/i18n@0.1.2(effect@3.22.1)(i18next@26.4.2(typescript@6.0.3))':
+    dependencies:
+      '@entifix/core': 0.1.2(effect@3.22.1)
+      '@swc/helpers': 0.5.23
+      i18next: 26.4.2(typescript@6.0.3)
+    transitivePeerDependencies:
+      - effect
+
+  '@entifix/react-controls@0.1.2(@entifix/i18n@0.1.2(effect@3.22.1)(i18next@26.4.2(typescript@6.0.3)))(effect@3.22.1)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react-i18next@17.0.14(i18next@26.4.2(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3))(react@19.2.8)':
     dependencies:
       '@entifix/core': 0.1.2(effect@3.22.1)
       '@headlessui/react': 2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -7732,6 +7784,10 @@ snapshots:
       effect: 3.22.1
       idb: 8.0.3
       react: 19.2.8
+    optionalDependencies:
+      '@entifix/i18n': 0.1.2(effect@3.22.1)(i18next@26.4.2(typescript@6.0.3))
+      i18next: 26.4.2(typescript@6.0.3)
+      react-i18next: 17.0.14(i18next@26.4.2(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
     transitivePeerDependencies:
       - react-dom
 
@@ -11336,6 +11392,8 @@ snapshots:
 
   html-escaper@2.0.2: {}
 
+  html-parse-stringify@4.0.1: {}
+
   http-cache-semantics@4.2.0: {}
 
   http-errors@2.0.1:
@@ -11394,6 +11452,10 @@ snapshots:
   human-signals@8.0.1: {}
 
   husky@9.1.7: {}
+
+  i18next@26.4.2(typescript@6.0.3):
+    optionalDependencies:
+      typescript: 6.0.3
 
   iconv-lite@0.4.24:
     dependencies:
@@ -12761,6 +12823,17 @@ snapshots:
     dependencies:
       react: 19.2.8
       scheduler: 0.27.0
+
+  react-i18next@17.0.14(i18next@26.4.2(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3):
+    dependencies:
+      '@babel/runtime': 7.29.7
+      html-parse-stringify: 4.0.1
+      i18next: 26.4.2(typescript@6.0.3)
+      react: 19.2.8
+      use-sync-external-store: 1.7.0(react@19.2.8)
+    optionalDependencies:
+      react-dom: 19.2.8(react@19.2.8)
+      typescript: 6.0.3
 
   react-is@16.13.1: {}
 

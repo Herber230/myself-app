@@ -1,7 +1,7 @@
 import { Cluster } from '@entifix/react-controls/primitives';
 import Link from 'next/link';
 
-import { PLACEHOLDER_COPY } from '../placeholder-copy';
+import { siteT } from '../i18n/server';
 import { localePath, SITE_LOCALES, type SiteLocale } from '../site-locales';
 import { SiteThemeSwitcher } from './site-theme-switcher';
 
@@ -22,7 +22,7 @@ export function SiteNav({
   locale: SiteLocale;
   path: string;
 }) {
-  const copy = PLACEHOLDER_COPY[locale];
+  const t = siteT(locale);
   const other = SITE_LOCALES.find(each => each !== locale) ?? locale;
   return (
     <header className="border-b border-border bg-surface-elevated">
@@ -36,12 +36,12 @@ export function SiteNav({
           <Cluster as="ul" gap="m" className="m-0 list-none p-0">
             <li>
               <Link className={linkClass} href={localePath(locale, '/')}>
-                {copy.home}
+                {t('home')}
               </Link>
             </li>
             <li>
               <Link className={linkClass} href={localePath(locale, '/cv')}>
-                {copy.cv}
+                {t('cv')}
               </Link>
             </li>
             <li>
@@ -49,7 +49,7 @@ export function SiteNav({
                 className={linkClass}
                 href={localePath(locale, '/tech-radar')}
               >
-                {copy.techRadar}
+                {t('techRadar')}
               </Link>
             </li>
             <li>
@@ -59,7 +59,7 @@ export function SiteNav({
                 hrefLang={other}
                 lang={other}
               >
-                {copy.otherLanguage}
+                {t('otherLanguage')}
               </Link>
             </li>
           </Cluster>
