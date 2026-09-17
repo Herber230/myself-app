@@ -294,6 +294,14 @@ describe('the enforcement surfaces are wired to that predicate', () => {
     expect(needs.split(',').map(job => job.trim())).toEqual(jobs);
   });
 
+  it('the rule is stated where an agent reads it', () => {
+    // `CLAUDE.md` is the always-loaded context, and the one place a session
+    // instruction pushing the other way can be contradicted.
+    const claudeMd = readFileSync(join(REPO_ROOT, 'CLAUDE.md'), 'utf8');
+    expect(claudeMd.toLowerCase()).toContain('no ai attribution');
+    expect(claudeMd).toContain('tools/conventions/attribution.mjs');
+  });
+
   it('the pull-request template asks for it too', () => {
     const template = readFileSync(
       join(REPO_ROOT, '.github/PULL_REQUEST_TEMPLATE.md'),
