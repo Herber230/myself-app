@@ -1,0 +1,40 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# One version per dependency the workspace shares. `@entifix/*` moves only
+# through this catalog: the swap to a local entifix checkout is entifix's own
+# `dev-sync`, which never touches a manifest here.
+catalog:
+  '@entifix/core': 0.1.2
+  effect: 3.22.1
+  next: 16.2.10
+  react: 19.2.8
+  react-dom: 19.2.8
+
+allowBuilds:
+  '@parcel/watcher': false
+  '@swc/core': false
+  core-js: false
+  core-js-pure: false
+  esbuild: true
+  less: false
+  msgpackr-extract: false
+  nx: false
+  sharp: false
+  unrs-resolver: false
+autoInstallPeers: true
+ignoreWorkspaceRootCheck: true
+# Copied from entifix, for the reason it gives: Nx 23.0.1's eslint plugin floats
+# `@typescript-eslint/utils` on a caret range, and 8.70.0 is a partial publish —
+# `typescript-estree@8.70.0` does not exist on the registry, so a fresh resolve
+# fails outright. Pinned to the set Nx was tested against.
+overrides:
+  '@typescript-eslint/utils': 8.62.1
+  '@typescript-eslint/typescript-estree': 8.62.1
+  '@typescript-eslint/scope-manager': 8.62.1
+  '@typescript-eslint/type-utils': 8.62.1
+  '@typescript-eslint/types': 8.62.1
+  '@typescript-eslint/visitor-keys': 8.62.1
+  '@typescript-eslint/project-service': 8.62.1
+  '@typescript-eslint/tsconfig-utils': 8.62.1

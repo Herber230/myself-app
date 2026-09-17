@@ -1,4 +1,8 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/bin/sh
 
-pnpm run validate
+echo "┏━━━ husky: pre-commit ━━━━━━━━━━━━━━"
+
+git fetch --all -p
+pnpm exec lint-staged --relative
+
+pnpm nx affected --target=lint,build --base=origin/main --head=HEAD
