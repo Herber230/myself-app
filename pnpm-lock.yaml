@@ -178,6 +178,8 @@ importers:
         specifier: 'catalog:'
         version: 19.2.8(react@19.2.8)
 
+  tools/conventions: {}
+
 packages:
 
   '@babel/code-frame@7.29.7':

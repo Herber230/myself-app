@@ -5,6 +5,9 @@
   "references": [
     {
       "path": "./apps/myself-app"
+    },
+    {
+      "path": "./tools/conventions"
     }
   ]
 }

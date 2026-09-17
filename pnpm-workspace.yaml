@@ -1,6 +1,7 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+  - 'tools/*'
 
 # One version per dependency the workspace shares. `@entifix/*` moves only
 # through this catalog: the swap to a local entifix checkout is entifix's own
