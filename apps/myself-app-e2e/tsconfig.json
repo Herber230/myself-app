@@ -5,6 +5,7 @@
     "outDir": "out-tsc/playwright",
     "tsBuildInfoFile": "out-tsc/playwright/tsconfig.tsbuildinfo",
     "sourceMap": false,
+    "lib": ["es2022", "dom"],
     "types": ["node"]
   },
   "include": ["playwright.config.ts", "src/**/*.ts"],

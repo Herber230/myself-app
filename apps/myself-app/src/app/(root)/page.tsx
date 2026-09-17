@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 
-import { PLACEHOLDER_COPY } from '../../placeholder-copy';
+import { siteT } from '../../i18n/server';
 import { localePath, SITE_DEFAULT_LOCALE } from '../../site-locales';
 
 const target = localePath(SITE_DEFAULT_LOCALE, '/');
+const t = siteT(SITE_DEFAULT_LOCALE);
 
 export const metadata: Metadata = {
-  title: PLACEHOLDER_COPY[SITE_DEFAULT_LOCALE].siteName,
+  title: t('siteName'),
   alternates: { canonical: target },
   robots: { index: false },
 };
@@ -21,7 +22,7 @@ export default function RootRedirectPage() {
     <>
       <meta httpEquiv="refresh" content={`0; url=${target}`} />
       <p>
-        <a href={target}>{PLACEHOLDER_COPY[SITE_DEFAULT_LOCALE].redirecting}</a>
+        <a href={target}>{t('redirecting')}</a>
       </p>
     </>
   );

@@ -1,5 +1,9 @@
+import '../global.css';
+
 import type { ReactNode } from 'react';
 
+import { ThemeScript } from '../../components/theme-script';
+import { fontVariables } from '../../fonts';
 import { SITE_DEFAULT_LOCALE } from '../../site-locales';
 
 /**
@@ -12,7 +16,14 @@ export default function RootRedirectLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang={SITE_DEFAULT_LOCALE}>
+    <html
+      lang={SITE_DEFAULT_LOCALE}
+      className={fontVariables}
+      suppressHydrationWarning
+    >
+      <head>
+        <ThemeScript />
+      </head>
       <body>{children}</body>
     </html>
   );

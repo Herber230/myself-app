@@ -18,10 +18,12 @@ Toolchain: Node 26.4 and pnpm 11.9 (see `engines`), Nx 23.
 ```sh
 pnpm install
 pnpm nx dev myself-app                          # http://localhost:3000
-pnpm nx run-many -t lint,typecheck,test,build   # everything
+pnpm nx run-many -t lint,typecheck,test,build,e2e   # everything CI runs
 pnpm nx build myself-app                        # static export into apps/myself-app/out
 pnpm nx serve-out myself-app                    # serve the export like S3: http://localhost:3100
 ```
+
+The workflows — adding a page, copy, styling, a package, working on an unreleased entifix — are in [`docs/DEVELOPING.md`](docs/DEVELOPING.md).
 
 ## Where things are decided
 

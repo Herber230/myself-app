@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Herber Colop's developer profile: a Next.js 16 app built as a **static export** (`output: 'export'`) on top of [entifix](https://github.com/r10c-technologies/entifix), meant to be served as plain files from S3. Three pages (home, CV, tech radar), each in English and Spanish. The old Vite app survives only as the `legacy-vite` git tag, for reference.
 
-The repo is mid-rebuild. The pages hold placeholder copy for now. `docs/adr/` describes the target layout, and most of it does not exist yet (see "Planned layout" below). Check the file tree before assuming a package is there.
+The repo is mid-rebuild. The pages hold placeholder text for now. `docs/adr/` describes the target layout, and the packages under `packages/` do not exist yet (see "Planned layout" below). Check the file tree before assuming a package is there. [`docs/DEVELOPING.md`](docs/DEVELOPING.md) walks through the workflows (adding a page, copy, styling, a package, working on entifix from here).
 
 ## Commands
 
@@ -24,7 +24,7 @@ pnpm nx test myself-app -- src/site-locales.spec.ts   # a single spec file
 pnpm nx test myself-app -- -t "a locale path"         # tests matching a name
 pnpm nx e2e myself-app-e2e                      # builds, then Playwright against out/ on :3200
 pnpm nx e2e myself-app-e2e -- -g "404"          # journeys matching a name
-pnpm nx test @myself-app/conventions            # the repository's conventions (attribution, CI wiring)
+pnpm nx test @myself-app/conventions            # the repository's conventions (attribution, CI wiring, layer tags); uncached
 pnpm nx run-many -t lint,typecheck,test,build,e2e   # everything CI runs
 pnpm exec prettier --check .                    # formatting, as CI checks it
 ```
@@ -60,11 +60,21 @@ Commits, PR descriptions and tracked files carry **no AI or tool attribution**: 
 ### Locales (ADR 0005)
 
 - `src/site-locales.ts` is the single source of truth: `SITE_LOCALES = ['en', 'es']`, default `en`. The list is declared locally because entifix's own `LOCALES` defaults to `es`. `satisfies readonly Locale[]` keeps it a subset of entifix's `Locale`.
-- Every page under `app/[locale]/` follows the same pattern: `await params`, guard with `isSiteLocale(locale)` → `notFound()`, and build `generateMetadata` with `localeAlternates(locale, PATH)` for canonical and hreflang. The layout sets `dynamicParams = false` and `generateStaticParams` over `SITE_LOCALES`.
+- Every page under `app/[locale]/` follows the same pattern: `await params`, guard with `isSiteLocale(locale)` → `notFound()`, translate with `siteT(locale)`, and build `generateMetadata` with `localeAlternates(locale, PATH)` for canonical and hreflang. The layout sets `dynamicParams = false` and `generateStaticParams` over `SITE_LOCALES`.
 - `SiteNav` receives `path` as a prop instead of calling `usePathname`, so it stays a server component. Keep components server-side unless they need interactivity.
-- UI copy currently lives in `src/placeholder-copy.ts`. i18n catalogs are planned to replace it (#17), and a key missing from one locale will then fail the build. Content will use localized fields (`{ en, es }`), and a missing translation fails the build instead of falling back at render time.
+- UI copy lives in `src/i18n/catalogs/` (`en.ts`, `es.ts`), the `site` namespace, merged with entifix's `controls` namespace. `es` is declared `satisfies CatalogShape<typeof en>`, so a key missing from one locale, or only in one, fails `next build`; `catalogs.spec.ts` rejects empty strings. `react/jsx-no-literals` keeps copy out of JSX.
+- Server components translate with `siteT(locale)` from `src/i18n/server.ts`: `getServerTFor`, never `getServerT` (reads a request header). Its return type is narrowed to `TFunction<'site'>` on purpose, because entifix's declared `'translation' | N` union accepts any key. The **default namespace is `controls`**, since entifix components call `useT()` without one.
+- Catalogs are installed once **per bundle**: the server graph through `i18n/server.ts`, the client graph through `app/[locale]/providers.tsx` (which also mounts `I18nProvider` and `ThemeProvider`). The one `declare module 'i18next'` augmentation is `src/i18n/i18next.d.ts`.
+- Content will use localized fields (`{ en, es }`), and a missing translation fails the build instead of falling back at render time.
 
-### Planned layout (ADR 0002–0004, 0006; not built yet)
+### Styling and theme (ADR 0006)
+
+- Tailwind v4 over `@entifix/style/tokens.css` (`src/app/global.css`); the site's palette values are `src/app/themes.css`, under `[data-theme='light'|'dark']`. Primitives come from `@entifix/react-controls/primitives`; fonts (Inter, JetBrains Mono) are self-hosted through `next/font/local` in `src/fonts.ts`.
+- **Never import the `@entifix/react-controls` main barrel** (~541 KB) **or `./preferences`** (pulls Effect into the client); lint fails on both. Tailwind v4 does not scan `node_modules`, so `global.css` has an `@source` for the primitives' `dist`; without it their classes produce no CSS and nothing errors.
+- **Keep `experimental.optimizePackageImports`** for `@entifix/react-controls` and `@entifix/core` in `next.config.js`. entifix declares no `sideEffects`, and without it a single primitive ships the whole barrel and Effect (~300 KB gzipped instead of ~200 KB).
+- The theme is set before first paint by the inline `ThemeScript` (stored choice, else `prefers-color-scheme`), in every root layout's `<head>`. `Providers` starts `ThemeProvider` from the painted theme, and `SiteThemeSwitcher` renders only after hydration; otherwise entifix's provider flips the palette for a frame. `theme.spec.ts` (e2e) records every `data-theme` write and fails on a flash.
+
+### Planned layout (ADR 0002–0004; packages not built yet)
 
 ```
 apps/myself-app            Next app: the composition root
@@ -73,15 +83,14 @@ packages/static-adapter    read-only EntityRepository over static JSON; knows no
 packages/content           JSON records; imports nothing
 ```
 
-- Dependency direction: app → domain, content, static-adapter. static-adapter → only `@entifix/*`, never domain. Boundaries will be enforced through `nx.tags` and `@nx/enforce-module-boundaries`. The rule is already on in the root `eslint.config.mjs` with an allow-all constraint, pending #18.
+- Dependency direction: app → domain, content, static-adapter. static-adapter and domain → only `@entifix/*` and `effect`, never each other. content → nothing. **Enforced**: every project has one `layer:*` tag in its `package.json` `nx.tags`, and `@nx/enforce-module-boundaries` in the root `eslint.config.mjs` holds the direction. A new package needs its tag (`layer:domain`, `layer:static-adapter`, `layer:content`); the conventions spec fails on a project without one.
 - Entity classes **cannot live in the Next app**: they use 2022-03 decorators on `#private` fields, which Turbopack and webpack cannot compile.
 - Do not use `@entifix/testing-unit`'s in-memory repository outside specs (wrong tier; its `in` does not match array members).
 - Data paths (ADR 0003): static content runs use cases in server components at build time, so no Effect or entifix code reaches the browser. Interactive parts (radar filtering) query the same adapter in the browser over `/data/<entity>.json`, which `force-static` route handlers emit. The gzipped client cost must be measured before any page depends on that path.
-- Styling (ADR 0006): Tailwind v4 with `@entifix/style` tokens, and primitives from `@entifix/react-controls/primitives`. **Never import the `@entifix/react-controls` main barrel** (~541 KB) **or `./preferences`** (pulls Effect into the client). Tailwind v4 does not scan `node_modules`, so the primitives' `dist` needs an explicit `@source`, or their classes produce no CSS without any error.
 
 ## Dependencies
 
-- Shared versions (`@entifix/core`, `effect`, `next`, `react`, `react-dom`) live in the `catalog:` of `pnpm-workspace.yaml`. Package manifests reference them as `"catalog:"`. Bump them there.
+- Shared versions (`@entifix/*`, `effect`, `next`, `react`, `react-dom`) live in the `catalog:` of `pnpm-workspace.yaml`. Package manifests reference them as `"catalog:"`. Bump them there.
 - A new `@entifix/*` version must also be added to `minimumReleaseAgeExclude`, or pnpm 11 holds it back.
 - `@typescript-eslint/*` is pinned through `overrides` to work around a broken upstream publish. Do not remove the pin.
 

@@ -1,13 +1,19 @@
+import { Cluster } from '@entifix/react-controls/primitives';
 import Link from 'next/link';
 
-import { PLACEHOLDER_COPY } from '../placeholder-copy';
+import { siteT } from '../i18n/server';
 import { localePath, SITE_LOCALES, type SiteLocale } from '../site-locales';
+import { SiteThemeSwitcher } from './site-theme-switcher';
+
+const linkClass =
+  'rounded-sm text-content underline-offset-4 hover:text-primary hover:underline focus-ring';
 
 /**
- * The three destinations, and a language switch that keeps the page.
+ * The three destinations, a language switch that keeps the page, and the theme
+ * switcher.
  *
  * `path` is passed by each page rather than read from `usePathname`, so the nav
- * stays a server component and ships no JavaScript of its own.
+ * stays a server component. Only the theme switcher is a client leaf.
  */
 export function SiteNav({
   locale,
@@ -16,26 +22,50 @@ export function SiteNav({
   locale: SiteLocale;
   path: string;
 }) {
-  const copy = PLACEHOLDER_COPY[locale];
+  const t = siteT(locale);
   const other = SITE_LOCALES.find(each => each !== locale) ?? locale;
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link href={localePath(locale, '/')}>{copy.home}</Link>
-        </li>
-        <li>
-          <Link href={localePath(locale, '/cv')}>{copy.cv}</Link>
-        </li>
-        <li>
-          <Link href={localePath(locale, '/tech-radar')}>{copy.techRadar}</Link>
-        </li>
-        <li>
-          <Link href={localePath(other, path)} hrefLang={other} lang={other}>
-            {copy.otherLanguage}
-          </Link>
-        </li>
-      </ul>
-    </nav>
+    <header className="border-b border-border bg-surface-elevated">
+      <Cluster
+        justify="between"
+        align="center"
+        gap="m"
+        className="mx-auto max-w-5xl px-m py-s"
+      >
+        <nav>
+          <Cluster as="ul" gap="m" className="m-0 list-none p-0">
+            <li>
+              <Link className={linkClass} href={localePath(locale, '/')}>
+                {t('home')}
+              </Link>
+            </li>
+            <li>
+              <Link className={linkClass} href={localePath(locale, '/cv')}>
+                {t('cv')}
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href={localePath(locale, '/tech-radar')}
+              >
+                {t('techRadar')}
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={linkClass}
+                href={localePath(other, path)}
+                hrefLang={other}
+                lang={other}
+              >
+                {t('otherLanguage')}
+              </Link>
+            </li>
+          </Cluster>
+        </nav>
+        <SiteThemeSwitcher />
+      </Cluster>
+    </header>
   );
 }

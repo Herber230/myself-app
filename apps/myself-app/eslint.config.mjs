@@ -15,6 +15,18 @@ const config = [
   {
     ignores: ['.next/**/*', 'out/**/*', '**/out-tsc', 'next-env.d.ts'],
   },
+  {
+    // Copy lives in the catalogs (`src/i18n/catalogs/`), where both locales
+    // are checked for the same keys. A string written into JSX is a string
+    // only one locale has. Props are exempt: class names, ids, `lang`.
+    files: ['src/**/*.tsx'],
+    rules: {
+      'react/jsx-no-literals': [
+        'error',
+        { noStrings: true, ignoreProps: true },
+      ],
+    },
+  },
 ];
 
 export default config;
