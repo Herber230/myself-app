@@ -1,0 +1,5 @@
+{
+  "*.+(js|jsx|mjs|json|yml|yaml|ts|tsx|mts|md|css)": [
+    "pnpm exec nx format:write --files"
+  ]
+}

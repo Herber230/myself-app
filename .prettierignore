@@ -1,4 +1,13 @@
-node_modules
-.husky
+# Add files here to ignore them from prettier formatting
+/dist
+/coverage
+/.nx/cache
+/.nx/workspace-data
+/pnpm-lock.yaml
+/packages/*/dist
+/apps/*/out
+/apps/*/.next
+/test-output
 
-pnpm-lock.yaml
+# Written by Next on every build, in its own style.
+next-env.d.ts
