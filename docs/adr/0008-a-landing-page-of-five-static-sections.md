@@ -4,6 +4,7 @@
 - Date: 2026-09-17
 - Area: ui
 - Read when: adding or reordering a landing section, or when the in-page nav or the language switch loses its place
+- Revised: 2026-09-18 — the script budget is measured and held by an e2e journey
 
 ## Context
 
@@ -74,6 +75,21 @@ written back into this record when they are first measured, in #29:
 Lighthouse is a manual gate. What CI can hold is cheaper and deterministic: an
 e2e journey that sums the bytes of every script the exported landing page
 requests, and fails when the total crosses the recorded figure.
+
+### Measured (2026-09-18)
+
+`apps/myself-app-e2e/src/budget.spec.ts` is that journey. It loads `/en/` from
+the export, gzips every script response at level 9 and sums them:
+
+| Page   | Scripts | Gzipped  | Budget |
+| ------ | ------- | -------- | ------ |
+| `/en/` | 11      | 178.6 KB | 194 KB |
+
+The budget is the baseline rounded up, plus 15 KB for the two client leaves,
+which don't exist yet. This counts the scripts the page actually loads. ADR
+0003's 217.2 KB summed every chunk the HTML references, so the two figures are
+different measures, not a regression. A change that crosses the budget either
+gets smaller or writes its new figure here, with the reason.
 
 ## The sections
 
