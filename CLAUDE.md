@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Herber Colop's developer profile: a Next.js 16 app built as a **static export** (`output: 'export'`) on top of [entifix](https://github.com/r10c-technologies/entifix), meant to be served as plain files from S3. Three pages (home, CV, tech radar), each in English and Spanish. The old Vite app survives only as the `legacy-vite` git tag, for reference.
 
-The repo is mid-rebuild. Content flows through entifix end to end (M1): JSON in `packages/content`, entities in `packages/domain`, a static repository in `packages/static-adapter`, read by the pages at build time. Much of the content is still placeholder, each value marked `TODO(#26)` (or `TODO(#33)`, `TODO(#39)`) — `grep -r 'TODO(#' packages/content` lists them. [`docs/DEVELOPING.md`](docs/DEVELOPING.md) walks through the workflows (adding a page, copy, styling, a package, working on entifix from here).
+The repo is mid-rebuild. Content flows through entifix end to end (M1): JSON in `packages/content`, entities in `packages/domain`, a static repository in `packages/static-adapter`, read by the pages at build time. Much of the content is still placeholder, each value marked `TODO(#26)` (or `TODO(#33)`, `TODO(#39)`) — `apps/myself-app/src/content/pending-content.ts` lists them by path, and the build fails on a placeholder it does not list or a listed one that has been written. [`docs/DEVELOPING.md`](docs/DEVELOPING.md) walks through the workflows (adding a page, copy, styling, a package, working on entifix from here).
 
 ## Commands
 

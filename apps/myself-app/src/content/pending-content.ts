@@ -1,0 +1,46 @@
+/**
+ * Content still to be written, by path: every value that holds `TODO(#…)` (#26).
+ *
+ * The list only shrinks. Writing a value means removing its line here, or
+ * `assertNoUnlistedPlaceholders` stops the build; a new placeholder anywhere
+ * else stops it too. The issue that decides each value is in the value itself.
+ */
+export const PENDING_CONTENT: readonly string[] = [
+  'contact-channels.json › linkedin › displayName',
+  'cv-variants.json › full-stack › title',
+  'cv-variants.json › full-stack › summary',
+  'employers.json › employer-one › name',
+  'employers.json › employer-two › name',
+  'employment-periods.json › employer-one-engineer › role',
+  'employment-periods.json › employer-one-engineer › responsibilities',
+  'employment-periods.json › employer-two-engineer › role',
+  'employment-periods.json › employer-two-engineer › responsibilities',
+  'profile.json › herber-colop › tagline',
+  'quadrants.json › techniques › description',
+  'quadrants.json › tools › description',
+  'quadrants.json › platforms › description',
+  'quadrants.json › languages-and-frameworks › description',
+  'rings.json › adopt › description',
+  'rings.json › trial › description',
+  'rings.json › assess › description',
+  'technologies.json › trunk-based-development › description',
+  'technologies.json › static-first-delivery › description',
+  'technologies.json › contract-testing › description',
+  'technologies.json › property-based-testing › description',
+  'technologies.json › hand-written-release-notes › description',
+  'technologies.json › nx › description',
+  'technologies.json › pnpm › description',
+  'technologies.json › playwright › description',
+  'technologies.json › biome › description',
+  'technologies.json › jest › description',
+  'technologies.json › amazon-s3 › description',
+  'technologies.json › cloudfront › description',
+  'technologies.json › cloudflare-workers › description',
+  'technologies.json › heroku › description',
+  'technologies.json › typescript › description',
+  'technologies.json › next-js › description',
+  'technologies.json › effect › description',
+  'technologies.json › tailwind-css › description',
+  'technologies.json › svelte › description',
+  'technologies.json › angularjs › description',
+];
