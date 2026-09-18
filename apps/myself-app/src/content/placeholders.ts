@@ -14,8 +14,11 @@ import {
 
 import { PENDING_CONTENT } from './pending-content';
 
-/** What a value still to be written carries. */
-export const PLACEHOLDER = /TODO\(#\d+\)/;
+/**
+ * What a value still to be written carries: `TODO(#26)` in text, and
+ * `TODO-26` inside a URL, where `(` and `#` cannot stand.
+ */
+export const PLACEHOLDER = /TODO(?:\(#|-)\d+/;
 
 /** Whether any text inside a value, however nested, is placeholder. */
 function holdsPlaceholder(value: unknown): boolean {

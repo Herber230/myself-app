@@ -7,6 +7,7 @@
  */
 export const PENDING_CONTENT: readonly string[] = [
   'contact-channels.json › linkedin › displayName',
+  'contact-channels.json › linkedin › url',
   'cv-variants.json › full-stack › title',
   'cv-variants.json › full-stack › summary',
   'employers.json › employer-one › name',

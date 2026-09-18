@@ -57,6 +57,13 @@ describe('a placeholder', () => {
     ]);
   });
 
+  it('is found inside a URL, where it is written TODO-<issue>', () => {
+    const content = {
+      'links.json': [{ id: 'a', url: 'https://example.com/in/TODO-26' }],
+    };
+    expect(placeholderPaths(content)).toEqual(['links.json › a › url']);
+  });
+
   it('is not every mention of "TODO"', () => {
     const content = {
       'things.json': [{ id: 'a', note: 'A TODO list app', count: 3, x: null }],
