@@ -1,0 +1,169 @@
+/**
+ * Placeholder data, so the control can be built and seen before the content
+ * package exists (#26). The rings and quadrants it uses are Thoughtworks'
+ * defaults; what they will mean on this site is still open (#39).
+ *
+ * Replaced wholesale by records read through the static adapter. Nothing but
+ * the tech-radar page imports it, and the shape it satisfies — `RadarEntry` —
+ * is what the domain entity will map to.
+ */
+import type { RadarEntry } from './types';
+
+export const MOCK_RADAR_ENTRIES: readonly RadarEntry[] = [
+  // Quadrant 0 — techniques.
+  {
+    id: 'trunk-based-development',
+    label: {
+      en: 'Trunk-based development',
+      es: 'Desarrollo sobre la rama principal',
+    },
+    quadrant: 0,
+    ring: 0,
+    movement: 'none',
+  },
+  {
+    id: 'static-first-delivery',
+    label: { en: 'Static-first delivery', es: 'Entrega estática primero' },
+    quadrant: 0,
+    ring: 0,
+    movement: 'in',
+  },
+  {
+    id: 'contract-testing',
+    label: { en: 'Contract testing', es: 'Pruebas de contrato' },
+    quadrant: 0,
+    ring: 1,
+    movement: 'none',
+  },
+  {
+    id: 'property-based-testing',
+    label: {
+      en: 'Property-based testing',
+      es: 'Pruebas basadas en propiedades',
+    },
+    quadrant: 0,
+    ring: 2,
+    movement: 'new',
+  },
+  {
+    id: 'hand-written-release-notes',
+    label: {
+      en: 'Hand-written release notes',
+      es: 'Notas de versión escritas a mano',
+    },
+    quadrant: 0,
+    ring: 3,
+    movement: 'out',
+  },
+
+  // Quadrant 1 — tools.
+  {
+    id: 'nx',
+    label: { en: 'Nx', es: 'Nx' },
+    quadrant: 1,
+    ring: 0,
+    movement: 'in',
+  },
+  {
+    id: 'pnpm',
+    label: { en: 'pnpm', es: 'pnpm' },
+    quadrant: 1,
+    ring: 0,
+    movement: 'none',
+  },
+  {
+    id: 'playwright',
+    label: { en: 'Playwright', es: 'Playwright' },
+    quadrant: 1,
+    ring: 1,
+    movement: 'none',
+  },
+  {
+    id: 'biome',
+    label: { en: 'Biome', es: 'Biome' },
+    quadrant: 1,
+    ring: 2,
+    movement: 'new',
+  },
+  {
+    id: 'jest',
+    label: { en: 'Jest', es: 'Jest' },
+    quadrant: 1,
+    ring: 3,
+    movement: 'out',
+  },
+
+  // Quadrant 2 — platforms.
+  {
+    id: 'amazon-s3',
+    label: { en: 'Amazon S3', es: 'Amazon S3' },
+    quadrant: 2,
+    ring: 0,
+    movement: 'none',
+  },
+  {
+    id: 'cloudfront',
+    label: { en: 'CloudFront', es: 'CloudFront' },
+    quadrant: 2,
+    ring: 1,
+    movement: 'in',
+  },
+  {
+    id: 'cloudflare-workers',
+    label: { en: 'Cloudflare Workers', es: 'Cloudflare Workers' },
+    quadrant: 2,
+    ring: 2,
+    movement: 'new',
+  },
+  {
+    id: 'heroku',
+    label: { en: 'Heroku', es: 'Heroku' },
+    quadrant: 2,
+    ring: 3,
+    movement: 'out',
+  },
+
+  // Quadrant 3 — languages and frameworks.
+  {
+    id: 'typescript',
+    label: { en: 'TypeScript', es: 'TypeScript' },
+    quadrant: 3,
+    ring: 0,
+    movement: 'none',
+  },
+  {
+    id: 'next-js',
+    label: { en: 'Next.js', es: 'Next.js' },
+    quadrant: 3,
+    ring: 0,
+    movement: 'in',
+  },
+  {
+    id: 'effect',
+    label: { en: 'Effect', es: 'Effect' },
+    quadrant: 3,
+    ring: 1,
+    movement: 'in',
+  },
+  {
+    id: 'tailwind-css',
+    label: { en: 'Tailwind CSS', es: 'Tailwind CSS' },
+    quadrant: 3,
+    ring: 1,
+    movement: 'none',
+  },
+  {
+    id: 'svelte',
+    label: { en: 'Svelte', es: 'Svelte' },
+    quadrant: 3,
+    ring: 2,
+    movement: 'new',
+  },
+  {
+    id: 'angularjs',
+    label: { en: 'AngularJS', es: 'AngularJS' },
+    quadrant: 3,
+    ring: 3,
+    movement: 'out',
+  },
+];
