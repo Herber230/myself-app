@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Herber Colop's developer profile: a Next.js 16 app built as a **static export** (`output: 'export'`) on top of [entifix](https://github.com/r10c-technologies/entifix), meant to be served as plain files from S3. Three pages (home, CV, tech radar), each in English and Spanish. The old Vite app survives only as the `legacy-vite` git tag, for reference.
 
-The repo is mid-rebuild. The pages hold placeholder text for now. `docs/adr/` describes the target layout, and the packages under `packages/` do not exist yet (see "Planned layout" below). Check the file tree before assuming a package is there. [`docs/DEVELOPING.md`](docs/DEVELOPING.md) walks through the workflows (adding a page, copy, styling, a package, working on entifix from here).
+The repo is mid-rebuild. Content flows through entifix end to end (M1): JSON in `packages/content`, entities in `packages/domain`, a static repository in `packages/static-adapter`, read by the pages at build time. Much of the content is still placeholder, each value marked `TODO(#26)` (or `TODO(#33)`, `TODO(#39)`) — `grep -r 'TODO(#' packages/content` lists them. [`docs/DEVELOPING.md`](docs/DEVELOPING.md) walks through the workflows (adding a page, copy, styling, a package, working on entifix from here).
 
 ## Commands
 
@@ -24,6 +24,8 @@ pnpm nx test myself-app -- src/site-locales.spec.ts   # a single spec file
 pnpm nx test myself-app -- -t "a locale path"         # tests matching a name
 pnpm nx e2e myself-app-e2e                      # builds, then Playwright against out/ on :3200
 pnpm nx e2e myself-app-e2e -- -g "404"          # journeys matching a name
+pnpm nx test @myself-app/domain                 # also @myself-app/static-adapter; content has no test target
+pnpm nx build @myself-app/domain                # SWC to dist; the app's build/test/typecheck run ^build first
 pnpm nx test @myself-app/conventions            # the repository's conventions (attribution, CI wiring, layer tags); uncached
 pnpm nx run-many -t lint,typecheck,test,build,e2e   # everything CI runs
 pnpm exec prettier --check .                    # formatting, as CI checks it
@@ -33,7 +35,7 @@ Unit tests are `src/**/*.spec.ts`, run by Vitest in a Node environment. E2E need
 
 **Coverage is gated at 100%** — statements, branches, functions and lines — for `myself-app` and for every package under `packages/*`. It is collected on every `nx test` run, not only under CI's `--coverage`, so the threshold fails on the machine that wrote the code rather than in the pull request. The scope is `src/**/*.ts`: the environment is `node`, so a `.tsx` component is never rendered and counting it would mean a threshold met by excluding what it cannot reach. A file that genuinely cannot run under Vitest is excluded by name with the reason beside it (`src/fonts.ts` calls `next/font/local`, which only exists inside Next's compiler). `@myself-app/conventions` is unthresholded: it asserts things about the repository rather than running logic.
 
-Projects: `myself-app` (the Next app), `myself-app-e2e` (Playwright against the export served by `tools/serve-static.mjs`, never against a Next server), and `@myself-app/conventions` (`tools/conventions/`, checks about the repository itself).
+Projects: `myself-app` (the Next app), `myself-app-e2e` (Playwright against the export served by `tools/serve-static.mjs`, never against a Next server), `@myself-app/domain`, `@myself-app/static-adapter` and `@myself-app/content` (`packages/`, below), and `@myself-app/conventions` (`tools/conventions/`, checks about the repository itself). A commit scope drops the `@myself-app/` prefix: `feat(domain): …`.
 
 ### Git hooks (husky)
 
@@ -61,13 +63,13 @@ Commits, PR descriptions and tracked files carry **no AI or tool attribution**: 
 
 ### Locales (ADR 0005)
 
-- `src/site-locales.ts` is the single source of truth: `SITE_LOCALES = ['en', 'es']`, default `en`. The list is declared locally because entifix's own `LOCALES` defaults to `es`. `satisfies readonly Locale[]` keeps it a subset of entifix's `Locale`.
+- `SITE_LOCALES = ['en', 'es']`, default `en`, is declared in `@myself-app/domain` (`packages/domain/src/locales.ts`) — content validation needs it and no package may import the app. The app imports it from `src/site-locales.ts`, which re-exports it beside `localePath`/`localeAlternates`. Declared by the site because entifix's own `LOCALES` defaults to `es`; `satisfies readonly Locale[]` keeps it a subset of entifix's `Locale`.
 - Every page under `app/[locale]/` follows the same pattern: `await params`, guard with `isSiteLocale(locale)` → `notFound()`, translate with `siteT(locale)`, and build `generateMetadata` with `localeAlternates(locale, PATH)` for canonical and hreflang. The layout sets `dynamicParams = false` and `generateStaticParams` over `SITE_LOCALES`.
 - `SiteNav` receives `path` as a prop instead of calling `usePathname`, so it stays a server component. Keep components server-side unless they need interactivity.
 - UI copy lives in `src/i18n/catalogs/` (`en.ts`, `es.ts`), the `site` namespace, merged with entifix's `controls` namespace. `es` is declared `satisfies CatalogShape<typeof en>`, so a key missing from one locale, or only in one, fails `next build`; `catalogs.spec.ts` rejects empty strings. `react/jsx-no-literals` keeps copy out of JSX.
 - Server components translate with `siteT(locale)` from `src/i18n/server.ts`: `getServerTFor`, never `getServerT` (reads a request header). Its return type is narrowed to `TFunction<'site'>` on purpose, because entifix's declared `'translation' | N` union accepts any key. The **default namespace is `controls`**, since entifix components call `useT()` without one.
 - Catalogs are installed once **per bundle**: the server graph through `i18n/server.ts`, the client graph through `app/[locale]/providers.tsx` (which also mounts `I18nProvider` and `ThemeProvider`). The one `declare module 'i18next'` augmentation is `src/i18n/i18next.d.ts`.
-- Content will use localized fields (`{ en, es }`), and a missing translation fails the build instead of falling back at render time.
+- Content uses localized fields (`{ en, es }`) on members declared `type: 'string'`; which members is `LOCALIZED_MEMBERS` in the domain package (ADR 0010). A missing translation fails `next build` with its path instead of falling back at render time; pages read one with `localize(text, locale)`.
 
 ### Styling and theme (ADR 0006)
 
@@ -76,19 +78,22 @@ Commits, PR descriptions and tracked files carry **no AI or tool attribution**: 
 - **Keep `experimental.optimizePackageImports`** for `@entifix/react-controls` and `@entifix/core` in `next.config.js`. entifix declares no `sideEffects`, and without it a single primitive ships the whole barrel and Effect (~300 KB gzipped instead of ~200 KB).
 - The theme is set before first paint by the inline `ThemeScript` (stored choice, else `prefers-color-scheme`), in every root layout's `<head>`. `Providers` starts `ThemeProvider` from the painted theme, and `SiteThemeSwitcher` renders only after hydration; otherwise entifix's provider flips the palette for a frame. `theme.spec.ts` (e2e) records every `data-theme` write and fails on a flash.
 
-### Planned layout (ADR 0002–0004; packages not built yet)
+### Packages (ADR 0002–0004, 0010)
 
 ```
-apps/myself-app            Next app: the composition root
-packages/domain            entifix @entity / @useCase classes, built with SWC, sideEffects: true
-packages/static-adapter    read-only EntityRepository over static JSON; knows no entity
-packages/content           JSON records; imports nothing
+apps/myself-app            Next app: the composition root (src/content/)
+packages/domain            entifix @entity classes, LocalizedText, SITE_LOCALES; SWC, sideEffects: true
+packages/static-adapter    read-only EntityRepository + validation; knows no entity and no locale
+packages/content           one JSON file per entity; imports nothing
 ```
 
-- Dependency direction: app → domain, content, static-adapter. static-adapter and domain → only `@entifix/*` and `effect`, never each other. content → nothing. **Enforced**: every project has one `layer:*` tag in its `package.json` `nx.tags`, and `@nx/enforce-module-boundaries` in the root `eslint.config.mjs` holds the direction. A new package needs its tag (`layer:domain`, `layer:static-adapter`, `layer:content`); the conventions spec fails on a project without one.
-- Entity classes **cannot live in the Next app**: they use 2022-03 decorators on `#private` fields, which Turbopack and webpack cannot compile.
-- Do not use `@entifix/testing-unit`'s in-memory repository outside specs (wrong tier; its `in` does not match array members).
-- Data paths (ADR 0003): static content runs use cases in server components at build time, so no Effect or entifix code reaches the browser. Interactive parts (radar filtering) query the same adapter in the browser over `/data/<entity>.json`, which `force-static` route handlers emit. The gzipped client cost must be measured before any page depends on that path.
+- Dependency direction: app → domain, content, static-adapter. static-adapter and domain → only `@entifix/*` and `effect`, never each other. content → nothing. **Enforced**: every project has one `layer:*` tag in its `package.json` `nx.tags`, and `@nx/enforce-module-boundaries` in the root `eslint.config.mjs` holds the direction. A new package needs its tag; the conventions spec fails on a project without one.
+- **Every package builds with SWC to `dist`**, and the app consumes `dist` (exports: `@myself-app/source` → `src` for TypeScript, `import` → `dist`). The app's `build`, `test` and `typecheck` depend on `^build`; without it the app reads a stale `dist`, and typecheck races SWC writing `index.d.ts`. The boundary rule's `enforceBuildableLibDependency` refuses a buildable app depending on an unbuildable package.
+- Entity classes **cannot live in the Next app**: they use 2022-03 decorators on `#private` fields, which Turbopack and webpack cannot compile. Vitest's own oxc cannot either, so package specs run `unplugin-swc`; the app's specs import the built `dist`.
+- **`src/content/` is the composition root**: `site-content.ts` validates every file against its entity's metadata, then builds a repository per entity; `repositories.ts` does it once per bundle; `queries.ts` reads through entifix's `loadUCFactory`; `radar.ts` maps records to the radar control's `RadarEntry`. Site-only rules (one profile, one channel per type, no period ending before it starts) are registered in `site-content.ts`.
+- No localized or collection member is `filterable`/`sortable` — `describeEntityColumns` throws on a queryable collection. A filter over one (the radar's `in` over `areas`) is built in code; the adapter's `in` matches any array element, as Mongo's does.
+- Do not use `@entifix/testing-unit`'s in-memory repository outside specs (wrong tier; its `in` does not match array members). Its read-half contract is re-created in `packages/static-adapter/src/contracts/` until entifix splits its suite.
+- Data paths (ADR 0003): pages read content in server components at build time, and ship no entifix code. `force-static` route handlers also write every entity to `/data/<key>.json`, but **no page reads them**: rebuilding the repositories in the browser cost the radar page +78 KB gzipped, so interactive parts filter props passed down from build time.
 
 ## Dependencies
 

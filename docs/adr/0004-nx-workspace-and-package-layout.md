@@ -4,6 +4,7 @@
 - Date: 2026-09-17
 - Area: platform
 - Read when: adding a package or an import between two, or putting an entity class somewhere
+- Revised: 2026-09-18 by #21 — the three packages exist, each building to `dist` (ADR 0010)
 
 ## Context
 

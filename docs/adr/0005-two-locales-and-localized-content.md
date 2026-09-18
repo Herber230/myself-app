@@ -4,6 +4,7 @@
 - Date: 2026-09-17
 - Area: i18n
 - Read when: adding copy or content, or when a translation is missing
+- Revised: 2026-09-18 by #23 — the locale list lives in `@myself-app/domain`, and `site-locales.ts` re-exports it
 
 ## Context
 
@@ -24,7 +25,9 @@ language and as the controls' starting locale
 - **`en` and `es`, `en` by default.** The site declares its own
   `SITE_LOCALES = ['en', 'es']` and `SITE_DEFAULT_LOCALE = 'en'`, typed as a
   subset of entifix's `Locale`. That one list drives the routes, the catalogs and
-  content validation.
+  content validation. It is declared in `@myself-app/domain`, because content
+  validation needs it and no package may import the app; the app's
+  `src/site-locales.ts` re-exports it, and the adapter is handed it.
 - **Routes carry the locale**: `/[locale]/…` with `generateStaticParams`. `/`
   sends the visitor to `/en/` without a server.
 - **UI copy** lives in catalogs, and a key present in one locale only fails the
