@@ -51,3 +51,30 @@ test('the radar needs no JavaScript', async ({ browser }) => {
 
   await context.close();
 });
+
+test('the export carries the radar as JSON, and it matches the page', async ({
+  page,
+  request,
+}) => {
+  // Path C of ADR 0003: nothing reads these files yet, but they are the seam
+  // a browser-side filter or a backend adapter would read, and a file that
+  // disagreed with the page beside it would go unnoticed until then.
+  const response = await request.get('/data/technology.json');
+  expect(response.ok()).toBe(true);
+  expect(response.headers()['content-type']).toContain('application/json');
+  const technologies = (await response.json()) as {
+    id: string;
+    name: { en: string; es: string };
+  }[];
+  expect(technologies.length).toBeGreaterThanOrEqual(16);
+
+  await page.goto('/es/tech-radar/');
+  const legend = page.locator('section[aria-labelledby] li');
+  await expect(legend).toHaveCount(technologies.length);
+  for (const technology of technologies) {
+    await expect(
+      page.getByText(technology.name.es, { exact: true }),
+      technology.id,
+    ).toHaveCount(1);
+  }
+});
