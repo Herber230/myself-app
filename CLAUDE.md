@@ -17,12 +17,13 @@ pnpm install
 pnpm nx dev myself-app                          # next dev on http://localhost:3000
 pnpm nx build myself-app                        # static export -> apps/myself-app/out
 pnpm nx serve-out myself-app                    # build, then serve out/ like S3 on http://localhost:3100
+pnpm nx pdf myself-app                          # build, then render each CV page to a PDF beside it in out/
 pnpm nx lint myself-app
 pnpm nx typecheck myself-app                    # runs `next typegen` first (PageProps/LayoutProps types)
 pnpm nx test myself-app                         # vitest, run mode
 pnpm nx test myself-app -- src/site-locales.spec.ts   # a single spec file
 pnpm nx test myself-app -- -t "a locale path"         # tests matching a name
-pnpm nx e2e myself-app-e2e                      # builds, then Playwright against out/ on :3200
+pnpm nx e2e myself-app-e2e                      # builds and renders the PDFs, then Playwright against out/ on :3200
 pnpm nx e2e myself-app-e2e -- -g "404"          # journeys matching a name
 pnpm nx test @myself-app/domain                 # also @myself-app/static-adapter; content has no test target
 pnpm nx build @myself-app/domain                # SWC to dist; the app's build/test/typecheck run ^build first

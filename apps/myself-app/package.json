@@ -38,6 +38,15 @@
           "forwardAllArgs": false
         }
       },
+      "pdf": {
+        "executor": "nx:run-commands",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "command": "node tools/render-pdfs.mjs apps/myself-app/out"
+        }
+      },
       "dev": {
         "executor": "nx:run-commands",
         "continuous": true,
