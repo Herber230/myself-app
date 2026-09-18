@@ -15,6 +15,7 @@ import {
 } from './geometry';
 import { layoutRadar } from './layout';
 import { MOCK_RADAR_ENTRIES } from './mock-entries';
+import type { SeededRandom } from './random';
 import type { QuadrantIndex, RadarEntry, RingIndex } from './types';
 
 function entry(
@@ -163,6 +164,31 @@ describe('an empty or crowded radar', () => {
       );
       expect(r, blip.id).toBeGreaterThanOrEqual(CENTRE_RADIUS);
       expect(r, blip.id).toBeLessThanOrEqual(RING_RADII[0]);
+    }
+  });
+
+  it('separates two blips that land on the same point', () => {
+    // A generator that repeats itself, which `createRandom` never does: every
+    // draw is the same, so both entries are placed at one point and `relax` has
+    // to pick an axis to push them apart along. Nothing in the app passes this.
+    const constant: SeededRandom = {
+      next: () => 0.5,
+      between: (min, max) => min + 0.5 * (max - min),
+      normalBetween: (min, max) => min + 0.5 * (max - min),
+    };
+    const { blips } = layoutRadar([entry('a', 0, 0), entry('b', 0, 0)], {
+      random: constant,
+    });
+
+    expect(blips).toHaveLength(2);
+    const [first, second] = blips;
+    expect(Math.hypot(second.x - first.x, second.y - first.y)).toBeGreaterThan(
+      0,
+    );
+    for (const blip of blips) {
+      expect(Number.isFinite(blip.x) && Number.isFinite(blip.y), blip.id).toBe(
+        true,
+      );
     }
   });
 

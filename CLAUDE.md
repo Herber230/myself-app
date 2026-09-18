@@ -31,6 +31,8 @@ pnpm exec prettier --check .                    # formatting, as CI checks it
 
 Unit tests are `src/**/*.spec.ts`, run by Vitest in a Node environment. E2E needs Chromium once: `pnpm exec playwright install chromium`.
 
+**Coverage is gated at 100%** — statements, branches, functions and lines — for `myself-app` and for every package under `packages/*`. It is collected on every `nx test` run, not only under CI's `--coverage`, so the threshold fails on the machine that wrote the code rather than in the pull request. The scope is `src/**/*.ts`: the environment is `node`, so a `.tsx` component is never rendered and counting it would mean a threshold met by excluding what it cannot reach. A file that genuinely cannot run under Vitest is excluded by name with the reason beside it (`src/fonts.ts` calls `next/font/local`, which only exists inside Next's compiler). `@myself-app/conventions` is unthresholded: it asserts things about the repository rather than running logic.
+
 Projects: `myself-app` (the Next app), `myself-app-e2e` (Playwright against the export served by `tools/serve-static.mjs`, never against a Next server), and `@myself-app/conventions` (`tools/conventions/`, checks about the repository itself).
 
 ### Git hooks (husky)
