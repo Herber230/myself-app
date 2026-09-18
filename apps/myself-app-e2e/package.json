@@ -13,7 +13,7 @@
     "targets": {
       "e2e": {
         "dependsOn": [
-          "myself-app:build"
+          "myself-app:pdf"
         ]
       }
     }

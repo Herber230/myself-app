@@ -51,7 +51,7 @@ What the pages say about me lives in `packages/content/src/`, one JSON file per 
 - **Ids are readable slugs** (`next-js`, `adopt`), because they appear in URLs and in the links between files. A link is the id it names: `"ring": "adopt"`, `"areas": ["css"]`.
 - **Text that a reader sees is `{ "en": …, "es": … }`**, for the members `LOCALIZED_MEMBERS` lists. A locale missing, empty or not text stops `next build`, with the path: `rings.json › adopt › name is missing "es"`.
 - **Every problem is reported at once.** `apps/myself-app/src/content/site-content.ts` validates every file against its entity's metadata before any page renders — required members, dates, enum values, links that point at something — plus the rules only this site has. A new rule is registered there, never in the adapter.
-- **Placeholder values carry `TODO(#26)`** (or the issue whose spec decides them). `grep -r 'TODO(#' packages/content` is the list of what is left to write.
+- **Placeholder values carry `TODO(#26)`** (or the issue whose spec decides them). `apps/myself-app/src/content/pending-content.ts` is the list of what is left to write: remove a path when its value is written, or the build stops; a new placeholder that is not listed stops it too.
 - Pages read content in server components through `src/content/queries.ts`, which runs entifix's `load` use case over the repositories. No page reads `/data/*.json` in the browser (ADR 0003).
 
 ## Styling

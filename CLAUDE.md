@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Herber Colop's developer profile: a Next.js 16 app built as a **static export** (`output: 'export'`) on top of [entifix](https://github.com/r10c-technologies/entifix), meant to be served as plain files from S3. Three pages (home, CV, tech radar), each in English and Spanish. The old Vite app survives only as the `legacy-vite` git tag, for reference.
 
-The repo is mid-rebuild. Content flows through entifix end to end (M1): JSON in `packages/content`, entities in `packages/domain`, a static repository in `packages/static-adapter`, read by the pages at build time. Much of the content is still placeholder, each value marked `TODO(#26)` (or `TODO(#33)`, `TODO(#39)`) — `grep -r 'TODO(#' packages/content` lists them. [`docs/DEVELOPING.md`](docs/DEVELOPING.md) walks through the workflows (adding a page, copy, styling, a package, working on entifix from here).
+The repo is mid-rebuild. Content flows through entifix end to end (M1): JSON in `packages/content`, entities in `packages/domain`, a static repository in `packages/static-adapter`, read by the pages at build time. Much of the content is still placeholder, each value marked `TODO(#26)` (or `TODO(#33)`, `TODO(#39)`) — `apps/myself-app/src/content/pending-content.ts` lists them by path, and the build fails on a placeholder it does not list or a listed one that has been written. [`docs/DEVELOPING.md`](docs/DEVELOPING.md) walks through the workflows (adding a page, copy, styling, a package, working on entifix from here).
 
 ## Commands
 
@@ -17,12 +17,13 @@ pnpm install
 pnpm nx dev myself-app                          # next dev on http://localhost:3000
 pnpm nx build myself-app                        # static export -> apps/myself-app/out
 pnpm nx serve-out myself-app                    # build, then serve out/ like S3 on http://localhost:3100
+pnpm nx pdf myself-app                          # build, then render each CV page to a PDF beside it in out/
 pnpm nx lint myself-app
 pnpm nx typecheck myself-app                    # runs `next typegen` first (PageProps/LayoutProps types)
 pnpm nx test myself-app                         # vitest, run mode
 pnpm nx test myself-app -- src/site-locales.spec.ts   # a single spec file
 pnpm nx test myself-app -- -t "a locale path"         # tests matching a name
-pnpm nx e2e myself-app-e2e                      # builds, then Playwright against out/ on :3200
+pnpm nx e2e myself-app-e2e                      # builds and renders the PDFs, then Playwright against out/ on :3200
 pnpm nx e2e myself-app-e2e -- -g "404"          # journeys matching a name
 pnpm nx test @myself-app/domain                 # also @myself-app/static-adapter; content has no test target
 pnpm nx build @myself-app/domain                # SWC to dist; the app's build/test/typecheck run ^build first

@@ -94,3 +94,21 @@ test('an unknown path answers the bilingual 404 page', async ({ page }) => {
     '/es/',
   );
 });
+
+test('the sitemap lists every page in every locale, and robots.txt points at it', async ({
+  request,
+}) => {
+  const sitemap = await request.get('/sitemap.xml');
+  expect(sitemap.status()).toBe(200);
+  expect(sitemap.headers()['content-type']).toContain('application/xml');
+  const xml = await sitemap.text();
+  for (const locale of ['en', 'es']) {
+    for (const path of ['', 'cv/', 'tech-radar/']) {
+      expect(xml).toContain(`/${locale}/${path}</loc>`);
+    }
+  }
+
+  const robots = await request.get('/robots.txt');
+  expect(robots.status()).toBe(200);
+  expect(await robots.text()).toMatch(/^Sitemap: .*\/sitemap\.xml$/m);
+});

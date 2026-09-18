@@ -7,6 +7,7 @@ import { ThemeScript } from '../../components/theme-script';
 import { fontVariables } from '../../fonts';
 import { siteT } from '../../i18n/server';
 import { isSiteLocale, SITE_LOCALES } from '../../site-locales';
+import { siteUrl } from '../../site-url';
 import { Providers } from './providers';
 
 /** Every locale is known at build time; any other segment is a 404. */
@@ -17,11 +18,8 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-  // Absolute URLs for canonical and hreflang. The domain is set when hosting
-  // is decided (ADR 0007); until then it is the local static server.
-  metadataBase: new URL(
-    process.env['NEXT_PUBLIC_SITE_URL'] ?? 'http://localhost:3100',
-  ),
+  // Absolute URLs for canonical and hreflang (ADR 0007).
+  metadataBase: siteUrl(),
 };
 
 export default async function LocaleLayout({

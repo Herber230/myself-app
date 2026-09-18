@@ -7,8 +7,9 @@
  * metadata and fails the build on anything wrong (ADR 0002).
  *
  * ⚠️ Much of it is still placeholder, each marked `TODO(#26)` — or `TODO(#33)`
- * and `TODO(#39)` where a spec decides the words. `grep -r 'TODO(#' ` lists
- * every value left to write.
+ * and `TODO(#39)` where a spec decides the words. The app's
+ * `src/content/pending-content.ts` lists every value left to write, and the
+ * build fails on one it does not list.
  */
 import contactChannels from './contact-channels.json';
 import cvVariants from './cv-variants.json';

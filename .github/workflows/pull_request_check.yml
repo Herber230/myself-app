@@ -280,6 +280,15 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: pnpm exec playwright install-deps chromium
       - run: pnpm nx run-many -t e2e --projects="${{ needs.initialize.outputs.e2e-projects }}"
+      # `e2e` depends on `myself-app:pdf`, so the CV PDFs are in the export by
+      # now. Kept on every run, so a change is reviewed as the PDF it produces.
+      - name: Keep the CV PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-pdfs
+          path: apps/myself-app/out/**/*.pdf
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Keep the report of a failed run
         if: failure()
         uses: actions/upload-artifact@v4
