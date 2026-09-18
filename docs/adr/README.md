@@ -45,3 +45,4 @@ An accepted record edited in place gains a line, so every edit is greppable:
 - [0005](0005-two-locales-and-localized-content.md) — **English and Spanish, with localized content fields.** Read when adding copy or content, or when a translation is missing.
 - [0006](0006-tailwind-and-entifix-style.md) — **Tailwind v4 and everything `@entifix/style` involves.** Read when styling anything, or when a primitive renders unstyled.
 - [0007](0007-hosting-deferred-build-host-neutral.md) — **Hosting is deferred; the build stays host-neutral.** Read when a URL works in `next dev` but not in the export, or when choosing where the site is served from.
+- [0008](0008-a-landing-page-of-five-static-sections.md) — **A landing page of five static sections.** Read when adding or reordering a landing section, or when the in-page nav or the language switch loses its place.

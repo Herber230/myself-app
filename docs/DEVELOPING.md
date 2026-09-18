@@ -33,7 +33,7 @@ Every page under `app/[locale]/` follows the same steps:
 3. Get the copy with `siteT(locale)`.
 4. Build `generateMetadata` with `localeAlternates(locale, PATH)`.
 
-Keep components server-side unless they need interactivity. `SiteNav` takes `path` as a prop for that reason: calling `usePathname` would make it a client component.
+Keep components server-side unless they need interactivity. `SiteNav` takes `path` as a prop for that reason: calling `usePathname` would make it a client component. When a piece of it does need the browser, it goes in as a `'use client'` leaf — `SiteThemeSwitcher` is the pattern, and ADR 0008 spends it on the landing page's section tracking.
 
 ## Copy
 

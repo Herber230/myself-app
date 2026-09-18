@@ -5,7 +5,7 @@ and exported as static files for an S3 bucket.
 
 Three pages, in English and Spanish:
 
-- **Home** — a landing page: projects, social links, and the entifix this site runs on.
+- **Home** — a landing page in five sections: a hero, about, projects, the entifix this site runs on, and contact.
 - **CV** — a digital paper sheet, in variants per role, printable to PDF.
 - **Tech radar** — an interactive radar of the technologies and techniques I use.
 
