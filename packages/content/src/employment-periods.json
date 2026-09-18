@@ -1,0 +1,29 @@
+[
+  {
+    "id": "employer-one-engineer",
+    "employer": "employer-one",
+    "role": {
+      "en": "TODO(#26): the role held",
+      "es": "TODO(#26): el puesto ocupado"
+    },
+    "responsibilities": {
+      "en": "TODO(#26): what the role was responsible for.",
+      "es": "TODO(#26): de qué era responsable el puesto."
+    },
+    "start": "2022-01-01"
+  },
+  {
+    "id": "employer-two-engineer",
+    "employer": "employer-two",
+    "role": {
+      "en": "TODO(#26): the role held",
+      "es": "TODO(#26): el puesto ocupado"
+    },
+    "responsibilities": {
+      "en": "TODO(#26): what the role was responsible for.",
+      "es": "TODO(#26): de qué era responsable el puesto."
+    },
+    "start": "2019-01-01",
+    "end": "2021-12-31"
+  }
+]

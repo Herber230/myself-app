@@ -35,7 +35,7 @@ export const LOCALIZED_MEMBERS = new Map<
   [TechnologyArea, ['name', 'description']],
   [Quadrant, ['name', 'description']],
   [Ring, ['name', 'description']],
-  [Technology, ['description']],
+  [Technology, ['name', 'description']],
   [TechnologyUsePeriod, []],
   [Project, ['summary']],
   [CvVariant, ['title', 'summary']],

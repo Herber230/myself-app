@@ -24,7 +24,7 @@ import { TechnologyArea } from './technology-area.entity.js';
 @entity({ key: 'technology', domain: 'radar' })
 export class Technology implements Entity {
   #id?: EntityId;
-  #name = '';
+  #name?: LocalizedText;
   #description?: LocalizedText;
   #site?: string;
   #repositoryUrl?: string;
@@ -40,17 +40,22 @@ export class Technology implements Entity {
     this.#id = value;
   }
 
-  /** A product name, the same in both languages. */
+  /**
+   * Localized, although most are product names that read the same in both
+   * languages: a technique is not — "Contract testing" is "Pruebas de
+   * contrato" — and one member cannot be text for some records and an object
+   * for others. The radar numbers blips by the default locale's name.
+   */
   @accessor({
     type: 'string',
     required: true,
-    filterable: true,
-    sortable: true,
+    filterable: false,
+    sortable: false,
   })
-  get name(): string {
+  get name(): LocalizedText | undefined {
     return this.#name;
   }
-  set name(value: string) {
+  set name(value: LocalizedText | undefined) {
     this.#name = value;
   }
 

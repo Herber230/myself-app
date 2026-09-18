@@ -28,7 +28,8 @@ export const en = {
     chartLabel:
       'Tech radar: four quadrants of technologies, ringed by how far I trust them',
     legend: 'Every blip, by quadrant and ring',
-    placeholder: 'Placeholder entries — the real ones arrive with the content.',
+    placeholder:
+      'Provisional entries: the descriptions and dates are still being written.',
     quadrants: {
       techniques: 'Techniques',
       tools: 'Tools',

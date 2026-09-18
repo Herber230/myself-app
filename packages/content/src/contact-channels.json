@@ -1,0 +1,23 @@
+[
+  {
+    "id": "email",
+    "type": "email",
+    "displayName": "herbercolop@gmail.com",
+    "url": "mailto:herbercolop@gmail.com",
+    "order": 0
+  },
+  {
+    "id": "github",
+    "type": "github",
+    "displayName": "Herber230",
+    "url": "https://github.com/Herber230",
+    "order": 1
+  },
+  {
+    "id": "linkedin",
+    "type": "linkedin",
+    "displayName": "TODO(#26): LinkedIn handle",
+    "url": "https://www.linkedin.com/in/TODO-26",
+    "order": 2
+  }
+]

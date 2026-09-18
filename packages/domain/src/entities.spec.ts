@@ -128,8 +128,9 @@ describe('a localized member', () => {
     expect(localizedMembersOf(EmploymentPeriod)).toContain('responsibilities');
     expect(localizedMembersOf(Technology)).toContain('description');
     expect(localizedMembersOf(CvVariant)).toContain('title');
-    // A product name is the same in both languages, and must not be listed.
-    expect(localizedMembersOf(Technology)).not.toContain('name');
+    // A technique's name translates, so every technology's name is localized.
+    expect(localizedMembersOf(Technology)).toContain('name');
+    expect(localizedMembersOf(Project)).not.toContain('name');
     expect(localizedMembersOf(ContactChannel)).toEqual([]);
   });
 

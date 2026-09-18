@@ -36,7 +36,13 @@
   ],
   "references": [
     {
+      "path": "../../packages/static-adapter"
+    },
+    {
       "path": "../../packages/domain"
+    },
+    {
+      "path": "../../packages/content"
     }
   ]
 }

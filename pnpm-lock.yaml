@@ -189,6 +189,9 @@ importers:
 
   apps/myself-app:
     dependencies:
+      '@entifix/business':
+        specifier: 'catalog:'
+        version: 0.1.2(effect@3.22.1)
       '@entifix/core':
         specifier: 'catalog:'
         version: 0.1.2(effect@3.22.1)
@@ -207,9 +210,15 @@ importers:
       '@fontsource-variable/jetbrains-mono':
         specifier: 5.3.0
         version: 5.3.0
+      '@myself-app/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@myself-app/domain':
         specifier: workspace:*
         version: link:../../packages/domain
+      '@myself-app/static-adapter':
+        specifier: workspace:*
+        version: link:../../packages/static-adapter
       effect:
         specifier: 'catalog:'
         version: 3.22.1
@@ -260,6 +269,9 @@ importers:
       '@entifix/core':
         specifier: 'catalog:'
         version: 0.1.2(effect@3.22.1)
+      '@swc/helpers':
+        specifier: 0.5.23
+        version: 0.5.23
       effect:
         specifier: 'catalog:'
         version: 3.22.1
