@@ -40,7 +40,7 @@ Projects: `myself-app` (the Next app), `myself-app-e2e` (Playwright against the 
 
 ### Pull request check
 
-`.github/workflows/pull_request_check.yml` runs on every PR to `main` and every push to it. Lint, build + typecheck, test with coverage, and e2e run on affected projects (all projects on `main`). Formatting and the conventions spec always run. On PRs, commitlint also checks every commit and the PR title (the squash commit message), and `tools/conventions/check-pull-request.mjs` checks the PR body. **`CI Gate` is the one check to watch**: it needs every job, and a new job must be added to its `needs` (the conventions spec fails otherwise). The repo is private on a free plan, so no check can be made required.
+`.github/workflows/pull_request_check.yml` runs on every PR to `main` and every push to it. Lint, build + typecheck, test with coverage, and e2e run on affected projects (all projects on `main`). Formatting and the conventions spec always run. On PRs, commitlint also checks every commit and the PR title (the squash commit message), and `tools/conventions/check-pull-request.mjs` checks the PR body. **`CI Gate` is the one check to watch**: it needs every job, and a new job must be added to its `needs` (the conventions spec fails otherwise). `main` requires it by name, so a red gate blocks the merge. `main` also requires one approving review, which a lone maintainer cannot give their own PR: merges are `gh pr merge --squash --admin`, and the override is recorded on the PR. ⚠️ The workflow triggers on `opened`, `synchronize` and `reopened`, not `edited` — a PR title retitled after the last run keeps that run's green, so check a new title with `printf '%s\n' "<title>" | pnpm exec commitlint` before merging.
 
 ## No AI attribution
 

@@ -96,6 +96,7 @@ When entifix releases, bump its version in the `catalog:` and add the new versio
 
 - **Commits:** Conventional Commits, lowercase subject. The scope is an Nx project name when one applies (`build(myself-app): …`). commitlint runs in the `commit-msg` hook.
 - **The `pre-commit` hook** formats staged files, then runs `nx affected -t lint,typecheck,test,build` against `origin/main`.
-- **Pull request bodies** use `.github/PULL_REQUEST_TEMPLATE.md`. Watch the `CI Gate` check: it needs every other job.
+- **Pull request bodies** use `.github/PULL_REQUEST_TEMPLATE.md`. Watch the `CI Gate` check: it needs every other job, and `main` requires it by name, so a red gate blocks the merge.
+- **Merging** is a squash, and the pull request title becomes the commit on `main` — so it is linted too. `main` requires one approving review as well, which you cannot give your own pull request: merge with `gh pr merge --squash --admin`, which records the override. ⚠️ Retitling after the last run does not start a new one (the workflow triggers on `opened`, `synchronize`, `reopened`), so a new title keeps the old one's green. Check it first with `printf '%s\n' "<title>" | pnpm exec commitlint`.
 - **No AI or tool attribution** in commits, pull request bodies or tracked files. commitlint, CI and the conventions spec all enforce it through `tools/conventions/attribution.mjs`.
 - **Every issue has a milestone.** `Backlog` is a triage decision, and an issue without a milestone is untriaged.
