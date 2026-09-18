@@ -23,7 +23,7 @@ export const es = {
       'Radar tecnológico: cuatro cuadrantes de tecnologías, en anillos según cuánto confío en ellas',
     legend: 'Cada punto, por cuadrante y anillo',
     placeholder:
-      'Entradas de ejemplo — las reales llegan junto con el contenido.',
+      'Entradas provisionales: las descripciones y fechas aún se están escribiendo.',
     quadrants: {
       techniques: 'Técnicas',
       tools: 'Herramientas',

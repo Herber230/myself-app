@@ -11,20 +11,25 @@ import { notFound } from 'next/navigation';
 
 import { SiteNav } from '../../../components/site-nav';
 import { layoutRadar } from '../../../components/tech-radar/layout';
-import { MOCK_RADAR_ENTRIES } from '../../../components/tech-radar/mock-entries';
 import { RadarChart } from '../../../components/tech-radar/radar-chart';
 import { RadarLegend } from '../../../components/tech-radar/radar-legend';
+import { loadRadarEntries } from '../../../content/radar';
+import { SITE_REPOSITORIES } from '../../../content/repositories';
 import { siteT } from '../../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../../site-locales';
 
 const PATH = '/tech-radar';
 
 /**
- * Laid out once, while `next build` runs, and shared by both locales: the
- * layout does not depend on the language (ADR 0003, and `layout.ts` on why the
- * numbering is sorted by the default locale).
+ * Read from content and laid out once, while `next build` runs, and shared by
+ * both locales: the layout does not depend on the language (ADR 0003, and
+ * `layout.ts` on why the numbering is sorted by the default locale). A promise
+ * rather than a value, because the entries arrive through entifix's `load`
+ * use case.
  */
-const LAYOUT = layoutRadar(MOCK_RADAR_ENTRIES);
+const LAYOUT = loadRadarEntries(SITE_REPOSITORIES).then(entries =>
+  layoutRadar(entries),
+);
 
 export async function generateMetadata({
   params,
@@ -44,6 +49,7 @@ export default async function TechRadarPage({
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
   const t = siteT(locale);
+  const layout = await LAYOUT;
   const quadrants = [
     t('radar.quadrants.techniques'),
     t('radar.quadrants.tools'),
@@ -71,7 +77,7 @@ export default async function TechRadarPage({
             </Stack>
             <div>
               <RadarChart
-                layout={LAYOUT}
+                layout={layout}
                 quadrants={quadrants}
                 rings={rings}
                 label={t('radar.chartLabel')}
@@ -82,7 +88,7 @@ export default async function TechRadarPage({
                 {t('radar.legend')}
               </Text>
               <RadarLegend
-                layout={LAYOUT}
+                layout={layout}
                 locale={locale}
                 quadrants={quadrants}
                 rings={rings}

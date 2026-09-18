@@ -1,0 +1,37 @@
+[
+  {
+    "id": "server-side-rendering",
+    "name": {
+      "en": "Server-side rendering",
+      "es": "Renderizado en el servidor"
+    },
+    "description": {
+      "en": "Rendering a client-side framework's pages to HTML and CSS on the server, so they load and index faster.",
+      "es": "Renderizar las páginas de un framework de cliente a HTML y CSS en el servidor, para que carguen e indexen más rápido."
+    }
+  },
+  {
+    "id": "css",
+    "name": { "en": "CSS", "es": "CSS" },
+    "description": {
+      "en": "Cascading Style Sheets: the language that describes how a document written in HTML is presented.",
+      "es": "Hojas de estilo en cascada: el lenguaje que describe cómo se presenta un documento escrito en HTML."
+    }
+  },
+  {
+    "id": "web-rendering",
+    "name": { "en": "Web rendering", "es": "Renderizado web" },
+    "description": {
+      "en": "How a browser turns HTML, CSS and JavaScript into the page a visitor sees.",
+      "es": "Cómo un navegador convierte HTML, CSS y JavaScript en la página que ve un visitante."
+    }
+  },
+  {
+    "id": "monorepo",
+    "name": { "en": "Monorepo", "es": "Monorepo" },
+    "description": {
+      "en": "One repository holding every project and package, shared as a single source of truth.",
+      "es": "Un solo repositorio con todos los proyectos y paquetes, compartido como única fuente de verdad."
+    }
+  }
+]

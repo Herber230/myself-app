@@ -1,0 +1,185 @@
+[
+  {
+    "id": "trunk-based-development-since-2023-01",
+    "technology": "trunk-based-development",
+    "ring": "adopt",
+    "start": "2023-01-01"
+  },
+  {
+    "id": "static-first-delivery-until-2026-03",
+    "technology": "static-first-delivery",
+    "ring": "trial",
+    "start": "2023-01-01",
+    "end": "2026-03-01"
+  },
+  {
+    "id": "static-first-delivery-since-2026-03",
+    "technology": "static-first-delivery",
+    "ring": "adopt",
+    "start": "2026-03-01"
+  },
+  {
+    "id": "contract-testing-since-2023-01",
+    "technology": "contract-testing",
+    "ring": "trial",
+    "start": "2023-01-01"
+  },
+  {
+    "id": "property-based-testing-since-2026-06",
+    "technology": "property-based-testing",
+    "ring": "assess",
+    "start": "2026-06-01"
+  },
+  {
+    "id": "hand-written-release-notes-until-2026-03",
+    "technology": "hand-written-release-notes",
+    "ring": "assess",
+    "start": "2023-01-01",
+    "end": "2026-03-01"
+  },
+  {
+    "id": "hand-written-release-notes-since-2026-03",
+    "technology": "hand-written-release-notes",
+    "ring": "hold",
+    "start": "2026-03-01"
+  },
+  {
+    "id": "nx-until-2026-03",
+    "technology": "nx",
+    "ring": "trial",
+    "start": "2023-01-01",
+    "end": "2026-03-01"
+  },
+  {
+    "id": "nx-since-2026-03",
+    "technology": "nx",
+    "ring": "adopt",
+    "start": "2026-03-01"
+  },
+  {
+    "id": "pnpm-since-2023-01",
+    "technology": "pnpm",
+    "ring": "adopt",
+    "start": "2023-01-01"
+  },
+  {
+    "id": "playwright-since-2023-01",
+    "technology": "playwright",
+    "ring": "trial",
+    "start": "2023-01-01"
+  },
+  {
+    "id": "biome-since-2026-06",
+    "technology": "biome",
+    "ring": "assess",
+    "start": "2026-06-01"
+  },
+  {
+    "id": "jest-until-2026-03",
+    "technology": "jest",
+    "ring": "assess",
+    "start": "2023-01-01",
+    "end": "2026-03-01"
+  },
+  {
+    "id": "jest-since-2026-03",
+    "technology": "jest",
+    "ring": "hold",
+    "start": "2026-03-01"
+  },
+  {
+    "id": "amazon-s3-since-2023-01",
+    "technology": "amazon-s3",
+    "ring": "adopt",
+    "start": "2023-01-01"
+  },
+  {
+    "id": "cloudfront-until-2026-03",
+    "technology": "cloudfront",
+    "ring": "assess",
+    "start": "2023-01-01",
+    "end": "2026-03-01"
+  },
+  {
+    "id": "cloudfront-since-2026-03",
+    "technology": "cloudfront",
+    "ring": "trial",
+    "start": "2026-03-01"
+  },
+  {
+    "id": "cloudflare-workers-since-2026-06",
+    "technology": "cloudflare-workers",
+    "ring": "assess",
+    "start": "2026-06-01"
+  },
+  {
+    "id": "heroku-until-2026-03",
+    "technology": "heroku",
+    "ring": "assess",
+    "start": "2023-01-01",
+    "end": "2026-03-01"
+  },
+  {
+    "id": "heroku-since-2026-03",
+    "technology": "heroku",
+    "ring": "hold",
+    "start": "2026-03-01"
+  },
+  {
+    "id": "typescript-since-2023-01",
+    "technology": "typescript",
+    "ring": "adopt",
+    "start": "2023-01-01"
+  },
+  {
+    "id": "next-js-until-2026-03",
+    "technology": "next-js",
+    "ring": "trial",
+    "start": "2023-01-01",
+    "end": "2026-03-01"
+  },
+  {
+    "id": "next-js-since-2026-03",
+    "technology": "next-js",
+    "ring": "adopt",
+    "start": "2026-03-01"
+  },
+  {
+    "id": "effect-until-2026-03",
+    "technology": "effect",
+    "ring": "assess",
+    "start": "2023-01-01",
+    "end": "2026-03-01"
+  },
+  {
+    "id": "effect-since-2026-03",
+    "technology": "effect",
+    "ring": "trial",
+    "start": "2026-03-01"
+  },
+  {
+    "id": "tailwind-css-since-2023-01",
+    "technology": "tailwind-css",
+    "ring": "trial",
+    "start": "2023-01-01"
+  },
+  {
+    "id": "svelte-since-2026-06",
+    "technology": "svelte",
+    "ring": "assess",
+    "start": "2026-06-01"
+  },
+  {
+    "id": "angularjs-until-2026-03",
+    "technology": "angularjs",
+    "ring": "assess",
+    "start": "2023-01-01",
+    "end": "2026-03-01"
+  },
+  {
+    "id": "angularjs-since-2026-03",
+    "technology": "angularjs",
+    "ring": "hold",
+    "start": "2026-03-01"
+  }
+]

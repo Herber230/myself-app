@@ -44,6 +44,16 @@ UI copy lives in `apps/myself-app/src/i18n/catalogs/`, in the `site` namespace (
 - **Never write copy in JSX.** `react/jsx-no-literals` fails lint on it. Props are exempt.
 - The default namespace is entifix's `controls`, because entifix's components call `useT()` without a namespace. The client bundle installs the catalogs through `app/[locale]/providers.tsx`, the server bundle through `i18n/server.ts`.
 
+## Content
+
+What the pages say about me lives in `packages/content/src/`, one JSON file per entity (ADR 0004). The shape of each record is its entity in `packages/domain/src/entities/`.
+
+- **Ids are readable slugs** (`next-js`, `adopt`), because they appear in URLs and in the links between files. A link is the id it names: `"ring": "adopt"`, `"areas": ["css"]`.
+- **Text that a reader sees is `{ "en": …, "es": … }`**, for the members `LOCALIZED_MEMBERS` lists. A locale missing, empty or not text stops `next build`, with the path: `rings.json › adopt › name is missing "es"`.
+- **Every problem is reported at once.** `apps/myself-app/src/content/site-content.ts` validates every file against its entity's metadata before any page renders — required members, dates, enum values, links that point at something — plus the rules only this site has. A new rule is registered there, never in the adapter.
+- **Placeholder values carry `TODO(#26)`** (or the issue whose spec decides them). `grep -r 'TODO(#' packages/content` is the list of what is left to write.
+- Pages read content in server components through `src/content/queries.ts`, which runs entifix's `load` use case over the repositories. No page reads `/data/*.json` in the browser (ADR 0003).
+
 ## Styling
 
 Tailwind v4 over `@entifix/style` tokens (ADR 0006).
@@ -72,6 +82,16 @@ content          ──►  nothing
 ```
 
 When you add a package under `packages/`, give it its tag: `layer:domain`, `layer:static-adapter` or `layer:content`. The conventions spec (`pnpm nx test @myself-app/conventions`) fails on a project without a known `layer:*` tag.
+
+## Adding a package
+
+The three under `packages/` are the models; copy the one closest to what you need.
+
+- **`package.json`**: `@myself-app/<name>`, `private`, `type: "module"`, one `layer:*` tag in `nx.tags`, and an `exports` map with `"@myself-app/source": "./src/index.ts"` (what TypeScript reads, through `customConditions` in `tsconfig.base.json`) beside `types`/`import` pointing at `dist`. Dependencies shared with the workspace are `"catalog:"`; two copies of `effect` break `Context.Tag` identity without an error.
+- **A build**: `.swcrc`, `tsconfig.lib.json` and an `@nx/js:swc` `build` target, as `packages/domain` has. The app is buildable, so the boundary rule refuses an unbuildable dependency. Relative imports name their file with `.js`.
+- **A test target**, when the package runs logic: `vitest.config.mts` with the 100% thresholds, `enabled: true`, and `unplugin-swc` if a spec touches an entity. A layer that may not import `vitest` — `content` — has no test target, and is checked by what reads it.
+- **The references**: add it to the root `tsconfig.json`, and run `pnpm nx sync` after the app depends on it.
+- Then `pnpm nx test @myself-app/conventions` confirms the tag, and `pnpm nx run-many -t lint,typecheck,test,build` the rest.
 
 ## Working on entifix from here
 

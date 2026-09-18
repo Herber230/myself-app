@@ -1,0 +1,16 @@
+[
+  {
+    "id": "full-stack",
+    "title": {
+      "en": "TODO(#33): the full-stack reading",
+      "es": "TODO(#33): la lectura full-stack"
+    },
+    "summary": {
+      "en": "TODO(#33): what this variant selects, and for whom.",
+      "es": "TODO(#33): qué selecciona esta variante, y para quién."
+    },
+    "technologies": ["typescript", "next-js", "effect"],
+    "employments": ["employer-one-engineer", "employer-two-engineer"],
+    "order": 0
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "herber-colop",
+    "firstName": "Herber",
+    "lastName": "Colop",
+    "email": "herbercolop@gmail.com",
+    "title": { "en": "Software Engineer", "es": "Ingeniero de software" },
+    "tagline": {
+      "en": "TODO(#26): one line under the name in the hero.",
+      "es": "TODO(#26): una línea bajo el nombre en la portada."
+    },
+    "bio": {
+      "en": "Software passionate and persistent problem solver. Focused on resource development to improve team productivity. Mainly experienced as a TypeScript developer for Node.js, React and Angular applications. Advocate for reactive technologies and the microservices pattern.",
+      "es": "Apasionado del software y persistente resolviendo problemas. Enfocado en desarrollar recursos que mejoren la productividad del equipo. Con experiencia principalmente como desarrollador TypeScript de aplicaciones Node.js, React y Angular. Defensor de las tecnologías reactivas y del patrón de microservicios."
+    },
+    "pictureUrl": "https://avatars.githubusercontent.com/u/1140245?v=4",
+    "pictureAlt": {
+      "en": "Herber Colop profile picture",
+      "es": "Foto de perfil de Herber Colop"
+    }
+  }
+]

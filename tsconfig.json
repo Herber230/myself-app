@@ -10,6 +10,15 @@
       "path": "./apps/myself-app-e2e"
     },
     {
+      "path": "./packages/content"
+    },
+    {
+      "path": "./packages/domain"
+    },
+    {
+      "path": "./packages/static-adapter"
+    },
+    {
       "path": "./tools/conventions"
     }
   ]

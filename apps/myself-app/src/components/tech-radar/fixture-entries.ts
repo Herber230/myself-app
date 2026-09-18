@@ -1,15 +1,16 @@
 /**
- * Placeholder data, so the control can be built and seen before the content
- * package exists (#26). The rings and quadrants it uses are Thoughtworks'
- * defaults; what they will mean on this site is still open (#39).
+ * A fixed radar for the layout's specs, which no page imports.
  *
- * Replaced wholesale by records read through the static adapter. Nothing but
- * the tech-radar page imports it, and the shape it satisfies — `RadarEntry` —
- * is what the domain entity will map to.
+ * The page reads its entries from content (`src/content/radar.ts`). The specs
+ * do not, on purpose: they pin properties of the layout — every segment
+ * covered, every movement drawn, the same export twice — and content that
+ * changes with a CV edit would move what they pin. These twenty entries were
+ * the placeholder the control was built against, and the content package was
+ * seeded from them.
  */
 import type { RadarEntry } from './types';
 
-export const MOCK_RADAR_ENTRIES: readonly RadarEntry[] = [
+export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
   // Quadrant 0 — techniques.
   {
     id: 'trunk-based-development',

@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "out-tsc/content",
+    "tsBuildInfoFile": "out-tsc/content/tsconfig.tsbuildinfo",
+    // The records are JSON, and `src/index.ts` is the one thing that reads
+    // them. Nothing else in the workspace needs this.
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.json"],
+  "exclude": ["out-tsc", "test-output"]
+}

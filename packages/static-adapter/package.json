@@ -1,0 +1,49 @@
+{
+  "name": "@myself-app/static-adapter",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A read-only EntityRepository over records held in memory. Knows no entity of this site.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@myself-app/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "nx": {
+    "tags": [
+      "layer:static-adapter"
+    ],
+    "targets": {
+      "build": {
+        "executor": "@nx/js:swc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "packages/static-adapter/dist",
+          "main": "packages/static-adapter/src/index.ts",
+          "tsConfig": "packages/static-adapter/tsconfig.lib.json",
+          "skipTypeCheck": true,
+          "stripLeadingPaths": true
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@entifix/business": "catalog:",
+    "@entifix/core": "catalog:",
+    "@swc/helpers": "0.5.23",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "@effect/vitest": "0.30.0",
+    "@entifix/testing-unit": "catalog:"
+  }
+}

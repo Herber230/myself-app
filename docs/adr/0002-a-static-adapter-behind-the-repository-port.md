@@ -4,6 +4,7 @@
 - Date: 2026-09-17
 - Area: data
 - Read when: loading content, or tempted to import `@entifix/testing-unit` outside a spec
+- Revised: 2026-09-18 by #22 — the adapter exists, and how it validates is ADR 0010
 
 ## Context
 

@@ -8,7 +8,9 @@ export default defineConfig({
     include: ['src/**/*.spec.ts'],
     reporters: ['default'],
     // Assertions about the repository, not logic worth covering: what guards
-    // this project is that every scan pins how much it expects to find.
+    // this project is that every scan pins how much it expects to find. The
+    // 100% gate is carried by the app and by the packages under `packages/*`,
+    // which hold logic a threshold means something about.
     coverage: {
       provider: 'v8',
       reportsDirectory: './test-output/vitest/coverage',

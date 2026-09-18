@@ -215,9 +215,8 @@ jobs:
             apps/*/node_modules
             packages/*/node_modules
             tools/*/node_modules
-      # The plain `test` target does not collect coverage, so CI asks for it.
-      # Thresholds arrive with the first package under `packages/*` (M1), which
-      # is gated at 100%.
+      # Every project with logic collects coverage on each run and fails below
+      # 100%; `--coverage` also covers any project that does not enable it.
       - run: pnpm nx run-many -t test --projects="${{ needs.initialize.outputs.test-projects }}" --coverage
 
   # Against the export served like a bucket (`tools/serve-static.mjs`), never

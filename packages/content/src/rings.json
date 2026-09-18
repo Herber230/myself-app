@@ -1,0 +1,38 @@
+[
+  {
+    "id": "adopt",
+    "order": 0,
+    "name": { "en": "Adopt", "es": "Adoptar" },
+    "description": {
+      "en": "TODO(#39): what adopt means on a one-person radar.",
+      "es": "TODO(#39): qué significa adoptar en un radar personal."
+    }
+  },
+  {
+    "id": "trial",
+    "order": 1,
+    "name": { "en": "Trial", "es": "Probar" },
+    "description": {
+      "en": "TODO(#39): what trial means on a one-person radar.",
+      "es": "TODO(#39): qué significa probar en un radar personal."
+    }
+  },
+  {
+    "id": "assess",
+    "order": 2,
+    "name": { "en": "Assess", "es": "Evaluar" },
+    "description": {
+      "en": "TODO(#39): what assess means on a one-person radar.",
+      "es": "TODO(#39): qué significa evaluar en un radar personal."
+    }
+  },
+  {
+    "id": "hold",
+    "order": 3,
+    "name": { "en": "Hold", "es": "Resistir" },
+    "description": {
+      "en": "The technology is held since it was used in the past but not considered for further implementations.",
+      "es": "La tecnología está en espera: se usó en el pasado, pero no se considera para nuevas implementaciones."
+    }
+  }
+]

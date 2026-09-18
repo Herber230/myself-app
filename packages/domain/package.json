@@ -1,0 +1,45 @@
+{
+  "name": "@myself-app/domain",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The entities the three pages read, compiled by SWC with 2022-03 decorators — which Next's own compiler cannot do.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@myself-app/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "sideEffects": true,
+  "nx": {
+    "tags": [
+      "layer:domain"
+    ],
+    "targets": {
+      "build": {
+        "executor": "@nx/js:swc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "packages/domain/dist",
+          "main": "packages/domain/src/index.ts",
+          "tsConfig": "packages/domain/tsconfig.lib.json",
+          "skipTypeCheck": true,
+          "stripLeadingPaths": true
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@entifix/core": "catalog:",
+    "@swc/helpers": "0.5.23",
+    "effect": "catalog:"
+  }
+}

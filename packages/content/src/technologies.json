@@ -1,0 +1,282 @@
+[
+  {
+    "id": "trunk-based-development",
+    "name": {
+      "en": "Trunk-based development",
+      "es": "Desarrollo sobre la rama principal"
+    },
+    "description": {
+      "en": "TODO(#26): what Trunk-based development is, and where I used it.",
+      "es": "TODO(#26): qué es Desarrollo sobre la rama principal y dónde lo usé."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": []
+  },
+  {
+    "id": "static-first-delivery",
+    "name": {
+      "en": "Static-first delivery",
+      "es": "Entrega estática primero"
+    },
+    "description": {
+      "en": "TODO(#26): what Static-first delivery is, and where I used it.",
+      "es": "TODO(#26): qué es Entrega estática primero y dónde lo usé."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["web-rendering"]
+  },
+  {
+    "id": "contract-testing",
+    "name": {
+      "en": "Contract testing",
+      "es": "Pruebas de contrato"
+    },
+    "description": {
+      "en": "TODO(#26): what Contract testing is, and where I used it.",
+      "es": "TODO(#26): qué es Pruebas de contrato y dónde lo usé."
+    },
+    "quadrant": "techniques",
+    "ring": "trial",
+    "areas": []
+  },
+  {
+    "id": "property-based-testing",
+    "name": {
+      "en": "Property-based testing",
+      "es": "Pruebas basadas en propiedades"
+    },
+    "description": {
+      "en": "TODO(#26): what Property-based testing is, and where I used it.",
+      "es": "TODO(#26): qué es Pruebas basadas en propiedades y dónde lo usé."
+    },
+    "quadrant": "techniques",
+    "ring": "assess",
+    "areas": []
+  },
+  {
+    "id": "hand-written-release-notes",
+    "name": {
+      "en": "Hand-written release notes",
+      "es": "Notas de versión escritas a mano"
+    },
+    "description": {
+      "en": "TODO(#26): what Hand-written release notes is, and where I used it.",
+      "es": "TODO(#26): qué es Notas de versión escritas a mano y dónde lo usé."
+    },
+    "quadrant": "techniques",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "nx",
+    "name": {
+      "en": "Nx",
+      "es": "Nx"
+    },
+    "description": {
+      "en": "TODO(#26): what Nx is, and where I used it.",
+      "es": "TODO(#26): qué es Nx y dónde lo usé."
+    },
+    "quadrant": "tools",
+    "ring": "adopt",
+    "areas": ["monorepo"]
+  },
+  {
+    "id": "pnpm",
+    "name": {
+      "en": "pnpm",
+      "es": "pnpm"
+    },
+    "description": {
+      "en": "TODO(#26): what pnpm is, and where I used it.",
+      "es": "TODO(#26): qué es pnpm y dónde lo usé."
+    },
+    "quadrant": "tools",
+    "ring": "adopt",
+    "areas": ["monorepo"]
+  },
+  {
+    "id": "playwright",
+    "name": {
+      "en": "Playwright",
+      "es": "Playwright"
+    },
+    "description": {
+      "en": "TODO(#26): what Playwright is, and where I used it.",
+      "es": "TODO(#26): qué es Playwright y dónde lo usé."
+    },
+    "quadrant": "tools",
+    "ring": "trial",
+    "areas": []
+  },
+  {
+    "id": "biome",
+    "name": {
+      "en": "Biome",
+      "es": "Biome"
+    },
+    "description": {
+      "en": "TODO(#26): what Biome is, and where I used it.",
+      "es": "TODO(#26): qué es Biome y dónde lo usé."
+    },
+    "quadrant": "tools",
+    "ring": "assess",
+    "areas": []
+  },
+  {
+    "id": "jest",
+    "name": {
+      "en": "Jest",
+      "es": "Jest"
+    },
+    "description": {
+      "en": "TODO(#26): what Jest is, and where I used it.",
+      "es": "TODO(#26): qué es Jest y dónde lo usé."
+    },
+    "quadrant": "tools",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "amazon-s3",
+    "name": {
+      "en": "Amazon S3",
+      "es": "Amazon S3"
+    },
+    "description": {
+      "en": "TODO(#26): what Amazon S3 is, and where I used it.",
+      "es": "TODO(#26): qué es Amazon S3 y dónde lo usé."
+    },
+    "quadrant": "platforms",
+    "ring": "adopt",
+    "areas": []
+  },
+  {
+    "id": "cloudfront",
+    "name": {
+      "en": "CloudFront",
+      "es": "CloudFront"
+    },
+    "description": {
+      "en": "TODO(#26): what CloudFront is, and where I used it.",
+      "es": "TODO(#26): qué es CloudFront y dónde lo usé."
+    },
+    "quadrant": "platforms",
+    "ring": "trial",
+    "areas": []
+  },
+  {
+    "id": "cloudflare-workers",
+    "name": {
+      "en": "Cloudflare Workers",
+      "es": "Cloudflare Workers"
+    },
+    "description": {
+      "en": "TODO(#26): what Cloudflare Workers is, and where I used it.",
+      "es": "TODO(#26): qué es Cloudflare Workers y dónde lo usé."
+    },
+    "quadrant": "platforms",
+    "ring": "assess",
+    "areas": []
+  },
+  {
+    "id": "heroku",
+    "name": {
+      "en": "Heroku",
+      "es": "Heroku"
+    },
+    "description": {
+      "en": "TODO(#26): what Heroku is, and where I used it.",
+      "es": "TODO(#26): qué es Heroku y dónde lo usé."
+    },
+    "quadrant": "platforms",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "typescript",
+    "name": {
+      "en": "TypeScript",
+      "es": "TypeScript"
+    },
+    "description": {
+      "en": "TODO(#26): what TypeScript is, and where I used it.",
+      "es": "TODO(#26): qué es TypeScript y dónde lo usé."
+    },
+    "quadrant": "languages-and-frameworks",
+    "ring": "adopt",
+    "areas": []
+  },
+  {
+    "id": "next-js",
+    "name": {
+      "en": "Next.js",
+      "es": "Next.js"
+    },
+    "description": {
+      "en": "TODO(#26): what Next.js is, and where I used it.",
+      "es": "TODO(#26): qué es Next.js y dónde lo usé."
+    },
+    "quadrant": "languages-and-frameworks",
+    "ring": "adopt",
+    "areas": ["server-side-rendering", "web-rendering"]
+  },
+  {
+    "id": "effect",
+    "name": {
+      "en": "Effect",
+      "es": "Effect"
+    },
+    "description": {
+      "en": "TODO(#26): what Effect is, and where I used it.",
+      "es": "TODO(#26): qué es Effect y dónde lo usé."
+    },
+    "quadrant": "languages-and-frameworks",
+    "ring": "trial",
+    "areas": []
+  },
+  {
+    "id": "tailwind-css",
+    "name": {
+      "en": "Tailwind CSS",
+      "es": "Tailwind CSS"
+    },
+    "description": {
+      "en": "TODO(#26): what Tailwind CSS is, and where I used it.",
+      "es": "TODO(#26): qué es Tailwind CSS y dónde lo usé."
+    },
+    "quadrant": "languages-and-frameworks",
+    "ring": "trial",
+    "areas": ["css"]
+  },
+  {
+    "id": "svelte",
+    "name": {
+      "en": "Svelte",
+      "es": "Svelte"
+    },
+    "description": {
+      "en": "TODO(#26): what Svelte is, and where I used it.",
+      "es": "TODO(#26): qué es Svelte y dónde lo usé."
+    },
+    "quadrant": "languages-and-frameworks",
+    "ring": "assess",
+    "areas": ["web-rendering"]
+  },
+  {
+    "id": "angularjs",
+    "name": {
+      "en": "AngularJS",
+      "es": "AngularJS"
+    },
+    "description": {
+      "en": "TODO(#26): what AngularJS is, and where I used it.",
+      "es": "TODO(#26): qué es AngularJS y dónde lo usé."
+    },
+    "quadrant": "languages-and-frameworks",
+    "ring": "hold",
+    "areas": ["web-rendering"]
+  }
+]

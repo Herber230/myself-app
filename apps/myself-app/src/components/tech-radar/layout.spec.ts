@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { SITE_LOCALES } from '../../site-locales';
+import { FIXTURE_RADAR_ENTRIES } from './fixture-entries';
 import {
   BLIP_RADIUS,
   CENTRE_RADIUS,
@@ -14,7 +15,7 @@ import {
   RING_RADII,
 } from './geometry';
 import { layoutRadar } from './layout';
-import { MOCK_RADAR_ENTRIES } from './mock-entries';
+import type { SeededRandom } from './random';
 import type { QuadrantIndex, RadarEntry, RingIndex } from './types';
 
 function entry(
@@ -44,23 +45,23 @@ function closest(blips: readonly { x: number; y: number }[]) {
 }
 
 describe('a radar layout', () => {
-  const layout = layoutRadar(MOCK_RADAR_ENTRIES);
+  const layout = layoutRadar(FIXTURE_RADAR_ENTRIES);
 
   it('places every entry exactly once', () => {
     // Pinned: the mock radar covers all sixteen segments.
-    expect(MOCK_RADAR_ENTRIES.length).toBeGreaterThanOrEqual(16);
-    expect(layout.blips).toHaveLength(MOCK_RADAR_ENTRIES.length);
+    expect(FIXTURE_RADAR_ENTRIES.length).toBeGreaterThanOrEqual(16);
+    expect(layout.blips).toHaveLength(FIXTURE_RADAR_ENTRIES.length);
     expect(new Set(layout.blips.map(blip => blip.id)).size).toBe(
-      MOCK_RADAR_ENTRIES.length,
+      FIXTURE_RADAR_ENTRIES.length,
     );
   });
 
   it('repeats itself, so two builds export the same radar', () => {
-    expect(layoutRadar(MOCK_RADAR_ENTRIES)).toEqual(layout);
+    expect(layoutRadar(FIXTURE_RADAR_ENTRIES)).toEqual(layout);
   });
 
   it('moves every blip when the seed changes', () => {
-    const other = layoutRadar(MOCK_RADAR_ENTRIES, { seed: 7 });
+    const other = layoutRadar(FIXTURE_RADAR_ENTRIES, { seed: 7 });
     for (const [index, blip] of other.blips.entries()) {
       expect(blip.id, blip.id).toBe(layout.blips[index].id);
       expect(
@@ -94,9 +95,9 @@ describe('a radar layout', () => {
 
 describe('a blip number', () => {
   it('runs from one, without a gap', () => {
-    const { blips } = layoutRadar(MOCK_RADAR_ENTRIES);
+    const { blips } = layoutRadar(FIXTURE_RADAR_ENTRIES);
     expect(blips.map(blip => blip.number).sort((a, b) => a - b)).toEqual(
-      MOCK_RADAR_ENTRIES.map((_, index) => index + 1),
+      FIXTURE_RADAR_ENTRIES.map((_, index) => index + 1),
     );
   });
 
@@ -124,7 +125,7 @@ describe('a blip number', () => {
 
   it('does not depend on the locale the page is read in', () => {
     const numbersByLocale = SITE_LOCALES.map(locale =>
-      layoutRadar(MOCK_RADAR_ENTRIES)
+      layoutRadar(FIXTURE_RADAR_ENTRIES)
         .blips.map(blip => `${blip.number}:${blip.label[locale]}`)
         .map(pair => pair.split(':')[0]),
     );
@@ -163,6 +164,31 @@ describe('an empty or crowded radar', () => {
       );
       expect(r, blip.id).toBeGreaterThanOrEqual(CENTRE_RADIUS);
       expect(r, blip.id).toBeLessThanOrEqual(RING_RADII[0]);
+    }
+  });
+
+  it('separates two blips that land on the same point', () => {
+    // A generator that repeats itself, which `createRandom` never does: every
+    // draw is the same, so both entries are placed at one point and `relax` has
+    // to pick an axis to push them apart along. Nothing in the app passes this.
+    const constant: SeededRandom = {
+      next: () => 0.5,
+      between: (min, max) => min + 0.5 * (max - min),
+      normalBetween: (min, max) => min + 0.5 * (max - min),
+    };
+    const { blips } = layoutRadar([entry('a', 0, 0), entry('b', 0, 0)], {
+      random: constant,
+    });
+
+    expect(blips).toHaveLength(2);
+    const [first, second] = blips;
+    expect(Math.hypot(second.x - first.x, second.y - first.y)).toBeGreaterThan(
+      0,
+    );
+    for (const blip of blips) {
+      expect(Number.isFinite(blip.x) && Number.isFinite(blip.y), blip.id).toBe(
+        true,
+      );
     }
   });
 

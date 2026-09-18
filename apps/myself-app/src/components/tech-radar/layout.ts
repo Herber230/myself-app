@@ -34,7 +34,7 @@ import {
   type Segment,
   segment,
 } from './geometry';
-import { createRandom, DEFAULT_SEED } from './random';
+import { createRandom, DEFAULT_SEED, type SeededRandom } from './random';
 import type {
   PlacedBlip,
   QuadrantIndex,
@@ -61,6 +61,16 @@ const EPSILON = 1e-9;
 export interface LayoutOptions {
   readonly seed?: number;
   readonly passes?: number;
+  /**
+   * The generator to place and separate blips with. `createRandom(seed)` unless
+   * given, and a caller in the app never gives it.
+   *
+   * It exists for the one path a seeded generator cannot reach: two blips
+   * landing on the same point, which `relax` has to separate at random. The
+   * recurrence never repeats a draw, so the only way to exercise that branch is
+   * to hand it a generator that does.
+   */
+  readonly random?: SeededRandom;
 }
 
 interface WorkingBlip {
@@ -80,9 +90,12 @@ interface WorkingBlip {
  */
 export function layoutRadar(
   entries: readonly RadarEntry[],
-  { seed = DEFAULT_SEED, passes = RELAX_PASSES }: LayoutOptions = {},
+  {
+    seed = DEFAULT_SEED,
+    passes = RELAX_PASSES,
+    random = createRandom(seed),
+  }: LayoutOptions = {},
 ): RadarLayout {
-  const random = createRandom(seed);
   const blips = numbered(entries).map<WorkingBlip>(({ entry, number }) => {
     const cell = segment(entry.quadrant, entry.ring);
     const point = cell.randomPoint(random);

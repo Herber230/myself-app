@@ -1,0 +1,26 @@
+[
+  {
+    "id": "myself-app",
+    "name": "myself-app",
+    "summary": {
+      "en": "This site: a developer profile in English and Spanish, exported as static files and built on entifix.",
+      "es": "Este sitio: un perfil de desarrollador en inglés y español, exportado como archivos estáticos y construido sobre entifix."
+    },
+    "repositoryUrl": "https://github.com/Herber230/myself-app",
+    "technologies": ["next-js", "typescript", "nx", "pnpm", "tailwind-css"],
+    "featured": true,
+    "order": 0
+  },
+  {
+    "id": "entifix",
+    "name": "entifix",
+    "summary": {
+      "en": "A TypeScript framework for entity-driven applications on Effect, from metadata to repositories to React controls.",
+      "es": "Un framework de TypeScript para aplicaciones guiadas por entidades sobre Effect, de los metadatos a los repositorios y los controles de React."
+    },
+    "repositoryUrl": "https://github.com/r10c-technologies/entifix",
+    "technologies": ["effect", "typescript", "nx"],
+    "featured": true,
+    "order": 1
+  }
+]
