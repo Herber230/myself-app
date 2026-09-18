@@ -34,9 +34,10 @@ for (const { locale, legend, ring } of LOCALES) {
 
     // Every blip in the picture is a row in the legend, and no more.
     const blips = await radar.locator('g[transform^="translate"]').count();
-    const rows = await page.locator('section[aria-labelledby] li').count();
     expect(blips).toBeGreaterThanOrEqual(16);
-    expect(rows).toBe(blips);
+    await expect(page.locator('section[aria-labelledby] li')).toHaveCount(
+      blips,
+    );
   });
 }
 
