@@ -34,10 +34,15 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: '11.9'
+      # ⚠️ No `cache: pnpm` here, unlike every other job's identical step. That
+      # option makes setup-node save pnpm's store after the job, and the store
+      # only exists when `pnpm install` ran — which the cache hit below skips.
+      # On a hit the post step then fails the whole job on a path that was
+      # never written, taking `CI Gate` with it. What is worth caching is
+      # `node_modules`, and the step below already caches it.
       - uses: actions/setup-node@v4
         with:
           node-version-file: package.json
-          cache: pnpm
 
       # The key must change whenever what `pnpm install` would produce changes:
       # the lockfile, the workspace member globs, and the Node version native
