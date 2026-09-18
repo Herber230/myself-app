@@ -1,26 +1,24 @@
-import type { Locale } from '@entifix/core';
-
 /**
- * The locales this site ships, and the one list routes, catalogs and content
- * validation read (ADR 0005).
+ * The site's locales, and the paths built from them.
  *
- * Declared here rather than taken from `@entifix/core`: entifix fixes its own
- * `LOCALES` to `['es', 'en']` with `es` as the default (entifix#35), and this
- * site defaults to English. `satisfies` keeps the list a subset of what entifix
- * can format and translate.
+ * ⚠️ The list itself lives in `@myself-app/domain` (ADR 0005, revised). Content
+ * validation needs it, and no package may import another — every layer below
+ * the app declares `onlyDependOnLibsWithTags: []` — so the app is the wrong
+ * place to hold it. It is re-exported here so every page still reads one
+ * module, and so a locale is added in exactly one file.
  */
-export const SITE_LOCALES = ['en', 'es'] as const satisfies readonly Locale[];
+export {
+  isSiteLocale,
+  SITE_DEFAULT_LOCALE,
+  SITE_LOCALES,
+  type SiteLocale,
+} from '@myself-app/domain';
 
-export type SiteLocale = (typeof SITE_LOCALES)[number];
-
-export const SITE_DEFAULT_LOCALE: SiteLocale = 'en';
-
-export function isSiteLocale(value: unknown): value is SiteLocale {
-  return (
-    typeof value === 'string' &&
-    (SITE_LOCALES as readonly string[]).includes(value)
-  );
-}
+import {
+  SITE_DEFAULT_LOCALE,
+  SITE_LOCALES,
+  type SiteLocale,
+} from '@myself-app/domain';
 
 /**
  * A site path under a locale, with the trailing slash the export writes

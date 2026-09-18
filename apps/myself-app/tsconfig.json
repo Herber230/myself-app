@@ -33,5 +33,10 @@
     ".next/dev",
     "eslint.config.mjs",
     "vitest.config.mts"
+  ],
+  "references": [
+    {
+      "path": "../../packages/domain"
+    }
   ]
 }
