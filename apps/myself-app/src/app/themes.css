@@ -26,6 +26,16 @@
   --color-danger: #b42318;
   --color-danger-subtle: #fef3f2;
   --color-danger-content: #ffffff;
+
+  /* The radar's four rings, innermost first: the teal fading outwards to a
+     neutral. Each is dark enough to carry the blip's number in `blip-ink`. */
+  --color-radar-ring-1: #1f5f5b;
+  --color-radar-ring-2: #2f7a74;
+  --color-radar-ring-3: #4f8f88;
+  --color-radar-ring-4: #5c6a67;
+  --color-radar-blip-ink: #ffffff;
+  --color-radar-grid: #cfccc4;
+  --color-radar-ring-fill: #efeeea;
 }
 
 [data-theme='dark'] {
@@ -43,6 +53,15 @@
   --color-danger: #ff8b80;
   --color-danger-subtle: #2c1a1a;
   --color-danger-content: #0b1413;
+
+  /* The same ramp lifted off the dark ground, and the number inverted with it. */
+  --color-radar-ring-1: #6cc2b8;
+  --color-radar-ring-2: #4fa79d;
+  --color-radar-ring-3: #3c8a82;
+  --color-radar-ring-4: #6d7a78;
+  --color-radar-blip-ink: #0b1413;
+  --color-radar-grid: #34383b;
+  --color-radar-ring-fill: #17191a;
 
   /* Black at the light scale's alphas vanishes on a dark ground; the same
      adjustment entifix's midnight preset makes. */

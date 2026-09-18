@@ -54,6 +54,11 @@ Tailwind v4 over `@entifix/style` tokens (ADR 0006).
 - ⚠️ **Tailwind does not scan `node_modules`.** `app/global.css` has an `@source` for the primitives' `dist`. Without it their classes produce no CSS and nothing reports it.
 - ⚠️ **Never import the `@entifix/react-controls` main barrel or `./preferences`.** Lint fails on both.
 - ⚠️ **Keep `optimizePackageImports` in `next.config.js`.** entifix's packages declare no `sideEffects`, and without it one primitive ships the whole barrel and Effect to the browser.
+- ⚠️ **`max-w-2xl` and its siblings are not Tailwind's container scale here.** entifix's tokens redefine those steps as spacing, so `max-w-2xl` is about 80px. Give a width a length (`max-w-[42rem]`) when you mean one.
+
+## Third-party code
+
+`components/tech-radar/` (`random.ts`, `geometry.ts`, `layout.ts`) is a port of [zalando/tech-radar](https://github.com/zalando/tech-radar)'s maths, MIT licensed. Each file keeps Zalando's copyright notice, which the licence requires of derived work; ADR 0009 says what was ported, what was not, and why. This is unrelated to the no-AI-attribution rule, which is about tool attribution, not authorship of borrowed code.
 
 ## Boundaries between projects
 

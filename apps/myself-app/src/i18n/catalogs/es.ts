@@ -18,4 +18,23 @@ export const es = {
     light: 'Claro',
     dark: 'Oscuro',
   },
+  radar: {
+    chartLabel:
+      'Radar tecnológico: cuatro cuadrantes de tecnologías, en anillos según cuánto confío en ellas',
+    legend: 'Cada punto, por cuadrante y anillo',
+    placeholder:
+      'Entradas de ejemplo — las reales llegan junto con el contenido.',
+    quadrants: {
+      techniques: 'Técnicas',
+      tools: 'Herramientas',
+      platforms: 'Plataformas',
+      languages: 'Lenguajes y frameworks',
+    },
+    rings: {
+      adopt: 'Adoptar',
+      trial: 'Probar',
+      assess: 'Evaluar',
+      hold: 'Detener',
+    },
+  },
 } as const satisfies CatalogShape<typeof en>;
