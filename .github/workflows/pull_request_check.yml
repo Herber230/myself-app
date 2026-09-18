@@ -11,6 +11,16 @@ concurrency:
   group: pr-checks-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# `actions: read` is what `nx-set-shas` needs on a push: with no pull request to
+# take a base from, it asks the workflow-runs API for the last successful run on
+# the branch. The repository's default token grants contents and packages only,
+# so that call answered "Resource not accessible by integration" and failed every
+# push to `main` while pull requests passed. Spelled out rather than left to the
+# default, because naming a block at all turns every scope not listed into `none`.
+permissions:
+  contents: read
+  actions: read
+
 # entifix's pull-request check, sized for one app, one e2e project and one tool:
 # no matrix chunking, the same install-once cache, affected scoping and gate.
 jobs:
@@ -34,10 +44,15 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: '11.9'
+      # ⚠️ No `cache: pnpm` here, unlike every other job's identical step. That
+      # option makes setup-node save pnpm's store after the job, and the store
+      # only exists when `pnpm install` ran — which the cache hit below skips.
+      # On a hit the post step then fails the whole job on a path that was
+      # never written, taking `CI Gate` with it. What is worth caching is
+      # `node_modules`, and the step below already caches it.
       - uses: actions/setup-node@v4
         with:
           node-version-file: package.json
-          cache: pnpm
 
       # The key must change whenever what `pnpm install` would produce changes:
       # the lockfile, the workspace member globs, and the Node version native
@@ -100,9 +115,16 @@ jobs:
           # project graph that fails to build would leave every list empty,
           # every job `skipped`, and the gate free to pass a run in which
           # nothing ran. An assignment's exit status is its substitution's.
+          #
+          # Both substitutions, not just the first: `tail -n1` takes whatever
+          # nx printed last, so a notice that lands after the JSON reaches `jq`
+          # instead of the array. Leaving that one inside the `echo` argument
+          # reopened the hole this reasoning closes, on a step that still
+          # exited 0.
           for target in lint build typecheck test e2e; do
             list=$(projects "$target")
-            echo "$target=$(jq -r 'join(",")' <<<"$list")" >> "$GITHUB_OUTPUT"
+            joined=$(jq -r 'join(",")' <<<"$list")
+            echo "$target=$joined" >> "$GITHUB_OUTPUT"
           done
 
   lint:
