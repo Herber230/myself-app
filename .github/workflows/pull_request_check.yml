@@ -391,8 +391,12 @@ jobs:
   # it is what `commits` reports on a push, and what a job with no affected
   # projects does.
   #
-  # The repository is private on a free plan, so branch protection cannot make
-  # this check required: merging on red is prevented by this gate's visibility.
+  # `main` requires this check by name, so a red gate blocks the merge rather
+  # than merely showing. It also requires one approving review, which a lone
+  # maintainer cannot give their own pull request — so a merge is
+  # `gh pr merge --squash --admin`, and the override is recorded on the pull
+  # request. The review requirement is kept deliberately: it is what makes the
+  # bypass a decision rather than a habit.
   ci-gate:
     name: CI Gate
     needs: [initialize, lint, build, test, e2e, conventions, commits]
