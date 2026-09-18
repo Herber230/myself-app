@@ -11,6 +11,16 @@ concurrency:
   group: pr-checks-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# `actions: read` is what `nx-set-shas` needs on a push: with no pull request to
+# take a base from, it asks the workflow-runs API for the last successful run on
+# the branch. The repository's default token grants contents and packages only,
+# so that call answered "Resource not accessible by integration" and failed every
+# push to `main` while pull requests passed. Spelled out rather than left to the
+# default, because naming a block at all turns every scope not listed into `none`.
+permissions:
+  contents: read
+  actions: read
+
 # entifix's pull-request check, sized for one app, one e2e project and one tool:
 # no matrix chunking, the same install-once cache, affected scoping and gate.
 jobs:
