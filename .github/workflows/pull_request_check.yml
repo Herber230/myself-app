@@ -115,9 +115,16 @@ jobs:
           # project graph that fails to build would leave every list empty,
           # every job `skipped`, and the gate free to pass a run in which
           # nothing ran. An assignment's exit status is its substitution's.
+          #
+          # Both substitutions, not just the first: `tail -n1` takes whatever
+          # nx printed last, so a notice that lands after the JSON reaches `jq`
+          # instead of the array. Leaving that one inside the `echo` argument
+          # reopened the hole this reasoning closes, on a step that still
+          # exited 0.
           for target in lint build typecheck test e2e; do
             list=$(projects "$target")
-            echo "$target=$(jq -r 'join(",")' <<<"$list")" >> "$GITHUB_OUTPUT"
+            joined=$(jq -r 'join(",")' <<<"$list")
+            echo "$target=$joined" >> "$GITHUB_OUTPUT"
           done
 
   lint:
