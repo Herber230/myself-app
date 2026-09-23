@@ -1,10 +1,11 @@
 # 8. A landing page of five static sections
 
-- Status: Accepted
+- Status: Accepted; superseded in part by [ADR 0011](0011-a-moving-hero-a-revealing-nav-and-a-blue-theme.md) — the hero moves, and one navigation bar reveals on scroll
 - Date: 2026-09-17
 - Area: ui
 - Read when: adding or reordering a landing section, or when the in-page nav or the language switch loses its place
 - Revised: 2026-09-18 — the script budget is measured and held by an e2e journey
+- Revised: 2026-09-23 by [ADR 0011](0011-a-moving-hero-a-revealing-nav-and-a-blue-theme.md) — the theme control is a menu, not entifix's switcher; the landing page's scripts measured again with #29
 
 ## Context
 
@@ -25,7 +26,9 @@ and which are copy.
   CV and the tech radar are reached from calls to action in the hero, not from a
   section of their own: they are pages, and a section that only points at a page
   earns less than the scroll it costs.
-- **The hero is typography-led, and does not move.** A name, a title, a one-line
+- **The hero is typography-led, and does not move.** _Superseded by
+  [ADR 0011](0011-a-moving-hero-a-revealing-nav-and-a-blue-theme.md): the hero
+  enters with CSS motion, off under reduced motion._ A name, a title, a one-line
   tagline and the two calls to action, set in the site's own type over its
   tokens ([ADR 0006](0006-tailwind-and-entifix-style.md)). The element that
   paints last is text, so nothing is fetched to paint it and there is no
@@ -34,7 +37,7 @@ and which are copy.
   exported HTML — `localePath(locale, '/')` already ends in a slash, so
   `/en/#projects` is the form — and works with scripting off. Tracking the
   active section is an enhancement: one `'use client'` leaf inside the
-  server-rendered `SiteNav`, as `SiteThemeSwitcher` already is. The nav itself
+  server-rendered `SiteNav`, as the theme control already is. The nav itself
   never becomes a client component.
 - **The language switch keeps the section only when scripting is on.** A
   fragment never leaves the browser, and there is no server here to read it if
@@ -90,6 +93,12 @@ which don't exist yet. This counts the scripts the page actually loads. ADR
 0003's 217.2 KB summed every chunk the HTML references, so the two figures are
 different measures, not a regression. A change that crosses the budget either
 gets smaller or writes its new figure here, with the reason.
+
+With #29 in place (2026-09-23): 168.2 KB over 10 scripts, with the section
+tracking, the language switch's fragment and the dropdowns all shipped. It is
+smaller than the baseline because entifix's `ThemeSwitcher`, and the Headless UI
+radio group it brought, left the page for the site's own theme menu (ADR 0011).
+The budget stays at 194 KB.
 
 ## The sections
 

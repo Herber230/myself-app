@@ -28,9 +28,12 @@ test("the landing page's scripts stay within the budget", async ({ page }) => {
   });
 
   await page.goto('/en/');
-  // The theme switcher renders only after hydration, so every script the
-  // page needs to become interactive has loaded by the time it shows.
-  await expect(page.getByRole('radio', { name: 'Dark' })).toBeVisible();
+  // The theme menu renders only after hydration, so every script the page
+  // needs to become interactive has loaded by the time it is there. Attached,
+  // not visible: the bar is hidden until the page scrolls.
+  await expect(
+    page.getByRole('banner').getByLabel('Theme', { exact: true }),
+  ).toBeAttached();
   const sizes = await Promise.all(scripts);
   const total = sizes.reduce((sum, size) => sum + size, 0);
 

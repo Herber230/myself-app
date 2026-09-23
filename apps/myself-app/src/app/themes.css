@@ -3,14 +3,18 @@
  * with this site's values. The identity lives here, never in a component.
  *
  * `data-theme` is set on <html> before first paint (`ThemeScript`). Without
- * JavaScript nothing sets it, so the light values also apply to a document with
- * no `data-theme` at all.
+ * JavaScript nothing sets it, so a document with no `data-theme` gets the
+ * default, blue, on screen (ADR 0011).
  *
- * Restrained on purpose: warm neutrals and one teal, so a page still reads in
- * black and white — the CV prints from these same tokens.
+ * Light is the base, and blue and dark apply on screen only: paper is always
+ * light, whatever the theme. The prebuilt CV PDFs are printed from a fresh
+ * browser context, which paints the default blue.
+ *
+ * Light and dark are restrained on purpose: warm neutrals and one teal, so a
+ * page still reads in black and white — the CV prints from these same tokens.
  */
 
-:root:not([data-theme]),
+:root,
 [data-theme='light'] {
   color-scheme: light;
   --color-surface: #f7f6f3;
@@ -36,38 +40,83 @@
   --color-radar-blip-ink: #ffffff;
   --color-radar-grid: #cfccc4;
   --color-radar-ring-fill: #efeeea;
+
+  /* The hero's backdrop, top-left to bottom-right. */
+  --color-hero-from: #f7f6f3;
+  --color-hero-to: #e3ebe8;
 }
 
-[data-theme='dark'] {
-  color-scheme: dark;
-  --color-surface: #121314;
-  --color-surface-elevated: #1b1d1f;
-  --color-content: #ecebe7;
-  --color-content-muted: #a3a7ab;
-  --color-primary: #6cc2b8;
-  --color-primary-content: #0b1413;
-  --color-border: #2c2f32;
-  --color-accent: #6cc2b8;
-  --color-focus-ring: #8fd6cd;
+@media screen {
+  /* The site's own: a deep navy, white type and a light-cyan primary. */
+  :root:not([data-theme]),
+  [data-theme='blue'] {
+    color-scheme: dark;
+    --color-surface: #0b1d3a;
+    --color-surface-elevated: #11274b;
+    --color-content: #f4f7fc;
+    --color-content-muted: #a8b6d0;
+    --color-primary: #7cc4ff;
+    --color-primary-content: #061328;
+    --color-border: #213a63;
+    --color-accent: #7cc4ff;
+    --color-focus-ring: #b0dcff;
 
-  --color-danger: #ff8b80;
-  --color-danger-subtle: #2c1a1a;
-  --color-danger-content: #0b1413;
+    --color-danger: #ff8b80;
+    --color-danger-subtle: #3a1b2a;
+    --color-danger-content: #061328;
 
-  /* The same ramp lifted off the dark ground, and the number inverted with it. */
-  --color-radar-ring-1: #6cc2b8;
-  --color-radar-ring-2: #4fa79d;
-  --color-radar-ring-3: #3c8a82;
-  --color-radar-ring-4: #6d7a78;
-  --color-radar-blip-ink: #0b1413;
-  --color-radar-grid: #34383b;
-  --color-radar-ring-fill: #17191a;
+    --color-radar-ring-1: #7cc4ff;
+    --color-radar-ring-2: #5ea8e8;
+    --color-radar-ring-3: #478ccb;
+    --color-radar-ring-4: #6d80a3;
+    --color-radar-blip-ink: #061328;
+    --color-radar-grid: #2a4470;
+    --color-radar-ring-fill: #0f2446;
 
-  /* Black at the light scale's alphas vanishes on a dark ground; the same
-     adjustment entifix's midnight preset makes. */
-  --shadow-tint: 0 0 0;
-  --shadow-strength: 6.5;
-  --shadow-card:
-    0 8px 24px -6px rgb(0 0 0 / 0.55), 0 2px 8px -2px rgb(0 0 0 / 0.4);
-  --shadow-overlay: 0 20px 48px -12px rgb(0 0 0 / 0.65);
+    --color-hero-from: #081630;
+    --color-hero-to: #16366e;
+
+    --shadow-tint: 0 0 0;
+    --shadow-strength: 6.5;
+    --shadow-card:
+      0 8px 24px -6px rgb(0 0 0 / 0.55), 0 2px 8px -2px rgb(0 0 0 / 0.4);
+    --shadow-overlay: 0 20px 48px -12px rgb(0 0 0 / 0.65);
+  }
+
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --color-surface: #121314;
+    --color-surface-elevated: #1b1d1f;
+    --color-content: #ecebe7;
+    --color-content-muted: #a3a7ab;
+    --color-primary: #6cc2b8;
+    --color-primary-content: #0b1413;
+    --color-border: #2c2f32;
+    --color-accent: #6cc2b8;
+    --color-focus-ring: #8fd6cd;
+
+    --color-danger: #ff8b80;
+    --color-danger-subtle: #2c1a1a;
+    --color-danger-content: #0b1413;
+
+    /* The same ramp lifted off the dark ground, and the number inverted with it. */
+    --color-radar-ring-1: #6cc2b8;
+    --color-radar-ring-2: #4fa79d;
+    --color-radar-ring-3: #3c8a82;
+    --color-radar-ring-4: #6d7a78;
+    --color-radar-blip-ink: #0b1413;
+    --color-radar-grid: #34383b;
+    --color-radar-ring-fill: #17191a;
+
+    --color-hero-from: #121314;
+    --color-hero-to: #1d2429;
+
+    /* Black at the light scale's alphas vanishes on a dark ground; the same
+       adjustment entifix's midnight preset makes. */
+    --shadow-tint: 0 0 0;
+    --shadow-strength: 6.5;
+    --shadow-card:
+      0 8px 24px -6px rgb(0 0 0 / 0.55), 0 2px 8px -2px rgb(0 0 0 / 0.4);
+    --shadow-overlay: 0 20px 48px -12px rgb(0 0 0 / 0.65);
+  }
 }

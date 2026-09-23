@@ -41,7 +41,11 @@ export default async function LocaleLayout({
             page below still renders at build. */}
         <Providers
           locale={locale}
-          themeLabels={{ light: t('theme.light'), dark: t('theme.dark') }}
+          themeLabels={{
+            blue: t('theme.blue'),
+            light: t('theme.light'),
+            dark: t('theme.dark'),
+          }}
         >
           {children}
         </Providers>

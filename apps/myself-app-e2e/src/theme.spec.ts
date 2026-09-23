@@ -1,4 +1,4 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 
 /**
  * The design system on the export (#16): the site's palettes, applied before
@@ -9,6 +9,7 @@ const STORAGE_KEY = 'myself-app-theme';
 
 /** `--color-surface` of each palette in `app/themes.css`, as computed. */
 const SURFACE = {
+  blue: 'rgb(11, 29, 58)',
   light: 'rgb(247, 246, 243)',
   dark: 'rgb(18, 19, 20)',
 };
@@ -55,6 +56,31 @@ async function themeChanges(page: Page): Promise<string[]> {
   });
 }
 
+/**
+ * One entry of the theme menu, found by the menu's name and the theme's label.
+ * The menu renders on the client only, so this waits for hydration. The entry
+ * need not be shown to be read: the landing page's bar is hidden until it
+ * scrolls.
+ */
+async function themeOption(
+  page: Page,
+  menu: string,
+  theme: string,
+): Promise<Locator> {
+  const trigger = page.getByRole('banner').getByLabel(menu, { exact: true });
+  await trigger.waitFor({ state: 'attached' });
+  return trigger
+    .locator('xpath=..')
+    .getByRole('button', { name: theme, exact: true, includeHidden: true });
+}
+
+/** Opens the theme menu and picks a theme from it. */
+async function chooseTheme(page: Page, theme: string) {
+  const trigger = page.getByRole('banner').getByLabel('Theme', { exact: true });
+  await trigger.click();
+  await (await themeOption(page, 'Theme', theme)).click();
+}
+
 async function expectPainted(page: Page, theme: keyof typeof SURFACE) {
   await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
   await expect(page.locator('body')).toHaveCSS(
@@ -64,22 +90,26 @@ async function expectPainted(page: Page, theme: keyof typeof SURFACE) {
 }
 
 for (const scheme of ['light', 'dark'] as const) {
-  test(`a first visit follows the system's ${scheme} scheme`, async ({
+  test(`a first visit paints blue under the system's ${scheme} scheme`, async ({
     page,
   }) => {
     await page.emulateMedia({ colorScheme: scheme });
     await recordThemeChanges(page);
     await page.goto('/en/');
 
-    await expectPainted(page, scheme);
-    // Hydrated: the switcher renders on the client only.
-    await expect(page.getByRole('radio', { name: 'Dark' })).toBeVisible();
+    // The site's own blue, whatever the system says (ADR 0011).
+    await expectPainted(page, 'blue');
+    // Hydrated: the theme menu renders on the client only.
+    await expect(await themeOption(page, 'Theme', 'Blue')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     const changes = await themeChanges(page);
     expect(changes.length).toBeGreaterThan(0);
-    expect(changes.every(theme => theme === scheme)).toBe(true);
+    expect(changes.every(theme => theme === 'blue')).toBe(true);
     expect(
       await page.evaluate(key => localStorage.getItem(key), STORAGE_KEY),
-    ).toBe(scheme);
+    ).toBe('blue');
   });
 }
 
@@ -95,15 +125,11 @@ test('a stored theme wins over the system and never flashes', async ({
   await page.goto('/es/cv/');
 
   await expectPainted(page, 'dark');
-  // Labels from the catalogs: entifix's `controls` for the group, the site's
-  // own for each theme.
-  await expect(
-    page
-      .getByRole('radiogroup', { name: 'Tema', exact: true })
-      .getByRole('radio', {
-        name: 'Oscuro',
-      }),
-  ).toBeChecked();
+  // Labels from the site's catalogs, in the page's locale.
+  await expect(await themeOption(page, 'Tema', 'Oscuro')).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
   const changes = await themeChanges(page);
   expect(changes.length).toBeGreaterThan(0);
   expect(changes.every(theme => theme === 'dark')).toBe(true);
@@ -112,20 +138,40 @@ test('a stored theme wins over the system and never flashes', async ({
 test('the switcher changes the theme, and it survives a reload', async ({
   page,
 }) => {
-  await page.emulateMedia({ colorScheme: 'light' });
-  await page.goto('/en/');
-  await expectPainted(page, 'light');
+  // Not the landing page, whose bar is hidden until it scrolls.
+  await page.goto('/en/cv/');
+  await expectPainted(page, 'blue');
 
-  await page
-    .getByRole('radiogroup', { name: 'Theme', exact: true })
-    .getByRole('radio', { name: 'Dark' })
-    .click();
+  await chooseTheme(page, 'Light');
+  await expectPainted(page, 'light');
+  await chooseTheme(page, 'Dark');
   await expectPainted(page, 'dark');
 
   await page.reload();
   await expectPainted(page, 'dark');
-  await expect(page.getByRole('radio', { name: 'Dark' })).toBeChecked();
+  await expect(await themeOption(page, 'Theme', 'Dark')).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
 });
+
+for (const theme of ['blue', 'dark'] as const) {
+  test(`paper is light while the screen is ${theme}`, async ({ page }) => {
+    await page.addInitScript(
+      ([key, value]) => localStorage.setItem(key, value),
+      [STORAGE_KEY, theme] as const,
+    );
+    await page.goto('/en/cv/');
+    await expectPainted(page, theme);
+
+    // The prebuilt PDFs print from a fresh context, which paints blue.
+    await page.emulateMedia({ media: 'print' });
+    await expect(page.locator('body')).toHaveCSS(
+      'background-color',
+      SURFACE.light,
+    );
+  });
+}
 
 test('the primitives are styled and the fonts are self-hosted', async ({
   page,

@@ -33,7 +33,9 @@ Every page under `app/[locale]/` follows the same steps:
 3. Get the copy with `siteT(locale)`.
 4. Build `generateMetadata` with `localeAlternates(locale, PATH)`.
 
-Keep components server-side unless they need interactivity. `SiteNav` takes `path` as a prop for that reason: calling `usePathname` would make it a client component. When a piece of it does need the browser, it goes in as a `'use client'` leaf — `SiteThemeSwitcher` is the pattern, and ADR 0008 spends it on the landing page's section tracking.
+Keep components server-side unless they need interactivity. `SiteNav` takes `path` as a prop for that reason: calling `usePathname` would make it a client component. When a piece of it does need the browser, it goes in as a `'use client'` leaf — `SiteThemeMenu` is the pattern, and ADR 0008 spends it on the landing page's section tracking.
+
+Every component gets a `*.spec.tsx` beside it. It runs in jsdom with Testing Library, and coverage is gated at 100% over `.tsx` as over `.ts`. Drive the component through what a visitor or a screen reader meets (roles, names, `aria-*`), not its class names. Render a page or layout with `renderPage` from `src/test/render.tsx`, and stub `IntersectionObserver` with `src/test/intersection-observer.ts`. A spec that must see JSX rendered with no `document`, as `next build` renders it, is named `*.node.spec.tsx`.
 
 ## Copy
 
@@ -60,7 +62,7 @@ Tailwind v4 over `@entifix/style` tokens (ADR 0006).
 
 - **Style with token utilities** (`bg-surface`, `text-content-muted`, `gap-s`, `text-step-1`) and primitives from `@entifix/react-controls/primitives`.
 - **Palette values live in `app/themes.css`**, under `[data-theme='light']` and `[data-theme='dark']`. The site's identity changes there, never in a component.
-- **The theme is set before first paint** by `components/theme-script.tsx`: the stored choice if there is one, otherwise `prefers-color-scheme`. The e2e journey in `theme.spec.ts` records every `data-theme` write and fails on a flash.
+- **The theme is set before first paint** by `components/theme-script.tsx`: the stored choice if there is one, otherwise `DEFAULT_THEME` (blue). Blue and dark apply on screen only, so paper is always light. The e2e journey in `theme.spec.ts` records every `data-theme` write and fails on a flash.
 - ⚠️ **Tailwind does not scan `node_modules`.** `app/global.css` has an `@source` for the primitives' `dist`. Without it their classes produce no CSS and nothing reports it.
 - ⚠️ **Never import the `@entifix/react-controls` main barrel or `./preferences`.** Lint fails on both.
 - ⚠️ **Keep `optimizePackageImports` in `next.config.js`.** entifix's packages declare no `sideEffects`, and without it one primitive ships the whole barrel and Effect to the browser.
