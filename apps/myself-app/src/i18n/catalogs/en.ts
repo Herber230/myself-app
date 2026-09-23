@@ -6,16 +6,47 @@ export const en = {
   siteName: 'Herber Colop',
   home: 'Home',
   cv: 'CV',
+  /** The narrow screen's menu button. */
+  menu: 'Menu',
   techRadar: 'Tech radar',
-  /** The name of the *other* language, as the switch shows it. */
-  otherLanguage: 'Español',
-  homeLead: 'Software engineer. This page is being rebuilt on entifix.',
+  /** The language menu. Each language is named in itself, in every locale. */
+  language: {
+    label: 'Language',
+    en: 'English',
+    es: 'Español',
+  },
   cvLead: 'A digital paper sheet, in variants per role. Coming soon.',
   techRadarLead: 'The technologies and techniques I use. Coming soon.',
   redirecting: 'Continue to the English site',
   notFoundTitle: 'Page not found',
   notFoundLead: 'This page does not exist.',
+  /** The landing page (ADR 0008, 0011). Facts come from `Profile`, not here. */
+  landing: {
+    hero: {
+      cv: 'Read my CV',
+      techRadar: 'Explore my tech radar',
+      scroll: 'Scroll to read more',
+    },
+    /** The section nav's anchors. */
+    nav: {
+      label: 'Sections',
+      about: 'About',
+      projects: 'Projects',
+      entifix: 'entifix',
+      contact: 'Contact',
+    },
+    /** Each section's heading. */
+    headings: {
+      about: 'About me',
+      projects: 'Projects',
+      entifix: 'Built on entifix',
+      contact: 'Contact',
+    },
+    comingSoon: 'Coming soon.',
+  },
   theme: {
+    label: 'Theme',
+    blue: 'Blue',
     light: 'Light',
     dark: 'Dark',
   },

@@ -17,7 +17,7 @@ import { SITE_THEMES, type SiteTheme, THEME_STORAGE_KEY } from '../../theme';
  * starting from anything else would flip the palette for a frame.
  *
  * `undefined` on the server, where nothing renders from it: the one component
- * that does, the switcher, mounts on the client only (`SiteThemeSwitcher`).
+ * that does, the theme menu, mounts on the client only (`SiteThemeMenu`).
  */
 function paintedTheme(): string | undefined {
   return typeof document === 'undefined'

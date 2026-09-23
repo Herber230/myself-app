@@ -28,3 +28,554 @@ body {
   font-size: var(--text-step-0);
   line-height: var(--text-step-0--line-height);
 }
+
+/*
+ * The landing page (ADR 0008, 0011). Motion is CSS only: an entrance on load,
+ * a slow drift behind the hero, and the nav and the scroll cue keyed to the
+ * page's scroll. `prefers-reduced-motion` turns all of it off, at the end.
+ */
+@layer components {
+  /* ── The navigation bar ───────────────────────────────────────────────── */
+
+  .site-nav {
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-surface-elevated);
+  }
+
+  /* One row: the brand, then the tools. On a narrow screen the links live in
+     the menu panel; on a wide one they sit inline between the two. */
+  .site-nav {
+    position: relative;
+  }
+
+  .site-nav-bar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 'brand tools';
+    align-items: center;
+    gap: var(--spacing-s);
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: var(--spacing-xs) var(--spacing-m);
+  }
+
+  .site-nav-brand {
+    grid-area: brand;
+    justify-self: start;
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+  }
+
+  .site-nav-links {
+    display: none;
+  }
+
+  .site-nav-links ul {
+    display: flex;
+    gap: var(--spacing-s);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    white-space: nowrap;
+  }
+
+  .site-nav-tools {
+    grid-area: tools;
+    display: flex;
+    align-items: center;
+    /* Fixed: the fluid steps leave a 375px screen a pixel short. */
+    gap: 0.25rem;
+  }
+
+  @media (min-width: 64rem) {
+    .site-nav-bar {
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: 'brand links tools';
+    }
+
+    .site-nav-links {
+      display: block;
+      grid-area: links;
+      justify-self: end;
+    }
+
+    .site-nav-tools {
+      gap: var(--spacing-s);
+    }
+
+    .nav-menu-sheet {
+      display: none;
+    }
+  }
+
+  /* The smallest phones: the chevrons go and the name steps down, or the
+     bar is wider than a 320px screen. */
+  @media (max-width: 24rem) {
+    .site-nav-tools .nav-menu-chevron {
+      display: none;
+    }
+
+    .site-nav-brand {
+      font-size: 1rem;
+    }
+  }
+
+  /* The narrow screen's menu: a panel as wide as the bar, dropping below it,
+     with rows tall enough to tap. */
+  .nav-menu.nav-menu-sheet {
+    position: static;
+  }
+
+  .nav-menu-sheet > .nav-menu-panel {
+    left: 0;
+    right: 0;
+    top: 100%;
+    max-height: calc(100dvh - 4rem);
+    overflow-y: auto;
+    padding: var(--spacing-2xs) var(--spacing-m) var(--spacing-s);
+    border-width: 0 0 1px;
+    border-radius: 0;
+  }
+
+  .nav-menu-sheet .nav-menu-panel ul {
+    display: flex;
+    flex-direction: column;
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .nav-menu-sheet .site-nav-link {
+    min-height: 2.75rem;
+    gap: var(--spacing-xs);
+    font-size: 1rem;
+  }
+
+  .nav-menu-sheet .site-nav-link .nav-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .nav-icon-when-open,
+  .nav-menu[open] .nav-icon-when-closed {
+    display: none;
+  }
+
+  .nav-menu[open] .nav-icon-when-open {
+    display: block;
+  }
+
+  .site-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    /* Fixed rather than a fluid step: the bar is chrome, not copy, and the
+       smallest step still reads close to body size on a wide screen. */
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .site-nav-link .nav-icon {
+    color: var(--color-content-muted);
+  }
+
+  .site-nav-link:hover .nav-icon,
+  .site-nav-link[aria-current] .nav-icon {
+    color: currentColor;
+  }
+
+  .site-nav-tools {
+    grid-area: tools;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+  }
+
+  @media (min-width: 64rem) {
+    .site-nav-bar {
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: 'brand links tools';
+    }
+
+    .site-nav-links ul {
+      justify-content: flex-end;
+      mask-image: none;
+    }
+  }
+
+  /* ── The bar's dropdowns (`NavMenu`) ──────────────────────────────── */
+
+  .nav-menu {
+    position: relative;
+  }
+
+  .nav-menu-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3xs);
+    height: 2rem;
+    padding-inline: var(--spacing-2xs);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    color: var(--color-content);
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition:
+      background-color var(--duration-fast, 150ms) ease,
+      border-color var(--duration-fast, 150ms) ease;
+  }
+
+  .nav-menu-trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav-menu-trigger:hover,
+  .nav-menu[open] > .nav-menu-trigger {
+    border-color: var(--color-border);
+    background-color: color-mix(in srgb, var(--color-content) 6%, transparent);
+  }
+
+  .nav-menu-placeholder {
+    display: block;
+    width: 3.5rem;
+    height: 2rem;
+  }
+
+  .nav-icon,
+  .nav-menu-chevron,
+  .nav-menu-check {
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .nav-icon {
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 1.5;
+  }
+
+  .nav-menu-chevron {
+    width: 0.875rem;
+    height: 0.875rem;
+    stroke-width: 2;
+    color: var(--color-content-muted);
+    transition: rotate var(--duration-fast, 150ms) ease;
+  }
+
+  .nav-menu[open] .nav-menu-chevron {
+    rotate: 180deg;
+  }
+
+  .nav-menu-code {
+    letter-spacing: 0.04em;
+  }
+
+  .nav-menu-panel {
+    position: absolute;
+    top: calc(100% + var(--spacing-3xs));
+    right: 0;
+    z-index: 60;
+    min-width: 10rem;
+    padding: var(--spacing-3xs);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-elevated);
+    box-shadow: var(--shadow-overlay);
+    animation: menu-enter 120ms ease-out;
+  }
+
+  .nav-menu-panel ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav-menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2xs);
+    width: 100%;
+    padding: var(--spacing-3xs) var(--spacing-2xs);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: none;
+    color: var(--color-content);
+    font: inherit;
+    font-size: var(--text-step-sm);
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .nav-menu-item:hover,
+  .nav-menu-item:focus-visible {
+    background-color: color-mix(in srgb, var(--color-content) 8%, transparent);
+    outline: none;
+  }
+
+  .nav-menu-item[aria-current],
+  .nav-menu-item[aria-pressed='true'] {
+    color: var(--color-primary);
+    cursor: default;
+  }
+
+  .nav-menu-check {
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 2;
+  }
+
+  /* The landing variant: fixed, and translucent over the page it follows. */
+  .site-nav-reveal {
+    position: fixed;
+    inset-inline: 0;
+    top: 0;
+    z-index: 50;
+    background-color: color-mix(
+      in srgb,
+      var(--color-surface-elevated) 82%,
+      transparent
+    );
+    backdrop-filter: blur(12px);
+  }
+
+  /* ── The hero ─────────────────────────────────────────────────────────── */
+
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    min-height: 100dvh;
+    overflow: hidden;
+    padding: var(--spacing-2xl) var(--spacing-m);
+    text-align: center;
+  }
+
+  .hero-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    color: var(--color-primary);
+    background:
+      radial-gradient(
+        ellipse 80% 60% at 70% 20%,
+        color-mix(in srgb, var(--color-primary) 14%, transparent),
+        transparent 70%
+      ),
+      linear-gradient(
+        160deg,
+        var(--color-hero-from) 0%,
+        var(--color-hero-to) 100%
+      );
+  }
+
+  /* A dot grid, as on a diagram's canvas, fading out towards the edges. */
+  .hero-backdrop::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--color-primary) 22%, transparent) 1px,
+      transparent 1.5px
+    );
+    background-size: 28px 28px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000, transparent);
+  }
+
+  .hero-glyph {
+    position: absolute;
+    opacity: 0.16;
+    animation: hero-drift ease-in-out infinite alternate;
+  }
+
+  .hero-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-s);
+    max-width: 48rem;
+  }
+
+  .hero-name {
+    margin: 0;
+    font-size: clamp(2.75rem, 9vw, 6.5rem);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-title {
+    margin: 0;
+    font-size: clamp(1.25rem, 3.2vw, 2rem);
+    color: var(--color-content-muted);
+    letter-spacing: -0.01em;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-s);
+    margin: var(--spacing-m) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Each line fades and rises in, one after another. The name starts at once:
+     text at opacity 0 is not painted, so an entrance delays LCP by its length. */
+  .hero-beat {
+    animation: hero-enter 600ms var(--ease-enter, ease-out) both;
+  }
+  .hero-beat-2 {
+    animation-delay: 250ms;
+  }
+  .hero-beat-3 {
+    animation-delay: 500ms;
+  }
+
+  /* ── The scroll cue ───────────────────────────────────────────────────── */
+
+  /* Two elements, because two animations each own `opacity`: the wrapper
+     fades out with the scroll, the link fades in after a pause. */
+  .scroll-cue {
+    position: absolute;
+    bottom: var(--spacing-l);
+    left: 50%;
+    translate: -50% 0;
+  }
+
+  .scroll-cue-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-3xs);
+    border-radius: var(--radius-sm);
+    color: var(--color-content-muted);
+    font-size: var(--text-step-sm);
+    text-decoration: none;
+    animation: cue-enter 800ms ease-out 3s both;
+  }
+
+  .scroll-cue-link:hover {
+    color: var(--color-content);
+  }
+
+  .scroll-cue-chevron {
+    width: 1.5rem;
+    height: 1.5rem;
+    animation: cue-bob 1.8s ease-in-out 3.8s infinite;
+  }
+
+  /* ── The sections ─────────────────────────────────────────────────────── */
+
+  .landing-section {
+    padding-block: var(--spacing-3xl);
+    /* Clear of the fixed nav when reached from an anchor. */
+    scroll-margin-top: 4rem;
+  }
+
+  .landing-section + .landing-section {
+    border-top: 1px solid var(--color-border);
+  }
+}
+
+/* Scroll-driven: only where scroll timelines exist. Elsewhere the nav is
+   simply shown, and the cue stays until the visitor follows it. */
+@supports (animation-timeline: scroll()) {
+  /* Hidden until the animation says otherwise: a scroll timeline is inactive
+     for the first frame, and an inactive animation applies nothing, so a bar
+     shown by default would flash before hiding. */
+  .site-nav-reveal {
+    opacity: 0;
+    translate: 0 -100%;
+    animation: nav-reveal linear both;
+    animation-timeline: scroll(root);
+    animation-range: 35vh 75vh;
+  }
+
+  /* Never an invisible link under keyboard focus. */
+  .site-nav-reveal:focus-within {
+    opacity: 1;
+    translate: none;
+    animation: none;
+  }
+
+  .scroll-cue {
+    animation: cue-leave linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 25vh;
+  }
+}
+
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+}
+
+@keyframes hero-drift {
+  to {
+    translate: 0.75rem -1.25rem;
+  }
+}
+
+@keyframes cue-enter {
+  from {
+    opacity: 0;
+    translate: 0 -0.5rem;
+  }
+}
+
+@keyframes menu-enter {
+  from {
+    opacity: 0;
+    translate: 0 -0.25rem;
+  }
+}
+
+@keyframes cue-bob {
+  50% {
+    translate: 0 0.35rem;
+  }
+}
+
+@keyframes cue-leave {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes nav-reveal {
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-beat,
+  .hero-glyph,
+  .nav-menu-panel,
+  .scroll-cue-link,
+  .scroll-cue-chevron {
+    animation: none;
+  }
+
+  /* The bar is shown outright rather than slid in, and the cue stays. */
+  .site-nav-reveal {
+    opacity: 1;
+    translate: none;
+    animation: none;
+  }
+
+  .scroll-cue {
+    animation: none;
+  }
+}

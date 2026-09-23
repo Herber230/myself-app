@@ -32,9 +32,9 @@ pnpm nx run-many -t lint,typecheck,test,build,e2e   # everything CI runs
 pnpm exec prettier --check .                    # formatting, as CI checks it
 ```
 
-Unit tests are `src/**/*.spec.ts`, run by Vitest in a Node environment. E2E needs Chromium once: `pnpm exec playwright install chromium`.
+Unit tests sit beside what they test. `*.spec.ts` runs in Node, `*.spec.tsx` in jsdom with Testing Library (setup in `apps/myself-app/src/test/`), and `*.node.spec.tsx` renders JSX in Node, as `next build` does, with no `document`. E2E needs Chromium once: `pnpm exec playwright install chromium`.
 
-**Coverage is gated at 100%** — statements, branches, functions and lines — for `myself-app` and for every package under `packages/*`. It is collected on every `nx test` run, not only under CI's `--coverage`, so the threshold fails on the machine that wrote the code rather than in the pull request. The scope is `src/**/*.ts`: the environment is `node`, so a `.tsx` component is never rendered and counting it would mean a threshold met by excluding what it cannot reach. A file that genuinely cannot run under Vitest is excluded by name with the reason beside it (`src/fonts.ts` calls `next/font/local`, which only exists inside Next's compiler). `@myself-app/conventions` is unthresholded: it asserts things about the repository rather than running logic.
+**Coverage is gated at 100%** — statements, branches, functions and lines — for `myself-app` and for every package under `packages/*`. It is collected on every `nx test` run, not only under CI's `--coverage`, so the threshold fails on the machine that wrote the code rather than in the pull request. The scope is `src/**/*.{ts,tsx}`: every component, page and layout is rendered by its own spec, so a new one needs a `*.spec.tsx` beside it or the gate fails. Pages and layouts are async server components: `renderPage` in `src/test/render.tsx` awaits one and renders it inside `Providers`. A file that genuinely cannot run under Vitest is excluded by name with the reason beside it (`src/fonts.ts` calls `next/font/local`, which only exists inside Next's compiler). `@myself-app/conventions` is unthresholded: it asserts things about the repository rather than running logic.
 
 Projects: `myself-app` (the Next app), `myself-app-e2e` (Playwright against the export served by `tools/serve-static.mjs`, never against a Next server), `@myself-app/domain`, `@myself-app/static-adapter` and `@myself-app/content` (`packages/`, below), and `@myself-app/conventions` (`tools/conventions/`, checks about the repository itself). A commit scope drops the `@myself-app/` prefix: `feat(domain): …`.
 
@@ -74,10 +74,10 @@ Commits, PR descriptions and tracked files carry **no AI or tool attribution**: 
 
 ### Styling and theme (ADR 0006)
 
-- Tailwind v4 over `@entifix/style/tokens.css` (`src/app/global.css`); the site's palette values are `src/app/themes.css`, under `[data-theme='light'|'dark']`. Primitives come from `@entifix/react-controls/primitives`; fonts (Inter, JetBrains Mono) are self-hosted through `next/font/local` in `src/fonts.ts`.
+- Tailwind v4 over `@entifix/style/tokens.css` (`src/app/global.css`); the site's palette values are `src/app/themes.css`, under `[data-theme='blue'|'light'|'dark']`. Primitives come from `@entifix/react-controls/primitives`; fonts (Inter, JetBrains Mono) are self-hosted through `next/font/local` in `src/fonts.ts`.
 - **Never import the `@entifix/react-controls` main barrel** (~541 KB) **or `./preferences`** (pulls Effect into the client); lint fails on both. Tailwind v4 does not scan `node_modules`, so `global.css` has an `@source` for the primitives' `dist`; without it their classes produce no CSS and nothing errors.
 - **Keep `experimental.optimizePackageImports`** for `@entifix/react-controls` and `@entifix/core` in `next.config.js`. entifix declares no `sideEffects`, and without it a single primitive ships the whole barrel and Effect (~300 KB gzipped instead of ~200 KB).
-- The theme is set before first paint by the inline `ThemeScript` (stored choice, else `prefers-color-scheme`), in every root layout's `<head>`. `Providers` starts `ThemeProvider` from the painted theme, and `SiteThemeSwitcher` renders only after hydration; otherwise entifix's provider flips the palette for a frame. `theme.spec.ts` (e2e) records every `data-theme` write and fails on a flash.
+- The theme is set before first paint by the inline `ThemeScript` (stored choice, else `DEFAULT_THEME`, blue — ADR 0011), in every root layout's `<head>`. `themes.css` applies blue and dark on screen only, so paper is always light. `Providers` starts `ThemeProvider` from the painted theme, and `SiteThemeMenu` renders only after hydration; otherwise entifix's provider flips the palette for a frame. `theme.spec.ts` (e2e) records every `data-theme` write and fails on a flash.
 
 ### Packages (ADR 0002–0004, 0010)
 

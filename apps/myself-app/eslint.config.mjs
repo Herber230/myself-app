@@ -27,6 +27,15 @@ const config = [
       ],
     },
   },
+  {
+    // A spec builds the markup it drives, and is not a page: its strings are
+    // fixtures no visitor reads, and its anchors are not routes to prefetch.
+    files: ['src/**/*.spec.tsx', 'src/test/**/*.tsx'],
+    rules: {
+      'react/jsx-no-literals': 'off',
+      '@next/next/no-html-link-for-pages': 'off',
+    },
+  },
 ];
 
 export default config;

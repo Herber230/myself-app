@@ -22,30 +22,41 @@ test.describe('each locale renders its own pages', () => {
   const locales = [
     {
       locale: 'en',
-      home: 'Home',
       cv: 'CV',
       techRadar: 'Tech radar',
+      language: 'Language',
       other: 'Español',
       otherLocale: 'es',
     },
     {
       locale: 'es',
-      home: 'Inicio',
       cv: 'CV',
       techRadar: 'Radar tecnológico',
+      language: 'Idioma',
       other: 'English',
       otherLocale: 'en',
     },
   ];
 
-  for (const { locale, home, cv, techRadar, other, otherLocale } of locales) {
+  for (const {
+    locale,
+    cv,
+    techRadar,
+    language,
+    other,
+    otherLocale,
+  } of locales) {
     test(`/${locale}/`, async ({ page }) => {
       const response = await page.goto(`/${locale}/`);
       expect(response?.status()).toBe(200);
       await expect(page.locator('html')).toHaveAttribute('lang', locale);
 
-      const nav = page.getByRole('navigation');
-      await expect(nav.getByRole('link', { name: home })).toBeVisible();
+      // The bar is hidden over the hero and revealed by scrolling (ADR 0011).
+      await page.mouse.wheel(0, 2000);
+      const nav = page.getByRole('banner');
+      await expect(
+        nav.getByRole('link', { name: 'Herber Colop' }),
+      ).toBeVisible();
 
       await nav.getByRole('link', { name: cv, exact: true }).click();
       await page.waitForURL(`/${locale}/cv/`);
@@ -60,6 +71,7 @@ test.describe('each locale renders its own pages', () => {
       ).toBeVisible();
 
       // The language switch keeps the page.
+      await nav.getByLabel(language, { exact: true }).click();
       await nav.getByRole('link', { name: other }).click();
       await page.waitForURL(`/${otherLocale}/tech-radar/`);
       await expect(page.locator('html')).toHaveAttribute('lang', otherLocale);

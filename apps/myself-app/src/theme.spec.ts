@@ -1,10 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
-import { SITE_THEMES, THEME_STORAGE_KEY } from './theme';
+import { DEFAULT_THEME, SITE_THEMES, THEME_STORAGE_KEY } from './theme';
 
 describe('the site themes', () => {
-  it('are the two the palettes are declared under', () => {
-    expect(SITE_THEMES).toEqual(['light', 'dark']);
+  it('are the three the palettes are declared under', () => {
+    expect(SITE_THEMES).toEqual(['blue', 'light', 'dark']);
+  });
+
+  it("paint a first visit in the site's own blue", () => {
+    expect(DEFAULT_THEME).toBe('blue');
+    expect(SITE_THEMES).toContain(DEFAULT_THEME);
   });
 
   it('name a storage key no other app on the origin would use', () => {
