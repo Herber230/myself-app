@@ -79,6 +79,8 @@ pnpm exec playwright install firefox webkit      # print emulation in the other 
 
 - `pdfinfo <file>` shows the page count, the paper size and the metadata. `pdffonts <file>` shows whether every font is embedded with a Unicode map, which is what keeps text extractable. `pdftotext -layout <file> -` shows what an applicant tracking system reads, in the order it reads it.
 - `pdftoppm -r 100 -png -singlefile <file> <name>` renders a page to an image. `magick a.png b.png +append side.png` puts two side by side; `magick compare -metric AE a.png b.png diff.png` counts the pixels that differ.
+- **e2e checks every prebuilt PDF** (`cv-pdf.spec.ts`): one page, its metadata, and in its text layer everything its sheet shows, headings in order, and in the ATS mode each contact as a full address. A sheet that grows past one page fails there; cut copy rather than shrinking the type (ADR 0012).
+- **The CV's visual baselines** (`cv-visual.spec.ts`) are rendered on Linux, as CI renders them, and skipped elsewhere. After a change to how the CV looks, run `tools/update-cv-baselines.sh` with Docker running: it copies the working tree into Playwright's image, renders every baseline there, and brings back only the snapshot folder. Review the new images before committing them.
 - **The Playwright MCP server** in `.mcp.json` drives a headless browser from Claude Code, and can save a page as a PDF. Its version is pinned; bump it on purpose. Approve it the first time `claude` starts in this repository. Its Playwright is its own, so its screenshots are for looking, not for baselines.
 
 ## Third-party code
