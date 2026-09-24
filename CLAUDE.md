@@ -101,6 +101,7 @@ packages/content           one JSON file per entity; imports nothing
 
 - Shared versions (`@entifix/*`, `effect`, `next`, `react`, `react-dom`) live in the `catalog:` of `pnpm-workspace.yaml`. Package manifests reference them as `"catalog:"`. Bump them there.
 - A new `@entifix/*` version must also be added to `minimumReleaseAgeExclude`, or pnpm 11 holds it back.
+- Every version is exact: a manifest names `1.2.3`, `catalog:` or `workspace:*`, and the catalog names `1.2.3`. The conventions spec fails on a range. When pnpm writes a new `minimumReleaseAgeExclude` entry during a bump, the version is too young: pin the one before it instead.
 
 ## Conventions
 
