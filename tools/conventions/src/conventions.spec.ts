@@ -362,3 +362,55 @@ describe('every project sits in one layer', () => {
     expect(config).not.toMatch(/sourceTag: '\*'/);
   });
 });
+
+/**
+ * Exact versions. Every dependency names one version, a `catalog:` entry or a
+ * workspace package, so an install never moves a version the lockfile did not
+ * already hold and a bump is always a diff someone reads. Two carets slipped in
+ * once, beside a hundred pins; this keeps the next one out.
+ */
+describe('every dependency is pinned', () => {
+  const EXACT = /^\d+\.\d+\.\d+$/;
+  const PINNED = [EXACT, /^catalog:$/, /^workspace:\*$/];
+  const FIELDS = [
+    'dependencies',
+    'devDependencies',
+    'optionalDependencies',
+    'peerDependencies',
+  ];
+
+  const manifests = trackedTextFiles().filter(
+    path => path === 'package.json' || path.endsWith('/package.json'),
+  );
+
+  it('finds the manifests it means to check', () => {
+    // Pinned: the root, the app, its e2e, three packages and this one.
+    expect(manifests.length).toBeGreaterThanOrEqual(7);
+  });
+
+  it.each(manifests)('%s names exact versions', path => {
+    const manifest = JSON.parse(readFileSync(join(REPO_ROOT, path), 'utf8'));
+    const loose = FIELDS.flatMap(field =>
+      Object.entries<string>(manifest[field] ?? {})
+        .filter(([, spec]) => !PINNED.some(pattern => pattern.test(spec)))
+        .map(([name, spec]) => `${field}.${name}: ${spec}`),
+    );
+    expect(loose, `${path} has version ranges`).toEqual([]);
+  });
+
+  it('the catalog in pnpm-workspace.yaml names exact versions', () => {
+    const workspace = readFileSync(
+      join(REPO_ROOT, 'pnpm-workspace.yaml'),
+      'utf8',
+    );
+    const block = workspace.match(/^catalog:\n((?:[ \t]+.*\n)+)/m)?.[1] ?? '';
+    const entries = block
+      .split('\n')
+      .map(line => line.match(/^\s+'?([^':\s]+)'?:\s*(\S+)/))
+      .filter(match => match !== null)
+      .map(([, name, spec]) => ({ name, spec }));
+    // Pinned: `@entifix/*`, effect, next, react and react-dom.
+    expect(entries.length).toBeGreaterThanOrEqual(10);
+    expect(entries.filter(({ spec }) => !EXACT.test(spec))).toEqual([]);
+  });
+});
