@@ -18,6 +18,7 @@ import { isSiteLocale, localeAlternates, localePath } from '../../site-locales';
 import { SiteNav } from '../site-nav';
 import { CV_MODES, type CvMode } from './cv-format';
 import { cvPath } from './cv-paths';
+import { CvPrintButton } from './cv-print-button';
 import { CvSheet } from './cv-sheet';
 
 /**
@@ -75,6 +76,13 @@ export async function CvPageView(route: CvRoute) {
   const t = siteT(locale);
   const variants = await loadCvVariants(SITE_REPOSITORIES);
   const path = cvPath(variantId, mode, defaultVariant);
+  // What Chromium and Safari offer as the PDF's name when printing.
+  const fileName = [
+    `${t('siteName')} — ${t('cv')} (${titleOf(sheet.variant, locale)})`,
+    mode === 'ats' && t('cvPage.atsTitle'),
+  ]
+    .filter(Boolean)
+    .join(' — ');
   return (
     <>
       <SiteNav locale={locale} path={path} />
@@ -109,6 +117,10 @@ export async function CvPageView(route: CvRoute) {
               </SwitchItem>
             ))}
           </CvSwitch>
+          <div className="cv-actions">
+            <CvPrintButton label={t('cvPage.print')} fileName={fileName} />
+            <p className="cv-hint">{t('cvPage.printHint')}</p>
+          </div>
         </div>
         <div className="cv-paper">
           <CvSheet sheet={sheet} locale={locale} mode={mode} />

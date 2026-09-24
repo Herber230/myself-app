@@ -25,6 +25,9 @@ export const en = {
       ats: 'Applicant tracking systems',
     },
     atsTitle: 'ATS',
+    print: 'Print or save as PDF',
+    printHint:
+      'For a clean sheet: A4, margins none, headers and footers off, background graphics on.',
   },
   /** The CV sheet (ADR 0012). Headings are copy; every fact is content. */
   cvSheet: {

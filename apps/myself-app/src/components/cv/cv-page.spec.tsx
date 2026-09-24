@@ -37,6 +37,14 @@ describe('a CV page', () => {
     ).toBe('/en/cv/backend/');
   });
 
+  it('offers to print, with the settings that print it cleanly', async () => {
+    await renderPage(CvPageView({ locale: 'en', mode: 'ats' }), 'en');
+    expect(
+      screen.getByRole('button', { name: 'Print or save as PDF' }),
+    ).toBeTruthy();
+    expect(screen.getByText(/^For a clean sheet: A4/)).toBeTruthy();
+  });
+
   it('keeps the page in the language switch', async () => {
     await renderPage(
       CvPageView({ locale: 'es', variant: 'devops', mode: 'human' }),

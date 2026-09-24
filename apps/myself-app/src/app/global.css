@@ -714,6 +714,8 @@ body {
   .cv-list {
     margin-top: 1mm;
     padding-left: 4.5mm;
+    /* Tailwind's preflight strips list markers; a CV's bullets are its own. */
+    list-style: disc;
   }
 
   .cv-list li + li {
@@ -854,5 +856,61 @@ body {
     .cv-paper .cv-sheet {
       zoom: 0.4;
     }
+  }
+}
+
+/*
+ * Printing the CV (#36, ADR 0012). The page is the sheet: no margins of the
+ * browser's own (a zero page margin also drops Chromium's URL and date
+ * lines), no chrome, and colours kept. Paper is light already (`themes.css`).
+ */
+@layer components {
+  .cv-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs) var(--spacing-s);
+  }
+
+  .cv-hint {
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body:has(.cv-sheet) {
+    background-color: #ffffff;
+  }
+
+  body:has(.cv-sheet) .site-nav {
+    display: none;
+  }
+
+  .cv-desk {
+    display: block;
+    padding: 0;
+  }
+
+  .cv-sheet {
+    /* Exactly a page: no rounding past 297mm into a blank second one. */
+    min-height: 0;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .cv-entry,
+  .cv-contact {
+    break-inside: avoid;
+  }
+
+  .cv-heading {
+    break-after: avoid;
   }
 }
