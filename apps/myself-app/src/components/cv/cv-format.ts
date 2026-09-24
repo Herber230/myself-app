@@ -2,7 +2,19 @@
  * How the CV writes its dates and links (ADR 0012). Formatted at build, in the
  * reader's language, so a Spanish sheet never shows an English month.
  */
+import { localize, type LocalizedText } from '@myself-app/domain';
+
 import type { SiteLocale } from '../../site-locales';
+
+/**
+ * A member's text in the reader's language. Validation has made every
+ * required member present before a page renders, so the empty string is for
+ * the optional ones only.
+ */
+export const inLocale = (
+  text: LocalizedText | undefined,
+  locale: SiteLocale,
+): string => (text === undefined ? '' : localize(text, locale));
 
 /** The two ways one sheet is written. */
 export const CV_MODES = ['human', 'ats'] as const;

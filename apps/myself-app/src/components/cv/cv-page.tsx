@@ -1,3 +1,4 @@
+import { button } from '@entifix/react-controls/primitives';
 import {
   type CvVariant,
   localize,
@@ -16,8 +17,8 @@ import { SITE_REPOSITORIES } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import { isSiteLocale, localeAlternates, localePath } from '../../site-locales';
 import { SiteNav } from '../site-nav';
-import { CV_MODES, type CvMode } from './cv-format';
-import { cvPath } from './cv-paths';
+import { CV_MODES, type CvMode, inLocale } from './cv-format';
+import { cvPath, cvPdfName } from './cv-paths';
 import { CvPrintButton } from './cv-print-button';
 import { CvSheet } from './cv-sheet';
 
@@ -119,6 +120,23 @@ export async function CvPageView(route: CvRoute) {
           </CvSwitch>
           <div className="cv-actions">
             <CvPrintButton label={t('cvPage.print')} fileName={fileName} />
+            <a
+              className={button({ variant: 'secondary', size: 'sm' })}
+              href={cvPdfName(variantId, locale, mode)}
+              download
+              // `tools/render-pdfs.mjs` writes the file this names, and sets
+              // these on it, so the page and its PDF cannot disagree.
+              data-cv-pdf
+              data-pdf-title={fileName}
+              data-pdf-author={`${sheet.profile.firstName} ${sheet.profile.lastName}`}
+              data-pdf-subject={t('cvPage.pdfSubject')}
+              data-pdf-keywords={sheet.technologies
+                .map(each => inLocale(each.name, locale))
+                .join(', ')}
+              data-pdf-language={locale}
+            >
+              {t('cvPage.download')}
+            </a>
             <p className="cv-hint">{t('cvPage.printHint')}</p>
           </div>
         </div>

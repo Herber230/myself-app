@@ -23,6 +23,8 @@ export const es = {
       ats: 'Sistemas de selección (ATS)',
     },
     atsTitle: 'ATS',
+    download: 'Descargar PDF',
+    pdfSubject: 'Currículum vítae',
     print: 'Imprimir o guardar en PDF',
     printHint:
       'Para una hoja limpia: A4, sin márgenes, sin encabezados ni pies de página, con gráficos de fondo.',

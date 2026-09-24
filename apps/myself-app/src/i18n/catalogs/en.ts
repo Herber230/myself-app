@@ -25,6 +25,9 @@ export const en = {
       ats: 'Applicant tracking systems',
     },
     atsTitle: 'ATS',
+    download: 'Download PDF',
+    /** The prebuilt PDF's subject, in its metadata. */
+    pdfSubject: 'Curriculum vitae',
     print: 'Print or save as PDF',
     printHint:
       'For a clean sheet: A4, margins none, headers and footers off, background graphics on.',

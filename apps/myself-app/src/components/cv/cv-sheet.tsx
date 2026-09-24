@@ -1,8 +1,4 @@
-import {
-  type ContactChannel,
-  localize,
-  type LocalizedText,
-} from '@myself-app/domain';
+import type { ContactChannel } from '@myself-app/domain';
 
 import type { CvEmployment, CvSheet as CvSheetContent } from '../../content/cv';
 import { siteT } from '../../i18n/server';
@@ -11,19 +7,12 @@ import {
   type CvMode,
   formatPeriod,
   formatYears,
+  inLocale,
   readableUrl,
 } from './cv-format';
 import { ChannelIcon, LocationIcon } from './cv-icons';
 
 type T = ReturnType<typeof siteT>;
-
-/**
- * A member's text in the reader's language. Validation has made every
- * required member present before a page renders, so the empty string is for
- * the optional ones only.
- */
-const inLocale = (text: LocalizedText | undefined, locale: SiteLocale) =>
-  text === undefined ? '' : localize(text, locale);
 
 /** A label as the ATS mode writes it before a value: `Email: `. */
 const labelled = (label: string) => `${label}: `;
