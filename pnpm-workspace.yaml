@@ -30,6 +30,12 @@ allowBuilds:
   sharp: false
   unrs-resolver: false
 autoInstallPeers: true
+# Peer ranges that trail a version this workspace already runs. `@nx/vitest`
+# 23.2.1 declares `vitest ^3 || ^4`; `nx test` runs on vitest 5 with every
+# coverage gate holding (#60). Drop the entry once `@nx/vitest` declares ^5.
+peerDependencyRules:
+  allowedVersions:
+    '@nx/vitest>vitest': '5'
 ignoreWorkspaceRootCheck: true
 # pnpm 11 holds back versions published within its minimum release age. entifix
 # is released by the same author and adopted the day it ships, so its versions are
