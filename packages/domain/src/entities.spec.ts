@@ -19,9 +19,13 @@ import {
 } from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
+import { Certificate } from './entities/certificate.entity.js';
 import { ContactChannel } from './entities/contact-channel.entity.js';
+import { CvFocus } from './entities/cv-focus.entity.js';
 import { CvVariant } from './entities/cv-variant.entity.js';
+import { Education } from './entities/education.entity.js';
 import { Employer } from './entities/employer.entity.js';
+import { EmploymentHighlight } from './entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from './entities/employment-period.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
@@ -44,6 +48,10 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['TechnologyUsePeriod', TechnologyUsePeriod],
   ['Project', Project],
   ['CvVariant', CvVariant],
+  ['CvFocus', CvFocus],
+  ['EmploymentHighlight', EmploymentHighlight],
+  ['Education', Education],
+  ['Certificate', Certificate],
 ];
 
 /** The members `describeEntityColumns` reports, by name. */
@@ -56,9 +64,9 @@ const columnsOf = (entityConstructor: EntityConstructor<Entity>) =>
   );
 
 describe('every entity the three pages read', () => {
-  it('is one of eleven, and each carries its metadata', () => {
+  it('is one of fifteen, and each carries its metadata', () => {
     // Pinned: a table that stopped matching would assert nothing below.
-    expect(ENTITIES).toHaveLength(11);
+    expect(ENTITIES).toHaveLength(15);
     for (const [name, entityConstructor] of ENTITIES) {
       expect(() => extractMetaEntity(entityConstructor), name).not.toThrow();
     }
@@ -132,6 +140,11 @@ describe('a localized member', () => {
     expect(localizedMembersOf(Technology)).toContain('name');
     expect(localizedMembersOf(Project)).not.toContain('name');
     expect(localizedMembersOf(ContactChannel)).toEqual([]);
+    expect(localizedMembersOf(Profile)).toContain('location');
+    expect(localizedMembersOf(EmploymentHighlight)).toEqual(['text']);
+    expect(localizedMembersOf(Education)).toEqual(['degree', 'field']);
+    // A certificate's name and issuer are proper names.
+    expect(localizedMembersOf(Certificate)).toEqual([]);
   });
 
   it('claims none for an entity the list has never heard of', () => {
@@ -155,6 +168,11 @@ describe('the links between entities', () => {
     expect(columnsOf(TechnologyUsePeriod).get('technology')?.type).toBe('link');
     expect(columnsOf(Project).get('technologies')?.type).toBe('linkCollection');
     expect(columnsOf(CvVariant).get('employments')?.type).toBe(
+      'linkCollection',
+    );
+    expect(columnsOf(CvVariant).get('focuses')?.type).toBe('linkCollection');
+    expect(columnsOf(EmploymentHighlight).get('period')?.type).toBe('link');
+    expect(columnsOf(EmploymentHighlight).get('focuses')?.type).toBe(
       'linkCollection',
     );
   });

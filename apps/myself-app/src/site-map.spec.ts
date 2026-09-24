@@ -3,18 +3,26 @@ import { dirname, join, relative } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { SITE_PATHS, siteMapEntries, siteRobots } from './site-map';
+import {
+  CV_VARIANT_ROUTE,
+  SITE_PATHS,
+  siteMapEntries,
+  siteRobots,
+  UNLISTED_ROUTES,
+} from './site-map';
 
 const base = new URL('https://herber.example');
 
 describe('the sitemap', () => {
-  it('names every page under app/[locale]/, and nothing else', () => {
+  it('accounts for every page under app/[locale]/, and nothing else', () => {
     const root = join(import.meta.dirname, 'app/[locale]');
     const pages = globSync('**/page.tsx', { cwd: root }).map(page => {
       const dir = relative('.', dirname(page));
       return dir === '' ? '/' : `/${dir}`;
     });
-    expect([...SITE_PATHS].sort()).toEqual(pages.sort());
+    expect(
+      [...SITE_PATHS, CV_VARIANT_ROUTE, ...UNLISTED_ROUTES].sort(),
+    ).toEqual(pages.sort());
   });
 
   it('lists each page once per locale, absolute and with a trailing slash', () => {
@@ -37,6 +45,17 @@ describe('the sitemap', () => {
       es: 'https://herber.example/es/cv/',
       'x-default': 'https://herber.example/en/cv/',
     });
+  });
+});
+
+describe('the sitemap, given more paths', () => {
+  it('lists those instead', () => {
+    expect(
+      siteMapEntries(base, ['/cv/backend']).map(entry => entry.url),
+    ).toEqual([
+      'https://herber.example/en/cv/backend/',
+      'https://herber.example/es/cv/backend/',
+    ]);
   });
 });
 

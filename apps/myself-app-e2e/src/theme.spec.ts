@@ -164,11 +164,16 @@ for (const theme of ['blue', 'dark'] as const) {
     await page.goto('/en/cv/');
     await expectPainted(page, theme);
 
-    // The prebuilt PDFs print from a fresh context, which paints blue.
+    // The prebuilt PDFs print from a fresh context, which paints blue. In
+    // print the page is the sheet: white, with the light palette's ink.
     await page.emulateMedia({ media: 'print' });
     await expect(page.locator('body')).toHaveCSS(
       'background-color',
-      SURFACE.light,
+      'rgb(255, 255, 255)',
+    );
+    await expect(page.locator('.cv-name')).toHaveCSS(
+      'color',
+      'rgb(29, 31, 34)',
     );
   });
 }

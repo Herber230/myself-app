@@ -7,6 +7,7 @@ import {
 } from '@entifix/core';
 
 import type { LocalizedText } from '../localized-text.js';
+import { CvFocus } from './cv-focus.entity.js';
 import { EmploymentPeriod } from './employment-period.entity.js';
 import { Technology } from './technology.entity.js';
 
@@ -17,6 +18,8 @@ import { Technology } from './technology.entity.js';
  * reading is a content edit.
  *
  * The id is the slug the CV route is built from, so it appears in a URL.
+ *
+ * Its focuses pick, inside each employment, the highlights it shows (ADR 0012).
  */
 @entity({ key: 'cv-variant', domain: 'cv' })
 export class CvVariant implements Entity {
@@ -25,6 +28,7 @@ export class CvVariant implements Entity {
   #summary?: LocalizedText;
   #technologies = new EntityCollectionLink(Technology);
   #employments = new EntityCollectionLink(EmploymentPeriod);
+  #focuses = new EntityCollectionLink(CvFocus);
   #order = 0;
 
   @accessor({ type: 'id' })
@@ -69,6 +73,12 @@ export class CvVariant implements Entity {
   @accessor({ type: 'linkCollection' })
   get employments(): EntityCollectionLink<EmploymentPeriod> {
     return this.#employments;
+  }
+
+  /** Which highlights of each employment it shows: those sharing a focus. */
+  @accessor({ type: 'linkCollection' })
+  get focuses(): EntityCollectionLink<CvFocus> {
+    return this.#focuses;
   }
 
   @accessor({ type: 'number', required: true, sortable: true })

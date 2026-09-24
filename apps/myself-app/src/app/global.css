@@ -579,3 +579,338 @@ body {
     animation: none;
   }
 }
+
+/*
+ * The CV sheet (ADR 0012): one A4 page, measured in print units so screen,
+ * print and the prebuilt PDF share one layout. `data-theme="light"` on the
+ * sheet gives it the paper palette whatever the site's theme.
+ *
+ * The modes differ only here and in decoration beside the text: the human
+ * sheet takes the primary colour as its accent and puts dates on the right;
+ * the ATS sheet is black and grey and keeps every field on its own line.
+ */
+@layer components {
+  .cv-sheet {
+    --cv-accent: var(--color-primary);
+    --cv-rule: var(--color-border);
+    box-sizing: border-box;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 14mm 16mm;
+    background-color: var(--color-surface-elevated);
+    color: var(--color-content);
+    font-size: 9.5pt;
+    line-height: 1.4;
+  }
+
+  .cv-sheet[data-mode='ats'] {
+    --cv-accent: var(--color-content);
+    --cv-rule: var(--color-content-muted);
+  }
+
+  .cv-sheet :where(h1, h2, h3, p, ul) {
+    margin: 0;
+  }
+
+  .cv-header {
+    text-align: center;
+  }
+
+  .cv-name {
+    font-size: 20pt;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .cv-headline {
+    margin-top: 1mm;
+    color: var(--cv-accent);
+    font-size: 11pt;
+    font-weight: 600;
+  }
+
+  .cv-contact {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1mm 5mm;
+    margin-top: 2mm;
+    padding: 0;
+    color: var(--color-content-muted);
+    list-style: none;
+  }
+
+  .cv-contact li {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5mm;
+  }
+
+  .cv-contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5mm;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .cv-icon {
+    flex: none;
+    color: var(--cv-accent);
+  }
+
+  .cv-section {
+    margin-top: 4.5mm;
+  }
+
+  .cv-heading {
+    margin-bottom: 2mm;
+    padding-bottom: 1mm;
+    border-bottom: 0.75pt solid var(--cv-rule);
+    color: var(--cv-accent);
+    font-size: 10pt;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .cv-entry + .cv-entry {
+    margin-top: 2.5mm;
+  }
+
+  .cv-entry-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 4mm;
+  }
+
+  .cv-role {
+    font-size: 10pt;
+    font-weight: 600;
+  }
+
+  .cv-employer {
+    grid-column: 1;
+    font-weight: 500;
+  }
+
+  .cv-dates {
+    grid-row: 1;
+    grid-column: 2;
+    color: var(--color-content-muted);
+    white-space: nowrap;
+  }
+
+  .cv-sheet[data-mode='ats'] .cv-entry-head {
+    display: block;
+  }
+
+  .cv-responsibilities,
+  .cv-meta {
+    color: var(--color-content-muted);
+  }
+
+  .cv-list {
+    margin-top: 1mm;
+    padding-left: 4.5mm;
+    /* Tailwind's preflight strips list markers; a CV's bullets are its own. */
+    list-style: disc;
+  }
+
+  .cv-list li + li {
+    margin-top: 0.5mm;
+  }
+
+  .cv-list li::marker {
+    color: var(--cv-accent);
+  }
+
+  .cv-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5mm;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cv-chips li {
+    padding: 0.4mm 2.2mm;
+    border: 0.75pt solid var(--cv-rule);
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--cv-accent) 7%, transparent);
+  }
+}
+
+/*
+ * The page around the sheet: a neutral desk, the controls above, and the
+ * sheet as paper on it. On a narrow screen the sheet is zoomed down as a whole
+ * rather than reflowed, so a phone shows the same document that prints.
+ */
+@layer components {
+  .cv-desk {
+    display: grid;
+    justify-items: center;
+    gap: var(--spacing-m);
+    padding: var(--spacing-l) var(--spacing-m) var(--spacing-2xl);
+  }
+
+  .cv-controls {
+    display: grid;
+    gap: var(--spacing-s);
+    width: 100%;
+    max-width: 210mm;
+  }
+
+  .cv-lead {
+    margin: 0;
+    color: var(--color-content-muted);
+  }
+
+  .cv-switch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs) var(--spacing-s);
+  }
+
+  .cv-switch-label {
+    color: var(--color-content-muted);
+    font-size: var(--text-step-sm);
+  }
+
+  .cv-switch ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cv-switch-item {
+    display: inline-block;
+    padding: var(--spacing-3xs) var(--spacing-xs);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-content);
+    font-size: var(--text-step-sm);
+    text-decoration: none;
+  }
+
+  a.cv-switch-item:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  a.cv-switch-item:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .cv-switch-item[aria-current] {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-primary-content);
+  }
+
+  .cv-paper {
+    max-width: 100%;
+  }
+
+  @media screen {
+    .cv-paper .cv-sheet {
+      box-shadow:
+        0 1px 2px rgb(0 0 0 / 0.08),
+        0 8px 24px rgb(0 0 0 / 0.12);
+    }
+  }
+
+  /* 210mm is about 794px. Each step fits the sheet, plus the desk's gutters,
+     into the narrowest screen of its range. */
+  @media screen and (max-width: 52rem) {
+    .cv-paper .cv-sheet {
+      zoom: 0.84;
+    }
+  }
+
+  @media screen and (max-width: 44rem) {
+    .cv-paper .cv-sheet {
+      zoom: 0.7;
+    }
+  }
+
+  @media screen and (max-width: 37rem) {
+    .cv-paper .cv-sheet {
+      zoom: 0.58;
+    }
+  }
+
+  @media screen and (max-width: 31rem) {
+    .cv-paper .cv-sheet {
+      zoom: 0.46;
+    }
+  }
+
+  @media screen and (max-width: 25rem) {
+    .cv-paper .cv-sheet {
+      zoom: 0.4;
+    }
+  }
+}
+
+/*
+ * Printing the CV (#36, ADR 0012). The page is the sheet: no margins of the
+ * browser's own (a zero page margin also drops Chromium's URL and date
+ * lines), no chrome, and colours kept. Paper is light already (`themes.css`).
+ */
+@layer components {
+  .cv-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs) var(--spacing-s);
+  }
+
+  .cv-hint {
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body:has(.cv-sheet) {
+    background-color: #ffffff;
+  }
+
+  body:has(.cv-sheet) .site-nav {
+    display: none;
+  }
+
+  .cv-desk {
+    display: block;
+    padding: 0;
+  }
+
+  .cv-sheet {
+    /* Exactly a page: no rounding past 297mm into a blank second one. */
+    min-height: 0;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .cv-entry,
+  .cv-contact {
+    break-inside: avoid;
+  }
+
+  .cv-heading {
+    break-after: avoid;
+  }
+}

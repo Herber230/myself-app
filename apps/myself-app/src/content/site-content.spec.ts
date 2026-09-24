@@ -101,6 +101,45 @@ describe('a rule only this site knows', () => {
   });
 });
 
+describe('a rule for the CV (ADR 0012)', () => {
+  it('stops a variant whose id is the ATS segment', () => {
+    const variants = records('cv-variants.json');
+    variants[1] = { ...variants[1], id: 'ats' };
+    expect(problemsIn(withFile('cv-variants.json', variants))).toEqual([
+      'cv-variants.json › ats › id is "ats", which the CV reserves for its ATS mode',
+    ]);
+  });
+
+  it('stops a variant with no focus, written empty or left out', () => {
+    const variants = records('cv-variants.json');
+    variants[0] = { ...variants[0], focuses: [] };
+    const { focuses: _focuses, ...withoutFocuses } = variants[1];
+    variants[1] = withoutFocuses;
+    expect(problemsIn(withFile('cv-variants.json', variants))).toEqual([
+      `cv-variants.json › ${String(variants[0].id)} › focuses is empty, so the variant shows no highlight`,
+      `cv-variants.json › ${String(variants[1].id)} › focuses is empty, so the variant shows no highlight`,
+    ]);
+  });
+
+  it('stops a highlight tagged with a focus that does not exist', () => {
+    const highlights = records('employment-highlights.json');
+    highlights[0] = { ...highlights[0], focuses: ['design'] };
+    expect(
+      problemsIn(withFile('employment-highlights.json', highlights)),
+    ).toEqual([
+      `employment-highlights.json › ${String(highlights[0].id)} › focuses points at "design", which does not exist`,
+    ]);
+  });
+
+  it('stops studies that end before they start', () => {
+    const education = records('education.json');
+    education[0] = { ...education[0], start: '2020-01-01', end: '2019-01-01' };
+    expect(problemsIn(withFile('education.json', education))).toEqual([
+      `education.json › ${String(education[0].id)} › end is before start`,
+    ]);
+  });
+});
+
 describe('a link between files', () => {
   it('stops an id that names nothing in the file it points into', () => {
     const technologies = records('technologies.json');

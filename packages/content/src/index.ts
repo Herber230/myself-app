@@ -11,9 +11,13 @@
  * `src/content/pending-content.ts` lists every value left to write, and the
  * build fails on one it does not list.
  */
+import certificates from './certificates.json';
 import contactChannels from './contact-channels.json';
+import cvFocuses from './cv-focuses.json';
 import cvVariants from './cv-variants.json';
+import education from './education.json';
 import employers from './employers.json';
+import employmentHighlights from './employment-highlights.json';
 import employmentPeriods from './employment-periods.json';
 import profile from './profile.json';
 import projects from './projects.json';
@@ -25,9 +29,13 @@ import technologyUsePeriods from './technology-use-periods.json';
 
 /** Every record, by the file it came from — which is also the path in an error. */
 export const CONTENT: Readonly<Record<string, readonly unknown[]>> = {
+  'certificates.json': certificates,
   'contact-channels.json': contactChannels,
+  'cv-focuses.json': cvFocuses,
   'cv-variants.json': cvVariants,
+  'education.json': education,
   'employers.json': employers,
+  'employment-highlights.json': employmentHighlights,
   'employment-periods.json': employmentPeriods,
   'profile.json': profile,
   'projects.json': projects,

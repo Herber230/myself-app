@@ -1,8 +1,12 @@
 import type { Entity, EntityConstructor } from '@entifix/core';
 
+import { Certificate } from './entities/certificate.entity.js';
 import { ContactChannel } from './entities/contact-channel.entity.js';
+import { CvFocus } from './entities/cv-focus.entity.js';
 import { CvVariant } from './entities/cv-variant.entity.js';
+import { Education } from './entities/education.entity.js';
 import { Employer } from './entities/employer.entity.js';
+import { EmploymentHighlight } from './entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from './entities/employment-period.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
@@ -28,7 +32,7 @@ export const LOCALIZED_MEMBERS = new Map<
   EntityConstructor<Entity>,
   readonly string[]
 >([
-  [Profile, ['title', 'tagline', 'bio', 'pictureAlt']],
+  [Profile, ['title', 'tagline', 'bio', 'pictureAlt', 'location']],
   [ContactChannel, []],
   [Employer, ['logoAlt']],
   [EmploymentPeriod, ['role', 'responsibilities']],
@@ -39,6 +43,10 @@ export const LOCALIZED_MEMBERS = new Map<
   [TechnologyUsePeriod, []],
   [Project, ['summary']],
   [CvVariant, ['title', 'summary']],
+  [CvFocus, ['name']],
+  [EmploymentHighlight, ['text']],
+  [Education, ['degree', 'field']],
+  [Certificate, []],
 ]);
 
 /** The localized members of one entity, or none when it has none. */

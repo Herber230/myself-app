@@ -14,6 +14,7 @@ export class Profile implements Entity {
   #bio?: LocalizedText;
   #pictureUrl?: string;
   #pictureAlt?: LocalizedText;
+  #location?: LocalizedText;
 
   @accessor({ type: 'id' })
   get id(): EntityId {
@@ -107,5 +108,19 @@ export class Profile implements Entity {
   }
   set pictureAlt(value: LocalizedText | undefined) {
     this.#pictureAlt = value;
+  }
+
+  /** Where Herber works from, as the CV's header states it: a recruiter filters on it. */
+  @accessor({
+    type: 'string',
+    required: true,
+    filterable: false,
+    sortable: false,
+  })
+  get location(): LocalizedText | undefined {
+    return this.#location;
+  }
+  set location(value: LocalizedText | undefined) {
+    this.#location = value;
   }
 }

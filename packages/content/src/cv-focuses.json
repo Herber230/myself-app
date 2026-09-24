@@ -1,0 +1,9 @@
+[
+  { "id": "backend", "name": { "en": "Backend", "es": "Backend" }, "order": 0 },
+  {
+    "id": "frontend",
+    "name": { "en": "Frontend", "es": "Frontend" },
+    "order": 1
+  },
+  { "id": "devops", "name": { "en": "DevOps", "es": "DevOps" }, "order": 2 }
+]

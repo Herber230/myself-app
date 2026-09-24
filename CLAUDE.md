@@ -17,7 +17,8 @@ pnpm install
 pnpm nx dev myself-app                          # next dev on http://localhost:3000
 pnpm nx build myself-app                        # static export -> apps/myself-app/out
 pnpm nx serve-out myself-app                    # build, then serve out/ like S3 on http://localhost:3100
-pnpm nx pdf myself-app                          # build, then render each CV page to a PDF beside it in out/
+pnpm nx pdf myself-app                          # build, then render each CV page (16: variant × mode × locale) to a PDF beside it in out/
+tools/update-cv-baselines.sh                    # the CV's visual baselines, rendered on Linux in Docker (skipped on macOS)
 pnpm nx lint myself-app
 pnpm nx typecheck myself-app                    # runs `next typegen` first (PageProps/LayoutProps types)
 pnpm nx test myself-app                         # vitest, run mode

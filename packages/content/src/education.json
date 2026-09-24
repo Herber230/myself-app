@@ -1,0 +1,31 @@
+[
+  {
+    "id": "usac-masters",
+    "degree": { "en": "Master's degree", "es": "Maestría" },
+    "field": {
+      "en": "Information and Communication Technology Management",
+      "es": "Administración de Tecnologías de la Información y Comunicación"
+    },
+    "institution": "Universidad de San Carlos de Guatemala",
+    "start": "2016-01-01",
+    "end": "2017-12-31",
+    "completed": false,
+    "order": 0
+  },
+  {
+    "id": "umes-licenciatura",
+    "degree": {
+      "en": "Bachelor's degree in engineering",
+      "es": "Licenciatura"
+    },
+    "field": {
+      "en": "Systems, Informatics and Computer Science Engineering",
+      "es": "Ingeniería en Sistemas, Informática y Ciencias de la Computación"
+    },
+    "institution": "Universidad Mesoamericana",
+    "start": "2007-01-01",
+    "end": "2014-12-31",
+    "completed": true,
+    "order": 1
+  }
+]

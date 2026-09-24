@@ -20,6 +20,9 @@ const baseURL = `http://localhost:${PORT}`;
 export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: './src' }),
   use: { baseURL, trace: 'on-first-retry' },
+  // Antialiasing differs a little between Linux hosts; a layout change does
+  // not hide under 1% of a screenshot's pixels.
+  expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01 } },
   webServer: {
     command: `node tools/serve-static.mjs apps/myself-app/out ${PORT}`,
     cwd: workspaceRoot,

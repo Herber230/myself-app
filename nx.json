@@ -68,5 +68,6 @@
     "typecheck": {
       "dependsOn": ["^typecheck"]
     }
-  }
+  },
+  "analytics": false
 }
