@@ -2,6 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-09-18
+- Revised: 2026-09-24 — the app's `build` depends on `^typecheck` too, since Next 16.3 type-checks against the packages' `out-tsc/` declarations
 - Area: data
 - Read when: a record fails `next build`, a member should be translated, a filter over a list matches nothing, or a package's code reaches the app as source
 
@@ -51,7 +52,9 @@ neither record could know:
 - **Every package builds with SWC to `dist`** and the app consumes `dist`: the
   domain for its decorators, the adapter and the content because the app may
   only depend on what builds. Specs run the same decorator transform through
-  `unplugin-swc`. The app's `build`, `test` and `typecheck` depend on `^build`.
+  `unplugin-swc`. The app's `build`, `test` and `typecheck` depend on `^build`;
+  its `build` and `typecheck` also on `^typecheck`, since the app's tsconfig
+  references the packages and TypeScript reads their `out-tsc/` declarations.
 - **Coverage is gated at 100%** — statements, branches, functions, lines — on
   the app and on every package that runs logic, and is collected on every
   `nx test`, not only in CI. The content package has no test target: its layer

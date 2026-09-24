@@ -90,7 +90,7 @@ packages/content           one JSON file per entity; imports nothing
 ```
 
 - Dependency direction: app → domain, content, static-adapter. static-adapter and domain → only `@entifix/*` and `effect`, never each other. content → nothing. **Enforced**: every project has one `layer:*` tag in its `package.json` `nx.tags`, and `@nx/enforce-module-boundaries` in the root `eslint.config.mjs` holds the direction. A new package needs its tag; the conventions spec fails on a project without one.
-- **Every package builds with SWC to `dist`**, and the app consumes `dist` (exports: `@myself-app/source` → `src` for TypeScript, `import` → `dist`). The app's `build`, `test` and `typecheck` depend on `^build`; without it the app reads a stale `dist`, and typecheck races SWC writing `index.d.ts`. The boundary rule's `enforceBuildableLibDependency` refuses a buildable app depending on an unbuildable package.
+- **Every package builds with SWC to `dist`**, and the app consumes `dist` (exports: `@myself-app/source` → `src` for TypeScript, `import` → `dist`). The app's `build`, `test` and `typecheck` depend on `^build`; without it the app reads a stale `dist`, and typecheck races SWC writing `index.d.ts`. Its `build` and `typecheck` also depend on `^typecheck`: the app's tsconfig references the packages, so TypeScript reads their declarations from `out-tsc/`, and since Next 16.3 so does `next build`'s type check — on a fresh checkout without them it fails with TS6305. The boundary rule's `enforceBuildableLibDependency` refuses a buildable app depending on an unbuildable package.
 - Entity classes **cannot live in the Next app**: they use 2022-03 decorators on `#private` fields, which Turbopack and webpack cannot compile. Vitest's own oxc cannot either, so package specs run `unplugin-swc`; the app's specs import the built `dist`.
 - **`src/content/` is the composition root**: `site-content.ts` validates every file against its entity's metadata, then builds a repository per entity; `repositories.ts` does it once per bundle; `queries.ts` reads through entifix's `loadUCFactory`; `radar.ts` maps records to the radar control's `RadarEntry`. Site-only rules (one profile, one channel per type, no period ending before it starts) are registered in `site-content.ts`.
 - No localized or collection member is `filterable`/`sortable` — `describeEntityColumns` throws on a queryable collection. A filter over one (the radar's `in` over `areas`) is built in code; the adapter's `in` matches any array element, as Mongo's does.
@@ -101,7 +101,6 @@ packages/content           one JSON file per entity; imports nothing
 
 - Shared versions (`@entifix/*`, `effect`, `next`, `react`, `react-dom`) live in the `catalog:` of `pnpm-workspace.yaml`. Package manifests reference them as `"catalog:"`. Bump them there.
 - A new `@entifix/*` version must also be added to `minimumReleaseAgeExclude`, or pnpm 11 holds it back.
-- `@typescript-eslint/*` is pinned through `overrides` to work around a broken upstream publish. Do not remove the pin.
 
 ## Conventions
 
