@@ -16,6 +16,29 @@ export const en = {
     es: 'Español',
   },
   cvLead: 'A digital paper sheet, in variants per role. Coming soon.',
+  /** The CV sheet (ADR 0012). Headings are copy; every fact is content. */
+  cvSheet: {
+    headings: {
+      summary: 'Summary',
+      skills: 'Technical skills',
+      experience: 'Experience',
+      education: 'Education',
+      certificates: 'Certificates',
+    },
+    present: 'Present',
+    notCompleted: 'not completed',
+    location: 'Location',
+    /** A channel's label, written before its address in the ATS mode. */
+    channels: {
+      email: 'Email',
+      linkedin: 'LinkedIn',
+      github: 'GitHub',
+      stackoverflow: 'Stack Overflow',
+      medium: 'Medium',
+      goodreads: 'Goodreads',
+      x: 'X',
+    },
+  },
   techRadarLead: 'The technologies and techniques I use. Coming soon.',
   redirecting: 'Continue to the English site',
   notFoundTitle: 'Page not found',

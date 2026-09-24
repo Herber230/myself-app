@@ -579,3 +579,163 @@ body {
     animation: none;
   }
 }
+
+/*
+ * The CV sheet (ADR 0012): one A4 page, measured in print units so screen,
+ * print and the prebuilt PDF share one layout. `data-theme="light"` on the
+ * sheet gives it the paper palette whatever the site's theme.
+ *
+ * The modes differ only here and in decoration beside the text: the human
+ * sheet takes the primary colour as its accent and puts dates on the right;
+ * the ATS sheet is black and grey and keeps every field on its own line.
+ */
+@layer components {
+  .cv-sheet {
+    --cv-accent: var(--color-primary);
+    --cv-rule: var(--color-border);
+    box-sizing: border-box;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 14mm 16mm;
+    background-color: var(--color-surface-elevated);
+    color: var(--color-content);
+    font-size: 9.5pt;
+    line-height: 1.4;
+  }
+
+  .cv-sheet[data-mode='ats'] {
+    --cv-accent: var(--color-content);
+    --cv-rule: var(--color-content-muted);
+  }
+
+  .cv-sheet :where(h1, h2, h3, p, ul) {
+    margin: 0;
+  }
+
+  .cv-header {
+    text-align: center;
+  }
+
+  .cv-name {
+    font-size: 20pt;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .cv-headline {
+    margin-top: 1mm;
+    color: var(--cv-accent);
+    font-size: 11pt;
+    font-weight: 600;
+  }
+
+  .cv-contact {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1mm 5mm;
+    margin-top: 2mm;
+    padding: 0;
+    color: var(--color-content-muted);
+    list-style: none;
+  }
+
+  .cv-contact li {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5mm;
+  }
+
+  .cv-contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5mm;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .cv-icon {
+    flex: none;
+    color: var(--cv-accent);
+  }
+
+  .cv-section {
+    margin-top: 4.5mm;
+  }
+
+  .cv-heading {
+    margin-bottom: 2mm;
+    padding-bottom: 1mm;
+    border-bottom: 0.75pt solid var(--cv-rule);
+    color: var(--cv-accent);
+    font-size: 10pt;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .cv-entry + .cv-entry {
+    margin-top: 2.5mm;
+  }
+
+  .cv-entry-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 4mm;
+  }
+
+  .cv-role {
+    font-size: 10pt;
+    font-weight: 600;
+  }
+
+  .cv-employer {
+    grid-column: 1;
+    font-weight: 500;
+  }
+
+  .cv-dates {
+    grid-row: 1;
+    grid-column: 2;
+    color: var(--color-content-muted);
+    white-space: nowrap;
+  }
+
+  .cv-sheet[data-mode='ats'] .cv-entry-head {
+    display: block;
+  }
+
+  .cv-responsibilities,
+  .cv-meta {
+    color: var(--color-content-muted);
+  }
+
+  .cv-list {
+    margin-top: 1mm;
+    padding-left: 4.5mm;
+  }
+
+  .cv-list li + li {
+    margin-top: 0.5mm;
+  }
+
+  .cv-list li::marker {
+    color: var(--cv-accent);
+  }
+
+  .cv-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5mm;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cv-chips li {
+    padding: 0.4mm 2.2mm;
+    border: 0.75pt solid var(--cv-rule);
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--cv-accent) 7%, transparent);
+  }
+}
