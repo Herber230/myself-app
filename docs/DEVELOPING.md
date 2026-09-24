@@ -68,6 +68,19 @@ Tailwind v4 over `@entifix/style` tokens (ADR 0006).
 - ⚠️ **Keep `optimizePackageImports` in `next.config.js`.** entifix's packages declare no `sideEffects`, and without it one primitive ships the whole barrel and Effect to the browser.
 - ⚠️ **`max-w-2xl` and its siblings are not Tailwind's container scale here.** entifix's tokens redefine those steps as spacing, so `max-w-2xl` is about 80px. Give a width a length (`max-w-[42rem]`) when you mean one.
 
+## Checking print and PDFs
+
+The CV is judged on paper, so its print output and PDFs are checked as files, not only as pages. None of this is needed to build; it is what inspects the result.
+
+```sh
+brew install poppler imagemagick                 # pdfinfo, pdffonts, pdftotext, pdftoppm; magick
+pnpm exec playwright install firefox webkit      # print emulation in the other two engines
+```
+
+- `pdfinfo <file>` shows the page count, the paper size and the metadata. `pdffonts <file>` shows whether every font is embedded with a Unicode map, which is what keeps text extractable. `pdftotext -layout <file> -` shows what an applicant tracking system reads, in the order it reads it.
+- `pdftoppm -r 100 -png -singlefile <file> <name>` renders a page to an image. `magick a.png b.png +append side.png` puts two side by side; `magick compare -metric AE a.png b.png diff.png` counts the pixels that differ.
+- **The Playwright MCP server** in `.mcp.json` drives a headless browser from Claude Code, and can save a page as a PDF. Its version is pinned; bump it on purpose. Approve it the first time `claude` starts in this repository. Its Playwright is its own, so its screenshots are for looking, not for baselines.
+
 ## Third-party code
 
 `components/tech-radar/` (`random.ts`, `geometry.ts`, `layout.ts`) is a port of [zalando/tech-radar](https://github.com/zalando/tech-radar)'s maths, MIT licensed. Each file keeps Zalando's copyright notice, which the licence requires of derived work; ADR 0009 says what was ported, what was not, and why. This is unrelated to the no-AI-attribution rule, which is about tool attribution, not authorship of borrowed code.
