@@ -20,9 +20,13 @@ import {
 } from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
+import { Certificate } from './entities/certificate.entity.js';
 import { ContactChannel } from './entities/contact-channel.entity.js';
+import { CvFocus } from './entities/cv-focus.entity.js';
 import { CvVariant } from './entities/cv-variant.entity.js';
+import { Education } from './entities/education.entity.js';
 import { Employer } from './entities/employer.entity.js';
+import { EmploymentHighlight } from './entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from './entities/employment-period.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
@@ -47,6 +51,10 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['TechnologyUsePeriod', TechnologyUsePeriod],
   ['Project', Project],
   ['CvVariant', CvVariant],
+  ['CvFocus', CvFocus],
+  ['EmploymentHighlight', EmploymentHighlight],
+  ['Education', Education],
+  ['Certificate', Certificate],
 ];
 
 const SAMPLE_DATE = new Date('2024-03-01T00:00:00.000Z');

@@ -17,6 +17,10 @@
     "pictureAlt": {
       "en": "Herber Colop profile picture",
       "es": "Foto de perfil de Herber Colop"
+    },
+    "location": {
+      "en": "TODO(#26): where I work from, and whether remote.",
+      "es": "TODO(#26): desde dónde trabajo, y si en remoto."
     }
   }
 ]

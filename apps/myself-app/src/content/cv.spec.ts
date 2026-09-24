@@ -29,10 +29,12 @@ describe('the CV variants', () => {
   });
 
   it('get a page each, in every locale', async () => {
-    expect(await cvVariantParams(SITE_REPOSITORIES, SITE_LOCALES)).toEqual([
-      { locale: 'en', variant: 'full-stack' },
-      { locale: 'es', variant: 'full-stack' },
-    ]);
+    const variants = ['full-stack', 'backend', 'frontend', 'devops'];
+    expect(await cvVariantParams(SITE_REPOSITORIES, SITE_LOCALES)).toEqual(
+      SITE_LOCALES.flatMap(locale =>
+        variants.map(variant => ({ locale, variant })),
+      ),
+    );
   });
 });
 
@@ -44,6 +46,9 @@ describe('what a variant selects', () => {
       'typescript',
       'next-js',
       'effect',
+      'nx',
+      'playwright',
+      'amazon-s3',
     ]);
     expect(ids(selection?.employments ?? [])).toEqual([
       'employer-one-engineer',

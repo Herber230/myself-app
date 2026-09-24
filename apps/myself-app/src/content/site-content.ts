@@ -16,9 +16,13 @@ import {
   type EntityId,
 } from '@entifix/core';
 import {
+  Certificate,
   ContactChannel,
+  CvFocus,
   CvVariant,
+  Education,
   Employer,
+  EmploymentHighlight,
   EmploymentPeriod,
   localizedMembersOf,
   Profile,
@@ -80,6 +84,28 @@ const exactlyOne: EntityRule = (records, report) => {
   }
 };
 
+/**
+ * A CV variant's id is a URL segment beside `ats`, which is the ATS mode's
+ * (ADR 0012): a variant named `ats` would be shadowed by it.
+ */
+const variantIdNotReserved: EntityRule = (records, report) => {
+  records.forEach((record, index) => {
+    if (record.id === 'ats') {
+      report(index, 'id', 'is "ats", which the CV reserves for its ATS mode');
+    }
+  });
+};
+
+/** A CV variant takes at least one focus, or it shows no highlight at all. */
+const atLeastOneFocus: EntityRule = (records, report) => {
+  records.forEach((record, index) => {
+    const { focuses } = record;
+    if (!Array.isArray(focuses) || focuses.length === 0) {
+      report(index, 'focuses', 'is empty, so the variant shows no highlight');
+    }
+  });
+};
+
 export const CONTENT_SOURCES: readonly ContentSource[] = [
   { entity: Profile, file: 'profile.json', rules: [exactlyOne] },
   {
@@ -117,14 +143,24 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
     file: 'projects.json',
     links: { technologies: 'technologies.json' },
   },
+  { entity: CvFocus, file: 'cv-focuses.json' },
+  {
+    entity: EmploymentHighlight,
+    file: 'employment-highlights.json',
+    links: { period: 'employment-periods.json', focuses: 'cv-focuses.json' },
+  },
   {
     entity: CvVariant,
     file: 'cv-variants.json',
     links: {
       technologies: 'technologies.json',
       employments: 'employment-periods.json',
+      focuses: 'cv-focuses.json',
     },
+    rules: [variantIdNotReserved, atLeastOneFocus],
   },
+  { entity: Education, file: 'education.json', rules: [endNotBeforeStart] },
+  { entity: Certificate, file: 'certificates.json' },
 ];
 
 /** The ids a file declares, so a link into it can be checked. */

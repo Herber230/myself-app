@@ -9,8 +9,79 @@
       "en": "TODO(#33): what this variant selects, and for whom.",
       "es": "TODO(#33): qué selecciona esta variante, y para quién."
     },
-    "technologies": ["typescript", "next-js", "effect"],
+    "technologies": [
+      "typescript",
+      "next-js",
+      "effect",
+      "nx",
+      "playwright",
+      "amazon-s3"
+    ],
     "employments": ["employer-one-engineer", "employer-two-engineer"],
+    "focuses": ["backend", "frontend", "devops"],
     "order": 0
+  },
+  {
+    "id": "backend",
+    "title": {
+      "en": "TODO(#33): the backend reading",
+      "es": "TODO(#33): la lectura backend"
+    },
+    "summary": {
+      "en": "TODO(#33): what this variant selects, and for whom.",
+      "es": "TODO(#33): qué selecciona esta variante, y para quién."
+    },
+    "technologies": [
+      "typescript",
+      "effect",
+      "nx",
+      "contract-testing",
+      "amazon-s3"
+    ],
+    "employments": ["employer-one-engineer", "employer-two-engineer"],
+    "focuses": ["backend"],
+    "order": 1
+  },
+  {
+    "id": "frontend",
+    "title": {
+      "en": "TODO(#33): the frontend reading",
+      "es": "TODO(#33): la lectura frontend"
+    },
+    "summary": {
+      "en": "TODO(#33): what this variant selects, and for whom.",
+      "es": "TODO(#33): qué selecciona esta variante, y para quién."
+    },
+    "technologies": [
+      "typescript",
+      "next-js",
+      "tailwind-css",
+      "playwright",
+      "nx"
+    ],
+    "employments": ["employer-one-engineer", "employer-two-engineer"],
+    "focuses": ["frontend"],
+    "order": 2
+  },
+  {
+    "id": "devops",
+    "title": {
+      "en": "TODO(#33): the devops reading",
+      "es": "TODO(#33): la lectura devops"
+    },
+    "summary": {
+      "en": "TODO(#33): what this variant selects, and for whom.",
+      "es": "TODO(#33): qué selecciona esta variante, y para quién."
+    },
+    "technologies": [
+      "amazon-s3",
+      "cloudfront",
+      "nx",
+      "pnpm",
+      "trunk-based-development"
+    ],
+    "employments": ["employer-one-engineer", "employer-two-engineer"],
+    "focuses": ["devops"],
+    "order": 3
   }
 ]

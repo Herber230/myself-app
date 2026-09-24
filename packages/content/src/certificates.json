@@ -1,0 +1,20 @@
+[
+  {
+    "id": "psm-i",
+    "name": "Professional Scrum Master I",
+    "issuer": "Scrum.org",
+    "order": 0
+  },
+  {
+    "id": "tm-forum-business-development-manager",
+    "name": "Business Development Manager",
+    "issuer": "TM Forum",
+    "order": 1
+  },
+  {
+    "id": "tm-forum-frameworx-transformation-manager",
+    "name": "Frameworx Transformation Manager",
+    "issuer": "TM Forum",
+    "order": 2
+  }
+]
