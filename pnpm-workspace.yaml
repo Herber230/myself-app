@@ -31,19 +31,6 @@ allowBuilds:
   unrs-resolver: false
 autoInstallPeers: true
 ignoreWorkspaceRootCheck: true
-# Copied from entifix, for the reason it gives: Nx 23.0.1's eslint plugin floats
-# `@typescript-eslint/utils` on a caret range, and 8.70.0 is a partial publish —
-# `typescript-estree@8.70.0` does not exist on the registry, so a fresh resolve
-# fails outright. Pinned to the set Nx was tested against.
-overrides:
-  '@typescript-eslint/utils': 8.62.1
-  '@typescript-eslint/typescript-estree': 8.62.1
-  '@typescript-eslint/scope-manager': 8.62.1
-  '@typescript-eslint/type-utils': 8.62.1
-  '@typescript-eslint/types': 8.62.1
-  '@typescript-eslint/visitor-keys': 8.62.1
-  '@typescript-eslint/project-service': 8.62.1
-  '@typescript-eslint/tsconfig-utils': 8.62.1
 # pnpm 11 holds back versions published within its minimum release age. entifix
 # is released by the same author and adopted the day it ships, so its versions are
 # exempted one by one as the catalog moves.

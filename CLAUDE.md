@@ -101,7 +101,6 @@ packages/content           one JSON file per entity; imports nothing
 
 - Shared versions (`@entifix/*`, `effect`, `next`, `react`, `react-dom`) live in the `catalog:` of `pnpm-workspace.yaml`. Package manifests reference them as `"catalog:"`. Bump them there.
 - A new `@entifix/*` version must also be added to `minimumReleaseAgeExclude`, or pnpm 11 holds it back.
-- `@typescript-eslint/*` is pinned through `overrides` to work around a broken upstream publish. Do not remove the pin.
 
 ## Conventions
 
