@@ -15,7 +15,7 @@
  */
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { extname, join, normalize, resolve } from 'node:path';
+import { basename, extname, join, normalize, resolve } from 'node:path';
 
 const [directory, port = '3100'] = process.argv.slice(2);
 if (!directory) {
@@ -39,11 +39,21 @@ const TYPES = {
   '.pdf': 'application/pdf',
 };
 
+// Next writes metadata images without an extension (`en/opengraph-image`).
+// A bucket needs their type set on upload too (#45).
+const NAMED_TYPES = {
+  'opengraph-image': 'image/png',
+  'twitter-image': 'image/png',
+};
+
 const isFile = path => existsSync(path) && statSync(path).isFile();
 
 const send = (response, status, path) => {
   response.writeHead(status, {
-    'content-type': TYPES[extname(path)] ?? 'application/octet-stream',
+    'content-type':
+      TYPES[extname(path)] ??
+      NAMED_TYPES[basename(path)] ??
+      'application/octet-stream',
   });
   createReadStream(path).pipe(response);
 };
