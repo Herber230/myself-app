@@ -14,7 +14,16 @@ export const es = {
     en: 'English',
     es: 'Español',
   },
-  cvLead: 'Una hoja de papel digital, con variantes por rol. Muy pronto.',
+  cvLead: 'Una página, en cuatro lecturas. Imprímela, o descárgala en PDF.',
+  cvPage: {
+    variants: 'Lectura',
+    mode: 'Escrita para',
+    modes: {
+      human: 'Personas',
+      ats: 'Sistemas de selección (ATS)',
+    },
+    atsTitle: 'ATS',
+  },
   cvSheet: {
     headings: {
       summary: 'Resumen',

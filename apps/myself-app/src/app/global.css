@@ -739,3 +739,120 @@ body {
     background-color: color-mix(in srgb, var(--cv-accent) 7%, transparent);
   }
 }
+
+/*
+ * The page around the sheet: a neutral desk, the controls above, and the
+ * sheet as paper on it. On a narrow screen the sheet is zoomed down as a whole
+ * rather than reflowed, so a phone shows the same document that prints.
+ */
+@layer components {
+  .cv-desk {
+    display: grid;
+    justify-items: center;
+    gap: var(--spacing-m);
+    padding: var(--spacing-l) var(--spacing-m) var(--spacing-2xl);
+  }
+
+  .cv-controls {
+    display: grid;
+    gap: var(--spacing-s);
+    width: 100%;
+    max-width: 210mm;
+  }
+
+  .cv-lead {
+    margin: 0;
+    color: var(--color-content-muted);
+  }
+
+  .cv-switch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs) var(--spacing-s);
+  }
+
+  .cv-switch-label {
+    color: var(--color-content-muted);
+    font-size: var(--text-step-sm);
+  }
+
+  .cv-switch ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cv-switch-item {
+    display: inline-block;
+    padding: var(--spacing-3xs) var(--spacing-xs);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-content);
+    font-size: var(--text-step-sm);
+    text-decoration: none;
+  }
+
+  a.cv-switch-item:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  a.cv-switch-item:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .cv-switch-item[aria-current] {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-primary-content);
+  }
+
+  .cv-paper {
+    max-width: 100%;
+  }
+
+  @media screen {
+    .cv-paper .cv-sheet {
+      box-shadow:
+        0 1px 2px rgb(0 0 0 / 0.08),
+        0 8px 24px rgb(0 0 0 / 0.12);
+    }
+  }
+
+  /* 210mm is about 794px. Each step fits the sheet, plus the desk's gutters,
+     into the narrowest screen of its range. */
+  @media screen and (max-width: 52rem) {
+    .cv-paper .cv-sheet {
+      zoom: 0.84;
+    }
+  }
+
+  @media screen and (max-width: 44rem) {
+    .cv-paper .cv-sheet {
+      zoom: 0.7;
+    }
+  }
+
+  @media screen and (max-width: 37rem) {
+    .cv-paper .cv-sheet {
+      zoom: 0.58;
+    }
+  }
+
+  @media screen and (max-width: 31rem) {
+    .cv-paper .cv-sheet {
+      zoom: 0.46;
+    }
+  }
+
+  @media screen and (max-width: 25rem) {
+    .cv-paper .cv-sheet {
+      zoom: 0.4;
+    }
+  }
+}

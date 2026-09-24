@@ -15,7 +15,17 @@ export const en = {
     en: 'English',
     es: 'Español',
   },
-  cvLead: 'A digital paper sheet, in variants per role. Coming soon.',
+  cvLead: 'One page, in four readings. Print it, or download it as a PDF.',
+  /** The CV page around the sheet: its controls, hidden in print. */
+  cvPage: {
+    variants: 'Reading',
+    mode: 'Written for',
+    modes: {
+      human: 'People',
+      ats: 'Applicant tracking systems',
+    },
+    atsTitle: 'ATS',
+  },
   /** The CV sheet (ADR 0012). Headings are copy; every fact is content. */
   cvSheet: {
     headings: {

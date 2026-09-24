@@ -10,12 +10,25 @@ import type { MetadataRoute } from 'next';
 
 import { localeAlternates, localePath, SITE_LOCALES } from './site-locales';
 
-/** Every page under `app/[locale]/`, locale-free. */
+/** Every page under `app/[locale]/` whose path is fixed, locale-free. */
 export const SITE_PATHS = ['/', '/cv', '/tech-radar'] as const;
 
-export function siteMapEntries(base: URL): MetadataRoute.Sitemap {
+/** The CV page of each variant but the default: listed from the content. */
+export const CV_VARIANT_ROUTE = '/cv/[variant]';
+
+/**
+ * The CV's ATS pages, left out: each is `noindex`, with its human page as
+ * canonical (ADR 0012).
+ */
+export const UNLISTED_ROUTES = ['/cv/ats', '/cv/[variant]/ats'] as const;
+
+/** The sitemap: `paths` in every locale, `SITE_PATHS` unless told otherwise. */
+export function siteMapEntries(
+  base: URL,
+  paths: readonly string[] = SITE_PATHS,
+): MetadataRoute.Sitemap {
   const absolute = (path: string) => new URL(path, base).href;
-  return SITE_PATHS.flatMap(path =>
+  return paths.flatMap(path =>
     SITE_LOCALES.map(locale => ({
       url: absolute(localePath(locale, path)),
       alternates: {

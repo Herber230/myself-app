@@ -1,5 +1,4 @@
 import { CONTENT } from '@myself-app/content';
-import { SITE_LOCALES } from '@myself-app/domain';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -43,13 +42,12 @@ describe('the CV variants', () => {
     ]);
   });
 
-  it('get a page each in every locale, except the default, which has /cv/', async () => {
-    const others = ['backend', 'frontend', 'devops'];
-    expect(await cvVariantParams(SITE_REPOSITORIES, SITE_LOCALES)).toEqual(
-      SITE_LOCALES.flatMap(locale =>
-        others.map(variant => ({ locale, variant })),
-      ),
-    );
+  it('get a page each, except the default, which has /cv/', async () => {
+    expect(await cvVariantParams(SITE_REPOSITORIES)).toEqual([
+      { variant: 'backend' },
+      { variant: 'frontend' },
+      { variant: 'devops' },
+    ]);
   });
 });
 

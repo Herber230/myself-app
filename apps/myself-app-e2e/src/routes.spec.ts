@@ -60,8 +60,9 @@ test.describe('each locale renders its own pages', () => {
 
       await nav.getByRole('link', { name: cv, exact: true }).click();
       await page.waitForURL(`/${locale}/cv/`);
+      // The CV's one heading is the sheet's: the name, as on paper.
       await expect(
-        page.getByRole('heading', { level: 1, name: cv }),
+        page.getByRole('heading', { level: 1, name: 'Herber Colop' }),
       ).toBeVisible();
 
       await nav.getByRole('link', { name: techRadar }).click();
@@ -115,9 +116,18 @@ test('the sitemap lists every page in every locale, and robots.txt points at it'
   expect(sitemap.headers()['content-type']).toContain('application/xml');
   const xml = await sitemap.text();
   for (const locale of ['en', 'es']) {
-    for (const path of ['', 'cv/', 'tech-radar/']) {
+    for (const path of [
+      '',
+      'cv/',
+      'cv/backend/',
+      'cv/frontend/',
+      'cv/devops/',
+      'tech-radar/',
+    ]) {
       expect(xml).toContain(`/${locale}/${path}</loc>`);
     }
+    // The ATS pages are noindex, so not listed (ADR 0012).
+    expect(xml).not.toContain('/ats/</loc>');
   }
 
   const robots = await request.get('/robots.txt');

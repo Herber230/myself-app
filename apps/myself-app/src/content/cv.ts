@@ -13,7 +13,6 @@ import {
   EmploymentHighlight,
   EmploymentPeriod,
   type Profile,
-  type SiteLocale,
   Technology,
 } from '@myself-app/domain';
 
@@ -44,15 +43,13 @@ export async function defaultCvVariantId(
 /**
  * `/[locale]/cv/[variant]/`'s static params: every variant but the default,
  * which lives at `/[locale]/cv/` only, so no two URLs show the same sheet.
+ * The same in every locale.
  */
 export async function cvVariantParams(
   repositories: SiteRepositories,
-  locales: readonly SiteLocale[],
-): Promise<{ locale: SiteLocale; variant: string }[]> {
+): Promise<{ variant: string }[]> {
   const [, ...others] = await loadCvVariants(repositories);
-  return locales.flatMap(locale =>
-    others.map(variant => ({ locale, variant: String(variant.id) })),
-  );
+  return others.map(variant => ({ variant: String(variant.id) }));
 }
 
 export interface CvEmployment {
