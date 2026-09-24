@@ -19,7 +19,7 @@
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-i18next": "17.0.14"
+    "react-i18next": "17.0.15"
   },
   "nx": {
     "tags": [
@@ -28,7 +28,8 @@
     "targets": {
       "build": {
         "dependsOn": [
-          "^build"
+          "^build",
+          "^typecheck"
         ],
         "outputs": [
           "{projectRoot}/.next",
