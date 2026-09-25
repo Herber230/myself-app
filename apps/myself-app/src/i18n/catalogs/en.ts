@@ -87,6 +87,13 @@ export const en = {
       site: 'Visit the site',
       repository: 'Read the source',
     },
+    /** Copy, not content (ADR 0008): each claim is one `content/` makes true. */
+    entifix: {
+      what: 'entifix is a TypeScript framework for entity-driven applications, built on Effect. An entity is described once, and its metadata drives validation, repositories, use cases and React controls.',
+      here: 'This page runs on it. The profile, the projects and the contact channels are entities, stored as JSON in English and Spanish, checked against their metadata by a static repository, and read at build time through the load use case, the same one a backend would serve.',
+      repository: 'Source on GitHub',
+      npm: 'Packages on npm',
+    },
     contact: {
       /** A link's name: the channel, then the handle it shows. */
       link: '{{channel}}: {{handle}}',

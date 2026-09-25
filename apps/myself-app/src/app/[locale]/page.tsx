@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation';
 
 import { AboutSection } from '../../components/landing/about-section';
 import { ContactSection } from '../../components/landing/contact-section';
+import { EntifixSection } from '../../components/landing/entifix-section';
 import { Hero } from '../../components/landing/hero';
-import { LandingSection } from '../../components/landing/landing-section';
 import { ProjectsSection } from '../../components/landing/projects-section';
 import { SiteNav } from '../../components/site-nav';
 import { loadContactChannels } from '../../content/contact';
@@ -53,10 +53,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
             new Map(technologies.map(each => [String(each.id), each]))
           }
         />
-        {/* A shell until it is built: #31. */}
-        <LandingSection id="entifix" locale={locale}>
-          {null}
-        </LandingSection>
+        <EntifixSection locale={locale} />
         <ContactSection locale={locale} channels={channels} />
       </main>
     </>
