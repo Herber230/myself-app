@@ -33,6 +33,22 @@
           "^build",
           "^typecheck"
         ],
+        "inputs": [
+          "default",
+          "^default",
+          {
+            "externalDependencies": [
+              "next"
+            ]
+          },
+          {
+            "dependentTasksOutputFiles": "**/*.d.ts",
+            "transitive": true
+          },
+          {
+            "env": "NEXT_PUBLIC_SITE_URL"
+          }
+        ],
         "outputs": [
           "{projectRoot}/.next",
           "{projectRoot}/out"
@@ -48,6 +64,16 @@
         ],
         "options": {
           "command": "node tools/render-pdfs.mjs apps/myself-app/out"
+        }
+      },
+      "deploy": {
+        "executor": "nx:run-commands",
+        "cache": false,
+        "dependsOn": [
+          "pdf"
+        ],
+        "options": {
+          "command": "bash tools/deploy-site.sh apps/myself-app/out \"${SITE_BUCKET:-$(pulumi stack output bucketName --stack prod --cwd apps/infra)}\" \"${SITE_DISTRIBUTION_ID:-$(pulumi stack output distributionId --stack prod --cwd apps/infra)}\""
         }
       },
       "dev": {

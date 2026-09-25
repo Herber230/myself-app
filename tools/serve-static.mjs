@@ -41,7 +41,7 @@ const TYPES = {
 };
 
 // Next writes metadata images without an extension (`en/opengraph-image`).
-// A bucket needs their type set on upload too (#45).
+// The bucket gets their type on upload, from `tools/deploy-site.sh`.
 const NAMED_TYPES = {
   'opengraph-image': 'image/png',
   'twitter-image': 'image/png',
