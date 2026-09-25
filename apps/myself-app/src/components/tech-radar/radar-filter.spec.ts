@@ -3,20 +3,13 @@
  * props; the check is that it keeps exactly what `load` would, through the
  * static adapter, for the same request — every quadrant, ring and area, alone
  * and combined.
- *
- * The adapter reads the records as `/data/technology.json` serializes them,
- * links as ids: on a deserialized entity a link member is an `EntityLink`,
- * which no filter operator compares by id.
  */
 import { Quadrant, Ring, Technology, TechnologyArea } from '@myself-app/domain';
-import { makeStaticRepository } from '@myself-app/static-adapter';
 import { describe, expect, it } from 'vitest';
 
-import { dataFileContent } from '../../content/data-files';
 import { loadEvery } from '../../content/queries';
 import { loadRadarEntries } from '../../content/radar';
 import { SITE_REPOSITORIES } from '../../content/repositories';
-import type { SiteRepositories } from '../../content/site-content';
 import {
   isFiltering,
   matches,
@@ -46,14 +39,6 @@ async function vocabulary(): Promise<RadarVocabulary> {
   };
 }
 
-/** Technology's repository over its serialized records. */
-async function serializedRepositories(): Promise<SiteRepositories> {
-  const records = await dataFileContent(SITE_REPOSITORIES, 'technology.json');
-  return new Map([
-    [Technology, makeStaticRepository(Technology, records as never)],
-  ]) as unknown as SiteRepositories;
-}
-
 const entry = (overrides: Partial<RadarEntry>): RadarEntry => ({
   id: 'x',
   label: { en: 'Contract testing', es: 'Pruebas de contrato' },
@@ -66,10 +51,9 @@ const entry = (overrides: Partial<RadarEntry>): RadarEntry => ({
 
 describe('the radar filter', () => {
   it('keeps what load keeps, for every quadrant, ring and area', async () => {
-    const [words, entries, repositories] = await Promise.all([
+    const [words, entries] = await Promise.all([
       vocabulary(),
       loadRadarEntries(SITE_REPOSITORIES),
-      serializedRepositories(),
     ]);
     const quadrants = [undefined, 0, 1, 2, 3] as const;
     const rings = [undefined, 0, 1, 2, 3] as const;
@@ -107,7 +91,7 @@ describe('the radar filter', () => {
               ? []
               : [{ property: 'areas', operator: 'in', values: [area] }]),
           ];
-          const loaded = await loadEvery(repositories, Technology, {
+          const loaded = await loadEvery(SITE_REPOSITORIES, Technology, {
             filtering,
           } as never);
           expect(

@@ -3,7 +3,12 @@
  * a missing value goes: below a present one, which is where Mongo puts it and
  * where a period with no `end` therefore lands.
  */
-import type { Entity, EntityId, EntitySorting } from '@entifix/core';
+import {
+  type Entity,
+  type EntityId,
+  EntityLink,
+  type EntitySorting,
+} from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
 import { applySorting } from './sorting.js';
@@ -129,5 +134,22 @@ describe('several keys', () => {
         row => row.id,
       ),
     ).toEqual(['first', 'second']);
+  });
+});
+
+describe('a link member', () => {
+  it("orders by its target's id, as Mongo stores it (#66)", () => {
+    class Target implements Entity {
+      id = '';
+    }
+    const rows = ['trial', 'adopt', 'hold'].map(ring => ({
+      id: ring,
+      ring: new EntityLink(Target, { id: ring }),
+    }));
+    expect(
+      applySorting(rows, [{ 0: { property: 'ring', type: 'asc' } }]).map(
+        row => row.id,
+      ),
+    ).toEqual(['adopt', 'hold', 'trial']);
   });
 });
