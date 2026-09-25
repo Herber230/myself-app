@@ -44,16 +44,16 @@ export const en = {
     present: 'Present',
     notCompleted: 'not completed',
     location: 'Location',
-    /** A channel's label, written before its address in the ATS mode. */
-    channels: {
-      email: 'Email',
-      linkedin: 'LinkedIn',
-      github: 'GitHub',
-      stackoverflow: 'Stack Overflow',
-      medium: 'Medium',
-      goodreads: 'Goodreads',
-      x: 'X',
-    },
+  },
+  /** A contact channel's name: the CV's ATS labels, the landing's link names. */
+  channels: {
+    email: 'Email',
+    linkedin: 'LinkedIn',
+    github: 'GitHub',
+    stackoverflow: 'Stack Overflow',
+    medium: 'Medium',
+    goodreads: 'Goodreads',
+    x: 'X',
   },
   techRadarLead: 'The technologies and techniques I use. Coming soon.',
   redirecting: 'Continue to the English site',
@@ -81,7 +81,10 @@ export const en = {
       entifix: 'Built on entifix',
       contact: 'Contact',
     },
-    comingSoon: 'Coming soon.',
+    contact: {
+      /** A link's name: the channel, then the handle it shows. */
+      link: '{{channel}}: {{handle}}',
+    },
   },
   theme: {
     label: 'Theme',

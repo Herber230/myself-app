@@ -483,6 +483,26 @@ body {
   .landing-section + .landing-section {
     border-top: 1px solid var(--color-border);
   }
+
+  .landing-prose {
+    max-width: 65ch;
+  }
+
+  .landing-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .landing-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2xs);
+  }
+
+  .landing-icon {
+    flex: none;
+  }
 }
 
 /* Scroll-driven: only where scroll timelines exist. Elsewhere the nav is

@@ -1,13 +1,15 @@
-import { Center, Lead, Stack, Text } from '@entifix/react-controls/primitives';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { AboutSection } from '../../components/landing/about-section';
+import { ContactSection } from '../../components/landing/contact-section';
 import { Hero } from '../../components/landing/hero';
+import { LandingSection } from '../../components/landing/landing-section';
 import { SiteNav } from '../../components/site-nav';
+import { loadContactChannels } from '../../content/contact';
 import { loadProfile } from '../../content/profile';
 import { SITE_REPOSITORIES } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
-import { LANDING_SECTIONS } from '../../landing-sections';
 import { isSiteLocale, localeAlternates } from '../../site-locales';
 
 const PATH = '/';
@@ -24,40 +26,28 @@ export async function generateMetadata({
   };
 }
 
+/** The sections run in `LANDING_SECTIONS` order: the nav's anchors follow it. */
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const t = siteT(locale);
-  const profile = await loadProfile(SITE_REPOSITORIES);
+  const [profile, channels] = await Promise.all([
+    loadProfile(SITE_REPOSITORIES),
+    loadContactChannels(SITE_REPOSITORIES),
+  ]);
   return (
     <>
       <SiteNav locale={locale} path={PATH} reveal />
       <main>
         <Hero locale={locale} profile={profile} />
-        {/* Shells until each section is built: #32, #30, #31, #32. They give
-            the nav its anchors and the page its scroll. */}
-        {LANDING_SECTIONS.map(section => (
-          <section
-            key={section}
-            id={section}
-            aria-labelledby={`${section}-heading`}
-            className="landing-section"
-          >
-            <Center gutters>
-              <Stack gap="s">
-                <Text
-                  as="h2"
-                  id={`${section}-heading`}
-                  step={3}
-                  weight="semibold"
-                >
-                  {t(`landing.headings.${section}`)}
-                </Text>
-                <Lead muted>{t('landing.comingSoon')}</Lead>
-              </Stack>
-            </Center>
-          </section>
-        ))}
+        <AboutSection locale={locale} profile={profile} />
+        {/* Shells until each is built: #30, #31. */}
+        <LandingSection id="projects" locale={locale}>
+          {null}
+        </LandingSection>
+        <LandingSection id="entifix" locale={locale}>
+          {null}
+        </LandingSection>
+        <ContactSection locale={locale} channels={channels} />
       </main>
     </>
   );

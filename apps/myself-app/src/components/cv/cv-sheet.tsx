@@ -3,6 +3,7 @@ import type { ContactChannel } from '@myself-app/domain';
 import type { CvEmployment, CvSheet as CvSheetContent } from '../../content/cv';
 import { siteT } from '../../i18n/server';
 import type { SiteLocale } from '../../site-locales';
+import { ChannelIcon, LocationIcon } from '../icons';
 import {
   type CvMode,
   formatPeriod,
@@ -10,7 +11,6 @@ import {
   inLocale,
   readableUrl,
 } from './cv-format';
-import { ChannelIcon, LocationIcon } from './cv-icons';
 
 type T = ReturnType<typeof siteT>;
 
@@ -57,7 +57,7 @@ export function CvSheet({
         <ul className="cv-contact">
           <li>
             {mode === 'human' ? (
-              <LocationIcon />
+              <LocationIcon className="cv-icon" />
             ) : (
               <span>{labelled(t('cvSheet.location'))}</span>
             )}
@@ -180,14 +180,14 @@ function Channel({
   if (mode === 'human') {
     return (
       <a href={url}>
-        <ChannelIcon type={channel.type} />
+        <ChannelIcon type={channel.type} className="cv-icon" />
         {channel.displayName}
       </a>
     );
   }
   return (
     <>
-      <span>{labelled(t(`cvSheet.channels.${channel.type}`))}</span>
+      <span>{labelled(t(`channels.${channel.type}`))}</span>
       <a href={url}>{readableUrl(url)}</a>
     </>
   );
