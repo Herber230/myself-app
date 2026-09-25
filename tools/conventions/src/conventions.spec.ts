@@ -294,7 +294,8 @@ describe('the enforcement surfaces are wired to that predicate', () => {
       .filter(job => job !== 'ci-gate');
     // Pinned: a job-name matcher that stops matching would pass vacuously.
     expect(jobs.length).toBeGreaterThanOrEqual(7);
-    const needs = workflow.match(/^ {4}needs: \[(.+)\]\s*$/m)?.[1] ?? '';
+    // Inline or, once Prettier wraps a long list, on the line below.
+    const needs = workflow.match(/^ {4}needs:\s*\[([^\]]+)\]/m)?.[1] ?? '';
     expect(needs.split(',').map(job => job.trim())).toEqual(jobs);
   });
 
