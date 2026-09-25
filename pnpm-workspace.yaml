@@ -27,6 +27,7 @@ allowBuilds:
   less: false
   msgpackr-extract: false
   nx: false
+  protobufjs: false
   sharp: false
   unrs-resolver: false
 autoInstallPeers: true

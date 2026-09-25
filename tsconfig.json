@@ -10,6 +10,9 @@
       "path": "./apps/myself-app-e2e"
     },
     {
+      "path": "./apps/infra"
+    },
+    {
       "path": "./packages/content"
     },
     {

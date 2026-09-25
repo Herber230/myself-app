@@ -326,6 +326,7 @@ describe('every project sits in one layer', () => {
     'layer:domain',
     'layer:static-adapter',
     'layer:content',
+    'layer:infra',
     'layer:e2e',
     'layer:tooling',
   ];

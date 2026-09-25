@@ -1,0 +1,12 @@
+secretsprovider: awskms://alias/myself-app-pulumi?region=us-east-1
+encryptedkey: AQICAHhmz0bS3wXe3NgdDYXfwDUDYLmVBkywj+X7tDUsoCZI+AFHLdWuP/GS/olfgZFuc8SrAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMSNZuol/Gk2Mq/5b6AgEQgDtBLgUmuOGMBIbHs5b8Cv6IL6G8FV0W2fDMz7/JrtoQbjw6/G5W1N251Yz3+aaOeH93R/DltCPkN37b8g==
+config:
+  aws:region: us-east-1
+  aws:allowedAccountIds:
+    - '206772512116'
+  aws:defaultTags:
+    tags:
+      project: myself-app
+      managed-by: pulumi
+  myself-app:domain: herbercolop.dev
+  myself-app:githubRepository: Herber230/myself-app

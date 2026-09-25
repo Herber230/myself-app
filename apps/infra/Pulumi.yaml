@@ -1,0 +1,14 @@
+# The site's AWS infrastructure (ADR 0013). One stack, `prod`.
+name: myself-app
+description: CloudFront over a private bucket for herbercolop.dev, and the GitHub roles that deploy it.
+# Node strips the types itself: no ts-node, no TypeScript at run time, so
+# nothing here waits on Pulumi supporting TypeScript 7 (#59).
+runtime:
+  name: nodejs
+  options:
+    packagemanager: pnpm
+    typescript: false
+main: src/index.ts
+# Created once by `bootstrap/state.cfn.yaml`, never by this program.
+backend:
+  url: s3://myself-app-pulumi-state-206772512116?region=us-east-1

@@ -1,0 +1,100 @@
+# Where the Pulumi stack keeps its state, and the key its secrets are encrypted
+# with (ADR 0013). A stack cannot hold the state it is stored in, so these two
+# live here instead, deployed once by hand:
+#
+#   aws cloudformation deploy \
+#     --stack-name myself-app-pulumi-state \
+#     --template-file apps/infra/bootstrap/state.cfn.yaml
+#   aws cloudformation update-termination-protection \
+#     --stack-name myself-app-pulumi-state --enable-termination-protection
+#
+# Both are retained if this stack is ever deleted: losing the state orphans
+# every resource the program created.
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Pulumi state bucket and secrets key for myself-app.
+
+Resources:
+  StateBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub myself-app-pulumi-state-${AWS::AccountId}
+      # Every `pulumi up` writes a new checkpoint; versions are the undo.
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-old-checkpoints
+            Status: Enabled
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 90
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+      Tags:
+        - Key: project
+          Value: myself-app
+
+  StateBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StateBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !GetAtt StateBucket.Arn
+              - !Sub '${StateBucket.Arn}/*'
+            Condition:
+              Bool:
+                'aws:SecureTransport': 'false'
+
+  SecretsKey:
+    Type: AWS::KMS::Key
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      Description: Encrypts the secrets in myself-app's Pulumi stack configuration.
+      EnableKeyRotation: true
+      # The account's own IAM policies decide who may use the key, which is
+      # how the GitHub roles the stack creates are granted it.
+      KeyPolicy:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AccountPoliciesDecide
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: 'kms:*'
+            Resource: '*'
+      Tags:
+        - Key: project
+          Value: myself-app
+
+  SecretsKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: alias/myself-app-pulumi
+      TargetKeyId: !Ref SecretsKey
+
+Outputs:
+  StateBucketName:
+    Value: !Ref StateBucket
+  SecretsKeyArn:
+    Value: !GetAtt SecretsKey.Arn
