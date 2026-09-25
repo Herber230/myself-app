@@ -17,11 +17,16 @@ interface Redirect {
   headers: { location: { value: string } };
 }
 
+const SOURCE = readFileSync(
+  new URL('./viewer-request.js', import.meta.url),
+  'utf8',
+);
+
 // CloudFront runs the file as a script and calls its top-level `handler`; the
 // spec does the same rather than importing it.
-const handler = new Function(
-  `${readFileSync(new URL('./viewer-request.js', import.meta.url), 'utf8')}\nreturn handler;`,
-)() as (event: { request: Request }) => Request | Redirect;
+const handler = new Function(`${SOURCE}\nreturn handler;`)() as (event: {
+  request: Request;
+}) => Request | Redirect;
 
 const request = (
   uri: string,
@@ -36,6 +41,13 @@ const request = (
 const run = (req: Request) => handler({ request: req });
 
 describe('the viewer-request function', () => {
+  it('keeps to the syntax cloudfront-js-2.0 parses', () => {
+    // Node runs what CloudFront refuses to load, and a function that fails to
+    // load answers every request with a 503. The one construct that already
+    // did so once: `for…of` ("Token "of" not supported in this version").
+    expect(SOURCE).not.toMatch(/\bfor\s*\([^)]*\bof\b/);
+  });
+
   it('serves a folder its index document', () => {
     expect(run(request('/'))).toMatchObject({ uri: '/index.html' });
     expect(run(request('/es/cv/'))).toMatchObject({ uri: '/es/cv/index.html' });

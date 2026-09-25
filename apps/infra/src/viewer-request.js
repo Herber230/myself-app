@@ -20,17 +20,19 @@ function redirect(location) {
   };
 }
 
+// No `for…of`: cloudfront-js-2.0 rejects it ("Token "of" not supported"),
+// though Node runs it, so the spec would not notice. `forEach` instead.
 function search(querystring) {
   const pairs = [];
-  for (const name of Object.keys(querystring)) {
+  Object.keys(querystring).forEach(name => {
     const entry = querystring[name];
     const values = entry.multiValue
       ? entry.multiValue.map(item => item.value)
       : [entry.value];
-    for (const value of values) {
+    values.forEach(value => {
       pairs.push(value === '' ? name : `${name}=${value}`);
-    }
-  }
+    });
+  });
   return pairs.length > 0 ? `?${pairs.join('&')}` : '';
 }
 
