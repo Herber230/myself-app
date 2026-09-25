@@ -80,11 +80,11 @@ test.describe('each locale renders its own pages', () => {
   }
 });
 
-test('a folder without its trailing slash is sent to it, as S3 does', async ({
+test('a folder without its trailing slash is sent to it, as CloudFront does', async ({
   request,
 }) => {
   const response = await request.get('/en', { maxRedirects: 0 });
-  expect(response.status()).toBe(302);
+  expect(response.status()).toBe(301);
   expect(response.headers()['location']).toBe('/en/');
 });
 

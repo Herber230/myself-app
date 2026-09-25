@@ -1,17 +1,18 @@
 #!/usr/bin/env node
 /**
- * Serves a static export the way the S3 website endpoint does, so a route that
- * only works under `next dev` or `next start` fails here instead of in the
- * bucket.
+ * Serves a static export the way CloudFront serves the bucket (ADR 0013), so a
+ * route that only works under `next dev` or `next start` fails here instead of
+ * on the site.
  *
  *   node tools/serve-static.mjs <directory> [port]
  *
  * - `path/` answers `path/index.html`.
  * - `path` without a trailing slash, where `path/index.html` exists, answers a
- *   302 to `path/` — what S3 does for a "folder".
+ *   301 to `path/` — what the viewer-request function in
+ *   `apps/infra/src/viewer-request.js` does for a "folder".
  * - Anything else missing answers `404.html` with status 404.
  *
- * No rewrites, no redirect rules, no clean URLs: a bucket has none of them.
+ * No rewrites, no redirect rules, no clean URLs beyond those two.
  */
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
@@ -73,7 +74,7 @@ createServer((request, response) => {
   } else if (!pathname.endsWith('/') && isFile(target)) {
     send(response, 200, target);
   } else if (!pathname.endsWith('/') && isFile(join(target, 'index.html'))) {
-    response.writeHead(302, { location: `${pathname}/${url.search}` }).end();
+    response.writeHead(301, { location: `${pathname}/${url.search}` }).end();
   } else if (isFile(join(root, '404.html'))) {
     send(response, 404, join(root, '404.html'));
   } else {
