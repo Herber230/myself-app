@@ -30,6 +30,22 @@ describe('the radar legend', () => {
     expect(numbers).toEqual([...numbers].sort((a, b) => a - b));
   });
 
+  it('anchors each entry by its technology', () => {
+    const layout = layoutRadar(FIXTURE_RADAR_ENTRIES);
+    render(
+      <RadarLegend
+        layout={layout}
+        locale="en"
+        quadrants={QUADRANTS}
+        rings={RINGS}
+      />,
+    );
+    const [blip] = layout.blips;
+    expect(document.getElementById(`tech-${blip?.id}`)?.textContent).toContain(
+      blip?.label.en,
+    );
+  });
+
   it('leaves out a ring with nothing in it', () => {
     const layout = layoutRadar(
       FIXTURE_RADAR_ENTRIES.filter(entry => entry.ring === 0),

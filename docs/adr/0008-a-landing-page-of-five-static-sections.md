@@ -6,6 +6,7 @@
 - Read when: adding or reordering a landing section, or when the in-page nav or the language switch loses its place
 - Revised: 2026-09-18 — the script budget is measured and held by an e2e journey
 - Revised: 2026-09-23 by [ADR 0011](0011-a-moving-hero-a-revealing-nav-and-a-blue-theme.md) — the theme control is a menu, not entifix's switcher; the landing page's scripts measured again with #29
+- Revised: 2026-09-25 — a project's technology links to its radar legend entry, `/<locale>/tech-radar/#tech-<id>` (#30); #39 adopts the shape rather than choosing it
 
 ## Context
 
@@ -54,7 +55,9 @@ and which are copy.
   decided renders neither a project image nor the bio in the hero, so
   `Project.imageUrl` is dropped from #25's first cut and `Profile.tagline` is
   added beside `bio`. A project's `technologies` link to the radar; the shape of
-  that deep link is the radar spec's to choose (#39).
+  that deep link is the radar spec's to choose (#39). _Revised: it is the
+  legend entry's anchor, `#tech-<id>`, set by #30 so the link has a target
+  before the radar spec is written._
 - **One social preview image per locale, generated at build** from
   `app/[locale]/opengraph-image.tsx`, typographic and matching the hero. It runs
   only during the export, so it ships nothing. ⚠️ Open Graph URLs must be

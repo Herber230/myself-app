@@ -31,6 +31,20 @@ describe('the landing page', () => {
     expect(document.getElementById('entifix')?.tagName).toBe('SECTION');
   });
 
+  it('fills its sections from content', async () => {
+    await renderPage(HomePage(paramsOf({ locale: 'es' }) as Props), 'es');
+    const about = screen.getByRole('region', { name: 'Sobre mí' });
+    expect(about.textContent).toContain('Apasionado del software');
+    const projects = screen.getByRole('region', { name: 'Proyectos' });
+    expect(
+      projects.querySelector('a[href="/es/tech-radar/#tech-typescript"]'),
+    ).not.toBeNull();
+    const contact = screen.getByRole('region', { name: 'Contacto' });
+    expect(
+      contact.querySelector('a[href="https://github.com/Herber230"]'),
+    ).not.toBeNull();
+  });
+
   it('is titled and alternated per locale', async () => {
     const metadata = await generateMetadata(
       paramsOf({ locale: 'es' }) as Props,

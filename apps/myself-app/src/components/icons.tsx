@@ -2,14 +2,20 @@ import type { ContactChannelType } from '@myself-app/domain';
 import type { ReactNode } from 'react';
 
 /**
- * The human mode's icons, drawn inline (ADR 0012). Shapes only — no `<text>`,
- * which a PDF would carry as text and an ATS would read. Always beside the
- * words they illustrate, never in their place, so each is `aria-hidden`.
+ * Contact icons, drawn inline: the CV's human mode (ADR 0012) and the landing
+ * page's contact section. Shapes only — no `<text>`, which a PDF would carry
+ * as text and an ATS would read. Always beside the words they illustrate,
+ * never in their place, so each is `aria-hidden`. The caller names the class,
+ * since the sheet and the screen size and colour them differently.
  */
-function Icon({ children }: { children: ReactNode }) {
+interface IconProps {
+  readonly className: string;
+}
+
+function Icon({ children, className }: IconProps & { children: ReactNode }) {
   return (
     <svg
-      className="cv-icon"
+      className={className}
       viewBox="0 0 16 16"
       width="1em"
       height="1em"
@@ -62,10 +68,13 @@ const CHANNEL_SHAPES: Partial<Record<ContactChannelType, ReactNode>> = {
   github: CODE,
 };
 
-export function ChannelIcon({ type }: { type: ContactChannelType }) {
-  return <Icon>{CHANNEL_SHAPES[type] ?? LINK}</Icon>;
+export function ChannelIcon({
+  type,
+  className,
+}: IconProps & { type: ContactChannelType }) {
+  return <Icon className={className}>{CHANNEL_SHAPES[type] ?? LINK}</Icon>;
 }
 
-export function LocationIcon() {
-  return <Icon>{PIN}</Icon>;
+export function LocationIcon({ className }: IconProps) {
+  return <Icon className={className}>{PIN}</Icon>;
 }

@@ -44,16 +44,16 @@ export const en = {
     present: 'Present',
     notCompleted: 'not completed',
     location: 'Location',
-    /** A channel's label, written before its address in the ATS mode. */
-    channels: {
-      email: 'Email',
-      linkedin: 'LinkedIn',
-      github: 'GitHub',
-      stackoverflow: 'Stack Overflow',
-      medium: 'Medium',
-      goodreads: 'Goodreads',
-      x: 'X',
-    },
+  },
+  /** A contact channel's name: the CV's ATS labels, the landing's link names. */
+  channels: {
+    email: 'Email',
+    linkedin: 'LinkedIn',
+    github: 'GitHub',
+    stackoverflow: 'Stack Overflow',
+    medium: 'Medium',
+    goodreads: 'Goodreads',
+    x: 'X',
   },
   techRadarLead: 'The technologies and techniques I use. Coming soon.',
   redirecting: 'Continue to the English site',
@@ -81,7 +81,23 @@ export const en = {
       entifix: 'Built on entifix',
       contact: 'Contact',
     },
-    comingSoon: 'Coming soon.',
+    projects: {
+      /** Names the list of a project's technologies. */
+      technologies: 'Technologies in {{project}}',
+      site: 'Visit the site',
+      repository: 'Read the source',
+    },
+    /** Copy, not content (ADR 0008): each claim is one `content/` makes true. */
+    entifix: {
+      what: 'entifix is a TypeScript framework for entity-driven applications, built on Effect. An entity is described once, and its metadata drives validation, repositories, use cases and React controls.',
+      here: 'This page runs on it. The profile, the projects and the contact channels are entities, stored as JSON in English and Spanish, checked against their metadata by a static repository, and read at build time through the load use case, the same one a backend would serve.',
+      repository: 'Source on GitHub',
+      npm: 'Packages on npm',
+    },
+    contact: {
+      /** A link's name: the channel, then the handle it shows. */
+      link: '{{channel}}: {{handle}}',
+    },
   },
   theme: {
     label: 'Theme',

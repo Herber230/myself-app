@@ -3,7 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 /**
  * The landing page (#29, ADR 0008 and 0011): the hero from `Profile`, a bar
  * revealed by scroll, anchors that work without scripting, and motion that
- * stops under reduced motion.
+ * stops under reduced motion. Below it, the sections from content (#30–#32).
  */
 
 const HERO = {
@@ -44,6 +44,18 @@ for (const [locale, copy] of Object.entries(HERO)) {
     );
   });
 }
+
+test("a project's technology opens its entry on the radar", async ({
+  page,
+}) => {
+  await page.goto('/en/');
+  const projects = page.getByRole('region', { name: 'Projects' });
+  const link = projects.getByRole('link', { name: 'TypeScript' }).first();
+  await expect(link).toHaveAttribute('href', '/en/tech-radar/#tech-typescript');
+  await link.click();
+  await page.waitForURL('/en/tech-radar/#tech-typescript');
+  await expect(page.locator('#tech-typescript')).toBeInViewport();
+});
 
 test('the bar is hidden over the hero and revealed by scrolling', async ({
   page,
@@ -139,6 +151,21 @@ test.describe('with scripting off', () => {
     await expect(
       page.getByRole('heading', { level: 2, name: 'About me' }),
     ).toBeInViewport();
+  });
+
+  test('the sections are all there, their links plain links', async ({
+    page,
+  }) => {
+    await page.goto('/en/#contact');
+    const contact = page.getByRole('region', { name: 'Contact' });
+    await expect(
+      contact.getByRole('link', { name: 'GitHub: Herber230' }),
+    ).toHaveAttribute('href', 'https://github.com/Herber230');
+    await expect(
+      page
+        .getByRole('region', { name: 'Projects' })
+        .getByRole('heading', { level: 3 }),
+    ).toHaveText(['myself-app', 'entifix']);
   });
 
   test('the language menu is a menu of plain links', async ({ page }) => {
