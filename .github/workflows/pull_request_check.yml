@@ -341,7 +341,9 @@ jobs:
       - uses: pulumi/actions@v7
         with:
           pulumi-version: 3.264.0
-      - run: pnpm nx run-many -t preview --projects="${{ needs.initialize.outputs.preview-projects }}"
+      # `static`: the plan is the point of this job, and run-many otherwise
+      # hides a successful task's output.
+      - run: pnpm nx run-many -t preview --projects="${{ needs.initialize.outputs.preview-projects }}" --output-style=static
         env:
           PULUMI_SKIP_UPDATE_CHECK: 'true'
 
