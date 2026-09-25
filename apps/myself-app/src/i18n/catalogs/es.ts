@@ -28,6 +28,15 @@ export const es = {
     print: 'Imprimir o guardar en PDF',
     printHint:
       'Para una hoja limpia: A4, sin márgenes, sin encabezados ni pies de página, con gráficos de fondo.',
+    customize: {
+      label: 'Personalizar',
+      sections: 'Secciones',
+      positions: 'Puestos',
+      technologies: 'Tecnologías',
+      reset: 'Mostrar todo',
+      downloadNote:
+        'La descarga es la hoja completa; al imprimir se conserva lo que elegiste.',
+    },
   },
   cvSheet: {
     headings: {

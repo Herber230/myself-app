@@ -1,8 +1,11 @@
 import { screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
+import { type CvSheet, loadCvSheet } from '../../content/cv';
+import { SITE_REPOSITORIES } from '../../content/repositories';
+import { siteT } from '../../i18n/server';
 import { renderPage } from '../../test/render';
-import { cvMetadata, CvPageView } from './cv-page';
+import { customizerGroups, cvMetadata, CvPageView } from './cv-page';
 
 describe('a CV page', () => {
   it('shows the sheet under the nav, with the reading and the mode it is in', async () => {
@@ -65,11 +68,73 @@ describe('a CV page', () => {
     );
   });
 
+  it('offers to customize the human sheet, hiding what its URL hides before paint', async () => {
+    await renderPage(
+      CvPageView({ locale: 'en', variant: 'backend', mode: 'human' }),
+      'en',
+    );
+    const customize = screen.getByText('Customize').closest('details');
+    expect(customize).not.toBeNull();
+    const groups = within(customize as HTMLElement).getAllByRole('group');
+    expect(
+      groups.map(group => group.querySelector('legend')?.textContent),
+    ).toEqual(['Sections', 'Positions', 'Technologies']);
+    expect(
+      within(groups[0])
+        .getAllByRole('checkbox')
+        .map(box => box.closest('label')?.textContent),
+    ).toEqual([
+      'Summary',
+      'Technical skills',
+      'Experience',
+      'Education',
+      'Certificates',
+    ]);
+    expect(
+      within(groups[1]).getByRole('checkbox', {
+        name: 'Software Architect · Tigo Guatemala',
+      }),
+    ).toBeTruthy();
+    // The inline script sits before the sheet, so it runs before it paints.
+    const script = document.querySelector('main > script');
+    expect(script?.textContent).toContain('cv-hidden');
+    expect(
+      script?.compareDocumentPosition(
+        document.querySelector('.cv-paper') as Element,
+      ),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
+  it('leaves the ATS sheet as it is built: no customizer, no script', async () => {
+    await renderPage(
+      CvPageView({ locale: 'en', variant: 'backend', mode: 'ats' }),
+      'en',
+    );
+    expect(screen.queryByText('Customize')).toBeNull();
+    expect(document.querySelector('main script')).toBeNull();
+  });
+
   it('is not found for an unknown locale or variant', async () => {
     await expect(CvPageView({ locale: 'fr', mode: 'human' })).rejects.toThrow();
     await expect(
       CvPageView({ locale: 'en', variant: 'astronaut', mode: 'human' }),
     ).rejects.toThrow();
+  });
+});
+
+describe("what a CV's customizer offers", () => {
+  it('leaves out a section the sheet does not have', async () => {
+    const sheet = (await loadCvSheet(SITE_REPOSITORIES, 'backend')) as CvSheet;
+    const [sections] = customizerGroups(
+      { ...sheet, education: [], certificates: [] },
+      'en',
+      siteT('en'),
+    );
+    expect(sections.options.map(option => option.part)).toEqual([
+      'section:summary',
+      'section:skills',
+      'section:experience',
+    ]);
   });
 });
 

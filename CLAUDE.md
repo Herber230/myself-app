@@ -111,6 +111,7 @@ apps/infra                 the Pulumi program (layer:infra); depends on no works
 - No localized or collection member is `filterable`/`sortable` — `describeEntityColumns` throws on a queryable collection. A filter over one (the radar's `in` over `areas`) is built in code; the adapter's `in` matches any array element, as Mongo's does, and it compares a link or collection link by its id(s) (#66), so a request filtered on `quadrant`, `ring` or `areas` answers as Mongo would.
 - Do not use `@entifix/testing-unit`'s in-memory repository outside specs (wrong tier; its `in` does not match array members). Its read-half contract is re-created in `packages/static-adapter/src/contracts/` until entifix splits its suite.
 - Data paths (ADR 0003): pages read content in server components at build time, and ship no entifix code. `force-static` route handlers also write every entity to `/data/<key>.json`, but **no page reads them**: rebuilding the repositories in the browser cost the radar page +78 KB gzipped, so interactive parts filter props passed down from build time.
+- The CV's customizer (#38, ADR 0015) hides parts of a sheet rendered whole at build time: `data-cv-part` on the human sheet, one `<style id="cv-hidden">` built from the URL's `?hide=`, written first by an inline script before paint. The sheet never reads the query, and the ATS sheet carries no parts.
 
 ## Dependencies
 
