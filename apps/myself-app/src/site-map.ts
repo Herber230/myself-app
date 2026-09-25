@@ -16,6 +16,9 @@ export const SITE_PATHS = ['/', '/cv', '/tech-radar'] as const;
 /** The CV page of each variant but the default: listed from the content. */
 export const CV_VARIANT_ROUTE = '/cv/[variant]';
 
+/** Each technology's page (ADR 0014): listed from the content. */
+export const TECHNOLOGY_ROUTE = '/tech-radar/[technology]';
+
 /**
  * The CV's ATS pages, left out: each is `noindex`, with its human page as
  * canonical (ADR 0012).

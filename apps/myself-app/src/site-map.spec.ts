@@ -8,6 +8,7 @@ import {
   SITE_PATHS,
   siteMapEntries,
   siteRobots,
+  TECHNOLOGY_ROUTE,
   UNLISTED_ROUTES,
 } from './site-map';
 
@@ -21,7 +22,12 @@ describe('the sitemap', () => {
       return dir === '' ? '/' : `/${dir}`;
     });
     expect(
-      [...SITE_PATHS, CV_VARIANT_ROUTE, ...UNLISTED_ROUTES].sort(),
+      [
+        ...SITE_PATHS,
+        CV_VARIANT_ROUTE,
+        TECHNOLOGY_ROUTE,
+        ...UNLISTED_ROUTES,
+      ].sort(),
     ).toEqual(pages.sort());
   });
 

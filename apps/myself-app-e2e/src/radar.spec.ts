@@ -78,3 +78,35 @@ test('the export carries the radar as JSON, and it matches the page', async ({
     ).toHaveCount(1);
   }
 });
+
+test("a technology's page links back to the radar and on to its projects", async ({
+  page,
+}) => {
+  await page.goto('/en/tech-radar/typescript/');
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'TypeScript' }),
+  ).toBeVisible();
+
+  await page.getByRole('link', { name: 'myself-app' }).click();
+  await page.waitForURL('/en/#project-myself-app');
+  await expect(page.locator('#project-myself-app')).toBeInViewport();
+
+  await page.goto('/es/tech-radar/typescript/');
+  await page.getByRole('link', { name: '← Volver al radar' }).click();
+  await page.waitForURL('/es/tech-radar/#tech-typescript');
+  await expect(page.locator('#tech-typescript')).toBeInViewport();
+});
+
+test("a technology's page needs no JavaScript", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto('/en/tech-radar/next-js/');
+  await expect(
+    page.getByRole('heading', { level: 2, name: 'How it moved' }),
+  ).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Website' })).toHaveAttribute(
+    'href',
+    'https://nextjs.org',
+  );
+  await context.close();
+});

@@ -525,11 +525,14 @@ body {
     grid-template-columns: max-content 1fr;
   }
 
-  /* A technology reached from a link (#30): clear of the fixed nav, and marked. */
+  /* A technology or a project reached from a link (#30, #42): clear of the
+     fixed nav, and marked. */
+  .landing-project,
   .radar-legend-entry {
     scroll-margin-top: 5rem;
   }
 
+  .landing-project:target,
   .radar-legend-entry:target {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;

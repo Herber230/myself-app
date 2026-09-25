@@ -21,6 +21,12 @@ describe("a technology's detail", () => {
     ]);
   });
 
+  it('carries its quadrant and the ring it sits in now', async () => {
+    const detail = await detailOf('static-first-delivery');
+    expect(detail?.quadrant.id).toBe('techniques');
+    expect(detail?.ring.id).toBe('adopt');
+  });
+
   it('carries its areas, in the order it lists them', async () => {
     const detail = await detailOf('static-first-delivery');
     expect(detail?.areas.map(area => area.id)).toEqual(['web-rendering']);

@@ -108,6 +108,18 @@ export const es = {
       platforms: 'Plataformas',
       languages: 'Lenguajes y frameworks',
     },
+    detail: {
+      back: '← Volver al radar',
+      quadrant: 'Cuadrante',
+      ring: 'Anillo',
+      ringMeaning: '{{ring}} — {{meaning}}',
+      areas: 'Áreas',
+      site: 'Sitio web',
+      repository: 'Código',
+      history: 'Cómo se movió',
+      projects: 'Dónde la usé',
+      noProjects: 'Ningún proyecto de este sitio la usa todavía.',
+    },
     rings: {
       adopt: 'Adoptar',
       trial: 'Probar',

@@ -1,5 +1,6 @@
 /**
- * Everything a blip's detail shows (#42): the technology, its areas, the
+ * Everything a blip's detail shows (#42): the technology, its quadrant and
+ * ring, its areas, the
  * stretches it spent in each ring — oldest first, so the list is its ring
  * history — and the projects that use it.
  *
@@ -9,6 +10,7 @@
  */
 import {
   Project,
+  Quadrant,
   Ring,
   Technology,
   TechnologyArea,
@@ -27,6 +29,9 @@ export interface RingStretch {
 
 export interface TechnologyDetail {
   readonly technology: Technology;
+  readonly quadrant: Quadrant;
+  /** Where it sits now. */
+  readonly ring: Ring;
   /** In the order the technology lists them. */
   readonly areas: readonly TechnologyArea[];
   /** Oldest first. */
@@ -39,17 +44,19 @@ export async function loadTechnologyDetail(
   repositories: SiteRepositories,
   id: string,
 ): Promise<TechnologyDetail | undefined> {
-  const [technologies, areas, rings, periods, projects] = await Promise.all([
-    loadEvery(repositories, Technology),
-    loadEvery(repositories, TechnologyArea),
-    loadEvery(repositories, Ring),
-    loadEvery(repositories, TechnologyUsePeriod, {
-      sorting: [{ 0: { property: 'start', type: 'asc' } }],
-    }),
-    loadEvery(repositories, Project, {
-      sorting: [{ 0: { property: 'order', type: 'asc' } }],
-    }),
-  ]);
+  const [technologies, quadrants, areas, rings, periods, projects] =
+    await Promise.all([
+      loadEvery(repositories, Technology),
+      loadEvery(repositories, Quadrant),
+      loadEvery(repositories, TechnologyArea),
+      loadEvery(repositories, Ring),
+      loadEvery(repositories, TechnologyUsePeriod, {
+        sorting: [{ 0: { property: 'start', type: 'asc' } }],
+      }),
+      loadEvery(repositories, Project, {
+        sorting: [{ 0: { property: 'order', type: 'asc' } }],
+      }),
+    ]);
 
   const technology = technologies.find(each => each.id === id);
   if (technology === undefined) return undefined;
@@ -60,6 +67,10 @@ export async function loadTechnologyDetail(
 
   return {
     technology,
+    quadrant: quadrants.find(
+      each => each.id === technology.quadrant.id,
+    ) as Quadrant,
+    ring: ringById.get(technology.ring.id) as Ring,
     areas: technology.areas.ids.map(
       areaId => areaById.get(areaId) as TechnologyArea,
     ),

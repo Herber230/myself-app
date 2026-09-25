@@ -124,6 +124,18 @@ export const en = {
       platforms: 'Platforms',
       languages: 'Languages & frameworks',
     },
+    detail: {
+      back: '← Back to the radar',
+      quadrant: 'Quadrant',
+      ring: 'Ring',
+      ringMeaning: '{{ring}} — {{meaning}}',
+      areas: 'Areas',
+      site: 'Website',
+      repository: 'Source',
+      history: 'How it moved',
+      projects: 'Where I used it',
+      noProjects: 'No project on this site uses it yet.',
+    },
     rings: {
       adopt: 'Adopt',
       trial: 'Trial',

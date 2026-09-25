@@ -27,6 +27,8 @@ describe('the projects section', () => {
         .getAllByRole('heading', { level: 3 })
         .map(heading => heading.textContent),
     ).toEqual(projects.map(project => project.name));
+    // Each card is an anchor a technology's page links to (#42).
+    expect(document.getElementById('project-myself-app')).not.toBeNull();
   });
 
   it('links each technology to its place on the radar, by its name', async () => {

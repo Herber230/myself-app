@@ -17,6 +17,15 @@ describe('the metadata routes', () => {
     );
   });
 
+  it('list every technology page, in both locales', async () => {
+    const urls = (await sitemap.default()).map(entry => entry.url);
+    for (const locale of ['en', 'es']) {
+      expect(urls).toContain(
+        `${siteUrl().origin}/${locale}/tech-radar/typescript/`,
+      );
+    }
+  });
+
   it('are written once, at build', () => {
     expect(sitemap.dynamic).toBe('force-static');
     expect(robots.dynamic).toBe('force-static');

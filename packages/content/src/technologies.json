@@ -79,6 +79,8 @@
       "en": "TODO(#26): what Nx is, and where I used it.",
       "es": "TODO(#26): qué es Nx y dónde lo usé."
     },
+    "site": "https://nx.dev",
+    "repositoryUrl": "https://github.com/nrwl/nx",
     "quadrant": "tools",
     "ring": "adopt",
     "areas": ["monorepo"]
@@ -93,6 +95,8 @@
       "en": "TODO(#26): what pnpm is, and where I used it.",
       "es": "TODO(#26): qué es pnpm y dónde lo usé."
     },
+    "site": "https://pnpm.io",
+    "repositoryUrl": "https://github.com/pnpm/pnpm",
     "quadrant": "tools",
     "ring": "adopt",
     "areas": ["monorepo"]
@@ -107,6 +111,8 @@
       "en": "TODO(#26): what Playwright is, and where I used it.",
       "es": "TODO(#26): qué es Playwright y dónde lo usé."
     },
+    "site": "https://playwright.dev",
+    "repositoryUrl": "https://github.com/microsoft/playwright",
     "quadrant": "tools",
     "ring": "trial",
     "areas": []
@@ -121,6 +127,8 @@
       "en": "TODO(#26): what Biome is, and where I used it.",
       "es": "TODO(#26): qué es Biome y dónde lo usé."
     },
+    "site": "https://biomejs.dev",
+    "repositoryUrl": "https://github.com/biomejs/biome",
     "quadrant": "tools",
     "ring": "assess",
     "areas": []
@@ -135,6 +143,8 @@
       "en": "TODO(#26): what Jest is, and where I used it.",
       "es": "TODO(#26): qué es Jest y dónde lo usé."
     },
+    "site": "https://jestjs.io",
+    "repositoryUrl": "https://github.com/jestjs/jest",
     "quadrant": "tools",
     "ring": "hold",
     "areas": []
@@ -149,6 +159,7 @@
       "en": "TODO(#26): what Amazon S3 is, and where I used it.",
       "es": "TODO(#26): qué es Amazon S3 y dónde lo usé."
     },
+    "site": "https://aws.amazon.com/s3/",
     "quadrant": "platforms",
     "ring": "adopt",
     "areas": []
@@ -163,6 +174,7 @@
       "en": "TODO(#26): what CloudFront is, and where I used it.",
       "es": "TODO(#26): qué es CloudFront y dónde lo usé."
     },
+    "site": "https://aws.amazon.com/cloudfront/",
     "quadrant": "platforms",
     "ring": "trial",
     "areas": []
@@ -177,6 +189,7 @@
       "en": "TODO(#26): what Cloudflare Workers is, and where I used it.",
       "es": "TODO(#26): qué es Cloudflare Workers y dónde lo usé."
     },
+    "site": "https://workers.cloudflare.com",
     "quadrant": "platforms",
     "ring": "assess",
     "areas": []
@@ -191,6 +204,7 @@
       "en": "TODO(#26): what Heroku is, and where I used it.",
       "es": "TODO(#26): qué es Heroku y dónde lo usé."
     },
+    "site": "https://www.heroku.com",
     "quadrant": "platforms",
     "ring": "hold",
     "areas": []
@@ -205,6 +219,8 @@
       "en": "TODO(#26): what TypeScript is, and where I used it.",
       "es": "TODO(#26): qué es TypeScript y dónde lo usé."
     },
+    "site": "https://www.typescriptlang.org",
+    "repositoryUrl": "https://github.com/microsoft/TypeScript",
     "quadrant": "languages-and-frameworks",
     "ring": "adopt",
     "areas": []
@@ -219,6 +235,8 @@
       "en": "TODO(#26): what Next.js is, and where I used it.",
       "es": "TODO(#26): qué es Next.js y dónde lo usé."
     },
+    "site": "https://nextjs.org",
+    "repositoryUrl": "https://github.com/vercel/next.js",
     "quadrant": "languages-and-frameworks",
     "ring": "adopt",
     "areas": ["server-side-rendering", "web-rendering"]
@@ -233,6 +251,8 @@
       "en": "TODO(#26): what Effect is, and where I used it.",
       "es": "TODO(#26): qué es Effect y dónde lo usé."
     },
+    "site": "https://effect.website",
+    "repositoryUrl": "https://github.com/Effect-TS/effect",
     "quadrant": "languages-and-frameworks",
     "ring": "trial",
     "areas": []
@@ -247,6 +267,8 @@
       "en": "TODO(#26): what Tailwind CSS is, and where I used it.",
       "es": "TODO(#26): qué es Tailwind CSS y dónde lo usé."
     },
+    "site": "https://tailwindcss.com",
+    "repositoryUrl": "https://github.com/tailwindlabs/tailwindcss",
     "quadrant": "languages-and-frameworks",
     "ring": "trial",
     "areas": ["css"]
@@ -261,6 +283,8 @@
       "en": "TODO(#26): what Svelte is, and where I used it.",
       "es": "TODO(#26): qué es Svelte y dónde lo usé."
     },
+    "site": "https://svelte.dev",
+    "repositoryUrl": "https://github.com/sveltejs/svelte",
     "quadrant": "languages-and-frameworks",
     "ring": "assess",
     "areas": ["web-rendering"]
@@ -275,6 +299,8 @@
       "en": "TODO(#26): what AngularJS is, and where I used it.",
       "es": "TODO(#26): qué es AngularJS y dónde lo usé."
     },
+    "site": "https://angularjs.org",
+    "repositoryUrl": "https://github.com/angular/angular.js",
     "quadrant": "languages-and-frameworks",
     "ring": "hold",
     "areas": ["web-rendering"]
