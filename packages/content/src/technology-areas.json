@@ -12,7 +12,10 @@
   },
   {
     "id": "css",
-    "name": { "en": "CSS", "es": "CSS" },
+    "name": {
+      "en": "CSS",
+      "es": "CSS"
+    },
     "description": {
       "en": "Cascading Style Sheets: the language that describes how a document written in HTML is presented.",
       "es": "Hojas de estilo en cascada: el lenguaje que describe cómo se presenta un documento escrito en HTML."
@@ -20,7 +23,10 @@
   },
   {
     "id": "web-rendering",
-    "name": { "en": "Web rendering", "es": "Renderizado web" },
+    "name": {
+      "en": "Web rendering",
+      "es": "Renderizado web"
+    },
     "description": {
       "en": "How a browser turns HTML, CSS and JavaScript into the page a visitor sees.",
       "es": "Cómo un navegador convierte HTML, CSS y JavaScript en la página que ve un visitante."
@@ -28,10 +34,35 @@
   },
   {
     "id": "monorepo",
-    "name": { "en": "Monorepo", "es": "Monorepo" },
+    "name": {
+      "en": "Monorepo",
+      "es": "Monorepo"
+    },
     "description": {
       "en": "One repository holding every project and package, shared as a single source of truth.",
       "es": "Un solo repositorio con todos los proyectos y paquetes, compartido como única fuente de verdad."
+    }
+  },
+  {
+    "id": "architecture",
+    "name": {
+      "en": "Architecture",
+      "es": "Arquitectura"
+    },
+    "description": {
+      "en": "How a system is split into parts, and how those parts talk to each other.",
+      "es": "Cómo se divide un sistema en partes, y cómo se comunican esas partes."
+    }
+  },
+  {
+    "id": "delivery",
+    "name": {
+      "en": "Delivery",
+      "es": "Entrega"
+    },
+    "description": {
+      "en": "Getting a change from a commit to production, and keeping it running there.",
+      "es": "Llevar un cambio de un commit a producción, y mantenerlo funcionando ahí."
     }
   }
 ]

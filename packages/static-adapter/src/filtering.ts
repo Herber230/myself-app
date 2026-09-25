@@ -5,6 +5,8 @@ import type {
   FilterGroup,
 } from '@entifix/core';
 
+import { plainValue } from './link-values.js';
+
 /**
  * Whether a record matches a filter, with the semantics of the Mongo adapter
  * rather than of entifix's in-memory double (ADR 0002).
@@ -67,7 +69,9 @@ function matchesFilter<TEntity extends Entity>(
   record: TEntity,
   filter: EntityFilter<TEntity>,
 ): boolean {
-  const actual = (record as Record<string, unknown>)[filter.property as string];
+  const actual = plainValue(
+    (record as Record<string, unknown>)[filter.property as string],
+  );
   switch (filter.operator) {
     case 'eq':
       return isEqual(actual, filter.value);

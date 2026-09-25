@@ -71,8 +71,8 @@ describe('the radar explorer', () => {
     window.history.replaceState(null, '', '/en/tech-radar/?area=monorepo');
     render(explorer());
     const total = layout.blips.length;
-    expect(dimmedBlips()).toHaveLength(total - 2);
-    expect(screen.getByText(`Showing 2 of ${total}`)).toBeTruthy();
+    expect(dimmedBlips()).toHaveLength(total - 3);
+    expect(screen.getByText(`Showing 3 of ${total}`)).toBeTruthy();
     expect(
       screen
         .getByRole('button', { name: 'Monorepo' })

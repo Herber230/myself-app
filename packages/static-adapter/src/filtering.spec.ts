@@ -6,7 +6,13 @@
  * "technologies in any of these areas" matched nothing and reported no error
  * (entifix#34). The array cases below are the ones that differ.
  */
-import type { Entity, EntityFiltering, EntityId } from '@entifix/core';
+import {
+  type Entity,
+  EntityCollectionLink,
+  type EntityFiltering,
+  type EntityId,
+  EntityLink,
+} from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
 import { applyFiltering } from './filtering.js';
@@ -214,5 +220,68 @@ describe('groups and several entries', () => {
         },
       ]),
     ).toEqual(['a', 'c']);
+  });
+});
+
+/**
+ * Links, as a deserialized entity holds them: an `EntityLink` or an
+ * `EntityCollectionLink`, never the id itself. Mongo stores the id, so every
+ * operator compares the id (#66).
+ */
+describe('link members', () => {
+  class Target implements Entity {
+    id = '';
+  }
+
+  interface Linked extends Entity {
+    id: EntityId;
+    ring: EntityLink<Target>;
+    areas: EntityCollectionLink<Target>;
+  }
+
+  const linked = (id: string, ring: string, areas: string[]): Linked => ({
+    id,
+    ring: new EntityLink(Target, { id: ring }),
+    areas: new EntityCollectionLink(Target, { ids: areas }),
+  });
+
+  const LINKED = [
+    linked('a', 'adopt', ['web', 'build']),
+    linked('b', 'trial', ['web']),
+    linked('c', 'adopt', []),
+  ];
+
+  const linkedIds = (filtering: EntityFiltering<Linked>[]) =>
+    applyFiltering(LINKED, filtering).map(row => row.id);
+
+  it('compare a link by its id', () => {
+    expect(
+      linkedIds([
+        { property: 'ring', operator: 'eq', value: 'adopt' as never },
+      ]),
+    ).toEqual(['a', 'c']);
+    expect(
+      linkedIds([
+        { property: 'ring', operator: 'ne', value: 'adopt' as never },
+      ]),
+    ).toEqual(['b']);
+    expect(
+      linkedIds([
+        { property: 'ring', operator: 'in', values: ['trial'] as never },
+      ]),
+    ).toEqual(['b']);
+  });
+
+  it('match any id of a collection link', () => {
+    expect(
+      linkedIds([
+        { property: 'areas', operator: 'in', values: ['web'] as never },
+      ]),
+    ).toEqual(['a', 'b']);
+    expect(
+      linkedIds([
+        { property: 'areas', operator: 'nin', values: ['build'] as never },
+      ]),
+    ).toEqual(['b', 'c']);
   });
 });

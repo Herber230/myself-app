@@ -1,17 +1,87 @@
 [
   {
+    "id": "clean-architecture",
+    "name": {
+      "en": "Clean Architecture",
+      "es": "Arquitectura limpia"
+    },
+    "description": {
+      "en": "Business rules at the centre, frameworks and storage at the edge, so the business drives the software rather than the technology. The idea I have designed around since my years as an architect.",
+      "es": "Las reglas de negocio al centro, frameworks y almacenamiento en el borde, para que el negocio guíe el software y no la tecnología. La idea sobre la que diseño desde mis años como arquitecto."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["architecture"]
+  },
+  {
+    "id": "event-driven-architecture",
+    "name": {
+      "en": "Event-driven architecture",
+      "es": "Arquitectura orientada a eventos"
+    },
+    "description": {
+      "en": "Services that publish what happened instead of calling each other. How we replaced legacy BSS and OSS at Tigo without one big cut-over.",
+      "es": "Servicios que publican lo que ocurrió en lugar de llamarse entre sí. Así reemplazamos los BSS y OSS heredados en Tigo sin un único gran corte."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["architecture"]
+  },
+  {
+    "id": "monorepos",
+    "name": {
+      "en": "Monorepos",
+      "es": "Monorepos"
+    },
+    "description": {
+      "en": "Every app and library in one repository, with the tooling to build and test only what a change affects. My default for anything with more than one package.",
+      "es": "Todas las aplicaciones y librerías en un repositorio, con las herramientas para compilar y probar solo lo que un cambio afecta. Mi opción por defecto para todo lo que tenga más de un paquete."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["monorepo"]
+  },
+  {
+    "id": "gitops",
+    "name": {
+      "en": "GitOps",
+      "es": "GitOps"
+    },
+    "description": {
+      "en": "The desired state of every environment lives in Git, and the cluster converges to it. Rollbacks are a revert and audits are the log.",
+      "es": "El estado deseado de cada entorno vive en Git, y el clúster converge a él. Revertir es un revert, y la auditoría es el historial."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["delivery"]
+  },
+  {
+    "id": "ab-testing",
+    "name": {
+      "en": "A/B testing",
+      "es": "Pruebas A/B"
+    },
+    "description": {
+      "en": "Shipping two versions and letting user behaviour decide. Five years of it at HealthCare.com, alongside the tracking that makes the result trustworthy.",
+      "es": "Publicar dos versiones y dejar que el comportamiento de los usuarios decida. Cinco años de ello en HealthCare.com, junto con el seguimiento que hace fiable el resultado."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": []
+  },
+  {
     "id": "trunk-based-development",
     "name": {
       "en": "Trunk-based development",
       "es": "Desarrollo sobre la rama principal"
     },
     "description": {
-      "en": "TODO(#26): what Trunk-based development is, and where I used it.",
-      "es": "TODO(#26): qué es Desarrollo sobre la rama principal y dónde lo usé."
+      "en": "Small changes merged to main every day behind checks, instead of long-lived branches. This site is built that way: one squash per pull request, released on merge.",
+      "es": "Cambios pequeños integrados a main cada día tras sus verificaciones, en lugar de ramas de larga vida. Este sitio se construye así: un squash por pull request, publicado al integrarse."
     },
     "quadrant": "techniques",
     "ring": "adopt",
-    "areas": []
+    "areas": ["delivery"]
   },
   {
     "id": "static-first-delivery",
@@ -20,54 +90,12 @@
       "es": "Entrega estática primero"
     },
     "description": {
-      "en": "TODO(#26): what Static-first delivery is, and where I used it.",
-      "es": "TODO(#26): qué es Entrega estática primero y dónde lo usé."
-    },
-    "quadrant": "techniques",
-    "ring": "adopt",
-    "areas": ["web-rendering"]
-  },
-  {
-    "id": "contract-testing",
-    "name": {
-      "en": "Contract testing",
-      "es": "Pruebas de contrato"
-    },
-    "description": {
-      "en": "TODO(#26): what Contract testing is, and where I used it.",
-      "es": "TODO(#26): qué es Pruebas de contrato y dónde lo usé."
+      "en": "Render everything at build time and serve plain files from a CDN, adding a server only when a page truly needs one. How this site ships.",
+      "es": "Renderizar todo al compilar y servir archivos planos desde una CDN, añadiendo un servidor solo cuando una página de verdad lo necesita. Así se publica este sitio."
     },
     "quadrant": "techniques",
     "ring": "trial",
-    "areas": []
-  },
-  {
-    "id": "property-based-testing",
-    "name": {
-      "en": "Property-based testing",
-      "es": "Pruebas basadas en propiedades"
-    },
-    "description": {
-      "en": "TODO(#26): what Property-based testing is, and where I used it.",
-      "es": "TODO(#26): qué es Pruebas basadas en propiedades y dónde lo usé."
-    },
-    "quadrant": "techniques",
-    "ring": "assess",
-    "areas": []
-  },
-  {
-    "id": "hand-written-release-notes",
-    "name": {
-      "en": "Hand-written release notes",
-      "es": "Notas de versión escritas a mano"
-    },
-    "description": {
-      "en": "TODO(#26): what Hand-written release notes is, and where I used it.",
-      "es": "TODO(#26): qué es Notas de versión escritas a mano y dónde lo usé."
-    },
-    "quadrant": "techniques",
-    "ring": "hold",
-    "areas": []
+    "areas": ["web-rendering", "delivery"]
   },
   {
     "id": "nx",
@@ -76,14 +104,14 @@
       "es": "Nx"
     },
     "description": {
-      "en": "TODO(#26): what Nx is, and where I used it.",
-      "es": "TODO(#26): qué es Nx y dónde lo usé."
+      "en": "The build system behind my monorepos: affected-only tasks, caching and module boundaries enforced by lint. It runs this site and entifix.",
+      "es": "El sistema de compilación detrás de mis monorepos: tareas solo sobre lo afectado, caché y límites entre módulos verificados por el linter. Mueve este sitio y entifix."
     },
-    "site": "https://nx.dev",
-    "repositoryUrl": "https://github.com/nrwl/nx",
     "quadrant": "tools",
     "ring": "adopt",
-    "areas": ["monorepo"]
+    "areas": ["monorepo"],
+    "site": "https://nx.dev",
+    "repositoryUrl": "https://github.com/nrwl/nx"
   },
   {
     "id": "pnpm",
@@ -92,14 +120,14 @@
       "es": "pnpm"
     },
     "description": {
-      "en": "TODO(#26): what pnpm is, and where I used it.",
-      "es": "TODO(#26): qué es pnpm y dónde lo usé."
+      "en": "A package manager with strict, content-addressed installs and workspace catalogs that keep one version of each dependency across a repository.",
+      "es": "Un gestor de paquetes con instalaciones estrictas y direccionadas por contenido, y catálogos de workspace que mantienen una sola versión de cada dependencia en el repositorio."
     },
-    "site": "https://pnpm.io",
-    "repositoryUrl": "https://github.com/pnpm/pnpm",
     "quadrant": "tools",
     "ring": "adopt",
-    "areas": ["monorepo"]
+    "areas": ["monorepo"],
+    "site": "https://pnpm.io",
+    "repositoryUrl": "https://github.com/pnpm/pnpm"
   },
   {
     "id": "playwright",
@@ -108,30 +136,46 @@
       "es": "Playwright"
     },
     "description": {
-      "en": "TODO(#26): what Playwright is, and where I used it.",
-      "es": "TODO(#26): qué es Playwright y dónde lo usé."
+      "en": "End-to-end tests in real browsers, from user journeys to visual baselines and PDF output. One of my main skills, and the e2e suite of this site.",
+      "es": "Pruebas de extremo a extremo en navegadores reales, de los recorridos de usuario a las líneas base visuales y los PDF. Una de mis principales habilidades, y la suite e2e de este sitio."
     },
-    "site": "https://playwright.dev",
-    "repositoryUrl": "https://github.com/microsoft/playwright",
     "quadrant": "tools",
-    "ring": "trial",
-    "areas": []
+    "ring": "adopt",
+    "areas": [],
+    "site": "https://playwright.dev",
+    "repositoryUrl": "https://github.com/microsoft/playwright"
   },
   {
-    "id": "biome",
+    "id": "argo-cd",
     "name": {
-      "en": "Biome",
-      "es": "Biome"
+      "en": "Argo CD",
+      "es": "Argo CD"
     },
     "description": {
-      "en": "TODO(#26): what Biome is, and where I used it.",
-      "es": "TODO(#26): qué es Biome y dónde lo usé."
+      "en": "The GitOps controller that keeps a Kubernetes cluster in sync with its repository, and shows where it drifted.",
+      "es": "El controlador GitOps que mantiene un clúster de Kubernetes sincronizado con su repositorio, y muestra dónde se desvió."
     },
-    "site": "https://biomejs.dev",
-    "repositoryUrl": "https://github.com/biomejs/biome",
     "quadrant": "tools",
-    "ring": "assess",
-    "areas": []
+    "ring": "adopt",
+    "areas": ["delivery"],
+    "site": "https://argo-cd.readthedocs.io",
+    "repositoryUrl": "https://github.com/argoproj/argo-cd"
+  },
+  {
+    "id": "pulumi",
+    "name": {
+      "en": "Pulumi",
+      "es": "Pulumi"
+    },
+    "description": {
+      "en": "Infrastructure as TypeScript, previewed on every pull request and applied on merge. It defines this site's bucket, CDN and certificates.",
+      "es": "Infraestructura como TypeScript, previsualizada en cada pull request y aplicada al integrarse. Define el bucket, la CDN y los certificados de este sitio."
+    },
+    "quadrant": "tools",
+    "ring": "trial",
+    "areas": ["delivery"],
+    "site": "https://www.pulumi.com",
+    "repositoryUrl": "https://github.com/pulumi/pulumi"
   },
   {
     "id": "jest",
@@ -140,14 +184,46 @@
       "es": "Jest"
     },
     "description": {
-      "en": "TODO(#26): what Jest is, and where I used it.",
-      "es": "TODO(#26): qué es Jest y dónde lo usé."
+      "en": "The test runner I used for years. I have moved to Vitest, which shares the build's own transform and runs ES modules without configuration.",
+      "es": "El ejecutor de pruebas que usé durante años. Me he pasado a Vitest, que comparte la transformación del propio build y ejecuta módulos ES sin configuración."
     },
-    "site": "https://jestjs.io",
-    "repositoryUrl": "https://github.com/jestjs/jest",
     "quadrant": "tools",
     "ring": "hold",
-    "areas": []
+    "areas": [],
+    "site": "https://jestjs.io",
+    "repositoryUrl": "https://github.com/jestjs/jest"
+  },
+  {
+    "id": "kubernetes",
+    "name": {
+      "en": "Kubernetes",
+      "es": "Kubernetes"
+    },
+    "description": {
+      "en": "Container orchestration. At Tigo we ran it on bare metal to host the applications that replaced the legacy BSS and OSS.",
+      "es": "Orquestación de contenedores. En Tigo lo ejecutamos sobre bare metal para alojar las aplicaciones que reemplazaron los BSS y OSS heredados."
+    },
+    "quadrant": "platforms",
+    "ring": "adopt",
+    "areas": ["delivery"],
+    "site": "https://kubernetes.io",
+    "repositoryUrl": "https://github.com/kubernetes/kubernetes"
+  },
+  {
+    "id": "node-js",
+    "name": {
+      "en": "Node.js",
+      "es": "Node.js"
+    },
+    "description": {
+      "en": "The JavaScript runtime behind most of the backends and all of the tooling I have written.",
+      "es": "El entorno de ejecución de JavaScript detrás de la mayoría de los backends y de todas las herramientas que he escrito."
+    },
+    "quadrant": "platforms",
+    "ring": "adopt",
+    "areas": [],
+    "site": "https://nodejs.org",
+    "repositoryUrl": "https://github.com/nodejs/node"
   },
   {
     "id": "amazon-s3",
@@ -156,58 +232,28 @@
       "es": "Amazon S3"
     },
     "description": {
-      "en": "TODO(#26): what Amazon S3 is, and where I used it.",
-      "es": "TODO(#26): qué es Amazon S3 y dónde lo usé."
+      "en": "Object storage. It holds this site's exported files in a private bucket that only the CDN can read.",
+      "es": "Almacenamiento de objetos. Guarda los archivos exportados de este sitio en un bucket privado que solo la CDN puede leer."
     },
-    "site": "https://aws.amazon.com/s3/",
     "quadrant": "platforms",
-    "ring": "adopt",
-    "areas": []
+    "ring": "trial",
+    "areas": [],
+    "site": "https://aws.amazon.com/s3/"
   },
   {
     "id": "cloudfront",
     "name": {
-      "en": "CloudFront",
-      "es": "CloudFront"
+      "en": "Amazon CloudFront",
+      "es": "Amazon CloudFront"
     },
     "description": {
-      "en": "TODO(#26): what CloudFront is, and where I used it.",
-      "es": "TODO(#26): qué es CloudFront y dónde lo usé."
+      "en": "The CDN in front of this site, with a small edge function that maps clean URLs to the exported files.",
+      "es": "La CDN delante de este sitio, con una pequeña función en el borde que traduce las URL limpias a los archivos exportados."
     },
-    "site": "https://aws.amazon.com/cloudfront/",
     "quadrant": "platforms",
     "ring": "trial",
-    "areas": []
-  },
-  {
-    "id": "cloudflare-workers",
-    "name": {
-      "en": "Cloudflare Workers",
-      "es": "Cloudflare Workers"
-    },
-    "description": {
-      "en": "TODO(#26): what Cloudflare Workers is, and where I used it.",
-      "es": "TODO(#26): qué es Cloudflare Workers y dónde lo usé."
-    },
-    "site": "https://workers.cloudflare.com",
-    "quadrant": "platforms",
-    "ring": "assess",
-    "areas": []
-  },
-  {
-    "id": "heroku",
-    "name": {
-      "en": "Heroku",
-      "es": "Heroku"
-    },
-    "description": {
-      "en": "TODO(#26): what Heroku is, and where I used it.",
-      "es": "TODO(#26): qué es Heroku y dónde lo usé."
-    },
-    "site": "https://www.heroku.com",
-    "quadrant": "platforms",
-    "ring": "hold",
-    "areas": []
+    "areas": ["delivery"],
+    "site": "https://aws.amazon.com/cloudfront/"
   },
   {
     "id": "typescript",
@@ -216,14 +262,30 @@
       "es": "TypeScript"
     },
     "description": {
-      "en": "TODO(#26): what TypeScript is, and where I used it.",
-      "es": "TODO(#26): qué es TypeScript y dónde lo usé."
+      "en": "The language I write nearly everything in, from Node.js services to React and Angular front ends.",
+      "es": "El lenguaje en el que escribo casi todo, de servicios en Node.js a frontends en React y Angular."
     },
-    "site": "https://www.typescriptlang.org",
-    "repositoryUrl": "https://github.com/microsoft/TypeScript",
     "quadrant": "languages-and-frameworks",
     "ring": "adopt",
-    "areas": []
+    "areas": [],
+    "site": "https://www.typescriptlang.org",
+    "repositoryUrl": "https://github.com/microsoft/TypeScript"
+  },
+  {
+    "id": "react",
+    "name": {
+      "en": "React",
+      "es": "React"
+    },
+    "description": {
+      "en": "The UI library behind the user-facing applications I have built since HealthCare.com.",
+      "es": "La librería de interfaz detrás de las aplicaciones de cara al usuario que construyo desde HealthCare.com."
+    },
+    "quadrant": "languages-and-frameworks",
+    "ring": "adopt",
+    "areas": ["web-rendering"],
+    "site": "https://react.dev",
+    "repositoryUrl": "https://github.com/facebook/react"
   },
   {
     "id": "next-js",
@@ -232,14 +294,46 @@
       "es": "Next.js"
     },
     "description": {
-      "en": "TODO(#26): what Next.js is, and where I used it.",
-      "es": "TODO(#26): qué es Next.js y dónde lo usé."
+      "en": "React with routing and rendering decided per page: server, static or client. This site is a Next.js static export.",
+      "es": "React con el enrutamiento y el renderizado decididos por página: servidor, estático o cliente. Este sitio es una exportación estática de Next.js."
     },
-    "site": "https://nextjs.org",
-    "repositoryUrl": "https://github.com/vercel/next.js",
     "quadrant": "languages-and-frameworks",
     "ring": "adopt",
-    "areas": ["server-side-rendering", "web-rendering"]
+    "areas": ["server-side-rendering", "web-rendering"],
+    "site": "https://nextjs.org",
+    "repositoryUrl": "https://github.com/vercel/next.js"
+  },
+  {
+    "id": "angular",
+    "name": {
+      "en": "Angular",
+      "es": "Angular"
+    },
+    "description": {
+      "en": "A complete front-end framework, with dependency injection and RxJS built in. Where my TypeScript front-end work started.",
+      "es": "Un framework de frontend completo, con inyección de dependencias y RxJS incluidos. Donde empezó mi trabajo de frontend con TypeScript."
+    },
+    "quadrant": "languages-and-frameworks",
+    "ring": "adopt",
+    "areas": ["web-rendering"],
+    "site": "https://angular.dev",
+    "repositoryUrl": "https://github.com/angular/angular"
+  },
+  {
+    "id": "spring-boot",
+    "name": {
+      "en": "Spring Boot",
+      "es": "Spring Boot"
+    },
+    "description": {
+      "en": "Java services with the wiring already decided. Part of the applications that replaced the legacy systems at Tigo.",
+      "es": "Servicios en Java con la configuración ya resuelta. Parte de las aplicaciones que reemplazaron los sistemas heredados en Tigo."
+    },
+    "quadrant": "languages-and-frameworks",
+    "ring": "adopt",
+    "areas": [],
+    "site": "https://spring.io/projects/spring-boot",
+    "repositoryUrl": "https://github.com/spring-projects/spring-boot"
   },
   {
     "id": "effect",
@@ -248,14 +342,14 @@
       "es": "Effect"
     },
     "description": {
-      "en": "TODO(#26): what Effect is, and where I used it.",
-      "es": "TODO(#26): qué es Effect y dónde lo usé."
+      "en": "Typed effects for TypeScript: errors, dependencies and concurrency in the signature. entifix is built on it.",
+      "es": "Efectos tipados para TypeScript: errores, dependencias y concurrencia en la firma. entifix está construido sobre él."
     },
-    "site": "https://effect.website",
-    "repositoryUrl": "https://github.com/Effect-TS/effect",
     "quadrant": "languages-and-frameworks",
     "ring": "trial",
-    "areas": []
+    "areas": ["architecture"],
+    "site": "https://effect.website",
+    "repositoryUrl": "https://github.com/Effect-TS/effect"
   },
   {
     "id": "tailwind-css",
@@ -264,30 +358,14 @@
       "es": "Tailwind CSS"
     },
     "description": {
-      "en": "TODO(#26): what Tailwind CSS is, and where I used it.",
-      "es": "TODO(#26): qué es Tailwind CSS y dónde lo usé."
+      "en": "Utility classes over design tokens. This site styles its pages with it, on top of entifix's tokens.",
+      "es": "Clases utilitarias sobre tokens de diseño. Este sitio da estilo a sus páginas con él, sobre los tokens de entifix."
     },
-    "site": "https://tailwindcss.com",
-    "repositoryUrl": "https://github.com/tailwindlabs/tailwindcss",
     "quadrant": "languages-and-frameworks",
     "ring": "trial",
-    "areas": ["css"]
-  },
-  {
-    "id": "svelte",
-    "name": {
-      "en": "Svelte",
-      "es": "Svelte"
-    },
-    "description": {
-      "en": "TODO(#26): what Svelte is, and where I used it.",
-      "es": "TODO(#26): qué es Svelte y dónde lo usé."
-    },
-    "site": "https://svelte.dev",
-    "repositoryUrl": "https://github.com/sveltejs/svelte",
-    "quadrant": "languages-and-frameworks",
-    "ring": "assess",
-    "areas": ["web-rendering"]
+    "areas": ["css"],
+    "site": "https://tailwindcss.com",
+    "repositoryUrl": "https://github.com/tailwindlabs/tailwindcss"
   },
   {
     "id": "angularjs",
@@ -296,13 +374,13 @@
       "es": "AngularJS"
     },
     "description": {
-      "en": "TODO(#26): what AngularJS is, and where I used it.",
-      "es": "TODO(#26): qué es AngularJS y dónde lo usé."
+      "en": "The first Angular, now unsupported. I moved to Angular and React and would not start anything new with it.",
+      "es": "El primer Angular, hoy sin soporte. Me pasé a Angular y React, y no empezaría nada nuevo con él."
     },
-    "site": "https://angularjs.org",
-    "repositoryUrl": "https://github.com/angular/angular.js",
     "quadrant": "languages-and-frameworks",
     "ring": "hold",
-    "areas": ["web-rendering"]
+    "areas": ["web-rendering"],
+    "site": "https://angularjs.org",
+    "repositoryUrl": "https://github.com/angular/angular.js"
   }
 ]

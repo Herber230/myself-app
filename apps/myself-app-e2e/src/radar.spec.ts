@@ -175,14 +175,14 @@ test.describe('the filter', () => {
       .click();
     await expect(page).toHaveURL('/en/tech-radar/?area=monorepo');
     await expect(page.locator('a[data-blip]:not([data-dimmed])')).toHaveCount(
-      2,
+      3,
     );
     await expect(page.locator('a[data-blip="nx"]')).not.toHaveAttribute(
       'data-dimmed',
     );
     // Dimmed, not removed: the radar keeps its shape.
     await expect(blips).toHaveCount(total);
-    await expect(page.getByText(`Showing 2 of ${total}`)).toBeVisible();
+    await expect(page.getByText(`Showing 3 of ${total}`)).toBeVisible();
   });
 
   test('is read from the URL, and survives a reload', async ({ page }) => {

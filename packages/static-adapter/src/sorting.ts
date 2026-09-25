@@ -1,9 +1,11 @@
 import type { Entity, EntitySorting } from '@entifix/core';
 
+import { plainValue } from './link-values.js';
+
 /**
  * Ordering, with the Mongo adapter's rules: a missing value sorts below a
- * present one, numbers and dates compare as themselves, and anything else
- * compares as text.
+ * present one, numbers and dates compare as themselves, and anything else —
+ * a link's id among them — compares as text.
  */
 function compareValues(left: unknown, right: unknown): number {
   if (left === right) return 0;
@@ -50,7 +52,10 @@ export function applySorting<TEntity extends Entity>(
 
   return [...records].sort((left, right) => {
     for (const key of keys) {
-      const compared = compareValues(left[key.property], right[key.property]);
+      const compared = compareValues(
+        plainValue(left[key.property]),
+        plainValue(right[key.property]),
+      );
       if (compared !== 0) return key.type === 'desc' ? -compared : compared;
     }
     return 0;

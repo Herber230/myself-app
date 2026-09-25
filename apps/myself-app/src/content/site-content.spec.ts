@@ -128,12 +128,17 @@ describe('a rule for the CV (ADR 0012)', () => {
   });
 
   it('stops a highlight tagged with a focus that does not exist', () => {
-    const highlights = records('employment-highlights.json');
-    highlights[0] = { ...highlights[0], focuses: ['design'] };
+    const highlight = {
+      id: 'shipped',
+      period: 'vana-frontend-engineer',
+      text: { en: 'Shipped it.', es: 'Lo publiqué.' },
+      focuses: ['design'],
+      order: 0,
+    };
     expect(
-      problemsIn(withFile('employment-highlights.json', highlights)),
+      problemsIn(withFile('employment-highlights.json', [highlight])),
     ).toEqual([
-      `employment-highlights.json › ${String(highlights[0].id)} › focuses points at "design", which does not exist`,
+      'employment-highlights.json › shipped › focuses points at "design", which does not exist',
     ]);
   });
 
@@ -169,10 +174,11 @@ describe('a link between files', () => {
     // A broken record is reported by its own file; the files that link into
     // it are not also blamed for its missing id.
     // Technologies link into the areas, so the areas' ids are collected.
-    const areas = [...records('technology-areas.json'), 'not a record', null];
+    const written = records('technology-areas.json');
+    const areas = [...written, 'not a record', null];
     expect(problemsIn(withFile('technology-areas.json', areas))).toEqual([
-      'technology-areas.json › #4 is not a record',
-      'technology-areas.json › #5 is not a record',
+      `technology-areas.json › #${written.length} is not a record`,
+      `technology-areas.json › #${written.length + 1} is not a record`,
     ]);
   });
 });

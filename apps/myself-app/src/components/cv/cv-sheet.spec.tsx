@@ -1,9 +1,11 @@
+import { CONTENT } from '@myself-app/content';
 import type { Certificate, Technology } from '@myself-app/domain';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { type CvSheet as CvSheetContent, loadCvSheet } from '../../content/cv';
 import { SITE_REPOSITORIES } from '../../content/repositories';
+import { buildSiteRepositories } from '../../content/site-content';
 import { CvSheet } from './cv-sheet';
 
 const sheetOf = async (variant: string) =>
@@ -47,8 +49,8 @@ describe('the CV sheet', () => {
       'Educación',
       'Certificaciones',
     ]);
-    expect(screen.getByText('ene 2022 – Actualidad')).toBeTruthy();
-    expect(screen.getByText('ene 2019 – dic 2021')).toBeTruthy();
+    expect(screen.getByText('nov 2025 – Actualidad')).toBeTruthy();
+    expect(screen.getByText('nov 2020 – nov 2025')).toBeTruthy();
     expect(
       screen.getByText(
         'Universidad de San Carlos de Guatemala · 2016 – 2017 · sin concluir',
@@ -60,14 +62,33 @@ describe('the CV sheet', () => {
   });
 
   it('shows each employment’s role, employer, dates and highlights', async () => {
-    const sheet = await sheetOf('frontend');
+    // The site has no highlight yet, so one is written for the check.
+    const repositories = buildSiteRepositories({
+      ...CONTENT,
+      'employment-highlights.json': [
+        {
+          id: 'experiments',
+          period: 'healthcare-frontend-engineer',
+          text: { en: 'Ran the experiments.', es: 'Llevé los experimentos.' },
+          focuses: ['frontend'],
+          order: 0,
+        },
+      ],
+    });
+    const sheet = (await loadCvSheet(
+      repositories,
+      'frontend',
+    )) as CvSheetContent;
     render(<CvSheet sheet={sheet} locale="en" mode="human" />);
     const roles = screen.getAllByRole('heading', { level: 3 });
     expect(roles[0].textContent).toBe(sheet.employments[0].period.role?.en);
     const experience = screen.getByRole('region', { name: 'Experience' });
-    // The frontend variant shows one highlight per employment here.
-    expect(within(experience).getAllByRole('listitem')).toHaveLength(2);
-    expect(within(experience).getByText('Jan 2022 – Present')).toBeTruthy();
+    expect(
+      within(experience)
+        .getAllByRole('listitem')
+        .map(each => each.textContent),
+    ).toEqual(['Ran the experiments.']);
+    expect(within(experience).getByText('Nov 2025 – Present')).toBeTruthy();
   });
 
   it('lists every certificate with its issuer', async () => {

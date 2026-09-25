@@ -1,57 +1,11 @@
 /**
  * Content still to be written, by path: every value that holds `TODO(#…)` (#26).
  *
+ * Empty since #26 closed: everything on the site is written. It stays so a
+ * new placeholder has somewhere to be declared before it can ship.
+ *
  * The list only shrinks. Writing a value means removing its line here, or
  * `assertNoUnlistedPlaceholders` stops the build; a new placeholder anywhere
  * else stops it too. The issue that decides each value is in the value itself.
  */
-export const PENDING_CONTENT: readonly string[] = [
-  'contact-channels.json › linkedin › displayName',
-  'contact-channels.json › linkedin › url',
-  'cv-variants.json › full-stack › title',
-  'cv-variants.json › full-stack › summary',
-  'cv-variants.json › backend › title',
-  'cv-variants.json › backend › summary',
-  'cv-variants.json › frontend › title',
-  'cv-variants.json › frontend › summary',
-  'cv-variants.json › devops › title',
-  'cv-variants.json › devops › summary',
-  'employers.json › employer-one › name',
-  'employers.json › employer-two › name',
-  'employment-highlights.json › employer-one-engineer-1 › text',
-  'employment-highlights.json › employer-one-engineer-2 › text',
-  'employment-highlights.json › employer-one-engineer-3 › text',
-  'employment-highlights.json › employer-two-engineer-1 › text',
-  'employment-highlights.json › employer-two-engineer-2 › text',
-  'employment-highlights.json › employer-two-engineer-3 › text',
-  'employment-periods.json › employer-one-engineer › role',
-  'employment-periods.json › employer-one-engineer › responsibilities',
-  'employment-periods.json › employer-two-engineer › role',
-  'employment-periods.json › employer-two-engineer › responsibilities',
-  'profile.json › herber-colop › tagline',
-  'profile.json › herber-colop › location',
-  'quadrants.json › techniques › description',
-  'quadrants.json › tools › description',
-  'quadrants.json › platforms › description',
-  'quadrants.json › languages-and-frameworks › description',
-  'technologies.json › trunk-based-development › description',
-  'technologies.json › static-first-delivery › description',
-  'technologies.json › contract-testing › description',
-  'technologies.json › property-based-testing › description',
-  'technologies.json › hand-written-release-notes › description',
-  'technologies.json › nx › description',
-  'technologies.json › pnpm › description',
-  'technologies.json › playwright › description',
-  'technologies.json › biome › description',
-  'technologies.json › jest › description',
-  'technologies.json › amazon-s3 › description',
-  'technologies.json › cloudfront › description',
-  'technologies.json › cloudflare-workers › description',
-  'technologies.json › heroku › description',
-  'technologies.json › typescript › description',
-  'technologies.json › next-js › description',
-  'technologies.json › effect › description',
-  'technologies.json › tailwind-css › description',
-  'technologies.json › svelte › description',
-  'technologies.json › angularjs › description',
-];
+export const PENDING_CONTENT: readonly string[] = [];

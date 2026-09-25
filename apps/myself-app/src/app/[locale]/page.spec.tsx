@@ -34,7 +34,7 @@ describe('the landing page', () => {
   it('fills its sections from content', async () => {
     await renderPage(HomePage(paramsOf({ locale: 'es' }) as Props), 'es');
     const about = screen.getByRole('region', { name: 'Sobre mí' });
-    expect(about.textContent).toContain('Apasionado del software');
+    expect(about.textContent).toContain('Profesional con más de 10 años');
     const projects = screen.getByRole('region', { name: 'Proyectos' });
     expect(
       projects.querySelector('a[href="/es/tech-radar/#tech-typescript"]'),

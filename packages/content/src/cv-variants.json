@@ -2,85 +2,107 @@
   {
     "id": "full-stack",
     "title": {
-      "en": "TODO(#33): the full-stack reading",
-      "es": "TODO(#33): la lectura full-stack"
+      "en": "Software Engineer",
+      "es": "Ingeniero de software"
     },
     "summary": {
-      "en": "TODO(#33): what this variant selects, and for whom.",
-      "es": "TODO(#33): qué selecciona esta variante, y para quién."
+      "en": "The whole picture: frontend, backend and delivery, across 10+ years and teams in several countries.",
+      "es": "El panorama completo: frontend, backend y entrega, en más de 10 años y con equipos en varios países."
     },
     "technologies": [
       "typescript",
+      "node-js",
+      "react",
       "next-js",
-      "effect",
       "nx",
-      "playwright",
-      "amazon-s3"
+      "kubernetes",
+      "clean-architecture",
+      "playwright"
     ],
-    "employments": ["employer-one-engineer", "employer-two-engineer"],
+    "employments": [
+      "vana-frontend-engineer",
+      "healthcare-frontend-engineer",
+      "tigo-innovation-developer",
+      "tigo-software-architect",
+      "ministerio-publico-analyst",
+      "sisnova-analyst"
+    ],
     "focuses": ["backend", "frontend", "devops"],
     "order": 0
   },
   {
     "id": "backend",
     "title": {
-      "en": "TODO(#33): the backend reading",
-      "es": "TODO(#33): la lectura backend"
+      "en": "Backend & Architecture",
+      "es": "Backend y arquitectura"
     },
     "summary": {
-      "en": "TODO(#33): what this variant selects, and for whom.",
-      "es": "TODO(#33): qué selecciona esta variante, y para quién."
+      "en": "Architecture and backend work: Clean Architecture, event-driven systems and the migration of Tigo's BSS and OSS.",
+      "es": "Trabajo de arquitectura y backend: Clean Architecture, sistemas orientados a eventos y la migración de los BSS y OSS de Tigo."
     },
     "technologies": [
+      "node-js",
       "typescript",
-      "effect",
-      "nx",
-      "contract-testing",
-      "amazon-s3"
+      "spring-boot",
+      "event-driven-architecture",
+      "clean-architecture",
+      "kubernetes"
     ],
-    "employments": ["employer-one-engineer", "employer-two-engineer"],
+    "employments": [
+      "tigo-innovation-developer",
+      "tigo-software-architect",
+      "ministerio-publico-analyst",
+      "sisnova-analyst"
+    ],
     "focuses": ["backend"],
     "order": 1
   },
   {
     "id": "frontend",
     "title": {
-      "en": "TODO(#33): the frontend reading",
-      "es": "TODO(#33): la lectura frontend"
+      "en": "Frontend Engineer",
+      "es": "Ingeniero frontend"
     },
     "summary": {
-      "en": "TODO(#33): what this variant selects, and for whom.",
-      "es": "TODO(#33): qué selecciona esta variante, y para quién."
+      "en": "Web applications built around users and their behaviour: A/B testing, tracking and mobile browsers.",
+      "es": "Aplicaciones web construidas en torno a los usuarios y su comportamiento: pruebas A/B, seguimiento y navegadores móviles."
     },
     "technologies": [
       "typescript",
+      "react",
       "next-js",
-      "tailwind-css",
+      "angular",
       "playwright",
-      "nx"
+      "ab-testing",
+      "tailwind-css"
     ],
-    "employments": ["employer-one-engineer", "employer-two-engineer"],
+    "employments": ["vana-frontend-engineer", "healthcare-frontend-engineer"],
     "focuses": ["frontend"],
     "order": 2
   },
   {
     "id": "devops",
     "title": {
-      "en": "TODO(#33): the devops reading",
-      "es": "TODO(#33): la lectura devops"
+      "en": "Platform & Delivery",
+      "es": "Plataforma y entrega"
     },
     "summary": {
-      "en": "TODO(#33): what this variant selects, and for whom.",
-      "es": "TODO(#33): qué selecciona esta variante, y para quién."
+      "en": "CI/CD, GitOps and Kubernetes: how software reaches production, and stays there.",
+      "es": "CI/CD, GitOps y Kubernetes: cómo el software llega a producción, y se mantiene ahí."
     },
     "technologies": [
-      "amazon-s3",
-      "cloudfront",
+      "kubernetes",
+      "argo-cd",
+      "gitops",
       "nx",
-      "pnpm",
-      "trunk-based-development"
+      "pulumi",
+      "amazon-s3",
+      "cloudfront"
     ],
-    "employments": ["employer-one-engineer", "employer-two-engineer"],
+    "employments": [
+      "tigo-innovation-developer",
+      "healthcare-frontend-engineer"
+    ],
     "focuses": ["devops"],
     "order": 3
   }

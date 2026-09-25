@@ -57,19 +57,29 @@ describe("a variant's sheet", () => {
     expect(sheet?.variant.id).toBe('full-stack');
     expect(ids(sheet?.technologies ?? [])).toEqual([
       'typescript',
+      'node-js',
+      'react',
       'next-js',
-      'effect',
       'nx',
+      'kubernetes',
+      'clean-architecture',
       'playwright',
-      'amazon-s3',
     ]);
     expect(sheet?.employments.map(each => each.period.id)).toEqual([
-      'employer-one-engineer',
-      'employer-two-engineer',
+      'vana-frontend-engineer',
+      'healthcare-frontend-engineer',
+      'tigo-innovation-developer',
+      'tigo-software-architect',
+      'ministerio-publico-analyst',
+      'sisnova-analyst',
     ]);
     expect(sheet?.employments.map(each => each.employer.id)).toEqual([
-      'employer-one',
-      'employer-two',
+      'vana',
+      'healthcare-com',
+      'tigo-guatemala',
+      'tigo-guatemala',
+      'ministerio-publico',
+      'sisnova',
     ]);
   });
 
@@ -85,30 +95,46 @@ describe("a variant's sheet", () => {
   });
 
   it('shows the highlights sharing one of its focuses, by their order', async () => {
+    // The site has no highlight yet, so these are written for the check.
+    const highlight = (
+      id: string,
+      period: string,
+      focuses: string[],
+      order: number,
+    ) => ({ id, period, text: { en: id, es: id }, focuses, order });
+    const repositories = buildSiteRepositories({
+      ...CONTENT,
+      'employment-highlights.json': [
+        highlight('migration', 'tigo-innovation-developer', ['backend'], 1),
+        highlight('cluster', 'tigo-innovation-developer', ['devops'], 0),
+        highlight('design', 'tigo-software-architect', ['backend'], 0),
+        highlight(
+          'experiments',
+          'healthcare-frontend-engineer',
+          ['frontend'],
+          0,
+        ),
+      ],
+    });
     const highlightsOf = async (variant: string) =>
-      (await loadCvSheet(SITE_REPOSITORIES, variant))?.employments.map(each =>
+      (await loadCvSheet(repositories, variant))?.employments.map(each =>
         ids(each.highlights),
       );
     expect(await highlightsOf('backend')).toEqual([
-      ['employer-one-engineer-2', 'employer-one-engineer-3'],
-      ['employer-two-engineer-1'],
+      ['migration'],
+      ['design'],
+      [],
+      [],
     ]);
-    expect(await highlightsOf('frontend')).toEqual([
-      ['employer-one-engineer-1'],
-      ['employer-two-engineer-2'],
-    ]);
+    expect(await highlightsOf('devops')).toEqual([['cluster'], []]);
     // Full-stack takes every focus, so every highlight.
     expect(await highlightsOf('full-stack')).toEqual([
-      [
-        'employer-one-engineer-1',
-        'employer-one-engineer-2',
-        'employer-one-engineer-3',
-      ],
-      [
-        'employer-two-engineer-1',
-        'employer-two-engineer-2',
-        'employer-two-engineer-3',
-      ],
+      [],
+      ['experiments'],
+      ['cluster', 'migration'],
+      ['design'],
+      [],
+      [],
     ]);
   });
 
