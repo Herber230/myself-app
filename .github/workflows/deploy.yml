@@ -1,0 +1,222 @@
+name: Deploy
+
+# Continuous deployment (ADR 0013). Every merge to `main` runs Pull Request
+# Check on the push; when that run succeeds, this one releases and ships the
+# same commit:
+#
+#   release  semantic-release reads the squash commit: feat → minor, fix or
+#            perf → patch, `!` → major. A release is a `vX.Y.Z` tag and a
+#            GitHub Release. Anything else releases, and deploys, nothing.
+#   infra    `pulumi up` under the deploy role.
+#   site     build with the production origin, render the CV PDFs, sync to
+#            the bucket, invalidate CloudFront.
+#
+# A red check never reaches this workflow's jobs, so a failed build deploys
+# nothing. `workflow_dispatch` redeploys `main` without releasing, for a change
+# that ships no version (a `ci:` or `build:` fix to the deploy itself).
+on:
+  workflow_run:
+    workflows: [Pull Request Check]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+# Queued, never cancelled: two runs must not race `pulumi up` or the sync, and
+# a half-finished deploy is worse than a late one.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Release
+    # `event == 'push'`: a pull request from a fork whose branch is also
+    # called `main` matches the `branches` filter too.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      deploy: ${{ steps.release.outputs.deploy }}
+      version: ${{ steps.release.outputs.version }}
+      sha: ${{ steps.head.outputs.sha }}
+    steps:
+      # semantic-release needs the branch, not the detached commit the check
+      # ran on, and the whole history to find the last tag.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      # If `main` moved on while the check ran, the newer commit's own run
+      # releases both; releasing here would tag a commit this run never saw.
+      - name: Main is still the commit that was checked
+        id: head
+        env:
+          CHECKED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          sha=$(git rev-parse HEAD)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_run" && "$sha" != "$CHECKED_SHA" ]]; then
+            echo "main is at $sha, past the checked $CHECKED_SHA; its own run will release."
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: pnpm/action-setup@v4
+        if: steps.head.outputs.stale != 'true'
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        if: steps.head.outputs.stale != 'true'
+        with:
+          node-version-file: package.json
+      # The check that triggered this run saved this key on `main`. A miss
+      # (evicted, or a manual run) installs instead of failing.
+      - name: Restore dependencies
+        id: deps
+        if: steps.head.outputs.stale != 'true'
+        uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+      - name: Install dependencies
+        if: steps.head.outputs.stale != 'true' && steps.deps.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+      - name: Release
+        id: release
+        if: steps.head.outputs.stale != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_run" ]]; then
+            pnpm exec semantic-release
+          fi
+          # A tag on the checked commit is a release to ship: the one just
+          # made, or one a re-run of this workflow made before.
+          version=$(git tag --points-at HEAD --list 'v*' | head -n1)
+          if [[ -n "$version" || "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No release in this commit; nothing to deploy."
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "version=${version:-main@$(git rev-parse --short HEAD)}" >> "$GITHUB_OUTPUT"
+
+  infra:
+    name: Infrastructure
+    needs: release
+    if: needs.release.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    # The deploy role trusts only this environment, and only `main` may deploy
+    # to it.
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.sha }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+      - name: Restore dependencies
+        id: deps
+        uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+      - name: Install dependencies
+        if: steps.deps.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+      - uses: pulumi/actions@v7
+        with:
+          pulumi-version: 3.264.0
+      # The plan was reviewed as the pull request's `Infrastructure preview`.
+      - name: pulumi up
+        run: pulumi up --stack prod --yes --cwd apps/infra
+        env:
+          PULUMI_SKIP_UPDATE_CHECK: 'true'
+
+  site:
+    name: Site
+    needs: [release, infra]
+    if: needs.release.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.sha }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+      - name: Restore dependencies
+        id: deps
+        uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+      - name: Install dependencies
+        if: steps.deps.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+      # The CV PDFs are rendered with Chromium, as in the check's e2e job, and
+      # for the same reason Google's apt repository goes first: an
+      # inconsistent index there fails `apt-get update` for the whole install.
+      - name: Drop apt sources this job does not need
+        run: |
+          sudo bash -euo pipefail -c '
+            for file in $(grep -rl "dl\.google\.com" /etc/apt/sources.list.d 2>/dev/null || true); do
+              rm -f "$file"
+            done
+            sed -i "/dl\.google\.com/d" /etc/apt/sources.list 2>/dev/null || true
+          '
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+      # For `pulumi stack output`: the deploy target reads the bucket and the
+      # distribution from the stack rather than from a copy that could drift.
+      - uses: pulumi/actions@v7
+        with:
+          pulumi-version: 3.264.0
+      - name: Build, render and deploy
+        run: pnpm nx deploy myself-app
+        env:
+          NEXT_PUBLIC_SITE_URL: https://herbercolop.dev
+          PULUMI_SKIP_UPDATE_CHECK: 'true'
+      - name: Summary
+        env:
+          VERSION: ${{ needs.release.outputs.version }}
+        run: echo "Deployed **$VERSION** to https://herbercolop.dev/" >> "$GITHUB_STEP_SUMMARY"

@@ -37,6 +37,7 @@ jobs:
       typecheck-projects: ${{ steps.projects.outputs.typecheck }}
       test-projects: ${{ steps.projects.outputs.test }}
       e2e-projects: ${{ steps.projects.outputs.e2e }}
+      preview-projects: ${{ steps.projects.outputs.preview }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -121,7 +122,7 @@ jobs:
           # instead of the array. Leaving that one inside the `echo` argument
           # reopened the hole this reasoning closes, on a step that still
           # exited 0.
-          for target in lint build typecheck test e2e; do
+          for target in lint build typecheck test e2e preview; do
             list=$(projects "$target")
             joined=$(jq -r 'join(",")' <<<"$list")
             echo "$target=$joined" >> "$GITHUB_OUTPUT"
@@ -297,6 +298,53 @@ jobs:
           path: apps/*-e2e/test-output
           retention-days: 7
 
+  # `pulumi preview` against the real account, under the read-only role (ADR
+  # 0013): the plan that merging would apply. Pull requests only — the role
+  # trusts `pull_request` tokens and nothing else, and `main` applies instead
+  # of previewing (`deploy.yml`). A fork's pull request gets no OIDC token and
+  # fails here rather than skipping.
+  infra-preview:
+    name: Infrastructure preview
+    needs: initialize
+    if: github.event_name == 'pull_request' && needs.initialize.outputs.preview-projects != ''
+    runs-on: ubuntu-latest
+    # Naming a block turns every scope not listed into `none`, so the
+    # workflow's own two are repeated beside the one this job adds.
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+      - uses: actions/cache/restore@v4
+        with:
+          key: deps-${{ runner.os }}-node26.4-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}
+          fail-on-cache-miss: true
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            tools/*/node_modules
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_PREVIEW_ROLE_ARN }}
+          aws-region: us-east-1
+      # Installs the CLI only; the preview itself is the Nx target, as locally.
+      - uses: pulumi/actions@v7
+        with:
+          pulumi-version: 3.264.0
+      - run: pnpm nx run-many -t preview --projects="${{ needs.initialize.outputs.preview-projects }}"
+        env:
+          PULUMI_SKIP_UPDATE_CHECK: 'true'
+
   # NOTE: this job must stay unconditional, and its commands must not become
   # affected-scoped. Formatting and the conventions are claims about the whole
   # repository, and the pull request that breaks one need not touch the project
@@ -407,7 +455,8 @@ jobs:
   # bypass a decision rather than a habit.
   ci-gate:
     name: CI Gate
-    needs: [initialize, lint, build, test, e2e, conventions, commits]
+    needs:
+      [initialize, lint, build, test, e2e, infra-preview, conventions, commits]
     if: always()
     runs-on: ubuntu-latest
     steps:
