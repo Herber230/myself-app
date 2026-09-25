@@ -4,6 +4,7 @@
 - Date: 2026-09-17
 - Area: hosting
 - Read when: a URL works in `next dev` but not in the export, or when choosing where the site is served from
+- Revised: 2026-09-24 by [ADR 0013](0013-cloudfront-over-a-private-bucket-defined-in-pulumi.md) — hosting is decided (CloudFront over a private bucket); `serve-out` now mirrors CloudFront, and a folder without its slash answers a 301
 
 ## Context
 
@@ -31,12 +32,13 @@ option:
   server can answer with a redirect.
 
 Locally, `pnpm nx serve-out myself-app` serves the export with
-`tools/serve-static.mjs`, which behaves like the S3 website endpoint: `path/`
-answers `path/index.html`, `path` answers a 302 to `path/`, and anything missing
+`tools/serve-static.mjs`, which behaves like the host chosen in
+[ADR 0013](0013-cloudfront-over-a-private-bucket-defined-in-pulumi.md): `path/`
+answers `path/index.html`, `path` answers a 301 to `path/`, and anything missing
 answers `404.html` with status 404.
 
 ## Consequences
 
 - A route that works under `next dev` but not under `serve-out` is a bug in the
   route, not in the server.
-- The hosting decision gets its own record, from #43.
+- The hosting decision gets its own record, from #43: [ADR 0013](0013-cloudfront-over-a-private-bucket-defined-in-pulumi.md).
