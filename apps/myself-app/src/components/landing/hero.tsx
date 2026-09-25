@@ -9,9 +9,9 @@ import { HeroBackdrop } from './hero-backdrop';
 import { ScrollCue } from './scroll-cue';
 
 /**
- * The landing page's first screen (#29): the name, the title and the two
- * calls to action, entering one after another (ADR 0011). Facts come
- * from `Profile`; the calls to action are copy.
+ * The landing page's first screen (#29): the name, the title and tagline
+ * (#68), and the two calls to action, entering one after another (ADR 0011).
+ * Facts come from `Profile`; the calls to action are copy.
  */
 export function Hero({
   locale,
@@ -31,6 +31,11 @@ export function Hero({
         {profile.title && (
           <p className="hero-beat hero-beat-2 hero-title">
             {localize(profile.title, locale)}
+          </p>
+        )}
+        {profile.tagline && (
+          <p className="hero-beat hero-beat-2 hero-tagline">
+            {localize(profile.tagline, locale)}
           </p>
         )}
         <ul className="hero-beat hero-beat-3 hero-actions">

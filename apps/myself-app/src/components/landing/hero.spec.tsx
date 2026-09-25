@@ -7,13 +7,18 @@ import { SITE_REPOSITORIES } from '../../content/repositories';
 import { Hero } from './hero';
 
 describe('the hero', () => {
-  it('shows the name, the title and the two calls to action', async () => {
+  it('shows the name, the title, the tagline and the two calls to action', async () => {
     const profile = await loadProfile(SITE_REPOSITORIES);
     render(<Hero locale="es" profile={profile} />);
     expect(
       screen.getByRole('heading', { level: 1, name: 'Herber Colop' }),
     ).toBeTruthy();
     expect(screen.getByText('Ingeniero de software')).toBeTruthy();
+    expect(
+      screen.getByText(
+        'Ingeniero de software enfocado en la arquitectura, no en las herramientas.',
+      ),
+    ).toBeTruthy();
     expect(
       screen.getByRole('link', { name: 'Ver mi CV' }).getAttribute('href'),
     ).toBe('/es/cv/');
@@ -29,10 +34,11 @@ describe('the hero', () => {
     ).toBe('/es/#about');
   });
 
-  it('shows no title line for a profile without one', () => {
+  it('shows no title or tagline line for a profile without them', () => {
     const profile = { firstName: 'Ada', lastName: 'Lovelace' } as Profile;
     const { container } = render(<Hero locale="en" profile={profile} />);
     expect(container.querySelector('.hero-title')).toBeNull();
+    expect(container.querySelector('.hero-tagline')).toBeNull();
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
       'Ada Lovelace',
     );
