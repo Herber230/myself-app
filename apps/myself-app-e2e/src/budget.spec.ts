@@ -9,8 +9,8 @@ import {
 } from '@playwright/test';
 
 /**
- * The landing page's JavaScript, held to a budget (ADR 0008), and the radar's
- * (ADR 0014).
+ * The landing page's JavaScript, held to a budget (ADR 0008), the radar's
+ * (ADR 0014) and the CV's (ADR 0015).
  *
  * Every script `/en/` loads, gzipped at level 9 and summed — the measure ADR
  * 0003 used, so the figures in both records compare. Lighthouse and LCP stay a
@@ -28,6 +28,11 @@ const LANDING_SCRIPT_BUDGET = (179 + 15) * KB;
  * runtime and the filter's island, about 8 KB of it (ADR 0014).
  */
 const RADAR_SCRIPT_BUDGET = (162 + 10) * KB;
+/**
+ * Measured 159.6 KB on 2026-09-25, rounded up, plus 10 KB of room: the
+ * print button and the customizer's island (ADR 0015).
+ */
+const CV_SCRIPT_BUDGET = (160 + 10) * KB;
 
 /**
  * Every script `path` loads until `ready` is attached, as text and as its
@@ -94,6 +99,22 @@ test("the radar's scripts stay within the budget, and carry no entifix", async (
   report('radar', total, loaded.length, RADAR_SCRIPT_BUDGET);
   expect(total).toBeLessThanOrEqual(RADAR_SCRIPT_BUDGET);
   // ADR 0003: the filter runs over props, never through entifix's use case.
+  for (const script of loaded) {
+    expect(script.text).not.toContain('EntityRepositoryTag');
+    expect(script.text).not.toContain('loadUCFactory');
+  }
+});
+
+test("the CV's scripts stay within the budget, and carry no entifix", async ({
+  page,
+}) => {
+  // The customizer renders only once hydrated.
+  const { loaded, total } = await scriptsOf(page, '/en/cv/', each =>
+    each.getByText('Customize', { exact: true }),
+  );
+  report('cv', total, loaded.length, CV_SCRIPT_BUDGET);
+  expect(total).toBeLessThanOrEqual(CV_SCRIPT_BUDGET);
+  // ADR 0015: the customizer chooses over props, never through entifix.
   for (const script of loaded) {
     expect(script.text).not.toContain('EntityRepositoryTag');
     expect(script.text).not.toContain('loadUCFactory');

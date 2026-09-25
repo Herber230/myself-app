@@ -31,6 +31,16 @@ export const en = {
     print: 'Print or save as PDF',
     printHint:
       'For a clean sheet: A4, margins none, headers and footers off, background graphics on.',
+    /** Tailoring the human sheet before printing (#38, ADR 0015). */
+    customize: {
+      label: 'Customize',
+      sections: 'Sections',
+      positions: 'Positions',
+      technologies: 'Technologies',
+      reset: 'Show everything',
+      downloadNote:
+        'The download is the full sheet; printing keeps what you chose.',
+    },
   },
   /** The CV sheet (ADR 0012). Headings are copy; every fact is content. */
   cvSheet: {

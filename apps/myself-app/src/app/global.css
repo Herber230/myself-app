@@ -1033,6 +1033,61 @@ body {
     color: var(--color-content-muted);
     font-size: var(--text-step-xs);
   }
+
+  /* Tailoring the sheet (#38, ADR 0015): a disclosure, closed by default. */
+  .cv-customize > summary {
+    width: fit-content;
+    color: var(--color-content);
+    font-size: var(--text-step-sm);
+    cursor: pointer;
+  }
+
+  .cv-customize > summary:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .cv-customize-body {
+    display: grid;
+    gap: var(--spacing-s);
+    margin-top: var(--spacing-xs);
+  }
+
+  .cv-customize fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3xs) var(--spacing-s);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .cv-customize legend {
+    width: 100%;
+    margin-bottom: var(--spacing-3xs);
+    padding: 0;
+    color: var(--color-content-muted);
+    font-size: var(--text-step-sm);
+  }
+
+  .cv-customize label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-3xs);
+    font-size: var(--text-step-sm);
+  }
+
+  .cv-customize input {
+    accent-color: var(--color-primary);
+  }
+
+  .cv-customize-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs) var(--spacing-s);
+  }
 }
 
 @media print {

@@ -11,6 +11,7 @@ import {
   inLocale,
   readableUrl,
 } from './cv-format';
+import { cvPart, type CvPartKind } from './cv-hidden';
 
 type T = ReturnType<typeof siteT>;
 
@@ -35,6 +36,10 @@ const line = (...parts: (string | false | undefined)[]) =>
  *   technologies on one comma-separated line.
  *
  * Every link's target is the full URL in both.
+ *
+ * On the human sheet, each part a visitor can hide (#38, ADR 0015) — a section,
+ * a position, a technology — carries `data-cv-part` naming it. The ATS sheet
+ * is never customized, and carries none.
  */
 export function CvSheet({
   sheet,
@@ -47,6 +52,8 @@ export function CvSheet({
 }) {
   const t = siteT(locale);
   const { profile, variant } = sheet;
+  const part = (kind: CvPartKind, id: unknown) =>
+    mode === 'human' ? cvPart(kind, String(id)) : undefined;
   return (
     <article className="cv-sheet" data-theme="light" data-mode={mode}>
       <header className="cv-header">
@@ -71,15 +78,26 @@ export function CvSheet({
         </ul>
       </header>
 
-      <CvSection id="summary" title={t('cvSheet.headings.summary')}>
+      <CvSection
+        id="summary"
+        part={part('section', 'summary')}
+        title={t('cvSheet.headings.summary')}
+      >
         <p>{inLocale(variant.summary, locale)}</p>
       </CvSection>
 
-      <CvSection id="skills" title={t('cvSheet.headings.skills')}>
+      <CvSection
+        id="skills"
+        part={part('section', 'skills')}
+        title={t('cvSheet.headings.skills')}
+      >
         {mode === 'human' ? (
           <ul className="cv-chips">
             {sheet.technologies.map(technology => (
-              <li key={String(technology.id)}>
+              <li
+                key={String(technology.id)}
+                data-cv-part={part('tech', technology.id)}
+              >
                 {inLocale(technology.name, locale)}
               </li>
             ))}
@@ -93,10 +111,15 @@ export function CvSheet({
         )}
       </CvSection>
 
-      <CvSection id="experience" title={t('cvSheet.headings.experience')}>
+      <CvSection
+        id="experience"
+        part={part('section', 'experience')}
+        title={t('cvSheet.headings.experience')}
+      >
         {sheet.employments.map(employment => (
           <Employment
             key={String(employment.period.id)}
+            part={part('position', employment.period.id)}
             employment={employment}
             locale={locale}
             t={t}
@@ -105,7 +128,11 @@ export function CvSheet({
       </CvSection>
 
       {sheet.education.length > 0 && (
-        <CvSection id="education" title={t('cvSheet.headings.education')}>
+        <CvSection
+          id="education"
+          part={part('section', 'education')}
+          title={t('cvSheet.headings.education')}
+        >
           {sheet.education.map(study => (
             <div key={String(study.id)} className="cv-entry">
               <h3 className="cv-role">
@@ -127,7 +154,11 @@ export function CvSheet({
       )}
 
       {sheet.certificates.length > 0 && (
-        <CvSection id="certificates" title={t('cvSheet.headings.certificates')}>
+        <CvSection
+          id="certificates"
+          part={part('section', 'certificates')}
+          title={t('cvSheet.headings.certificates')}
+        >
           <ul className="cv-list">
             {sheet.certificates.map(certificate => (
               <li key={String(certificate.id)}>
@@ -148,15 +179,21 @@ export function CvSheet({
 
 function CvSection({
   id,
+  part,
   title,
   children,
 }: {
   id: string;
+  part: string | undefined;
   title: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="cv-section" aria-labelledby={`cv-${id}`}>
+    <section
+      className="cv-section"
+      aria-labelledby={`cv-${id}`}
+      data-cv-part={part}
+    >
       <h2 id={`cv-${id}`} className="cv-heading">
         {title}
       </h2>
@@ -198,17 +235,19 @@ function Channel({
  * own line, the order a parser expects its fields in.
  */
 function Employment({
+  part,
   employment,
   locale,
   t,
 }: {
+  part: string | undefined;
   employment: CvEmployment;
   locale: SiteLocale;
   t: T;
 }) {
   const { period, employer, highlights } = employment;
   return (
-    <div className="cv-entry">
+    <div className="cv-entry" data-cv-part={part}>
       <div className="cv-entry-head">
         <h3 className="cv-role">{inLocale(period.role, locale)}</h3>
         <p className="cv-employer">{employer.name}</p>

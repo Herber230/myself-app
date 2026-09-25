@@ -4,6 +4,7 @@
 - Date: 2026-09-23
 - Area: ui
 - Read when: a CV page spills onto a second page, an applicant tracking system reads the PDF wrong, a variant shows the wrong bullets, a CV URL 404s under `serve-out`, or the printed sheet differs from the screen
+- Revised: 2026-09-25 by #38 — customizing a sheet in the browser is decided in ADR 0015
 
 Decides #33. Builds on [ADR 0003](0003-build-time-pages-and-browser-queries.md)
 (pages render at build) and [ADR 0011](0011-a-moving-hero-a-revealing-nav-and-a-blue-theme.md)

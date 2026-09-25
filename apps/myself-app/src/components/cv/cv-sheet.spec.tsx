@@ -160,6 +160,41 @@ describe('the human mode', () => {
   });
 });
 
+describe('the parts a visitor can hide', () => {
+  const parts = (container: HTMLElement) =>
+    [...container.querySelectorAll('[data-cv-part]')].map(each =>
+      each.getAttribute('data-cv-part'),
+    );
+
+  it('are named on the human sheet: sections, positions, technologies', async () => {
+    const sheet = await sheetOf('backend');
+    const { container } = render(
+      <CvSheet sheet={sheet} locale="en" mode="human" />,
+    );
+    const named = parts(container);
+    expect(named.filter(each => each?.startsWith('section:'))).toEqual([
+      'section:summary',
+      'section:skills',
+      'section:experience',
+      'section:education',
+      'section:certificates',
+    ]);
+    expect(named.filter(each => each?.startsWith('position:'))).toEqual(
+      sheet.employments.map(each => `position:${String(each.period.id)}`),
+    );
+    expect(named.filter(each => each?.startsWith('tech:'))).toEqual(
+      sheet.technologies.map(each => `tech:${String(each.id)}`),
+    );
+  });
+
+  it('are not named on the ATS sheet, which is never customized', async () => {
+    const { container } = render(
+      <CvSheet sheet={await sheetOf('backend')} locale="en" mode="ats" />,
+    );
+    expect(parts(container)).toEqual([]);
+  });
+});
+
 describe('a sparse sheet', () => {
   it('leaves out what it does not have', async () => {
     const full = await sheetOf('full-stack');
