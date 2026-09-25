@@ -7,7 +7,17 @@
       "es": "Este sitio: un perfil de desarrollador en inglés y español, exportado como archivos estáticos y construido sobre entifix."
     },
     "repositoryUrl": "https://github.com/Herber230/myself-app",
-    "technologies": ["next-js", "typescript", "nx", "pnpm", "tailwind-css"],
+    "technologies": [
+      "next-js",
+      "typescript",
+      "nx",
+      "pnpm",
+      "tailwind-css",
+      "pulumi",
+      "amazon-s3",
+      "cloudfront",
+      "playwright"
+    ],
     "featured": true,
     "order": 0
   },

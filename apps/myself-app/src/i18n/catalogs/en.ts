@@ -116,8 +116,6 @@ export const en = {
       'Tech radar: four quadrants of technologies, ringed by how far I trust them',
     legend: 'Every blip, by quadrant and ring',
     ringKey: 'What the rings mean',
-    placeholder:
-      'Provisional entries: the descriptions and dates are still being written.',
     quadrants: {
       techniques: 'Techniques',
       tools: 'Tools',

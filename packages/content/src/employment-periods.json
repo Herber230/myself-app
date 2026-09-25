@@ -1,29 +1,85 @@
 [
   {
-    "id": "employer-one-engineer",
-    "employer": "employer-one",
+    "id": "vana-frontend-engineer",
+    "employer": "vana",
     "role": {
-      "en": "TODO(#26): the role held",
-      "es": "TODO(#26): el puesto ocupado"
+      "en": "Frontend Software Engineer",
+      "es": "Frontend Software Engineer"
     },
     "responsibilities": {
-      "en": "TODO(#26): what the role was responsible for.",
-      "es": "TODO(#26): de qué era responsable el puesto."
+      "en": "Web application development focused on the end user, with an emphasis on the experience in mobile browsers.",
+      "es": "Aplicaciones web enfocadas en el usuario final, con énfasis en la experiencia en navegadores móviles."
     },
-    "start": "2022-01-01"
+    "start": "2025-11-01"
   },
   {
-    "id": "employer-two-engineer",
-    "employer": "employer-two",
+    "id": "healthcare-frontend-engineer",
+    "employer": "healthcare-com",
     "role": {
-      "en": "TODO(#26): the role held",
-      "es": "TODO(#26): el puesto ocupado"
+      "en": "Frontend Software Engineer",
+      "es": "Frontend Software Engineer"
     },
     "responsibilities": {
-      "en": "TODO(#26): what the role was responsible for.",
-      "es": "TODO(#26): de qué era responsable el puesto."
+      "en": "Web applications focused on the end user and their behavior, using A/B testing and tracking tools.",
+      "es": "Aplicaciones web centradas en el usuario y su comportamiento, con pruebas A/B y seguimiento."
     },
-    "start": "2019-01-01",
-    "end": "2021-12-31"
+    "start": "2020-11-01",
+    "end": "2025-11-01"
+  },
+  {
+    "id": "tigo-innovation-developer",
+    "employer": "tigo-guatemala",
+    "role": {
+      "en": "Innovation Software Development",
+      "es": "Innovation Software Development"
+    },
+    "responsibilities": {
+      "en": "Migrate legacy BSS and OSS to in-house new applications using a bare-metal Kubernetes cluster.",
+      "es": "Migrar los BSS y OSS heredados a nuevas aplicaciones internas sobre un clúster de Kubernetes bare-metal."
+    },
+    "start": "2019-04-01",
+    "end": "2020-10-31"
+  },
+  {
+    "id": "tigo-software-architect",
+    "employer": "tigo-guatemala",
+    "role": {
+      "en": "Software Architect",
+      "es": "Software Architect"
+    },
+    "responsibilities": {
+      "en": "Management role turning business requirements into software designs for the legacy BSS and OSS.",
+      "es": "Rol de gestión que convertía requisitos del negocio en diseños de software para los BSS y OSS legados."
+    },
+    "start": "2017-08-01",
+    "end": "2019-03-31"
+  },
+  {
+    "id": "ministerio-publico-analyst",
+    "employer": "ministerio-publico",
+    "role": {
+      "en": "Programmer analyst",
+      "es": "Analista programador"
+    },
+    "responsibilities": {
+      "en": "Analysis, development and maintenance of in-house business applications.",
+      "es": "Análisis, desarrollo y mantenimiento de aplicaciones de negocio internas."
+    },
+    "start": "2017-02-01",
+    "end": "2017-08-31"
+  },
+  {
+    "id": "sisnova-analyst",
+    "employer": "sisnova",
+    "role": {
+      "en": "Programmer analyst",
+      "es": "Analista programador"
+    },
+    "responsibilities": {
+      "en": "Analysis, development and maintenance of in-house business applications.",
+      "es": "Análisis, desarrollo y mantenimiento de aplicaciones de negocio internas."
+    },
+    "start": "2014-07-01",
+    "end": "2016-10-31"
   }
 ]

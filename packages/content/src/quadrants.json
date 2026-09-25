@@ -2,37 +2,49 @@
   {
     "id": "techniques",
     "order": 0,
-    "name": { "en": "Techniques", "es": "Técnicas" },
+    "name": {
+      "en": "Techniques",
+      "es": "Técnicas"
+    },
     "description": {
-      "en": "TODO(#26): how I work — practices, processes and approaches.",
-      "es": "TODO(#26): cómo trabajo — prácticas, procesos y enfoques."
+      "en": "How I work: the practices and architectures I reach for.",
+      "es": "Cómo trabajo: las prácticas y arquitecturas a las que recurro."
     }
   },
   {
     "id": "tools",
     "order": 1,
-    "name": { "en": "Tools", "es": "Herramientas" },
+    "name": {
+      "en": "Tools",
+      "es": "Herramientas"
+    },
     "description": {
-      "en": "TODO(#26): what I build with — from the editor to the pipeline.",
-      "es": "TODO(#26): con qué construyo — del editor al pipeline."
+      "en": "What I build with, from the monorepo to the pipeline.",
+      "es": "Con qué construyo, del monorepo al pipeline."
     }
   },
   {
     "id": "platforms",
     "order": 2,
-    "name": { "en": "Platforms", "es": "Plataformas" },
+    "name": {
+      "en": "Platforms",
+      "es": "Plataformas"
+    },
     "description": {
-      "en": "TODO(#26): where what I build runs.",
-      "es": "TODO(#26): dónde corre lo que construyo."
+      "en": "Where what I build runs.",
+      "es": "Dónde corre lo que construyo."
     }
   },
   {
     "id": "languages-and-frameworks",
     "order": 3,
-    "name": { "en": "Languages & frameworks", "es": "Lenguajes y frameworks" },
+    "name": {
+      "en": "Languages & frameworks",
+      "es": "Lenguajes y frameworks"
+    },
     "description": {
-      "en": "TODO(#26): what I write it in.",
-      "es": "TODO(#26): en qué lo escribo."
+      "en": "What I write it in.",
+      "es": "En qué lo escribo."
     }
   }
 ]

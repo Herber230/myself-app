@@ -4,14 +4,17 @@
     "firstName": "Herber",
     "lastName": "Colop",
     "email": "herbercolop@gmail.com",
-    "title": { "en": "Software Engineer", "es": "Ingeniero de software" },
+    "title": {
+      "en": "Software Engineer",
+      "es": "Ingeniero de software"
+    },
     "tagline": {
-      "en": "TODO(#26): one line under the name in the hero.",
-      "es": "TODO(#26): una línea bajo el nombre en la portada."
+      "en": "Software engineer focused on architecture, not tools.",
+      "es": "Ingeniero de software enfocado en la arquitectura, no en las herramientas."
     },
     "bio": {
-      "en": "Software passionate and persistent problem solver. Focused on resource development to improve team productivity. Mainly experienced as a TypeScript developer for Node.js, React and Angular applications. Advocate for reactive technologies and the microservices pattern.",
-      "es": "Apasionado del software y persistente resolviendo problemas. Enfocado en desarrollar recursos que mejoren la productividad del equipo. Con experiencia principalmente como desarrollador TypeScript de aplicaciones Node.js, React y Angular. Defensor de las tecnologías reactivas y del patrón de microservicios."
+      "en": "Professional with 10+ years of experience across the complete stack of modern software development, with teams in multiple countries. Strong knowledge of backend and CI/CD platforms, and specialized skills in frontend web technologies. Advocate of a Clean Architecture that minimizes technical restrictions and lets the business easily drive software development. Focused on patterns and architectures more than specific technologies, so recent solutions have often included event-driven architectures, monorepos and GitOps. Used to discussing architecture designs and leading their implementation.",
+      "es": "Profesional con más de 10 años de experiencia trabajando en el diseño y desarrollo de software y con equipos en múltiples países. Posee sólidos conocimientos en backend y plataformas CI/CD, así como competencias especializadas en tecnologías web frontend. Defensor de una arquitectura limpia (Clean Architecture) que minimice las restricciones técnicas y permita al negocio impulsar fácilmente el desarrollo del software. Enfocado más en patrones y arquitecturas que en tecnologías específicas; por ello, las soluciones implementadas recientemente han incluido a menudo arquitecturas orientadas a eventos, monorepos y gestión mediante GitOps. Acostumbrado a debatir diseños de arquitectura y a liderar su implementación."
     },
     "pictureUrl": "https://avatars.githubusercontent.com/u/1140245?v=4",
     "pictureAlt": {
@@ -19,8 +22,8 @@
       "es": "Foto de perfil de Herber Colop"
     },
     "location": {
-      "en": "TODO(#26): where I work from, and whether remote.",
-      "es": "TODO(#26): desde dónde trabajo, y si en remoto."
+      "en": "Guatemala · remote",
+      "es": "Guatemala · remoto"
     }
   }
 ]

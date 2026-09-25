@@ -6,10 +6,9 @@
  * each list to the static adapter, which checks it against the entity's own
  * metadata and fails the build on anything wrong (ADR 0002).
  *
- * ⚠️ Much of it is still placeholder, each marked `TODO(#26)` — or `TODO(#33)`
- * where a spec decides the words. The app's
- * `src/content/pending-content.ts` lists every value left to write, and the
- * build fails on one it does not list.
+ * No value is placeholder. A new one would be marked `TODO(#<issue>)` and
+ * listed in the app's `src/content/pending-content.ts`; the build fails on one
+ * it does not list.
  */
 import certificates from './certificates.json';
 import contactChannels from './contact-channels.json';

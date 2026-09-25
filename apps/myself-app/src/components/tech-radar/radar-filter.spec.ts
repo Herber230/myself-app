@@ -113,7 +113,11 @@ describe('the radar filter', () => {
     const kept = entries.filter(each =>
       matches(each, { ...NO_FILTER, areas: ['monorepo'] }, 'en'),
     );
-    expect(kept.map(each => each.id).sort()).toEqual(['nx', 'pnpm']);
+    expect(kept.map(each => each.id).sort()).toEqual([
+      'monorepos',
+      'nx',
+      'pnpm',
+    ]);
   });
 
   it('keeps an entry matching any value of a list, and all lists together', () => {

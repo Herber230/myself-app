@@ -53,7 +53,7 @@ describe('a blip movement', () => {
   });
 
   it('compares against the latest edition in content', async () => {
-    expect(await loadEditionDate(SITE_REPOSITORIES)).toEqual(EDITION);
+    expect(await loadEditionDate(SITE_REPOSITORIES)).toEqual(at('2026-09-25'));
     const repositories = buildSiteRepositories({
       ...CONTENT,
       'radar-editions.json': [
@@ -79,17 +79,62 @@ describe('the radar entries read from content', () => {
 
   it('draw a technique by its translated name', async () => {
     const entries = await loadRadarEntries(SITE_REPOSITORIES);
-    const contract = entries.find(entry => entry.id === 'contract-testing');
-    expect(contract?.label).toEqual({
-      en: 'Contract testing',
-      es: 'Pruebas de contrato',
+    const clean = entries.find(entry => entry.id === 'clean-architecture');
+    expect(clean?.label).toEqual({
+      en: 'Clean Architecture',
+      es: 'Arquitectura limpia',
     });
   });
 
   it('use every movement the chart can draw', async () => {
+    // Against an edition from 2016, with TypeScript given a trial first: it
+    // moved in, AngularJS moved out to hold, Angular stayed where it was, and
+    // everything that arrived later is new.
+    const periods = (
+      CONTENT['technology-use-periods.json'] as { technology: string }[]
+    ).filter(period => !['typescript', 'angular'].includes(period.technology));
+    const repositories = buildSiteRepositories({
+      ...CONTENT,
+      'radar-editions.json': [{ id: 'then', date: '2016-01-01' }],
+      'technology-use-periods.json': [
+        ...periods,
+        {
+          id: 'typescript-trial',
+          technology: 'typescript',
+          ring: 'trial',
+          start: '2014-07-01',
+          end: '2017-08-01',
+        },
+        {
+          id: 'typescript-adopt',
+          technology: 'typescript',
+          ring: 'adopt',
+          start: '2017-08-01',
+        },
+        {
+          id: 'angular-adopt',
+          technology: 'angular',
+          ring: 'adopt',
+          start: '2014-07-01',
+        },
+      ],
+    });
+    const movements = new Map(
+      (await loadRadarEntries(repositories)).map(entry => [
+        entry.id,
+        entry.movement,
+      ]),
+    );
+    expect(movements.get('typescript')).toBe('in');
+    expect(movements.get('angularjs')).toBe('out');
+    expect(movements.get('angular')).toBe('none');
+    expect(movements.get('react')).toBe('new');
+  });
+
+  it('show no movement in the first edition', async () => {
     const entries = await loadRadarEntries(SITE_REPOSITORIES);
     expect(new Set(entries.map(entry => entry.movement))).toEqual(
-      new Set(['none', 'in', 'out', 'new']),
+      new Set(['none']),
     );
   });
 

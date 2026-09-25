@@ -7,8 +7,8 @@ const detailOf = (id: string) => loadTechnologyDetail(SITE_REPOSITORIES, id);
 
 describe("a technology's detail", () => {
   it('carries its ring history, oldest first', async () => {
-    const detail = await detailOf('static-first-delivery');
-    expect(detail?.technology.id).toBe('static-first-delivery');
+    const detail = await detailOf('jest');
+    expect(detail?.technology.id).toBe('jest');
     expect(
       detail?.history.map(stretch => ({
         ring: stretch.ring.id,
@@ -16,20 +16,23 @@ describe("a technology's detail", () => {
         end: stretch.end?.toISOString().slice(0, 10),
       })),
     ).toEqual([
-      { ring: 'trial', start: '2023-01-01', end: '2026-03-01' },
-      { ring: 'adopt', start: '2026-03-01', end: undefined },
+      { ring: 'adopt', start: '2017-08-01', end: '2026-01-01' },
+      { ring: 'hold', start: '2026-01-01', end: undefined },
     ]);
   });
 
   it('carries its quadrant and the ring it sits in now', async () => {
     const detail = await detailOf('static-first-delivery');
     expect(detail?.quadrant.id).toBe('techniques');
-    expect(detail?.ring.id).toBe('adopt');
+    expect(detail?.ring.id).toBe('trial');
   });
 
   it('carries its areas, in the order it lists them', async () => {
     const detail = await detailOf('static-first-delivery');
-    expect(detail?.areas.map(area => area.id)).toEqual(['web-rendering']);
+    expect(detail?.areas.map(area => area.id)).toEqual([
+      'web-rendering',
+      'delivery',
+    ]);
   });
 
   it('lists every project that uses it, in their order', async () => {
@@ -41,7 +44,7 @@ describe("a technology's detail", () => {
   });
 
   it('lists no project for a technology none uses', async () => {
-    const detail = await detailOf('contract-testing');
+    const detail = await detailOf('spring-boot');
     expect(detail?.projects).toEqual([]);
   });
 

@@ -100,8 +100,6 @@ export const es = {
       'Radar tecnológico: cuatro cuadrantes de tecnologías, en anillos según cuánto confío en ellas',
     legend: 'Cada punto, por cuadrante y anillo',
     ringKey: 'Qué significa cada anillo',
-    placeholder:
-      'Entradas provisionales: las descripciones y fechas aún se están escribiendo.',
     quadrants: {
       techniques: 'Técnicas',
       tools: 'Herramientas',

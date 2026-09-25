@@ -2,7 +2,6 @@ import {
   Card,
   Center,
   Lead,
-  Small,
   Stack,
   Text,
 } from '@entifix/react-controls/primitives';
@@ -101,7 +100,6 @@ export default async function TechRadarPage({
                 {t('techRadar')}
               </Text>
               <Lead muted>{t('techRadarLead')}</Lead>
-              <Small muted>{t('radar.placeholder')}</Small>
             </Stack>
             <RadarExplorer
               layout={layout}

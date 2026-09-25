@@ -1,10 +1,25 @@
 [
   {
-    "id": "employer-one",
-    "name": "TODO(#26): the current employer"
+    "id": "vana",
+    "name": "Vana"
   },
   {
-    "id": "employer-two",
-    "name": "TODO(#26): a previous employer"
+    "id": "healthcare-com",
+    "name": "HealthCare.com",
+    "site": "https://www.healthcare.com"
+  },
+  {
+    "id": "tigo-guatemala",
+    "name": "Tigo Guatemala",
+    "site": "https://www.tigo.com.gt"
+  },
+  {
+    "id": "ministerio-publico",
+    "name": "Ministerio Público de Guatemala",
+    "site": "https://www.mp.gob.gt"
+  },
+  {
+    "id": "sisnova",
+    "name": "Sisnova SA"
   }
 ]
