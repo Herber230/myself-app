@@ -38,6 +38,20 @@ peerDependencyRules:
   allowedVersions:
     '@nx/vitest>vitest': '5'
 ignoreWorkspaceRootCheck: true
+# semantic-release's plugins import their preset from where they are installed
+# first, which under pnpm's hidden hoist is the copy `@commitlint/config-conventional`
+# brings: conventional-changelog-conventionalcommits 10, whose templates need
+# conventional-changelog-writer 9. release-notes-generator 14.1.1 ships writer
+# 8, so notes failed to render and the first release never tagged. Each plugin
+# gets its own 9.3.1, the last major writer 8 renders. Drop this once
+# release-notes-generator depends on writer 9.
+packageExtensions:
+  '@semantic-release/commit-analyzer':
+    dependencies:
+      conventional-changelog-conventionalcommits: 9.3.1
+  '@semantic-release/release-notes-generator':
+    dependencies:
+      conventional-changelog-conventionalcommits: 9.3.1
 # pnpm 11 holds back versions published within its minimum release age. entifix
 # is released by the same author and adopted the day it ships, so its versions are
 # exempted one by one as the catalog moves.

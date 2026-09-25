@@ -37,6 +37,8 @@ catalogs:
       specifier: 19.3.0
       version: 19.3.0
 
+packageExtensionsChecksum: sha256-gsjjiSOuPvQL1LfEhPIKY8Z5fubnmPTZZuD1JcCbZZ0=
+
 importers:
 
   .:
@@ -122,9 +124,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
-      conventional-changelog-conventionalcommits:
-        specifier: 9.3.1
-        version: 9.3.1
       eslint:
         specifier: 10.11.0
         version: 10.11.0(jiti@2.7.0)
@@ -10550,6 +10549,7 @@ snapshots:
   '@semantic-release/commit-analyzer@13.0.1(semantic-release@25.0.9(typescript@6.0.3))':
     dependencies:
       conventional-changelog-angular: 8.3.1
+      conventional-changelog-conventionalcommits: 9.3.1
       conventional-changelog-writer: 8.4.0
       conventional-commits-filter: 5.0.0
       conventional-commits-parser: 6.4.0
@@ -10609,6 +10609,7 @@ snapshots:
   '@semantic-release/release-notes-generator@14.1.1(semantic-release@25.0.9(typescript@6.0.3))':
     dependencies:
       conventional-changelog-angular: 8.3.1
+      conventional-changelog-conventionalcommits: 9.3.1
       conventional-changelog-writer: 8.4.0
       conventional-commits-filter: 5.0.0
       conventional-commits-parser: 6.4.0
