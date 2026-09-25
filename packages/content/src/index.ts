@@ -7,7 +7,7 @@
  * metadata and fails the build on anything wrong (ADR 0002).
  *
  * ⚠️ Much of it is still placeholder, each marked `TODO(#26)` — or `TODO(#33)`
- * and `TODO(#39)` where a spec decides the words. The app's
+ * where a spec decides the words. The app's
  * `src/content/pending-content.ts` lists every value left to write, and the
  * build fails on one it does not list.
  */
@@ -22,6 +22,7 @@ import employmentPeriods from './employment-periods.json';
 import profile from './profile.json';
 import projects from './projects.json';
 import quadrants from './quadrants.json';
+import radarEditions from './radar-editions.json';
 import rings from './rings.json';
 import technologies from './technologies.json';
 import technologyAreas from './technology-areas.json';
@@ -40,6 +41,7 @@ export const CONTENT: Readonly<Record<string, readonly unknown[]>> = {
   'profile.json': profile,
   'projects.json': projects,
   'quadrants.json': quadrants,
+  'radar-editions.json': radarEditions,
   'rings.json': rings,
   'technologies.json': technologies,
   'technology-areas.json': technologyAreas,

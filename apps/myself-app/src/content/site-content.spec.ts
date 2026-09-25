@@ -99,6 +99,12 @@ describe('a rule only this site knows', () => {
       'profile.json › #0 holds 0 records, where one is expected',
     ]);
   });
+
+  it('stops a radar with no edition to measure movement against', () => {
+    expect(problemsIn(withFile('radar-editions.json', []))).toEqual([
+      'radar-editions.json › #0 holds no record, where at least one is expected',
+    ]);
+  });
 });
 
 describe('a rule for the CV (ADR 0012)', () => {

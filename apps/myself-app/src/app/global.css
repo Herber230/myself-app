@@ -520,11 +520,113 @@ body {
     color: var(--color-primary);
   }
 
-  /* A technology reached from a link (#30): clear of the fixed nav, and marked. */
+  /* A blip under the pointer, and the one its legend entry names (#40). */
+  .radar-blip {
+    cursor: pointer;
+  }
+
+  .radar-blip[data-highlighted] path {
+    stroke: var(--color-content);
+    stroke-width: 2;
+  }
+
+  /* Left out by the filter (#41): faint, in place, so the shape still reads. */
+  .radar-blip[data-dimmed] {
+    opacity: 0.18;
+  }
+
+  .radar-legend-entry[data-dimmed] {
+    opacity: 0.45;
+  }
+
+  .radar-legend-entry[data-highlighted] {
+    background: var(--color-radar-ring-fill);
+    border-radius: 2px;
+  }
+
+  .radar-filters {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+    font-size: 0.875rem;
+  }
+
+  .radar-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  .radar-filter-label {
+    min-width: 6rem;
+    color: var(--color-content-muted);
+  }
+
+  /* On a phone each label heads its own row of chips. */
+  @media (width < 40rem) {
+    .radar-filter-label {
+      flex-basis: 100%;
+    }
+  }
+
+  .radar-filters button {
+    cursor: pointer;
+    background: none;
+    font: inherit;
+  }
+
+  .radar-filters .landing-chip[aria-pressed='true'] {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-surface);
+  }
+
+  .radar-search {
+    display: flex;
+    flex: 1 1 16rem;
+    align-items: center;
+    gap: var(--spacing-xs);
+    min-width: 0;
+    max-width: 28rem;
+  }
+
+  .radar-search input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    padding: 0.125rem var(--spacing-xs);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    color: inherit;
+    font: inherit;
+  }
+
+  .radar-filter-count {
+    color: var(--color-content-muted);
+  }
+
+  .radar-filter-clear {
+    border: 0;
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  /* A ring's name beside what it means (#39). */
+  .radar-ring-key {
+    grid-template-columns: max-content 1fr;
+  }
+
+  /* A technology or a project reached from a link (#30, #42): clear of the
+     fixed nav, and marked. */
+  .landing-project,
   .radar-legend-entry {
     scroll-margin-top: 5rem;
   }
 
+  .landing-project:target,
   .radar-legend-entry:target {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;

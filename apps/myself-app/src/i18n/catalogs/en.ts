@@ -55,7 +55,8 @@ export const en = {
     goodreads: 'Goodreads',
     x: 'X',
   },
-  techRadarLead: 'The technologies and techniques I use. Coming soon.',
+  techRadarLead:
+    'The technologies and techniques I use, and how far I trust each one.',
   redirecting: 'Continue to the English site',
   notFoundTitle: 'Page not found',
   notFoundLead: 'This page does not exist.',
@@ -106,14 +107,15 @@ export const en = {
     dark: 'Dark',
   },
   /**
-   * The radar's quadrants and rings, in index order. Thoughtworks' names for
-   * now: what they mean on a one-person radar is still open (#39), and the
-   * control takes them as props so that decision lands here, not in the SVG.
+   * The radar's quadrants and rings, in index order: Thoughtworks' names, kept
+   * for a one-person radar (#39, ADR 0014). What each ring means is content
+   * (`rings.json`); the control takes the names as props, never the SVG.
    */
   radar: {
     chartLabel:
       'Tech radar: four quadrants of technologies, ringed by how far I trust them',
     legend: 'Every blip, by quadrant and ring',
+    ringKey: 'What the rings mean',
     placeholder:
       'Provisional entries: the descriptions and dates are still being written.',
     quadrants: {
@@ -121,6 +123,27 @@ export const en = {
       tools: 'Tools',
       platforms: 'Platforms',
       languages: 'Languages & frameworks',
+    },
+    filter: {
+      label: 'Filter the radar',
+      quadrant: 'Quadrant',
+      ring: 'Ring',
+      area: 'Area',
+      search: 'Search',
+      clear: 'Show everything',
+      showing: 'Showing {{shown}} of {{total}}',
+    },
+    detail: {
+      back: '← Back to the radar',
+      quadrant: 'Quadrant',
+      ring: 'Ring',
+      ringMeaning: '{{ring}} — {{meaning}}',
+      areas: 'Areas',
+      site: 'Website',
+      repository: 'Source',
+      history: 'How it moved',
+      projects: 'Where I used it',
+      noProjects: 'No project on this site uses it yet.',
     },
     rings: {
       adopt: 'Adopt',

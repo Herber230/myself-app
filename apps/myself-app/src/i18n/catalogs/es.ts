@@ -50,7 +50,8 @@ export const es = {
     goodreads: 'Goodreads',
     x: 'X',
   },
-  techRadarLead: 'Las tecnologías y técnicas que uso. Muy pronto.',
+  techRadarLead:
+    'Las tecnologías y técnicas que uso, y cuánto confío en cada una.',
   redirecting: 'Continuar al sitio en inglés',
   notFoundTitle: 'Página no encontrada',
   notFoundLead: 'Esta página no existe.',
@@ -98,6 +99,7 @@ export const es = {
     chartLabel:
       'Radar tecnológico: cuatro cuadrantes de tecnologías, en anillos según cuánto confío en ellas',
     legend: 'Cada punto, por cuadrante y anillo',
+    ringKey: 'Qué significa cada anillo',
     placeholder:
       'Entradas provisionales: las descripciones y fechas aún se están escribiendo.',
     quadrants: {
@@ -105,6 +107,27 @@ export const es = {
       tools: 'Herramientas',
       platforms: 'Plataformas',
       languages: 'Lenguajes y frameworks',
+    },
+    filter: {
+      label: 'Filtrar el radar',
+      quadrant: 'Cuadrante',
+      ring: 'Anillo',
+      area: 'Área',
+      search: 'Buscar',
+      clear: 'Mostrar todo',
+      showing: 'Mostrando {{shown}} de {{total}}',
+    },
+    detail: {
+      back: '← Volver al radar',
+      quadrant: 'Cuadrante',
+      ring: 'Anillo',
+      ringMeaning: '{{ring}} — {{meaning}}',
+      areas: 'Áreas',
+      site: 'Sitio web',
+      repository: 'Código',
+      history: 'Cómo se movió',
+      projects: 'Dónde la usé',
+      noProjects: 'Ningún proyecto de este sitio la usa todavía.',
     },
     rings: {
       adopt: 'Adoptar',

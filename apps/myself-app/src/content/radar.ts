@@ -8,6 +8,7 @@
  */
 import {
   Quadrant,
+  RadarEdition,
   Ring,
   Technology,
   TechnologyUsePeriod,
@@ -23,14 +24,21 @@ import { loadEvery } from './queries';
 import type { SiteRepositories } from './site-content';
 
 /**
- * The edition the radar compares against: a blip moved if the ring it sat in
- * on this date is not the ring it sits in now, and is new if it sat in none.
- *
- * ⚠️ Placeholder, like the periods it is compared with. How often the radar is
- * re-drawn, and so what "moved" is measured from, is for the radar spec to
- * decide (#39).
+ * The date the radar compares against: the latest `RadarEdition` in content
+ * (#39, ADR 0014). A blip moved if the ring it sat in on this date is not the
+ * ring it sits in now, and is new if it sat in none. Kept in content rather
+ * than taken from the build's clock, so the same content always draws the
+ * same radar.
  */
-export const PREVIOUS_EDITION = new Date('2026-01-01T00:00:00.000Z');
+export async function loadEditionDate(
+  repositories: SiteRepositories,
+): Promise<Date> {
+  const editions = await loadEvery(repositories, RadarEdition, {
+    sorting: [{ 0: { property: 'date', type: 'desc' } }],
+  });
+  // Validation requires at least one edition, with a date.
+  return editions[0].date as Date;
+}
 
 /** One stretch in one ring, by the ring's order. */
 export interface RingPeriod {
@@ -45,7 +53,7 @@ export interface RingPeriod {
  */
 export function movementOf(
   periods: readonly RingPeriod[],
-  edition: Date = PREVIOUS_EDITION,
+  edition: Date,
 ): Movement {
   const ordered = [...periods].sort(
     (a, b) => a.start.getTime() - b.start.getTime(),
@@ -80,13 +88,13 @@ function toIndex(order: number | undefined, what: string): number {
 /** Every technology as a blip, in no particular order: the layout numbers them. */
 export async function loadRadarEntries(
   repositories: SiteRepositories,
-  edition: Date = PREVIOUS_EDITION,
 ): Promise<RadarEntry[]> {
-  const [technologies, quadrants, rings, periods] = await Promise.all([
+  const [technologies, quadrants, rings, periods, edition] = await Promise.all([
     loadEvery(repositories, Technology),
     loadEvery(repositories, Quadrant),
     loadEvery(repositories, Ring),
     loadEvery(repositories, TechnologyUsePeriod),
+    loadEditionDate(repositories),
   ]);
 
   const quadrantOrder = new Map(quadrants.map(each => [each.id, each.order]));
@@ -117,6 +125,7 @@ export async function loadRadarEntries(
         `ring ${String(technology.ring.id)}`,
       ) as RingIndex,
       movement: movementOf(ringPeriods, edition),
+      areas: technology.areas.ids.map(String),
     };
   });
 }

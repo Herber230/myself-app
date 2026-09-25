@@ -20,6 +20,11 @@ import { radarEntryPath } from '../tech-radar/radar-paths';
 import { ExternalLink } from './external-link';
 import { LandingSection } from './landing-section';
 
+/** A project card's `id`, linked to from a technology's page (#42). */
+export function projectAnchor(projectId: string): string {
+  return `project-${projectId}`;
+}
+
 /**
  * The featured projects (#30), in their order: what each is, where it lives,
  * and what it is built with. Each technology links to its entry on the radar.
@@ -39,7 +44,11 @@ export function ProjectsSection({
     <LandingSection id="projects" locale={locale}>
       <Grid as="ul" min="18rem" gap="l" className="landing-list">
         {projects.map(project => (
-          <li key={String(project.id)}>
+          <li
+            key={String(project.id)}
+            id={projectAnchor(String(project.id))}
+            className="landing-project"
+          >
             <Card className="h-full">
               <Stack gap="m">
                 <Text as="h3" step={2} weight="semibold">

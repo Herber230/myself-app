@@ -21,6 +21,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 0,
     ring: 0,
     movement: 'none',
+    areas: [],
   },
   {
     id: 'static-first-delivery',
@@ -28,6 +29,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 0,
     ring: 0,
     movement: 'in',
+    areas: [],
   },
   {
     id: 'contract-testing',
@@ -35,6 +37,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 0,
     ring: 1,
     movement: 'none',
+    areas: [],
   },
   {
     id: 'property-based-testing',
@@ -45,6 +48,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 0,
     ring: 2,
     movement: 'new',
+    areas: [],
   },
   {
     id: 'hand-written-release-notes',
@@ -55,6 +59,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 0,
     ring: 3,
     movement: 'out',
+    areas: [],
   },
 
   // Quadrant 1 — tools.
@@ -64,6 +69,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 1,
     ring: 0,
     movement: 'in',
+    areas: [],
   },
   {
     id: 'pnpm',
@@ -71,6 +77,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 1,
     ring: 0,
     movement: 'none',
+    areas: [],
   },
   {
     id: 'playwright',
@@ -78,6 +85,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 1,
     ring: 1,
     movement: 'none',
+    areas: [],
   },
   {
     id: 'biome',
@@ -85,6 +93,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 1,
     ring: 2,
     movement: 'new',
+    areas: [],
   },
   {
     id: 'jest',
@@ -92,6 +101,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 1,
     ring: 3,
     movement: 'out',
+    areas: [],
   },
 
   // Quadrant 2 — platforms.
@@ -101,6 +111,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 2,
     ring: 0,
     movement: 'none',
+    areas: [],
   },
   {
     id: 'cloudfront',
@@ -108,6 +119,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 2,
     ring: 1,
     movement: 'in',
+    areas: [],
   },
   {
     id: 'cloudflare-workers',
@@ -115,6 +127,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 2,
     ring: 2,
     movement: 'new',
+    areas: [],
   },
   {
     id: 'heroku',
@@ -122,6 +135,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 2,
     ring: 3,
     movement: 'out',
+    areas: [],
   },
 
   // Quadrant 3 — languages and frameworks.
@@ -131,6 +145,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 3,
     ring: 0,
     movement: 'none',
+    areas: [],
   },
   {
     id: 'next-js',
@@ -138,6 +153,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 3,
     ring: 0,
     movement: 'in',
+    areas: [],
   },
   {
     id: 'effect',
@@ -145,6 +161,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 3,
     ring: 1,
     movement: 'in',
+    areas: [],
   },
   {
     id: 'tailwind-css',
@@ -152,6 +169,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 3,
     ring: 1,
     movement: 'none',
+    areas: [],
   },
   {
     id: 'svelte',
@@ -159,6 +177,7 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 3,
     ring: 2,
     movement: 'new',
+    areas: [],
   },
   {
     id: 'angularjs',
@@ -166,5 +185,6 @@ export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
     quadrant: 3,
     ring: 3,
     movement: 'out',
+    areas: [],
   },
 ];

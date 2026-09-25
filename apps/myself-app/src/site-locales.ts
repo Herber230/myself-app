@@ -20,14 +20,10 @@ import {
   type SiteLocale,
 } from '@myself-app/domain';
 
-/**
- * A site path under a locale, with the trailing slash the export writes
- * (`/en/cv/`). `path` is locale-free and starts with `/`.
- */
-export function localePath(locale: SiteLocale, path: string): string {
-  const trimmed = path.replace(/^\/+|\/+$/g, '');
-  return trimmed === '' ? `/${locale}/` : `/${locale}/${trimmed}/`;
-}
+import { localePath } from './locale-path';
+
+/** Re-exported; it lives apart so client code can import it alone. */
+export { localePath };
 
 /**
  * `alternates` metadata for one page: its canonical URL and an `hreflang`
