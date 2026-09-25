@@ -12,6 +12,7 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 //   static-adapter   ──►  @entifix/*, effect                   (never domain)
 //   domain           ──►  @entifix/*, effect
 //   content          ──►  nothing
+//   infra            ──►  @pulumi/*                            (ADR 0013)
 //
 // The adapter knowing no entity is what keeps it promotable to entifix as a
 // copy; content importing nothing is what keeps it data. A project whose tag
@@ -51,6 +52,13 @@ const layerConstraints = [
     sourceTag: 'layer:content',
     onlyDependOnLibsWithTags: [],
     bannedExternalImports: ['*'],
+  },
+  {
+    // The Pulumi program describes where the site is served from; it reads
+    // nothing the site is made of.
+    sourceTag: 'layer:infra',
+    onlyDependOnLibsWithTags: [],
+    allowedExternalImports: ['@pulumi/*', 'vitest', 'node:*'],
   },
   { sourceTag: 'layer:e2e', onlyDependOnLibsWithTags: [] },
   { sourceTag: 'layer:tooling', onlyDependOnLibsWithTags: [] },

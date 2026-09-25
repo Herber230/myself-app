@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "out-tsc/infra",
+    "tsBuildInfoFile": "out-tsc/infra/tsconfig.tsbuildinfo",
+    "types": ["node"],
+    // Node runs the sources as they are, stripping the types: only syntax it
+    // can erase, and relative imports that name the file they load.
+    "erasableSyntaxOnly": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["out-tsc", "test-output"]
+}

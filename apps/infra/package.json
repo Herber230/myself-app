@@ -1,0 +1,34 @@
+{
+  "name": "@myself-app/infra",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The AWS infrastructure the site is served from, as a Pulumi program (ADR 0013).",
+  "nx": {
+    "tags": [
+      "layer:infra"
+    ],
+    "targets": {
+      "preview": {
+        "executor": "nx:run-commands",
+        "cache": false,
+        "options": {
+          "cwd": "apps/infra",
+          "command": "pulumi preview --stack prod --diff"
+        }
+      },
+      "up": {
+        "executor": "nx:run-commands",
+        "cache": false,
+        "options": {
+          "cwd": "apps/infra",
+          "command": "pulumi up --stack prod"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@pulumi/aws": "7.48.0",
+    "@pulumi/pulumi": "3.264.0"
+  }
+}
