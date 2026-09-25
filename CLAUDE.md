@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Herber Colop's developer profile: a Next.js 16 app built as a **static export** (`output: 'export'`) on top of [entifix](https://github.com/r10c-technologies/entifix), meant to be served as plain files from S3. Three pages (home, CV, tech radar), each in English and Spanish. The old Vite app survives only as the `legacy-vite` git tag, for reference.
+Herber Colop's developer profile: a Next.js 16 app built as a **static export** (`output: 'export'`) on top of [entifix](https://github.com/r10c-technologies/entifix), served as plain files from a private S3 bucket behind CloudFront at `https://herbercolop.dev`, with the AWS side defined in Pulumi (`apps/infra`, ADR 0013). Three pages (home, CV, tech radar), each in English and Spanish. The old Vite app survives only as the `legacy-vite` git tag, for reference.
 
 The repo is mid-rebuild. Content flows through entifix end to end (M1): JSON in `packages/content`, entities in `packages/domain`, a static repository in `packages/static-adapter`, read by the pages at build time. Much of the content is still placeholder, each value marked `TODO(#26)` (or `TODO(#33)`, `TODO(#39)`) — `apps/myself-app/src/content/pending-content.ts` lists them by path, and the build fails on a placeholder it does not list or a listed one that has been written. [`docs/DEVELOPING.md`](docs/DEVELOPING.md) walks through the workflows (adding a page, copy, styling, a package, working on entifix from here).
 
@@ -29,15 +29,18 @@ pnpm nx e2e myself-app-e2e -- -g "404"          # journeys matching a name
 pnpm nx test @myself-app/domain                 # also @myself-app/static-adapter; content has no test target
 pnpm nx build @myself-app/domain                # SWC to dist; the app's build/test/typecheck run ^build first
 pnpm nx test @myself-app/conventions            # the repository's conventions (attribution, CI wiring, layer tags); uncached
+pnpm nx preview @myself-app/infra               # pulumi preview of the prod stack (AWS credentials + the Pulumi CLI)
+pnpm nx up @myself-app/infra                    # pulumi up; asks before applying
+NEXT_PUBLIC_SITE_URL=https://herbercolop.dev pnpm nx deploy myself-app   # build, PDFs, sync to the bucket, invalidate
 pnpm nx run-many -t lint,typecheck,test,build,e2e   # everything CI runs
 pnpm exec prettier --check .                    # formatting, as CI checks it
 ```
 
 Unit tests sit beside what they test. `*.spec.ts` runs in Node, `*.spec.tsx` in jsdom with Testing Library (setup in `apps/myself-app/src/test/`), and `*.node.spec.tsx` renders JSX in Node, as `next build` does, with no `document`. E2E needs Chromium once: `pnpm exec playwright install chromium`.
 
-**Coverage is gated at 100%** — statements, branches, functions and lines — for `myself-app` and for every package under `packages/*`. It is collected on every `nx test` run, not only under CI's `--coverage`, so the threshold fails on the machine that wrote the code rather than in the pull request. The scope is `src/**/*.{ts,tsx}`: every component, page and layout is rendered by its own spec, so a new one needs a `*.spec.tsx` beside it or the gate fails. Pages and layouts are async server components: `renderPage` in `src/test/render.tsx` awaits one and renders it inside `Providers`. A file that genuinely cannot run under Vitest is excluded by name with the reason beside it (`src/fonts.ts` calls `next/font/local`, which only exists inside Next's compiler). `@myself-app/conventions` is unthresholded: it asserts things about the repository rather than running logic.
+**Coverage is gated at 100%** — statements, branches, functions and lines — for `myself-app`, `@myself-app/infra` (against `pulumi.runtime.setMocks`) and every package under `packages/*`. It is collected on every `nx test` run, not only under CI's `--coverage`, so the threshold fails on the machine that wrote the code rather than in the pull request. The scope is `src/**/*.{ts,tsx}`: every component, page and layout is rendered by its own spec, so a new one needs a `*.spec.tsx` beside it or the gate fails. Pages and layouts are async server components: `renderPage` in `src/test/render.tsx` awaits one and renders it inside `Providers`. A file that genuinely cannot run under Vitest is excluded by name with the reason beside it (`src/fonts.ts` calls `next/font/local`, which only exists inside Next's compiler). `@myself-app/conventions` is unthresholded: it asserts things about the repository rather than running logic.
 
-Projects: `myself-app` (the Next app), `myself-app-e2e` (Playwright against the export served by `tools/serve-static.mjs`, never against a Next server), `@myself-app/domain`, `@myself-app/static-adapter` and `@myself-app/content` (`packages/`, below), and `@myself-app/conventions` (`tools/conventions/`, checks about the repository itself). A commit scope drops the `@myself-app/` prefix: `feat(domain): …`.
+Projects: `myself-app` (the Next app), `myself-app-e2e` (Playwright against the export served by `tools/serve-static.mjs`, never against a Next server), `@myself-app/infra` (the Pulumi program, `apps/infra`), `@myself-app/domain`, `@myself-app/static-adapter` and `@myself-app/content` (`packages/`, below), and `@myself-app/conventions` (`tools/conventions/`, checks about the repository itself). A commit scope drops the `@myself-app/` prefix: `feat(domain): …`.
 
 ### Git hooks (husky)
 
@@ -46,7 +49,17 @@ Projects: `myself-app` (the Next app), `myself-app-e2e` (Playwright against the 
 
 ### Pull request check
 
-`.github/workflows/pull_request_check.yml` runs on every PR to `main` and every push to it. Lint, build + typecheck, test with coverage, and e2e run on affected projects (all projects on `main`). Formatting and the conventions spec always run. On PRs, commitlint also checks every commit and the PR title (the squash commit message), and `tools/conventions/check-pull-request.mjs` checks the PR body. **`CI Gate` is the one check to watch**: it needs every job, and a new job must be added to its `needs` (the conventions spec fails otherwise). `main` requires it by name, so a red gate blocks the merge. `main` also requires one approving review, which a lone maintainer cannot give their own PR: merges are `gh pr merge --squash --admin`, and the override is recorded on the PR. ⚠️ The workflow triggers on `opened`, `synchronize` and `reopened`, not `edited` — a PR title retitled after the last run keeps that run's green, so check a new title with `printf '%s\n' "<title>" | pnpm exec commitlint` before merging.
+`.github/workflows/pull_request_check.yml` runs on every PR to `main` and every push to it. Lint, build + typecheck, test with coverage, and e2e run on affected projects (all projects on `main`). Formatting and the conventions spec always run. On PRs, `Infrastructure preview` runs `pulumi preview` under the read-only OIDC role when `@myself-app/infra` is affected; commitlint also checks every commit and the PR title (the squash commit message), and `tools/conventions/check-pull-request.mjs` checks the PR body. **`CI Gate` is the one check to watch**: it needs every job, and a new job must be added to its `needs` (the conventions spec fails otherwise). `main` requires it by name, so a red gate blocks the merge. `main` also requires one approving review, which a lone maintainer cannot give their own PR: merges are `gh pr merge --squash --admin`, and the override is recorded on the PR. ⚠️ The workflow triggers on `opened`, `synchronize` and `reopened`, not `edited` — a PR title retitled after the last run keeps that run's green, so check a new title with `printf '%s\n' "<title>" | pnpm exec commitlint` before merging.
+
+### Deployment and releases (ADR 0013)
+
+- **Continuous deployment.** When `Pull Request Check` succeeds on a push to `main`, `.github/workflows/deploy.yml` runs semantic-release, then `pulumi up`, then `nx deploy myself-app`, through GitHub OIDC (no stored AWS keys) in the `production` environment. Runs queue; none is cancelled.
+- **The squash commit's type is a release decision**: `feat` → minor, `fix`/`perf` → patch, `!` → major; anything else releases and deploys nothing (`gh workflow run deploy.yml` redeploys by hand). Releases are `vX.Y.Z` tags plus GitHub Releases; there is no `CHANGELOG.md` and the version in `package.json` stays `0.0.0`.
+- **Infrastructure changes go through `apps/infra`, never the console.** State is in the S3 backend `myself-app-pulumi-state-206772512116` with the KMS key `alias/myself-app-pulumi`, both from `apps/infra/bootstrap/state.cfn.yaml`, outside the stack. The domain's hosted zone is looked up, never owned, so `pulumi destroy` cannot take the domain.
+- **Pulumi runs `src/index.ts` without a compiler** (`typescript: false`; Node strips the types): erasable syntax only, and relative imports name their `.ts` file.
+- **The CloudFront Function runs `cloudfront-js-2.0`, not Node.** It rejects `for…of` among others, and a function that fails to load answers every request with a 503. Check a change with `aws cloudfront test-function`.
+- **`NEXT_PUBLIC_SITE_URL` is an input of `myself-app:build`**, and `tools/deploy-site.sh` refuses an export that names `localhost`.
+- The deploy role can change roles named `myself-app-*`, its own included; its trust on the `production` environment is what bounds it.
 
 ## No AI attribution
 
@@ -61,7 +74,7 @@ Commits, PR descriptions and tracked files carry **no AI or tool attribution**: 
 - No `basePath`/`assetPrefix`. `images.unoptimized`.
 - `/` redirects with `<meta http-equiv="refresh">` in `app/(root)/page.tsx`, because no server can answer with a redirect.
 - **Two root layouts**: `app/(root)/layout.tsx` for `/` only, and `app/[locale]/layout.tsx` for everything else, so each page sets its own `<html lang>`. Because there is no single root layout, the export's `404.html` comes from `app/global-not-found.tsx`, which needs `experimental.globalNotFound` in `next.config.js`. Remove that flag and the build still succeeds but silently loses `404.html`.
-- `tools/serve-static.mjs` (`serve-out`) behaves like the S3 website endpoint. A route that works in `next dev` but not under `serve-out` is a bug in the route.
+- `tools/serve-static.mjs` (`serve-out`) behaves like CloudFront's viewer-request function (`apps/infra/src/viewer-request.js`): `path/` → `path/index.html`, `path` → 301 to `path/`. A route that works in `next dev` but not under `serve-out` is a bug in the route. Change one and the other with it.
 
 ### Locales (ADR 0005)
 
@@ -87,6 +100,7 @@ apps/myself-app            Next app: the composition root (src/content/)
 packages/domain            entifix @entity classes, LocalizedText, SITE_LOCALES; SWC, sideEffects: true
 packages/static-adapter    read-only EntityRepository + validation; knows no entity and no locale
 packages/content           one JSON file per entity; imports nothing
+apps/infra                 the Pulumi program (layer:infra); depends on no workspace project
 ```
 
 - Dependency direction: app → domain, content, static-adapter. static-adapter and domain → only `@entifix/*` and `effect`, never each other. content → nothing. **Enforced**: every project has one `layer:*` tag in its `package.json` `nx.tags`, and `@nx/enforce-module-boundaries` in the root `eslint.config.mjs` holds the direction. A new package needs its tag; the conventions spec fails on a project without one.

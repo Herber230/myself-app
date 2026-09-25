@@ -16,9 +16,9 @@ Run everything through Nx from the repository root. `pnpm nx run-many -t lint,ty
 
 ## The export is the truth
 
-The site is a static export (`output: 'export'`) served as plain files (ADR 0001, 0007). `next dev` is a convenience and does not show you what the bucket will serve:
+The site is a static export (`output: 'export'`) served as plain files from a private bucket behind CloudFront (ADR 0001, 0007, 0013). `next dev` is a convenience and does not show you what the site will serve:
 
-- **Check a route under `pnpm nx serve-out myself-app`** (http://localhost:3100). `tools/serve-static.mjs` answers the way the S3 website endpoint does. A route that works in `next dev` but not here is a bug in the route.
+- **Check a route under `pnpm nx serve-out myself-app`** (http://localhost:3100). `tools/serve-static.mjs` answers the way CloudFront's viewer-request function does (`apps/infra/src/viewer-request.js`). A route that works in `next dev` but not here is a bug in the route.
 - **e2e runs against the export only**, on port 3200, and never against a Next server.
 - **Server components run once, at `next build`.** `headers()`, `cookies()`, proxies, rewrites, redirects and non-`force-static` route handlers fail the export.
 - **Internal links end in `/`** (`trailingSlash: true`). Build them with `localePath()` from `src/site-locales.ts`.
@@ -96,6 +96,7 @@ app              ──►  domain, content, static-adapter
 static-adapter   ──►  @entifix/*, effect                   (never domain)
 domain           ──►  @entifix/*, effect
 content          ──►  nothing
+infra            ──►  @pulumi/*
 ```
 
 When you add a package under `packages/`, give it its tag: `layer:domain`, `layer:static-adapter` or `layer:content`. The conventions spec (`pnpm nx test @myself-app/conventions`) fails on a project without a known `layer:*` tag.
@@ -134,9 +135,29 @@ ENTIFIX_CONSUMERS=$PWD/../../portfolio/myself-app pnpm nx run @entifix/source:de
 
 When entifix releases, bump its version in the `catalog:` and add the new version to `minimumReleaseAgeExclude`. Otherwise pnpm 11 holds it back.
 
+## Deploying
+
+`herbercolop.dev` is a private S3 bucket behind CloudFront, defined in Pulumi under `apps/infra` (ADR 0013). A new AWS resource goes there, never in the console.
+
+- **Normally you do nothing.** Merging to `main` runs Pull Request Check, and when it passes `deploy.yml` releases, runs `pulumi up` and deploys the site. The pull request's `Infrastructure preview` job showed the plan beforehand.
+- **Which merges ship** is decided by the pull request title, which becomes the squash commit: `feat:` → a minor release, `fix:` or `perf:` → a patch, `feat!:` or a `BREAKING CHANGE:` footer → a major. `chore`, `docs`, `ci`, `build`, `test` and `refactor` release and deploy nothing. Run the Deploy workflow by hand (`gh workflow run deploy.yml`) when one of those still needs to go out.
+- **Releases** are `vX.Y.Z` tags with generated notes on the GitHub Releases page. That page is the changelog: nothing is committed back to `main`.
+- **From your machine**, with AWS credentials for the account (`aws login`) and the Pulumi CLI (`brew install pulumi`):
+
+  ```sh
+  pnpm nx preview @myself-app/infra                                     # the plan, read-only
+  pnpm nx up @myself-app/infra                                          # asks before applying
+  NEXT_PUBLIC_SITE_URL=https://herbercolop.dev pnpm nx deploy myself-app   # build, PDFs, sync, invalidate
+  ```
+
+  The deploy refuses an export that still names `localhost`: the origin is baked in at build time.
+
+- **State** lives in `s3://myself-app-pulumi-state-206772512116`, and its secrets are encrypted with `alias/myself-app-pulumi`. Both come from `apps/infra/bootstrap/state.cfn.yaml`, deployed once, outside the stack. `Pulumi.yaml` names the backend, so there is no `pulumi login`.
+- **The CloudFront Function is not Node.** `cloudfront-js-2.0` rejects some syntax Node accepts (`for…of`, for one). A function that fails to load answers every request with a 503, so `aws cloudfront test-function` it after changing it.
+
 ## Commits and pull requests
 
-- **Commits:** Conventional Commits, lowercase subject. The scope is an Nx project name when one applies (`build(myself-app): …`). commitlint runs in the `commit-msg` hook.
+- **Commits:** Conventional Commits, lowercase subject. The squash commit's type decides the release (see [Deploying](#deploying)). The scope is an Nx project name when one applies (`build(myself-app): …`). commitlint runs in the `commit-msg` hook.
 - **The `pre-commit` hook** formats staged files, then runs `nx affected -t lint,typecheck,test,build` against `origin/main`.
 - **Pull request bodies** use `.github/PULL_REQUEST_TEMPLATE.md`. Watch the `CI Gate` check: it needs every other job, and `main` requires it by name, so a red gate blocks the merge.
 - **Merging** is a squash, and the pull request title becomes the commit on `main` — so it is linted too. `main` requires one approving review as well, which you cannot give your own pull request: merge with `gh pr merge --squash --admin`, which records the override. ⚠️ Retitling after the last run does not start a new one (the workflow triggers on `opened`, `synchronize`, `reopened`), so a new title keeps the old one's green. Check it first with `printf '%s\n' "<title>" | pnpm exec commitlint`.
