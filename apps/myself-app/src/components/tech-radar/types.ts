@@ -3,8 +3,8 @@
  * content package: the control is a renderer over plain data, so #25's
  * `Technology` entity can replace `RadarEntry` later without touching it.
  *
- * Quadrant and ring *meanings* are not decided here (#39). The control knows
- * four of each, by index, and takes their names as props.
+ * Quadrant and ring *meanings* are content (ADR 0014), not decided here. The
+ * control knows four of each, by index, and takes their names as props.
  */
 import type { SiteLocale } from '../../site-locales';
 

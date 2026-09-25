@@ -30,6 +30,7 @@ import { EmploymentPeriod } from './entities/employment-period.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
 import { Quadrant } from './entities/quadrant.entity.js';
+import { RadarEdition } from './entities/radar-edition.entity.js';
 import { Ring } from './entities/ring.entity.js';
 import { Technology } from './entities/technology.entity.js';
 import { TechnologyArea } from './entities/technology-area.entity.js';
@@ -44,6 +45,7 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['TechnologyArea', TechnologyArea],
   ['Quadrant', Quadrant],
   ['Ring', Ring],
+  ['RadarEdition', RadarEdition],
   ['Technology', Technology],
   ['TechnologyUsePeriod', TechnologyUsePeriod],
   ['Project', Project],
@@ -64,9 +66,9 @@ const columnsOf = (entityConstructor: EntityConstructor<Entity>) =>
   );
 
 describe('every entity the three pages read', () => {
-  it('is one of fifteen, and each carries its metadata', () => {
+  it('is one of sixteen, and each carries its metadata', () => {
     // Pinned: a table that stopped matching would assert nothing below.
-    expect(ENTITIES).toHaveLength(15);
+    expect(ENTITIES).toHaveLength(16);
     for (const [name, entityConstructor] of ENTITIES) {
       expect(() => extractMetaEntity(entityConstructor), name).not.toThrow();
     }

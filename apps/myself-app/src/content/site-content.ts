@@ -28,6 +28,7 @@ import {
   Profile,
   Project,
   Quadrant,
+  RadarEdition,
   Ring,
   SITE_LOCALES,
   Technology,
@@ -84,6 +85,13 @@ const exactlyOne: EntityRule = (records, report) => {
   }
 };
 
+/** At least one radar edition: a blip's movement is measured against one. */
+const atLeastOne: EntityRule = (records, report) => {
+  if (records.length === 0) {
+    report(0, undefined, 'holds no record, where at least one is expected');
+  }
+};
+
 /**
  * A CV variant's id is a URL segment beside `ats`, which is the ATS mode's
  * (ADR 0012): a variant named `ats` would be shadowed by it.
@@ -123,6 +131,11 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
   { entity: TechnologyArea, file: 'technology-areas.json' },
   { entity: Quadrant, file: 'quadrants.json' },
   { entity: Ring, file: 'rings.json' },
+  {
+    entity: RadarEdition,
+    file: 'radar-editions.json',
+    rules: [atLeastOne],
+  },
   {
     entity: Technology,
     file: 'technologies.json',

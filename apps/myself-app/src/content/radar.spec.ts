@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest';
 
 import { layoutRadar } from '../components/tech-radar/layout';
 import { loadPage } from './queries';
-import { loadRadarEntries, movementOf, PREVIOUS_EDITION } from './radar';
+import { loadEditionDate, loadRadarEntries, movementOf } from './radar';
 import { SITE_REPOSITORIES } from './repositories';
 import { buildSiteRepositories } from './site-content';
 
@@ -52,9 +52,16 @@ describe('a blip movement', () => {
     ).toBe('new');
   });
 
-  it('compares against the placeholder edition by default', () => {
-    expect(PREVIOUS_EDITION.toISOString()).toBe('2026-01-01T00:00:00.000Z');
-    expect(movementOf([{ ring: 0, start: at('2020-01-01') }])).toBe('none');
+  it('compares against the latest edition in content', async () => {
+    expect(await loadEditionDate(SITE_REPOSITORIES)).toEqual(EDITION);
+    const repositories = buildSiteRepositories({
+      ...CONTENT,
+      'radar-editions.json': [
+        { id: 'first', date: '2025-01-01' },
+        { id: 'second', date: '2026-06-01' },
+      ],
+    });
+    expect(await loadEditionDate(repositories)).toEqual(at('2026-06-01'));
   });
 });
 

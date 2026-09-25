@@ -520,6 +520,11 @@ body {
     color: var(--color-primary);
   }
 
+  /* A ring's name beside what it means (#39). */
+  .radar-ring-key {
+    grid-template-columns: max-content 1fr;
+  }
+
   /* A technology reached from a link (#30): clear of the fixed nav, and marked. */
   .radar-legend-entry {
     scroll-margin-top: 5rem;

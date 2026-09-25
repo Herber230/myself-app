@@ -6,6 +6,7 @@ import {
   Stack,
   Text,
 } from '@entifix/react-controls/primitives';
+import { localize, type LocalizedText, Ring } from '@myself-app/domain';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -13,6 +14,8 @@ import { SiteNav } from '../../../components/site-nav';
 import { layoutRadar } from '../../../components/tech-radar/layout';
 import { RadarChart } from '../../../components/tech-radar/radar-chart';
 import { RadarLegend } from '../../../components/tech-radar/radar-legend';
+import { RingKey } from '../../../components/tech-radar/ring-key';
+import { loadEvery } from '../../../content/queries';
 import { loadRadarEntries } from '../../../content/radar';
 import { SITE_REPOSITORIES } from '../../../content/repositories';
 import { siteT } from '../../../i18n/server';
@@ -30,6 +33,11 @@ const PATH = '/tech-radar';
 const LAYOUT = loadRadarEntries(SITE_REPOSITORIES).then(entries =>
   layoutRadar(entries),
 );
+
+/** Innermost first, as the chart draws them. */
+const RINGS = loadEvery(SITE_REPOSITORIES, Ring, {
+  sorting: [{ 0: { property: 'order', type: 'asc' } }],
+});
 
 export async function generateMetadata({
   params,
@@ -49,7 +57,7 @@ export default async function TechRadarPage({
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
   const t = siteT(locale);
-  const layout = await LAYOUT;
+  const [layout, ringRecords] = await Promise.all([LAYOUT, RINGS]);
   const quadrants = [
     t('radar.quadrants.techniques'),
     t('radar.quadrants.tools'),
@@ -83,6 +91,17 @@ export default async function TechRadarPage({
                 label={t('radar.chartLabel')}
               />
             </div>
+            <Stack gap="s">
+              <Text as="h2" step={2} weight="semibold">
+                {t('radar.ringKey')}
+              </Text>
+              <RingKey
+                rings={ringRecords.map((ring, index) => ({
+                  name: rings[index],
+                  meaning: localize(ring.description as LocalizedText, locale),
+                }))}
+              />
+            </Stack>
             <Stack gap="s">
               <Text as="h2" step={2} weight="semibold">
                 {t('radar.legend')}

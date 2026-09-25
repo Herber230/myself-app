@@ -3,6 +3,7 @@
 - Status: Accepted
 - Date: 2026-09-18
 - Area: ui
+- Revised: 2026-09-25 by [ADR 0014](0014-a-personal-radar.md) — filtering (#41) dims blips the build placed; the layout stays out of the browser
 - Read when: the radar's blips moved between two builds, or a radar library is
   proposed
 
@@ -55,8 +56,8 @@ the choice of rendering at build or querying in the browser.
   unit tests in the existing node-environment Vitest setup, with no DOM.
 - Filtering in the browser (#41) will need a decision of its own: either
   re-running this layout in a client component, which pulls it into the bundle,
-  or hiding blips that the build already placed. Until then nothing about the
-  radar reaches the browser.
+  or hiding blips that the build already placed. _Revised: ADR 0014 chose
+  the second — a client island dims placed blips._
 
 ## Alternatives
 

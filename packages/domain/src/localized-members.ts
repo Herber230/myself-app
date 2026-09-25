@@ -11,6 +11,7 @@ import { EmploymentPeriod } from './entities/employment-period.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
 import { Quadrant } from './entities/quadrant.entity.js';
+import { RadarEdition } from './entities/radar-edition.entity.js';
 import { Ring } from './entities/ring.entity.js';
 import { Technology } from './entities/technology.entity.js';
 import { TechnologyArea } from './entities/technology-area.entity.js';
@@ -39,6 +40,7 @@ export const LOCALIZED_MEMBERS = new Map<
   [TechnologyArea, ['name', 'description']],
   [Quadrant, ['name', 'description']],
   [Ring, ['name', 'description']],
+  [RadarEdition, []],
   [Technology, ['name', 'description']],
   [TechnologyUsePeriod, []],
   [Project, ['summary']],

@@ -9,6 +9,7 @@ export * from './entities/employment-period.entity.js';
 export * from './entities/profile.entity.js';
 export * from './entities/project.entity.js';
 export * from './entities/quadrant.entity.js';
+export * from './entities/radar-edition.entity.js';
 export * from './entities/ring.entity.js';
 export * from './entities/technology.entity.js';
 export * from './entities/technology-area.entity.js';

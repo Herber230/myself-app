@@ -18,6 +18,20 @@ describe('the tech radar page', () => {
     expect(screen.getAllByRole('listitem').length).toBeGreaterThan(0);
   });
 
+  it('says what each ring means, from content', async () => {
+    await renderPage(TechRadarPage(paramsOf({ locale: 'en' }) as Props), 'en');
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'What the rings mean' }),
+    ).toBeTruthy();
+    expect(screen.getAllByRole('term').map(term => term.textContent)).toEqual([
+      'Adopt',
+      'Trial',
+      'Assess',
+      'Hold',
+    ]);
+    expect(screen.getByText('I am learning it.')).toBeTruthy();
+  });
+
   it('is titled and alternated per locale', async () => {
     const metadata = await generateMetadata(
       paramsOf({ locale: 'en' }) as Props,
