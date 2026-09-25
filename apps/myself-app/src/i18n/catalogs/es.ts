@@ -73,6 +73,11 @@ export const es = {
       entifix: 'Construido sobre entifix',
       contact: 'Contacto',
     },
+    projects: {
+      technologies: 'Tecnologías de {{project}}',
+      site: 'Visitar el sitio',
+      repository: 'Ver el código',
+    },
     contact: {
       link: '{{channel}}: {{handle}}',
     },

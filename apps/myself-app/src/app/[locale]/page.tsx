@@ -1,3 +1,4 @@
+import { Technology } from '@myself-app/domain';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -5,9 +6,12 @@ import { AboutSection } from '../../components/landing/about-section';
 import { ContactSection } from '../../components/landing/contact-section';
 import { Hero } from '../../components/landing/hero';
 import { LandingSection } from '../../components/landing/landing-section';
+import { ProjectsSection } from '../../components/landing/projects-section';
 import { SiteNav } from '../../components/site-nav';
 import { loadContactChannels } from '../../content/contact';
 import { loadProfile } from '../../content/profile';
+import { loadFeaturedProjects } from '../../content/projects';
+import { loadEvery } from '../../content/queries';
 import { SITE_REPOSITORIES } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../site-locales';
@@ -30,8 +34,10 @@ export async function generateMetadata({
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const [profile, channels] = await Promise.all([
+  const [profile, projects, technologies, channels] = await Promise.all([
     loadProfile(SITE_REPOSITORIES),
+    loadFeaturedProjects(SITE_REPOSITORIES),
+    loadEvery(SITE_REPOSITORIES, Technology),
     loadContactChannels(SITE_REPOSITORIES),
   ]);
   return (
@@ -40,10 +46,14 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
       <main>
         <Hero locale={locale} profile={profile} />
         <AboutSection locale={locale} profile={profile} />
-        {/* Shells until each is built: #30, #31. */}
-        <LandingSection id="projects" locale={locale}>
-          {null}
-        </LandingSection>
+        <ProjectsSection
+          locale={locale}
+          projects={projects}
+          technologies={
+            new Map(technologies.map(each => [String(each.id), each]))
+          }
+        />
+        {/* A shell until it is built: #31. */}
         <LandingSection id="entifix" locale={locale}>
           {null}
         </LandingSection>

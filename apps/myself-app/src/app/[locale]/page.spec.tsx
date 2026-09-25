@@ -35,6 +35,10 @@ describe('the landing page', () => {
     await renderPage(HomePage(paramsOf({ locale: 'es' }) as Props), 'es');
     const about = screen.getByRole('region', { name: 'Sobre mí' });
     expect(about.textContent).toContain('Apasionado del software');
+    const projects = screen.getByRole('region', { name: 'Proyectos' });
+    expect(
+      projects.querySelector('a[href="/es/tech-radar/#tech-typescript"]'),
+    ).not.toBeNull();
     const contact = screen.getByRole('region', { name: 'Contacto' });
     expect(
       contact.querySelector('a[href="https://github.com/Herber230"]'),

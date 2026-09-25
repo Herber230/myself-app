@@ -5,12 +5,14 @@
  * This is the accessible path (#40), not a supplement — an SVG of numbered
  * shapes says nothing to a screen reader, and on a phone the legend is the
  * primary view. It stays a server component, and it renders from the same
- * layout as the chart, so the two cannot disagree.
+ * layout as the chart, so the two cannot disagree. Each entry is an anchor,
+ * `#tech-<id>`, for links from elsewhere on the site.
  */
 import { Stack, Text } from '@entifix/react-controls/primitives';
 
 import type { SiteLocale } from '../../site-locales';
 import { RING_INDICES } from './geometry';
+import { radarEntryId } from './radar-paths';
 import type { PlacedBlip, RadarLayout } from './types';
 
 export interface RadarLegendProps {
@@ -73,7 +75,11 @@ function RingList({
       </Text>
       <ul className="m-0 list-none p-0">
         {blips.map(blip => (
-          <li key={blip.id} className="flex gap-2xs">
+          <li
+            key={blip.id}
+            id={radarEntryId(blip.id)}
+            className="radar-legend-entry flex gap-2xs"
+          >
             <span
               aria-hidden
               className="inline-block min-w-[2ch] text-right tabular-nums text-content-muted"

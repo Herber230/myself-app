@@ -81,6 +81,12 @@ export const en = {
       entifix: 'Built on entifix',
       contact: 'Contact',
     },
+    projects: {
+      /** Names the list of a project's technologies. */
+      technologies: 'Technologies in {{project}}',
+      site: 'Visit the site',
+      repository: 'Read the source',
+    },
     contact: {
       /** A link's name: the channel, then the handle it shows. */
       link: '{{channel}}: {{handle}}',
