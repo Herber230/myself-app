@@ -3,13 +3,18 @@
  *
  * A server component with no state and no effects — the layout is already
  * computed by `next build`, so the export carries the finished SVG and the
- * page ships no JavaScript for it (ADR 0003). Hover, selection and filtering
- * arrive with #41 and #42, as client leaves around this.
+ * page ships no JavaScript for it (ADR 0003). Each blip links to its
+ * technology's page (#42), and names itself on hover.
  *
  * The picture is decorative in the accessibility sense: `RadarLegend` carries
- * the same blips as text, which is the keyboard and screen-reader path.
+ * the same blips as text, which is the keyboard and screen-reader path. So a
+ * blip's link is for the pointer only: out of the tab order, and hidden from
+ * assistive technology, which Chromium would otherwise expose even inside a
+ * `role="img"`.
  */
+import type { SiteLocale } from '../../site-locales';
 import { BLIP_RADIUS } from './geometry';
+import { technologyPath } from './radar-paths';
 import type { Movement, PlacedBlip, RadarLayout } from './types';
 
 /** Room around the outer ring for the ring labels along the vertical axis. */
@@ -17,6 +22,7 @@ const MARGIN = 26;
 
 export interface RadarChartProps {
   readonly layout: RadarLayout;
+  readonly locale: SiteLocale;
   /** Quadrant names, by quadrant index. */
   readonly quadrants: readonly string[];
   /** Ring names, innermost first. */
@@ -27,6 +33,7 @@ export interface RadarChartProps {
 
 export function RadarChart({
   layout,
+  locale,
   quadrants,
   rings,
   label,
@@ -83,7 +90,7 @@ export function RadarChart({
         </text>
       ))}
       {blips.map(blip => (
-        <Blip key={blip.id} blip={blip} />
+        <Blip key={blip.id} blip={blip} locale={locale} />
       ))}
       {/* Last, and haloed: a ring's name has to stay readable where a blip
           happens to sit under it, and the legend carries the blip anyway. */}
@@ -108,23 +115,33 @@ export function RadarChart({
   );
 }
 
-function Blip({ blip }: { blip: PlacedBlip }) {
+function Blip({ blip, locale }: { blip: PlacedBlip; locale: SiteLocale }) {
   const colour = `var(--color-radar-ring-${blip.ring + 1})`;
+  const title = `${blip.number}. ${blip.label[locale]}`;
   return (
-    <g transform={`translate(${blip.x.toFixed(2)}, ${blip.y.toFixed(2)})`}>
-      <path d={blipPath(blip.movement)} fill={colour} />
-      <text
-        y={numberOffset(blip.movement)}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fill="var(--color-radar-blip-ink)"
-        fontSize={11}
-        fontWeight={600}
-        className="select-none"
-      >
-        {blip.number}
-      </text>
-    </g>
+    <a
+      href={technologyPath(locale, blip.id)}
+      tabIndex={-1}
+      aria-hidden
+      data-blip={blip.id}
+      className="radar-blip"
+    >
+      <g transform={`translate(${blip.x.toFixed(2)}, ${blip.y.toFixed(2)})`}>
+        <title>{title}</title>
+        <path d={blipPath(blip.movement)} fill={colour} />
+        <text
+          y={numberOffset(blip.movement)}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fill="var(--color-radar-blip-ink)"
+          fontSize={11}
+          fontWeight={600}
+          className="select-none"
+        >
+          {blip.number}
+        </text>
+      </g>
+    </a>
   );
 }
 

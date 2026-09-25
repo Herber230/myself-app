@@ -520,6 +520,16 @@ body {
     color: var(--color-primary);
   }
 
+  /* A blip under the pointer, and the one its legend entry names (#40). */
+  .radar-blip {
+    cursor: pointer;
+  }
+
+  .radar-blip:hover path {
+    stroke: var(--color-content);
+    stroke-width: 2;
+  }
+
   /* A ring's name beside what it means (#39). */
   .radar-ring-key {
     grid-template-columns: max-content 1fr;

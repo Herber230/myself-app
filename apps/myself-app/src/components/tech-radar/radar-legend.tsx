@@ -6,13 +6,15 @@
  * shapes says nothing to a screen reader, and on a phone the legend is the
  * primary view. It stays a server component, and it renders from the same
  * layout as the chart, so the two cannot disagree. Each entry is an anchor,
- * `#tech-<id>`, for links from elsewhere on the site.
+ * `#tech-<id>`, for links from elsewhere on the site, and links to its
+ * technology's page (#42).
  */
-import { Stack, Text } from '@entifix/react-controls/primitives';
+import { linkClassName, Stack, Text } from '@entifix/react-controls/primitives';
+import Link from 'next/link';
 
 import type { SiteLocale } from '../../site-locales';
 import { RING_INDICES } from './geometry';
-import { radarEntryId } from './radar-paths';
+import { radarEntryId, technologyPath } from './radar-paths';
 import type { PlacedBlip, RadarLayout } from './types';
 
 export interface RadarLegendProps {
@@ -86,7 +88,12 @@ function RingList({
             >
               {blip.number}
             </span>
-            <span>{blip.label[locale]}</span>
+            <Link
+              href={technologyPath(locale, blip.id)}
+              className={linkClassName}
+            >
+              {blip.label[locale]}
+            </Link>
           </li>
         ))}
       </ul>

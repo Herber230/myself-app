@@ -47,7 +47,9 @@ test('the radar needs no JavaScript', async ({ browser }) => {
   await page.goto('/en/tech-radar/');
 
   await expect(page.getByRole('img')).toBeVisible();
-  await expect(page.getByText('Trunk-based development')).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Trunk-based development' }),
+  ).toBeVisible();
 
   await context.close();
 });
@@ -109,4 +111,53 @@ test("a technology's page needs no JavaScript", async ({ browser }) => {
     'https://nextjs.org',
   );
   await context.close();
+});
+
+test("a blip opens its technology's page, and names itself on hover", async ({
+  page,
+}) => {
+  await page.goto('/en/tech-radar/');
+  const blip = page.locator('a[data-blip="typescript"]');
+  await expect(blip.locator('title')).toHaveText(/^\d+\. TypeScript$/);
+  await blip.click();
+  await page.waitForURL('/en/tech-radar/typescript/');
+});
+
+test('the legend reaches every technology with a keyboard', async ({
+  page,
+}) => {
+  await page.goto('/en/tech-radar/');
+  const legend = page.locator('section[aria-labelledby] li');
+  // One link per entry, and no blip in the tab order to duplicate it.
+  await expect(legend.getByRole('link')).toHaveCount(await legend.count());
+  await expect(page.locator('a[data-blip]:not([tabindex="-1"])')).toHaveCount(
+    0,
+  );
+  const link = legend.getByRole('link', { name: 'Next.js' });
+  await link.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForURL('/en/tech-radar/next-js/');
+});
+
+test.describe('on a phone', () => {
+  test.use({ viewport: { width: 375, height: 667 } });
+
+  test('the legend comes before the picture, and nothing scrolls sideways', async ({
+    page,
+  }) => {
+    await page.goto('/en/tech-radar/');
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(375);
+    const legendTop = await page
+      .getByRole('heading', {
+        level: 2,
+        name: 'Every blip, by quadrant and ring',
+      })
+      .evaluate(element => element.getBoundingClientRect().top);
+    const chartTop = await page
+      .getByRole('img')
+      .evaluate(element => element.getBoundingClientRect().top);
+    expect(legendTop).toBeLessThan(chartTop);
+  });
 });

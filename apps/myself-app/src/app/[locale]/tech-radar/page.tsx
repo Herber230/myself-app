@@ -83,9 +83,12 @@ export default async function TechRadarPage({
               <Lead muted>{t('techRadarLead')}</Lead>
               <Small muted>{t('radar.placeholder')}</Small>
             </Stack>
-            <div>
+            {/* On a phone the picture goes last: too small to read there, it
+                follows the legend, which is the primary view (#40). */}
+            <div className="max-sm:order-last">
               <RadarChart
                 layout={layout}
+                locale={locale}
                 quadrants={quadrants}
                 rings={rings}
                 label={t('radar.chartLabel')}

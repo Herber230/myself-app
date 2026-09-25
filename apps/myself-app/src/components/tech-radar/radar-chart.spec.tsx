@@ -14,6 +14,7 @@ function renderChart() {
   return render(
     <RadarChart
       layout={LAYOUT}
+      locale="en"
       quadrants={QUADRANTS}
       rings={RINGS}
       label="Tech radar"
@@ -55,5 +56,17 @@ describe('the radar chart', () => {
     for (const blip of LAYOUT.blips) {
       expect(screen.getByText(String(blip.number))).toBeTruthy();
     }
+  });
+
+  it("links each blip to its technology's page, for the pointer only", () => {
+    const { container } = renderChart();
+    const [blip] = LAYOUT.blips;
+    const link = container.querySelector(`a[data-blip="${blip.id}"]`);
+    expect(link?.getAttribute('href')).toBe(`/en/tech-radar/${blip.id}/`);
+    expect(link?.getAttribute('tabindex')).toBe('-1');
+    expect(link?.getAttribute('aria-hidden')).toBe('true');
+    expect(link?.querySelector('title')?.textContent).toBe(
+      `${blip.number}. ${blip.label.en}`,
+    );
   });
 });

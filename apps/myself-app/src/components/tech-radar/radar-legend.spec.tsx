@@ -46,6 +46,22 @@ describe('the radar legend', () => {
     );
   });
 
+  it("links each entry to its technology's page", () => {
+    const layout = layoutRadar(FIXTURE_RADAR_ENTRIES);
+    render(
+      <RadarLegend
+        layout={layout}
+        locale="es"
+        quadrants={QUADRANTS}
+        rings={RINGS}
+      />,
+    );
+    const [blip] = layout.blips;
+    expect(
+      screen.getByRole('link', { name: blip?.label.es }).getAttribute('href'),
+    ).toBe(`/es/tech-radar/${blip?.id}/`);
+  });
+
   it('leaves out a ring with nothing in it', () => {
     const layout = layoutRadar(
       FIXTURE_RADAR_ENTRIES.filter(entry => entry.ring === 0),
