@@ -24,13 +24,25 @@ export interface RadarLegendProps {
   readonly quadrants: readonly string[];
   /** Ring names, innermost first. */
   readonly rings: readonly string[];
+  /** Entries a filter leaves out: shown faint, in place (#41). */
+  readonly dimmed?: ReadonlySet<string>;
+  /** The entry whose blip is under the pointer. */
+  readonly highlighted?: string;
+  /** Told which entry is hovered or focused, or `undefined` when it leaves. */
+  readonly onHighlight?: (id: string | undefined) => void;
 }
+
+type Emphasis = Pick<
+  RadarLegendProps,
+  'dimmed' | 'highlighted' | 'onHighlight'
+>;
 
 export function RadarLegend({
   layout,
   locale,
   quadrants,
   rings,
+  ...emphasis
 }: RadarLegendProps) {
   return (
     <div className="grid grid-cols-1 gap-l sm:grid-cols-2">
@@ -51,6 +63,7 @@ export function RadarLegend({
                 name={rings[ring]}
                 blips={blipsIn(layout, index, ring)}
                 locale={locale}
+                {...emphasis}
               />
             ))}
           </Stack>
@@ -64,7 +77,10 @@ function RingList({
   name,
   blips,
   locale,
-}: {
+  dimmed,
+  highlighted,
+  onHighlight,
+}: Emphasis & {
   name: string;
   blips: readonly PlacedBlip[];
   locale: SiteLocale;
@@ -81,6 +97,12 @@ function RingList({
             key={blip.id}
             id={radarEntryId(blip.id)}
             className="radar-legend-entry flex gap-2xs"
+            data-dimmed={dimmed?.has(blip.id) || undefined}
+            data-highlighted={highlighted === blip.id || undefined}
+            onPointerEnter={() => onHighlight?.(blip.id)}
+            onPointerLeave={() => onHighlight?.(undefined)}
+            onFocus={() => onHighlight?.(blip.id)}
+            onBlur={() => onHighlight?.(undefined)}
           >
             <span
               aria-hidden

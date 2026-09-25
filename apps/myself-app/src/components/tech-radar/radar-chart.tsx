@@ -29,6 +29,12 @@ export interface RadarChartProps {
   readonly rings: readonly string[];
   /** The accessible name of the picture as a whole. */
   readonly label: string;
+  /** Blips a filter leaves out: drawn faint, in place (#41). */
+  readonly dimmed?: ReadonlySet<string>;
+  /** The blip under the pointer here or in the legend. */
+  readonly highlighted?: string;
+  /** Told which blip the pointer is over, or `undefined` when it leaves. */
+  readonly onHighlight?: (id: string | undefined) => void;
 }
 
 export function RadarChart({
@@ -37,6 +43,9 @@ export function RadarChart({
   quadrants,
   rings,
   label,
+  dimmed,
+  highlighted,
+  onHighlight,
 }: RadarChartProps) {
   const { extent, ringRadii, blips } = layout;
   const size = 2 * (extent + MARGIN);
@@ -90,7 +99,14 @@ export function RadarChart({
         </text>
       ))}
       {blips.map(blip => (
-        <Blip key={blip.id} blip={blip} locale={locale} />
+        <Blip
+          key={blip.id}
+          blip={blip}
+          locale={locale}
+          dimmed={dimmed?.has(blip.id) === true}
+          highlighted={highlighted === blip.id}
+          onHighlight={onHighlight}
+        />
       ))}
       {/* Last, and haloed: a ring's name has to stay readable where a blip
           happens to sit under it, and the legend carries the blip anyway. */}
@@ -115,7 +131,19 @@ export function RadarChart({
   );
 }
 
-function Blip({ blip, locale }: { blip: PlacedBlip; locale: SiteLocale }) {
+function Blip({
+  blip,
+  locale,
+  dimmed,
+  highlighted,
+  onHighlight,
+}: {
+  blip: PlacedBlip;
+  locale: SiteLocale;
+  dimmed: boolean;
+  highlighted: boolean;
+  onHighlight?: (id: string | undefined) => void;
+}) {
   const colour = `var(--color-radar-ring-${blip.ring + 1})`;
   const title = `${blip.number}. ${blip.label[locale]}`;
   return (
@@ -124,7 +152,11 @@ function Blip({ blip, locale }: { blip: PlacedBlip; locale: SiteLocale }) {
       tabIndex={-1}
       aria-hidden
       data-blip={blip.id}
+      data-dimmed={dimmed || undefined}
+      data-highlighted={highlighted || undefined}
       className="radar-blip"
+      onPointerEnter={() => onHighlight?.(blip.id)}
+      onPointerLeave={() => onHighlight?.(undefined)}
     >
       <g transform={`translate(${blip.x.toFixed(2)}, ${blip.y.toFixed(2)})`}>
         <title>{title}</title>

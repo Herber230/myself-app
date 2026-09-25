@@ -2,7 +2,8 @@
  * Where a technology sits on the radar — its legend entry's anchor, linked to
  * from the landing page's projects (#30) — and its own page (#42, ADR 0014).
  */
-import { localePath, type SiteLocale } from '../../site-locales';
+import { localePath } from '../../locale-path';
+import type { SiteLocale } from '../../site-locales';
 
 /** The legend entry's `id`: `tech-next-js`. */
 export function radarEntryId(technologyId: string): string {

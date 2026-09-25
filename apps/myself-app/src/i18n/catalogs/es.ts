@@ -108,6 +108,15 @@ export const es = {
       platforms: 'Plataformas',
       languages: 'Lenguajes y frameworks',
     },
+    filter: {
+      label: 'Filtrar el radar',
+      quadrant: 'Cuadrante',
+      ring: 'Anillo',
+      area: 'Área',
+      search: 'Buscar',
+      clear: 'Mostrar todo',
+      showing: 'Mostrando {{shown}} de {{total}}',
+    },
     detail: {
       back: '← Volver al radar',
       quadrant: 'Cuadrante',

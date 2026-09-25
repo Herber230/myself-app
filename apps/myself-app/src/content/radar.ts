@@ -125,6 +125,7 @@ export async function loadRadarEntries(
         `ring ${String(technology.ring.id)}`,
       ) as RingIndex,
       movement: movementOf(ringPeriods, edition),
+      areas: technology.areas.ids.map(String),
     };
   });
 }

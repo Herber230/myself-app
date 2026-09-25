@@ -6,14 +6,19 @@ import {
   Stack,
   Text,
 } from '@entifix/react-controls/primitives';
-import { localize, type LocalizedText, Ring } from '@myself-app/domain';
+import {
+  localize,
+  type LocalizedText,
+  Quadrant,
+  Ring,
+  TechnologyArea,
+} from '@myself-app/domain';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { SiteNav } from '../../../components/site-nav';
 import { layoutRadar } from '../../../components/tech-radar/layout';
-import { RadarChart } from '../../../components/tech-radar/radar-chart';
-import { RadarLegend } from '../../../components/tech-radar/radar-legend';
+import { RadarExplorer } from '../../../components/tech-radar/radar-explorer';
 import { RingKey } from '../../../components/tech-radar/ring-key';
 import { loadEvery } from '../../../content/queries';
 import { loadRadarEntries } from '../../../content/radar';
@@ -39,6 +44,13 @@ const RINGS = loadEvery(SITE_REPOSITORIES, Ring, {
   sorting: [{ 0: { property: 'order', type: 'asc' } }],
 });
 
+/** By index, as the chart numbers them: the ids the filter's URL uses. */
+const QUADRANTS = loadEvery(SITE_REPOSITORIES, Quadrant, {
+  sorting: [{ 0: { property: 'order', type: 'asc' } }],
+});
+
+const AREAS = loadEvery(SITE_REPOSITORIES, TechnologyArea);
+
 export async function generateMetadata({
   params,
 }: PageProps<'/[locale]/tech-radar'>): Promise<Metadata> {
@@ -57,7 +69,9 @@ export default async function TechRadarPage({
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
   const t = siteT(locale);
-  const [layout, ringRecords] = await Promise.all([LAYOUT, RINGS]);
+  const [layout, ringRecords, quadrantRecords, areaRecords] = await Promise.all(
+    [LAYOUT, RINGS, QUADRANTS, AREAS],
+  );
   const quadrants = [
     t('radar.quadrants.techniques'),
     t('radar.quadrants.tools'),
@@ -70,6 +84,12 @@ export default async function TechRadarPage({
     t('radar.rings.assess'),
     t('radar.rings.hold'),
   ];
+  const areas = areaRecords
+    .map(area => ({
+      id: String(area.id),
+      name: localize(area.name as LocalizedText, locale),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name, locale));
   return (
     <>
       <SiteNav locale={locale} path={PATH} />
@@ -83,39 +103,47 @@ export default async function TechRadarPage({
               <Lead muted>{t('techRadarLead')}</Lead>
               <Small muted>{t('radar.placeholder')}</Small>
             </Stack>
-            {/* On a phone the picture goes last: too small to read there, it
-                follows the legend, which is the primary view (#40). */}
-            <div className="max-sm:order-last">
-              <RadarChart
-                layout={layout}
-                locale={locale}
-                quadrants={quadrants}
-                rings={rings}
-                label={t('radar.chartLabel')}
-              />
-            </div>
-            <Stack gap="s">
-              <Text as="h2" step={2} weight="semibold">
-                {t('radar.ringKey')}
-              </Text>
-              <RingKey
-                rings={ringRecords.map((ring, index) => ({
-                  name: rings[index],
-                  meaning: localize(ring.description as LocalizedText, locale),
-                }))}
-              />
-            </Stack>
-            <Stack gap="s">
-              <Text as="h2" step={2} weight="semibold">
-                {t('radar.legend')}
-              </Text>
-              <RadarLegend
-                layout={layout}
-                locale={locale}
-                quadrants={quadrants}
-                rings={rings}
-              />
-            </Stack>
+            <RadarExplorer
+              layout={layout}
+              locale={locale}
+              quadrants={quadrants}
+              rings={rings}
+              areas={areas}
+              vocabulary={{
+                quadrants: quadrantRecords.map(each => String(each.id)),
+                rings: ringRecords.map(each => String(each.id)),
+                areas: areas.map(area => area.id),
+              }}
+              copy={{
+                chartLabel: t('radar.chartLabel'),
+                legend: t('radar.legend'),
+                filters: t('radar.filter.label'),
+                quadrant: t('radar.filter.quadrant'),
+                ring: t('radar.filter.ring'),
+                area: t('radar.filter.area'),
+                search: t('radar.filter.search'),
+                clear: t('radar.filter.clear'),
+                showing: t('radar.filter.showing', {
+                  shown: '{{shown}}',
+                  total: '{{total}}',
+                }),
+              }}
+            >
+              <Stack gap="s">
+                <Text as="h2" step={2} weight="semibold">
+                  {t('radar.ringKey')}
+                </Text>
+                <RingKey
+                  rings={ringRecords.map((ring, index) => ({
+                    name: rings[index],
+                    meaning: localize(
+                      ring.description as LocalizedText,
+                      locale,
+                    ),
+                  }))}
+                />
+              </Stack>
+            </RadarExplorer>
           </Stack>
         </Card>
       </Center>

@@ -30,6 +30,7 @@ function entry(
     quadrant,
     ring,
     movement: 'none',
+    areas: [],
   };
 }
 

@@ -49,8 +49,11 @@ page has to offer more than a picture — a detail per technology, and a filter.
 - The filter's matching is a pure function, checked against the static
   adapter's `load` for every combination, so the browser and the build cannot
   disagree about which technologies a filter selects.
-- The radar page ships a small client island; its script size is budgeted in
-  e2e beside the landing page's.
+- The radar page ships a small client island, about 8 KB gzipped; its scripts
+  are budgeted in e2e beside the landing page's, with prefetching cut off so
+  the figure does not move with the machine's load. The island must import no
+  value from `site-locales.ts`, whose re-export of the domain barrel would
+  bring Effect with it; `locale-path.ts` exists for that.
 
 ## Alternatives
 

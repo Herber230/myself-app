@@ -34,6 +34,8 @@ export interface RadarEntry {
   readonly quadrant: QuadrantIndex;
   readonly ring: RingIndex;
   readonly movement: Movement;
+  /** The areas it is tagged with, by id: what the radar's filter matches (#41). */
+  readonly areas: readonly string[];
 }
 
 /** A cartesian point in radar space, the origin at the centre. */

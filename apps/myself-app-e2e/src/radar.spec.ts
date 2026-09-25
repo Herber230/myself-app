@@ -161,3 +161,56 @@ test.describe('on a phone', () => {
     expect(legendTop).toBeLessThan(chartTop);
   });
 });
+
+test.describe('the filter', () => {
+  test('by one area keeps its technologies, and dims the rest in place', async ({
+    page,
+  }) => {
+    await page.goto('/en/tech-radar/');
+    const blips = page.locator('a[data-blip]');
+    const total = await blips.count();
+    await page
+      .getByRole('group', { name: 'Area' })
+      .getByRole('button', { name: 'Monorepo' })
+      .click();
+    await expect(page).toHaveURL('/en/tech-radar/?area=monorepo');
+    await expect(page.locator('a[data-blip]:not([data-dimmed])')).toHaveCount(
+      2,
+    );
+    await expect(page.locator('a[data-blip="nx"]')).not.toHaveAttribute(
+      'data-dimmed',
+    );
+    // Dimmed, not removed: the radar keeps its shape.
+    await expect(blips).toHaveCount(total);
+    await expect(page.getByText(`Showing 2 of ${total}`)).toBeVisible();
+  });
+
+  test('is read from the URL, and survives a reload', async ({ page }) => {
+    await page.goto('/es/tech-radar/?ring=adopt&q=type');
+    await expect(page.locator('a[data-blip]:not([data-dimmed])')).toHaveCount(
+      1,
+    );
+    await expect(
+      page.getByRole('group', { name: 'Anillo' }).getByRole('button', {
+        name: 'Adoptar',
+      }),
+    ).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByRole('searchbox')).toHaveValue('type');
+
+    await page.reload();
+    await expect(page.locator('a[data-blip]:not([data-dimmed])')).toHaveCount(
+      1,
+    );
+    await page.getByRole('button', { name: 'Mostrar todo' }).click();
+    await expect(page).toHaveURL('/es/tech-radar/');
+    await expect(page.locator('a[data-blip][data-dimmed]')).toHaveCount(0);
+  });
+
+  test('hovering a legend entry marks its blip', async ({ page }) => {
+    await page.goto('/en/tech-radar/');
+    await page.getByRole('link', { name: 'TypeScript' }).hover();
+    await expect(page.locator('a[data-blip="typescript"]')).toHaveAttribute(
+      'data-highlighted',
+    );
+  });
+});

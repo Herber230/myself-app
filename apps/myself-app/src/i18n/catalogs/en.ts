@@ -124,6 +124,15 @@ export const en = {
       platforms: 'Platforms',
       languages: 'Languages & frameworks',
     },
+    filter: {
+      label: 'Filter the radar',
+      quadrant: 'Quadrant',
+      ring: 'Ring',
+      area: 'Area',
+      search: 'Search',
+      clear: 'Show everything',
+      showing: 'Showing {{shown}} of {{total}}',
+    },
     detail: {
       back: '← Back to the radar',
       quadrant: 'Quadrant',

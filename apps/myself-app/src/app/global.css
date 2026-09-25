@@ -525,9 +525,93 @@ body {
     cursor: pointer;
   }
 
-  .radar-blip:hover path {
+  .radar-blip[data-highlighted] path {
     stroke: var(--color-content);
     stroke-width: 2;
+  }
+
+  /* Left out by the filter (#41): faint, in place, so the shape still reads. */
+  .radar-blip[data-dimmed] {
+    opacity: 0.18;
+  }
+
+  .radar-legend-entry[data-dimmed] {
+    opacity: 0.45;
+  }
+
+  .radar-legend-entry[data-highlighted] {
+    background: var(--color-radar-ring-fill);
+    border-radius: 2px;
+  }
+
+  .radar-filters {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+    font-size: 0.875rem;
+  }
+
+  .radar-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  .radar-filter-label {
+    min-width: 6rem;
+    color: var(--color-content-muted);
+  }
+
+  /* On a phone each label heads its own row of chips. */
+  @media (width < 40rem) {
+    .radar-filter-label {
+      flex-basis: 100%;
+    }
+  }
+
+  .radar-filters button {
+    cursor: pointer;
+    background: none;
+    font: inherit;
+  }
+
+  .radar-filters .landing-chip[aria-pressed='true'] {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-surface);
+  }
+
+  .radar-search {
+    display: flex;
+    flex: 1 1 16rem;
+    align-items: center;
+    gap: var(--spacing-xs);
+    min-width: 0;
+    max-width: 28rem;
+  }
+
+  .radar-search input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    padding: 0.125rem var(--spacing-xs);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    color: inherit;
+    font: inherit;
+  }
+
+  .radar-filter-count {
+    color: var(--color-content-muted);
+  }
+
+  .radar-filter-clear {
+    border: 0;
+    color: var(--color-primary);
+    text-decoration: underline;
   }
 
   /* A ring's name beside what it means (#39). */
