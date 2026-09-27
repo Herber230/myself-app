@@ -65,11 +65,12 @@ pages that filter.
 Every script the page loads, gzipped at level 9 and summed, as ADR 0003
 measured (`budget.spec.ts`):
 
-| Page                                      | Props (ADR 0014) | Use case (this) | Change             |
-| ----------------------------------------- | ---------------- | --------------- | ------------------ |
-| `/en/tech-radar/`                         | 161.2 KB         | 237.4 KB        | **+76.2 KB**       |
-| `/en/tech-radar/`, after the first filter | —                | 241.4 KB        | + the data file    |
-| `/en/`, `/en/cv/`                         | unchanged        | unchanged       | no entifix shipped |
+| Page                                      | Props (ADR 0014) | Use case (this) | Change                          |
+| ----------------------------------------- | ---------------- | --------------- | ------------------------------- |
+| `/en/tech-radar/`                         | 161.2 KB         | 237.4 KB        | **+76.2 KB**                    |
+| `/en/tech-radar/`, after the first filter | —                | 241.4 KB        | + the data file                 |
+| `/en/blog/` (ADR 0017)                    | —                | 238.0 KB        | 238.8 KB after the first filter |
+| `/en/`, `/en/cv/`                         | unchanged        | unchanged       | no entifix shipped              |
 
 The cost is paid on the pages that filter, and nowhere else: `budget.spec.ts`
 checks that the landing page and the CV ship no `EntityRepositoryTag`, and

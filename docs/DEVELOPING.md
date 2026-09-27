@@ -53,8 +53,33 @@ What the pages say about me lives in `packages/content/src/`, one JSON file per 
 - **Ids are readable slugs** (`next-js`, `adopt`), because they appear in URLs and in the links between files. A link is the id it names: `"ring": "adopt"`, `"areas": ["css"]`.
 - **Text that a reader sees is `{ "en": …, "es": … }`**, for the members `LOCALIZED_MEMBERS` lists. A locale missing, empty or not text stops `next build`, with the path: `rings.json › adopt › name is missing "es"`.
 - **Every problem is reported at once.** `apps/myself-app/src/content/site-content.ts` validates every file against its entity's metadata before any page renders — required members, dates, enum values, links that point at something — plus the rules only this site has. A new rule is registered there, never in the adapter.
-- **A placeholder value carries `TODO(#<issue>)`**, naming the issue that decides it. `apps/myself-app/src/content/pending-content.ts` lists what is left to write, and is empty today: add a path there before shipping a placeholder, and remove it when the value is written, or the build stops.
-- Pages read content in server components through `src/content/queries.ts`, which runs entifix's `load` use case over the repositories. No page reads `/data/*.json` in the browser (ADR 0003).
+- **A placeholder value carries `TODO(#<issue>)`**, naming the issue that decides it. `apps/myself-app/src/content/pending-content.ts` lists what is left to write, and holds the blog's placeholder posts today: add a path there before shipping a placeholder, and remove it when the value is written, or the build stops.
+- Pages read content in server components through `src/content/queries.ts`, which runs entifix's `load` use case over the repositories. The radar's and the blog's filters run the same use case in the browser, over `/data/*.json` (ADR 0016).
+
+## Writing a post
+
+A post is a record in `packages/content/src/posts.json` and two Markdown files beside it, `posts/<id>.en.md` and `posts/<id>.es.md` (ADR 0017). The id is the URL: `/en/blog/<id>/`.
+
+- **The record**: a localized `title` and `summary` (the summary is what previews show), `publishedAt`, optional `updatedAt`, `draft`, at least one of `tags.json`'s tags, and the radar's `technologies` it is about, if any.
+- **Paragraph types** are directives:
+
+  ```md
+  :::lead
+  The opening paragraph, set larger.
+  :::
+
+  :::note
+  Also :::tip, :::warning and :::aside.
+  :::
+
+  ::figure[The caption]{src="./diagram.svg" alt="What it shows"}
+  ```
+
+  Anything else written as a directive stops the build with the file and line.
+
+- **Images** go in `apps/myself-app/public/blog/<id>/` and are written `./<file>`. Each needs alt text, and its size is read from the file.
+- **Links within the site** are written without a locale and with their trailing slash (`/tech-radar/nx/`); the reader's locale is added. A link to a page the site does not have stops the build.
+- **Drafts**: `"draft": true` shows the post under `pnpm nx dev myself-app` only, marked as a draft. The export, the sitemap, the feed and `/data/post.json` never carry it.
 
 ## Styling
 
@@ -92,24 +117,28 @@ pnpm exec playwright install firefox webkit      # print emulation in the other 
 Every project has exactly one `layer:*` tag in its `package.json` `nx.tags`, and `@nx/enforce-module-boundaries` in the root `eslint.config.mjs` holds the direction of ADR 0004:
 
 ```
-app              ──►  domain, content, static-adapter
-static-adapter   ──►  @entifix/*, effect                   (never domain)
+app              ──►  domain, content, incubator
+incubator        ──►  incubator, @entifix/*, effect, react (never domain)
 domain           ──►  @entifix/*, effect
 content          ──►  nothing
 infra            ──►  @pulumi/*
 ```
 
-When you add a package under `packages/`, give it its tag: `layer:domain`, `layer:static-adapter` or `layer:content`. The conventions spec (`pnpm nx test @myself-app/conventions`) fails on a project without a known `layer:*` tag.
+When you add a package under `packages/`, give it its tag: `layer:domain`, `layer:incubator` or `layer:content`. `layer:incubator` is for code meant to move into entifix (ADR 0016): it knows no entity of this site, so moving it is a copy. The conventions spec (`pnpm nx test @myself-app/conventions`) fails on a project without a known `layer:*` tag.
 
 ## Adding a package
 
-The three under `packages/` are the models; copy the one closest to what you need.
+The four under `packages/` are the models; copy the one closest to what you need.
 
 - **`package.json`**: `@myself-app/<name>`, `private`, `type: "module"`, one `layer:*` tag in `nx.tags`, and an `exports` map with `"@myself-app/source": "./src/index.ts"` (what TypeScript reads, through `customConditions` in `tsconfig.base.json`) beside `types`/`import` pointing at `dist`. Dependencies shared with the workspace are `"catalog:"`; two copies of `effect` break `Context.Tag` identity without an error.
 - **A build**: `.swcrc`, `tsconfig.lib.json` and an `@nx/js:swc` `build` target, as `packages/domain` has. The app is buildable, so the boundary rule refuses an unbuildable dependency. Relative imports name their file with `.js`.
 - **A test target**, when the package runs logic: `vitest.config.mts` with the 100% thresholds, `enabled: true`, and `unplugin-swc` if a spec touches an entity. A layer that may not import `vitest` — `content` — has no test target, and is checked by what reads it.
 - **The references**: add it to the root `tsconfig.json`, and run `pnpm nx sync` after the app depends on it.
 - Then `pnpm nx test @myself-app/conventions` confirms the tag, and `pnpm nx run-many -t lint,typecheck,test,build` the rest.
+
+## Moving code into entifix
+
+The `layer:incubator` packages (`static-adapter`, `entifix-browser`) know no entity of this site, so moving one into entifix is a copy: take its `src/` and specs into the entifix package it belongs in, release entifix, bump the catalog here, then replace the imports and delete the package. ADR 0016 lists what each would close in entifix.
 
 ## Working on entifix from here
 
