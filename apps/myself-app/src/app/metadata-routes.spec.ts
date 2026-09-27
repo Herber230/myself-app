@@ -26,6 +26,19 @@ describe('the metadata routes', () => {
     }
   });
 
+  it('list the blog and every published post, in both locales', async () => {
+    const urls = (await sitemap.default()).map(entry => entry.url);
+    for (const locale of ['en', 'es']) {
+      expect(urls).toContain(`${siteUrl().origin}/${locale}/blog/`);
+      expect(urls).toContain(
+        `${siteUrl().origin}/${locale}/blog/a-static-site-on-s3/`,
+      );
+      expect(urls).not.toContain(
+        `${siteUrl().origin}/${locale}/blog/effect-four/`,
+      );
+    }
+  });
+
   it('are written once, at build', () => {
     expect(sitemap.dynamic).toBe('force-static');
     expect(robots.dynamic).toBe('force-static');

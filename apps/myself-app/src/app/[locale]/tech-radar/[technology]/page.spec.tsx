@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { cleanup, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { paramsOf, renderPage } from '../../../../test/render';
@@ -44,6 +44,22 @@ describe("a technology's page", () => {
     expect(
       screen.getByRole('link', { name: 'Source' }).getAttribute('rel'),
     ).toBe('noopener noreferrer');
+  });
+
+  it('lists the posts about it, and has no such list when there are none', async () => {
+    await renderPage(TechnologyPage(propsOf('en', 'cloudfront')), 'en');
+    expect(
+      screen
+        .getByRole('link', {
+          name: 'A static site behind CloudFront, defined in Pulumi',
+        })
+        .getAttribute('href'),
+    ).toBe('/en/blog/a-static-site-on-s3/');
+    cleanup();
+    await renderPage(TechnologyPage(propsOf('en', 'angularjs')), 'en');
+    expect(
+      screen.queryByRole('heading', { name: 'Posts about it' }),
+    ).toBeNull();
   });
 
   it('links only what a technology has', async () => {

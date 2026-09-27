@@ -34,6 +34,8 @@ async function font(file: string): Promise<ArrayBuffer> {
  */
 export async function renderSocialImage(
   locale: SiteLocale,
+  /** A post's preview instead (ADR 0017): its title, over the name. */
+  post?: { readonly title: string },
 ): Promise<ImageResponse> {
   const t = siteT(locale);
   const profile = await loadProfile(SITE_REPOSITORIES);
@@ -64,18 +66,24 @@ export async function renderSocialImage(
     >
       <div
         style={{
-          fontSize: 112,
+          fontSize: post ? 76 : 112,
           fontWeight: 600,
-          lineHeight: 1,
+          lineHeight: post ? 1.1 : 1,
           letterSpacing: '-0.03em',
         }}
       >
-        {name}
+        {post ? post.title : name}
       </div>
-      {profile.title && (
+      {post ? (
         <div style={{ fontSize: 44, color: SOCIAL_PALETTE['content-muted'] }}>
-          {localize(profile.title, locale)}
+          {name}
         </div>
+      ) : (
+        profile.title && (
+          <div style={{ fontSize: 44, color: SOCIAL_PALETTE['content-muted'] }}>
+            {localize(profile.title, locale)}
+          </div>
+        )
       )}
       <div
         style={{
@@ -87,8 +95,14 @@ export async function renderSocialImage(
           color: SOCIAL_PALETTE.primary,
         }}
       >
-        <span>{t('cv')}</span>
-        <span>{t('techRadar')}</span>
+        {post ? (
+          <span>{t('blog')}</span>
+        ) : (
+          <>
+            <span>{t('cv')}</span>
+            <span>{t('techRadar')}</span>
+          </>
+        )}
       </div>
     </div>,
     {

@@ -12,11 +12,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { postPath } from '../../../../components/blog/post-cards';
 import { formatPeriod, inLocale } from '../../../../components/cv/cv-format';
 import { ExternalLink } from '../../../../components/landing/external-link';
 import { projectAnchor } from '../../../../components/landing/projects-section';
 import { SiteNav } from '../../../../components/site-nav';
 import { radarEntryPath } from '../../../../components/tech-radar/radar-paths';
+import { loadPostsForTechnology } from '../../../../content/blog';
 import { loadEvery } from '../../../../content/queries';
 import { SITE_REPOSITORIES } from '../../../../content/repositories';
 import { loadTechnologyDetail } from '../../../../content/technology-detail';
@@ -74,6 +76,7 @@ export default async function TechnologyPage({
   // The landing page shows only the featured ones, and each links to its card.
   const projects = detail.projects.filter(project => project.featured);
   const id = String(technology.id);
+  const posts = await loadPostsForTechnology(SITE_REPOSITORIES, id);
   return (
     <>
       <SiteNav locale={locale} path={`/tech-radar/${id}`} />
@@ -179,6 +182,25 @@ export default async function TechnologyPage({
                 </ul>
               )}
             </Stack>
+            {posts.length > 0 && (
+              <Stack gap="s">
+                <Text as="h2" step={2} weight="semibold">
+                  {t('radar.detail.posts')}
+                </Text>
+                <ul className="m-0 list-none p-0">
+                  {posts.map(post => (
+                    <li key={String(post.id)}>
+                      <Link
+                        href={postPath(locale, String(post.id))}
+                        className={linkClassName}
+                      >
+                        {inLocale(post.title, locale)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </Stack>
+            )}
           </Stack>
         </Card>
       </Center>

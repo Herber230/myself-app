@@ -27,7 +27,7 @@
     "publishedAt": "2026-06-12",
     "updatedAt": "2026-09-20",
     "draft": false,
-    "tags": ["infrastructure", "static-sites"],
+    "tags": ["infrastructure", "static-sites", "performance"],
     "technologies": ["amazon-s3", "cloudfront", "pulumi"]
   },
   {

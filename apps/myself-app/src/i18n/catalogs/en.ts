@@ -9,6 +9,7 @@ export const en = {
   /** The narrow screen's menu button. */
   menu: 'Menu',
   techRadar: 'Tech radar',
+  blog: 'Blog',
   /** The language menu. Each language is named in itself, in every locale. */
   language: {
     label: 'Language',
@@ -152,12 +153,43 @@ export const en = {
       history: 'How it moved',
       projects: 'Where I used it',
       noProjects: 'No project on this site uses it yet.',
+      posts: 'Posts about it',
     },
     rings: {
       adopt: 'Adopt',
       trial: 'Trial',
       assess: 'Assess',
       hold: 'Hold',
+    },
+  },
+  blogLead: 'Notes on what I build and how I build it.',
+  /** The blog (ADR 0017): its home, its filter and each post. */
+  blogPage: {
+    filter: {
+      label: 'Filter the posts',
+      tag: 'Tag',
+      technology: 'Technology',
+      year: 'Year',
+      search: 'Search titles',
+      clear: 'Show every post',
+      showing: 'Showing {{shown}} of {{total}}',
+    },
+    empty: 'No post matches this filter.',
+    published: 'Published',
+    updated: 'Updated {{date}}',
+    readingTime: '{{minutes}} min read',
+    draft: 'Draft',
+    back: '← Every post',
+    tags: 'Tags',
+    technologies: 'On the radar',
+    related: 'Related posts',
+    feed: 'RSS feed',
+    feedTitle: '{{name}} — Blog',
+    /** What each paragraph type is called, above its text. */
+    callout: {
+      note: 'Note',
+      tip: 'Tip',
+      warning: 'Warning',
     },
   },
 } as const;
