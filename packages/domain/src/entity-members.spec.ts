@@ -28,11 +28,13 @@ import { Education } from './entities/education.entity.js';
 import { Employer } from './entities/employer.entity.js';
 import { EmploymentHighlight } from './entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from './entities/employment-period.entity.js';
+import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
 import { Quadrant } from './entities/quadrant.entity.js';
 import { RadarEdition } from './entities/radar-edition.entity.js';
 import { Ring } from './entities/ring.entity.js';
+import { Tag } from './entities/tag.entity.js';
 import { Technology } from './entities/technology.entity.js';
 import { TechnologyArea } from './entities/technology-area.entity.js';
 import { TechnologyUsePeriod } from './entities/technology-use-period.entity.js';
@@ -57,6 +59,8 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['EmploymentHighlight', EmploymentHighlight],
   ['Education', Education],
   ['Certificate', Certificate],
+  ['Tag', Tag],
+  ['Post', Post],
 ];
 
 const SAMPLE_DATE = new Date('2024-03-01T00:00:00.000Z');

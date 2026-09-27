@@ -27,11 +27,13 @@ import { Education } from './entities/education.entity.js';
 import { Employer } from './entities/employer.entity.js';
 import { EmploymentHighlight } from './entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from './entities/employment-period.entity.js';
+import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
 import { Quadrant } from './entities/quadrant.entity.js';
 import { RadarEdition } from './entities/radar-edition.entity.js';
 import { Ring } from './entities/ring.entity.js';
+import { Tag } from './entities/tag.entity.js';
 import { Technology } from './entities/technology.entity.js';
 import { TechnologyArea } from './entities/technology-area.entity.js';
 import { TechnologyUsePeriod } from './entities/technology-use-period.entity.js';
@@ -54,6 +56,8 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['EmploymentHighlight', EmploymentHighlight],
   ['Education', Education],
   ['Certificate', Certificate],
+  ['Tag', Tag],
+  ['Post', Post],
 ];
 
 /** The members `describeEntityColumns` reports, by name. */
@@ -65,10 +69,10 @@ const columnsOf = (entityConstructor: EntityConstructor<Entity>) =>
     ]),
   );
 
-describe('every entity the three pages read', () => {
-  it('is one of sixteen, and each carries its metadata', () => {
+describe('every entity the pages read', () => {
+  it('is one of eighteen, and each carries its metadata', () => {
     // Pinned: a table that stopped matching would assert nothing below.
-    expect(ENTITIES).toHaveLength(16);
+    expect(ENTITIES).toHaveLength(18);
     for (const [name, entityConstructor] of ENTITIES) {
       expect(() => extractMetaEntity(entityConstructor), name).not.toThrow();
     }
@@ -177,5 +181,13 @@ describe('the links between entities', () => {
     expect(columnsOf(EmploymentHighlight).get('focuses')?.type).toBe(
       'linkCollection',
     );
+    expect(columnsOf(Post).get('tags')?.type).toBe('linkCollection');
+    expect(columnsOf(Post).get('technologies')?.type).toBe('linkCollection');
+  });
+
+  it("leave a post's body out of what a record must hold", () => {
+    // The browser's copy of the posts carries no bodies (ADR 0017).
+    expect(columnsOf(Post).get('body')?.required).toBeFalsy();
+    expect(columnsOf(Post).get('title')?.required).toBe(true);
   });
 });
