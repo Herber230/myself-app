@@ -1,0 +1,63 @@
+[
+  {
+    "id": "entifix-in-the-browser",
+    "title": {
+      "en": "One use case, two repositories: entifix in the browser",
+      "es": "Un caso de uso, dos repositorios: entifix en el navegador"
+    },
+    "summary": {
+      "en": "TODO(#70) How the radar and this blog filter through the same use case the build renders them with, and what it costs.",
+      "es": "TODO(#70) Cómo el radar y este blog filtran con el mismo caso de uso con el que el build los renderiza, y cuánto cuesta."
+    },
+    "publishedAt": "2026-09-27",
+    "draft": false,
+    "tags": ["entifix", "architecture", "performance"],
+    "technologies": ["effect", "next-js", "clean-architecture"]
+  },
+  {
+    "id": "a-static-site-on-s3",
+    "title": {
+      "en": "A static site behind CloudFront, defined in Pulumi",
+      "es": "Un sitio estático detrás de CloudFront, definido en Pulumi"
+    },
+    "summary": {
+      "en": "TODO(#70) A private bucket, a CDN and a certificate, previewed on every pull request and applied on merge.",
+      "es": "TODO(#70) Un bucket privado, una CDN y un certificado, previsualizados en cada pull request y aplicados al integrar."
+    },
+    "publishedAt": "2026-06-12",
+    "updatedAt": "2026-09-20",
+    "draft": false,
+    "tags": ["infrastructure", "static-sites"],
+    "technologies": ["amazon-s3", "cloudfront", "pulumi"]
+  },
+  {
+    "id": "coverage-at-one-hundred",
+    "title": {
+      "en": "Coverage at one hundred, on the machine that wrote the code",
+      "es": "Cobertura al cien, en la máquina que escribió el código"
+    },
+    "summary": {
+      "en": "TODO(#70) Why every spec runs with coverage on, and what a gate at 100% changes in how code gets written.",
+      "es": "TODO(#70) Por qué cada spec corre con cobertura, y qué cambia una puerta al 100% en cómo se escribe el código."
+    },
+    "publishedAt": "2025-11-03",
+    "draft": false,
+    "tags": ["testing"],
+    "technologies": []
+  },
+  {
+    "id": "effect-four",
+    "title": {
+      "en": "Moving entifix to Effect 4",
+      "es": "Llevar entifix a Effect 4"
+    },
+    "summary": {
+      "en": "TODO(#70) A draft: what the migration would save in the browser.",
+      "es": "TODO(#70) Un borrador: lo que la migración ahorraría en el navegador."
+    },
+    "publishedAt": "2026-10-15",
+    "draft": true,
+    "tags": ["entifix", "performance"],
+    "technologies": ["effect"]
+  }
+]

@@ -3,12 +3,12 @@
  * the wrong place because its order was read wrongly, and a movement arrow
  * that points the wrong way — neither of which any other check would notice.
  */
-import { CONTENT } from '@myself-app/content';
 import { describe, expect, it } from 'vitest';
 
 import { layoutRadar } from '../components/tech-radar/layout';
 import { loadPage } from './queries';
 import { loadEditionDate, loadRadarEntries, movementOf } from './radar';
+import { SITE_CONTENT as CONTENT } from './repositories';
 import { SITE_REPOSITORIES } from './repositories';
 import { buildSiteRepositories } from './site-content';
 

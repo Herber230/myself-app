@@ -1,0 +1,26 @@
+[
+  {
+    "id": "entifix",
+    "label": { "en": "entifix", "es": "entifix" }
+  },
+  {
+    "id": "architecture",
+    "label": { "en": "Architecture", "es": "Arquitectura" }
+  },
+  {
+    "id": "performance",
+    "label": { "en": "Performance", "es": "Rendimiento" }
+  },
+  {
+    "id": "infrastructure",
+    "label": { "en": "Infrastructure", "es": "Infraestructura" }
+  },
+  {
+    "id": "static-sites",
+    "label": { "en": "Static sites", "es": "Sitios estáticos" }
+  },
+  {
+    "id": "testing",
+    "label": { "en": "Testing", "es": "Pruebas" }
+  }
+]

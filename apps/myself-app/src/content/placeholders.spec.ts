@@ -1,7 +1,6 @@
 /**
  * Placeholder text is listed, and the list only shrinks (#26).
  */
-import { CONTENT } from '@myself-app/content';
 import { ContentValidationError } from '@myself-app/static-adapter';
 import { describe, expect, it } from 'vitest';
 
@@ -11,6 +10,7 @@ import {
   placeholderPaths,
   placeholderProblems,
 } from './placeholders';
+import { SITE_CONTENT as CONTENT } from './repositories';
 
 const messages = (
   content: Record<string, readonly unknown[]>,

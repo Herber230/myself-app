@@ -1,4 +1,3 @@
-import { CONTENT } from '@myself-app/content';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -7,6 +6,7 @@ import {
   loadCvSheet,
   loadCvVariants,
 } from './cv';
+import { SITE_CONTENT as CONTENT } from './repositories';
 import { SITE_REPOSITORIES } from './repositories';
 import { buildSiteRepositories } from './site-content';
 

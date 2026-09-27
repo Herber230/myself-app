@@ -38,6 +38,15 @@ export async function dataFileContent(
   if (source === undefined) {
     throw new RangeError(`No entity is written to /data/${file}`);
   }
-  const records = await loadEvery(repositories, source.entity);
-  return serializeEntityCollection(source.entity, records);
+  const records = await loadEvery(
+    repositories,
+    source.entity,
+    source.published?.request,
+  );
+  const omitted = source.published?.omit ?? [];
+  return serializeEntityCollection(source.entity, records).map(record =>
+    Object.fromEntries(
+      Object.entries(record).filter(([member]) => !omitted.includes(member)),
+    ),
+  );
 }

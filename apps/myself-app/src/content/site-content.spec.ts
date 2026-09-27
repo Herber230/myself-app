@@ -5,7 +5,7 @@
  * rest break it on purpose, one rule at a time, and check the build would stop
  * with the path to what is wrong.
  */
-import { CONTENT } from '@myself-app/content';
+import { CONTENT as PACKAGE_CONTENT } from '@myself-app/content';
 import {
   ContactChannel,
   EmploymentPeriod,
@@ -15,10 +15,14 @@ import {
 import { ContentValidationError } from '@myself-app/static-adapter';
 import { describe, expect, it } from 'vitest';
 
+import { withPostBodies } from './post-bodies';
 import { loadEvery } from './queries';
 import { buildSiteRepositories, CONTENT_SOURCES } from './site-content';
 
 type Content = Record<string, readonly unknown[]>;
+
+/** What the build validates: the package's records, with the posts' bodies. */
+const CONTENT = withPostBodies(PACKAGE_CONTENT);
 
 /** The content with one file replaced. */
 const withFile = (file: string, records: unknown[]): Content => ({
@@ -207,5 +211,30 @@ describe('the channel type', () => {
     const [problem] = problemsIn(withFile('contact-channels.json', channels));
     expect(problem).toContain('type holds "fax", which is not one of');
     expect(new ContactChannel().type).toBe('email');
+  });
+});
+
+describe('a post', () => {
+  it('needs a body in every locale, from its files', () => {
+    const posts = records('posts.json');
+    const [first] = posts;
+    posts[0] = { ...first, body: { en: (first?.body as { en: string }).en } };
+    posts[1] = { ...posts[1], body: undefined };
+    expect(problemsIn(withFile('posts.json', posts))).toEqual([
+      'posts.json › entifix-in-the-browser › body is missing "es"',
+      'posts.json › a-static-site-on-s3 › body is required, and is missing',
+    ]);
+  });
+
+  it('needs a tag, and tags and technologies that exist', () => {
+    const posts = records('posts.json');
+    posts[0] = { ...posts[0], tags: [] };
+    posts[1] = { ...posts[1], tags: ['nowhere'], technologies: ['cobol'] };
+    const problems = problemsIn(withFile('posts.json', posts));
+    expect(problems).toContain(
+      'posts.json › entifix-in-the-browser › tags is empty, so the post relates to nothing',
+    );
+    expect(problems.join('\n')).toContain('a-static-site-on-s3 › tags');
+    expect(problems.join('\n')).toContain('a-static-site-on-s3 › technologies');
   });
 });
