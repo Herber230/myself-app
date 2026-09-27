@@ -153,6 +153,49 @@ describe('the string operators', () => {
       ids([{ property: 'retiredAt', operator: 'like', value: 'anything' }]),
     ).toEqual([]);
   });
+
+  it('ignore accents on either side', () => {
+    const rows = [{ id: 'x', name: 'Técnicas' }];
+    expect(
+      applyFiltering(rows, [
+        { property: 'name', operator: 'like', value: 'tecnicas' },
+      ]),
+    ).toEqual(rows);
+    expect(
+      applyFiltering(rows, [
+        { property: 'name', operator: 'like', value: 'TÉC' },
+      ]),
+    ).toEqual(rows);
+  });
+});
+
+describe('dotted paths', () => {
+  interface Localized extends Entity {
+    id: EntityId;
+    title: { en: string; es: string } | string;
+  }
+  const rows: Localized[] = [
+    { id: 'p', title: { en: 'Static sites', es: 'Sitios estáticos' } },
+    { id: 'q', title: { en: 'Queries', es: 'Consultas' } },
+    { id: 'r', title: 'not an object' },
+  ];
+  const at = (filtering: EntityFiltering<Localized>[]) =>
+    applyFiltering(rows, filtering).map(row => row.id);
+
+  it('reach into a member holding an object, as one locale of a text', () => {
+    const path = 'title.es' as keyof Localized;
+    expect(
+      at([{ property: path, operator: 'like', value: 'estaticos' }]),
+    ).toEqual(['p']);
+    expect(
+      at([{ property: path, operator: 'eq', value: 'Consultas' }]),
+    ).toEqual(['q']);
+  });
+
+  it('end in undefined through something that is not an object', () => {
+    const path = 'title.en' as keyof Localized;
+    expect(at([{ property: path, operator: 'isNull' }])).toEqual(['r']);
+  });
 });
 
 describe('the null operators', () => {

@@ -8,14 +8,15 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 // `nx.tags`, and `@nx/enforce-module-boundaries` fails lint on an edge pointing
 // the wrong way:
 //
-//   app              ──►  domain, content, static-adapter
-//   static-adapter   ──►  @entifix/*, effect                   (never domain)
+//   app              ──►  domain, content, incubator
+//   incubator        ──►  incubator, @entifix/*, effect, react (never domain)
 //   domain           ──►  @entifix/*, effect
 //   content          ──►  nothing
 //   infra            ──►  @pulumi/*                            (ADR 0013)
 //
-// The adapter knowing no entity is what keeps it promotable to entifix as a
-// copy; content importing nothing is what keeps it data. A project whose tag
+// The incubator holds what is meant to move into entifix (ADR 0016): the
+// static adapter, and the browser's side of a query. Knowing no entity of this
+// site is what keeps each of them promotable as a copy; content importing nothing is what keeps it data. A project whose tag
 // matches no constraint below cannot depend on anything, and the conventions
 // spec fails on a project with no `layer:*` tag at all, which the rule alone
 // would only notice once that project imports something.
@@ -35,13 +36,13 @@ const layerConstraints = [
     onlyDependOnLibsWithTags: [
       'layer:domain',
       'layer:content',
-      'layer:static-adapter',
+      'layer:incubator',
     ],
   },
   {
-    sourceTag: 'layer:static-adapter',
-    onlyDependOnLibsWithTags: [],
-    allowedExternalImports: entifixOnly,
+    sourceTag: 'layer:incubator',
+    onlyDependOnLibsWithTags: ['layer:incubator'],
+    allowedExternalImports: [...entifixOnly, 'react'],
   },
   {
     sourceTag: 'layer:domain',
