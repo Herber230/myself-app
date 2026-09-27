@@ -68,6 +68,43 @@ describe('useEntityLoad', () => {
     expect(calls).toHaveLength(1);
   });
 
+  it('keeps the last answer from the same source while the next is pending', async () => {
+    const notes = source();
+    const { result, rerender } = renderHook(
+      ({ tag }) => useEntityLoad<Note>(notes, byTag(tag)),
+      { initialProps: { tag: 'web' } },
+    );
+    await waitFor(() => expect(result.current.status).toBe('done'));
+    rerender({ tag: 'data' });
+    const pending = result.current as Extract<
+      typeof result.current,
+      { status: 'pending' }
+    >;
+    expect(pending.status).toBe('pending');
+    expect(pending.previous?.items.map(note => note.id)).toEqual([
+      'static',
+      'queries',
+    ]);
+    await waitFor(() => expect(result.current.status).toBe('done'));
+  });
+
+  it('keeps nothing from a failed answer, or from another source', async () => {
+    const missing = staticJsonSource(
+      Note,
+      '/data/missing.json',
+      fetchServing('/data/note.json', NOTES_FILE).fetchFile,
+    );
+    const { result, rerender } = renderHook(
+      ({ from, tag }) => useEntityLoad<Note>(from, byTag(tag)),
+      { initialProps: { from: missing, tag: 'web' } },
+    );
+    await waitFor(() => expect(result.current.status).toBe('failed'));
+    rerender({ from: missing, tag: 'data' });
+    expect(result.current).toEqual({ status: 'pending' });
+    rerender({ from: source(), tag: 'data' });
+    expect(result.current).toEqual({ status: 'pending' });
+  });
+
   it('goes back to idle when the request is withdrawn', async () => {
     const notes = source();
     const { result, rerender } = renderHook(
@@ -107,7 +144,7 @@ describe('useEntityLoad', () => {
       { initialProps: { tag: 'web' } },
     );
     rerender({ tag: 'data' });
-    expect(result.current.status).toBe('pending');
+    expect(result.current).toEqual({ status: 'pending' });
     settleFirst(new Response(JSON.stringify(NOTES_FILE)));
     await waitFor(() => expect(result.current.status).toBe('done'));
     const done = result.current as Extract<

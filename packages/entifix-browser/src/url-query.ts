@@ -78,9 +78,9 @@ export function defineUrlQuery<TKey extends string, TContext = undefined>({
 
   const accepted = (key: TKey, values: string[]) => {
     const { allowed, single } = params[key];
+    // Kept as written: a search box being typed into holds its spaces.
     const kept = values
-      .map(value => value.trim())
-      .filter(value => value !== '')
+      .filter(value => value.trim() !== '')
       .filter(value => allowed === undefined || allowed.includes(value));
     const unique = [...new Set(kept)];
     return single ? unique.slice(0, 1) : unique;
@@ -139,7 +139,7 @@ export function containing<TContext>(
   return ([value], context) => ({
     property: property(context),
     operator: 'like',
-    value: value as string,
+    value: (value as string).trim(),
   });
 }
 

@@ -551,7 +551,8 @@ body {
     border-radius: 2px;
   }
 
-  .radar-filters {
+  /* A filter over a list — the radar's, the blog's (#41, #70). */
+  .filters {
     margin: 0;
     padding: 0;
     border: 0;
@@ -559,38 +560,38 @@ body {
     font-size: 0.875rem;
   }
 
-  .radar-filter-row {
+  .filter-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--spacing-xs);
   }
 
-  .radar-filter-label {
+  .filter-label {
     min-width: 6rem;
     color: var(--color-content-muted);
   }
 
   /* On a phone each label heads its own row of chips. */
   @media (width < 40rem) {
-    .radar-filter-label {
+    .filter-label {
       flex-basis: 100%;
     }
   }
 
-  .radar-filters button {
+  .filters button {
     cursor: pointer;
     background: none;
     font: inherit;
   }
 
-  .radar-filters .landing-chip[aria-pressed='true'] {
+  .filters .landing-chip[aria-pressed='true'] {
     border-color: var(--color-primary);
     background: var(--color-primary);
     color: var(--color-surface);
   }
 
-  .radar-search {
+  .filter-search {
     display: flex;
     flex: 1 1 16rem;
     align-items: center;
@@ -599,7 +600,7 @@ body {
     max-width: 28rem;
   }
 
-  .radar-search input {
+  .filter-search input {
     flex: 1;
     width: 100%;
     min-width: 0;
@@ -611,11 +612,11 @@ body {
     font: inherit;
   }
 
-  .radar-filter-count {
+  .filter-count {
     color: var(--color-content-muted);
   }
 
-  .radar-filter-clear {
+  .filter-clear {
     border: 0;
     color: var(--color-primary);
     text-decoration: underline;

@@ -1,26 +1,22 @@
 /**
- * The browser's filter against the build's adapter. The filter runs over plain
- * props; the check is that it keeps exactly what `load` would, through the
- * static adapter, for the same request — every quadrant, ring and area, alone
- * and combined.
+ * The radar's query string, and the build's and the browser's answers to it.
+ *
+ * The browser answers from `/data/technology.json` through the same `load`
+ * use case the build answers from the content through. The check is that
+ * both keep the same technologies — every quadrant, ring and area, alone and
+ * combined, and a search — so the file and the pages cannot drift apart.
  */
 import { Quadrant, Ring, Technology, TechnologyArea } from '@myself-app/domain';
+import {
+  loadThroughUseCase,
+  staticJsonSource,
+} from '@myself-app/entifix-browser';
 import { describe, expect, it } from 'vitest';
 
+import { dataFileContent } from '../../content/data-files';
 import { loadEvery } from '../../content/queries';
-import { loadRadarEntries } from '../../content/radar';
 import { SITE_REPOSITORIES } from '../../content/repositories';
-import {
-  isFiltering,
-  matches,
-  NO_FILTER,
-  parseFilter,
-  type RadarFilter,
-  type RadarVocabulary,
-  serializeFilter,
-  toggled,
-} from './radar-filter';
-import type { QuadrantIndex, RadarEntry, RingIndex } from './types';
+import { radarQuery, type RadarVocabulary } from './radar-filter';
 
 const byOrder = {
   sorting: [{ 0: { property: 'order', type: 'asc' } }],
@@ -39,147 +35,98 @@ async function vocabulary(): Promise<RadarVocabulary> {
   };
 }
 
-const entry = (overrides: Partial<RadarEntry>): RadarEntry => ({
-  id: 'x',
-  label: { en: 'Contract testing', es: 'Pruebas de contrato' },
-  quadrant: 0,
-  ring: 1,
-  movement: 'none',
-  areas: ['testing'],
-  ...overrides,
-});
+/** The browser's source, over the file the export writes. */
+async function browserSource() {
+  const file = await dataFileContent(SITE_REPOSITORIES, 'technology.json');
+  return staticJsonSource(
+    Technology,
+    '/data/technology.json',
+    (async () => new Response(JSON.stringify(file))) as unknown as typeof fetch,
+  );
+}
+
+const idsOf = (technologies: readonly Technology[]) =>
+  technologies.map(each => String(each.id)).sort();
 
 describe('the radar filter', () => {
-  it('keeps what load keeps, for every quadrant, ring and area', async () => {
-    const [words, entries] = await Promise.all([
-      vocabulary(),
-      loadRadarEntries(SITE_REPOSITORIES),
-    ]);
-    const quadrants = [undefined, 0, 1, 2, 3] as const;
-    const rings = [undefined, 0, 1, 2, 3] as const;
-    const areas = [undefined, ...words.areas];
-    let checked = 0;
-    for (const quadrant of quadrants) {
-      for (const ring of rings) {
-        for (const area of areas) {
-          const filter: RadarFilter = {
-            quadrants: quadrant === undefined ? [] : [quadrant],
-            rings: ring === undefined ? [] : [ring],
-            areas: area === undefined ? [] : [area],
-            query: '',
-          };
-          const filtering = [
-            ...(quadrant === undefined
-              ? []
-              : [
-                  {
-                    property: 'quadrant',
-                    operator: 'eq',
-                    value: words.quadrants[quadrant],
-                  },
-                ]),
-            ...(ring === undefined
-              ? []
-              : [
-                  {
-                    property: 'ring',
-                    operator: 'eq',
-                    value: words.rings[ring],
-                  },
-                ]),
-            ...(area === undefined
-              ? []
-              : [{ property: 'areas', operator: 'in', values: [area] }]),
-          ];
-          const loaded = await loadEvery(SITE_REPOSITORIES, Technology, {
-            filtering,
-          } as never);
-          expect(
-            entries
-              .filter(each => matches(each, filter, 'en'))
-              .map(each => each.id)
-              .sort(),
-            JSON.stringify(filter),
-          ).toEqual(loaded.map(each => String(each.id)).sort());
-          checked++;
-        }
+  it('keeps the same technologies in the browser as at build, for every combination', async () => {
+    const words = await vocabulary();
+    const query = radarQuery(words);
+    const repository = await (await browserSource())();
+    const searches = [
+      ...['', ...words.quadrants].flatMap(quadrant =>
+        ['', ...words.rings].map(ring => `?quadrant=${quadrant}&ring=${ring}`),
+      ),
+      ...words.areas.map(area => `?area=${area}`),
+      '?q=TYPE',
+      '?q=tecnicas',
+    ];
+    for (const search of searches) {
+      for (const locale of ['en', 'es'] as const) {
+        const request = query.request<Technology>(query.parse(search), locale);
+        const [atBuild, inBrowser] = await Promise.all([
+          loadEvery(SITE_REPOSITORIES, Technology, request),
+          loadThroughUseCase<Technology>(repository, {
+            ...request,
+            pageSize: Number.MAX_SAFE_INTEGER,
+          }),
+        ]);
+        expect(idsOf(inBrowser.items), `${search} (${locale})`).toEqual(
+          idsOf(atBuild),
+        );
       }
     }
-    expect(checked).toBe(25 * (words.areas.length + 1));
   });
 
   it('keeps every technology tagged with an area, and no other', async () => {
-    const entries = await loadRadarEntries(SITE_REPOSITORIES);
-    const kept = entries.filter(each =>
-      matches(each, { ...NO_FILTER, areas: ['monorepo'] }, 'en'),
+    const query = radarQuery(await vocabulary());
+    const kept = await loadEvery(
+      SITE_REPOSITORIES,
+      Technology,
+      query.request(query.parse('?area=monorepo'), 'en'),
     );
-    expect(kept.map(each => each.id).sort()).toEqual([
-      'monorepos',
-      'nx',
-      'pnpm',
-    ]);
+    expect(idsOf(kept)).toEqual(['monorepos', 'nx', 'pnpm']);
   });
 
-  it('keeps an entry matching any value of a list, and all lists together', () => {
-    const filter = { ...NO_FILTER, quadrants: [0, 2] as QuadrantIndex[] };
-    expect(matches(entry({ quadrant: 2 }), filter, 'en')).toBe(true);
-    expect(matches(entry({ quadrant: 1 }), filter, 'en')).toBe(false);
-    expect(
-      matches(entry({}), { ...filter, rings: [3] as RingIndex[] }, 'en'),
-    ).toBe(false);
-  });
-
-  it('searches names in the reader’s language, ignoring case and accents', () => {
-    const search = (query: string, locale: 'en' | 'es') =>
-      matches(entry({}), { ...NO_FILTER, query }, locale);
-    expect(search('  CONTRACT ', 'en')).toBe(true);
-    expect(search('contrato', 'en')).toBe(false);
-    expect(search('pruebas de contrató', 'es')).toBe(true);
-  });
-
-  it('says whether it filters anything', () => {
-    expect(isFiltering(NO_FILTER)).toBe(false);
-    expect(isFiltering({ ...NO_FILTER, query: '  ' })).toBe(false);
-    expect(isFiltering({ ...NO_FILTER, query: 'next' })).toBe(true);
-    expect(isFiltering({ ...NO_FILTER, quadrants: [1] })).toBe(true);
-    expect(isFiltering({ ...NO_FILTER, rings: [1] })).toBe(true);
-    expect(isFiltering({ ...NO_FILTER, areas: ['css'] })).toBe(true);
+  it('searches names in the reader’s language, ignoring case and accents', async () => {
+    const query = radarQuery(await vocabulary());
+    const search = async (q: string, locale: 'en' | 'es') =>
+      idsOf(
+        await loadEvery(
+          SITE_REPOSITORIES,
+          Technology,
+          query.request(query.parse(`?q=${encodeURIComponent(q)}`), locale),
+        ),
+      );
+    expect(await search('  TYPESCRIPT ', 'en')).toEqual(['typescript']);
+    expect(await search('typescript', 'es')).toEqual(['typescript']);
   });
 });
 
 describe('the radar filter in a URL', () => {
-  const words: RadarVocabulary = {
+  const query = radarQuery({
     quadrants: ['techniques', 'tools', 'platforms', 'languages'],
     rings: ['adopt', 'trial', 'assess', 'hold'],
     areas: ['css', 'monorepo'],
-  };
+  });
 
   it('round-trips, by id', () => {
-    const filter: RadarFilter = {
-      quadrants: [1],
-      rings: [0, 1],
-      areas: ['css'],
-      query: 'next js',
-    };
-    const search = serializeFilter(filter, words);
-    expect(search).toBe(
-      '?quadrant=tools&ring=adopt&ring=trial&area=css&q=next+js',
-    );
-    expect(parseFilter(search, words)).toEqual(filter);
+    const search = '?quadrant=tools&ring=adopt&ring=trial&area=css&q=next+js';
+    const filter = query.parse(search);
+    expect(filter).toEqual({
+      quadrant: ['tools'],
+      ring: ['adopt', 'trial'],
+      area: ['css'],
+      q: ['next js'],
+    });
+    expect(query.serialize(filter)).toBe(search);
   });
 
   it('is empty when nothing is filtered, and drops what it does not know', () => {
-    expect(serializeFilter(NO_FILTER, words)).toBe('');
-    expect(parseFilter('', words)).toEqual(NO_FILTER);
-    expect(parseFilter('?ring=never&area=cobol&quadrant=x', words)).toEqual(
-      NO_FILTER,
+    expect(query.serialize(query.empty)).toBe('');
+    expect(query.parse('')).toEqual(query.empty);
+    expect(query.parse('?ring=never&area=cobol&quadrant=x')).toEqual(
+      query.empty,
     );
-  });
-});
-
-describe('a toggle', () => {
-  it('adds a value, and takes it out again', () => {
-    expect(toggled([1], 2)).toEqual([1, 2]);
-    expect(toggled([1, 2], 1)).toEqual([2]);
   });
 });

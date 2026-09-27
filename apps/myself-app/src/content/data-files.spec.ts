@@ -80,3 +80,11 @@ describe('the data files', () => {
     ).rejects.toThrow('No entity is written to /data/nothing.json');
   });
 });
+
+describe('the files the browser reads', () => {
+  it('include the one the radar filter asks for', () => {
+    // `radar-explorer.tsx` names it: a client component cannot import this
+    // module, which reads the content.
+    expect(DATA_FILES).toContain('technology.json');
+  });
+});

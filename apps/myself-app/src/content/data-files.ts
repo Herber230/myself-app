@@ -1,6 +1,7 @@
 /**
- * The JSON the browser reads (ADR 0003, path C): one file per entity, written
- * into the export by a `force-static` route handler as `/data/<key>.json`.
+ * The JSON the browser reads (ADR 0003 path C, ADR 0016): one file per
+ * entity, written into the export by a `force-static` route handler as
+ * `/data/<key>.json`. The radar's filter answers from `technology.json`.
  *
  * Produced from the same repositories the pages render from, through the same
  * `load` use case, so the files and the pages cannot disagree. A record goes

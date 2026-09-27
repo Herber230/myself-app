@@ -24,10 +24,16 @@ const KB = 1024;
 /** Measured 178.6 KB on 2026-09-18, rounded up, plus 15 KB for the leaves. */
 const LANDING_SCRIPT_BUDGET = (179 + 15) * KB;
 /**
- * Measured 161.2 KB on 2026-09-25, rounded up, plus 10 KB of room: the shared
- * runtime and the filter's island, about 8 KB of it (ADR 0014).
+ * Measured 237.4 KB on 2026-09-27, rounded up, plus 10 KB of room. Since ADR
+ * 0016 the filter runs entifix's `load` use case in the browser: +76 KB over
+ * the 161.2 KB of filtering props (ADR 0014).
  */
-const RADAR_SCRIPT_BUDGET = (162 + 10) * KB;
+const RADAR_SCRIPT_BUDGET = (238 + 10) * KB;
+/**
+ * After the first filter: the same scripts, and `/data/technology.json`.
+ * Measured 241.4 KB on 2026-09-27, rounded up, plus 10 KB of room.
+ */
+const RADAR_FILTERED_BUDGET = (242 + 10) * KB;
 /**
  * Measured 159.6 KB on 2026-09-25, rounded up, plus 10 KB of room: the
  * print button and the customizer's island (ADR 0015).
@@ -47,26 +53,37 @@ async function scriptsOf(
   page: Page,
   path: string,
   ready: (page: Page) => Locator,
+  /** A first interaction, and whatever else it loads: data as well as code. */
+  interact?: (page: Page) => Promise<void>,
 ) {
   await page.route(/\/__next\.|\.txt(\?|$)|[?&]_rsc=/, route => route.abort());
   const scripts: Promise<{ text: string; size: number }>[] = [];
+  const data: Promise<number>[] = [];
+  const gzipped = (response: Response) =>
+    response.body().then(body => ({
+      text: body.toString('utf8'),
+      size: gzipSync(body, { level: 9 }).length,
+    }));
   const collect = (response: Response) => {
     if (response.request().resourceType() === 'script') {
-      scripts.push(
-        response.body().then(body => ({
-          text: body.toString('utf8'),
-          size: gzipSync(body, { level: 9 }).length,
-        })),
-      );
+      scripts.push(gzipped(response));
+    } else if (new URL(response.url()).pathname.startsWith('/data/')) {
+      data.push(gzipped(response).then(({ size }) => size));
     }
   };
   page.on('response', collect);
   await page.goto(path);
   await expect(ready(page)).toBeAttached();
+  const beforeInteraction = scripts.length;
+  if (interact) await interact(page);
   page.off('response', collect);
   const loaded = await Promise.all(scripts);
-  const total = loaded.reduce((sum, script) => sum + script.size, 0);
-  return { loaded, total };
+  const sum = (sizes: readonly number[]) =>
+    sizes.reduce((total, size) => total + size, 0);
+  const total = sum(loaded.slice(0, beforeInteraction).map(each => each.size));
+  const afterInteraction =
+    sum(loaded.map(each => each.size)) + sum(await Promise.all(data));
+  return { loaded, total, afterInteraction };
 }
 
 function report(name: string, total: number, count: number, budget: number) {
@@ -79,7 +96,9 @@ function report(name: string, total: number, count: number, budget: number) {
   );
 }
 
-test("the landing page's scripts stay within the budget", async ({ page }) => {
+test("the landing page's scripts stay within the budget, and carry no entifix", async ({
+  page,
+}) => {
   // Attached, not visible: the bar is hidden until the page scrolls.
   const { loaded, total } = await scriptsOf(page, '/en/', each =>
     each.getByRole('banner').getByLabel('Theme', { exact: true }),
@@ -87,22 +106,42 @@ test("the landing page's scripts stay within the budget", async ({ page }) => {
   report('landing', total, loaded.length, LANDING_SCRIPT_BUDGET);
   expect(loaded.length).toBeGreaterThan(0);
   expect(total).toBeLessThanOrEqual(LANDING_SCRIPT_BUDGET);
-});
-
-test("the radar's scripts stay within the budget, and carry no entifix", async ({
-  page,
-}) => {
-  // The filter's controls render only once hydrated.
-  const { loaded, total } = await scriptsOf(page, '/en/tech-radar/', each =>
-    each.getByRole('group', { name: 'Quadrant' }),
-  );
-  report('radar', total, loaded.length, RADAR_SCRIPT_BUDGET);
-  expect(total).toBeLessThanOrEqual(RADAR_SCRIPT_BUDGET);
-  // ADR 0003: the filter runs over props, never through entifix's use case.
+  // ADR 0016: only a page that filters in the browser ships entifix's use case.
   for (const script of loaded) {
     expect(script.text).not.toContain('EntityRepositoryTag');
-    expect(script.text).not.toContain('loadUCFactory');
   }
+});
+
+test("the radar's scripts stay within the budget, filtering through entifix", async ({
+  page,
+}) => {
+  // The filter's controls render only once hydrated; the first filter asks
+  // for `/data/technology.json` and answers through the use case.
+  const { loaded, total, afterInteraction } = await scriptsOf(
+    page,
+    '/en/tech-radar/',
+    each => each.getByRole('group', { name: 'Quadrant' }),
+    async each => {
+      await each.getByRole('button', { name: 'Monorepo' }).click();
+      await expect(
+        each.locator('a[data-blip][data-dimmed]').first(),
+      ).toBeAttached();
+    },
+  );
+  report('radar', total, loaded.length, RADAR_SCRIPT_BUDGET);
+  report(
+    'radar, filtered',
+    afterInteraction,
+    loaded.length,
+    RADAR_FILTERED_BUDGET,
+  );
+  expect(total).toBeLessThanOrEqual(RADAR_SCRIPT_BUDGET);
+  expect(afterInteraction).toBeLessThanOrEqual(RADAR_FILTERED_BUDGET);
+  // ADR 0016: the filter runs entifix's own use case in the browser. The
+  // tag's name is a string, so it survives minification where names do not.
+  expect(
+    loaded.some(script => script.text.includes('EntityRepositoryTag')),
+  ).toBe(true);
 });
 
 test("the CV's scripts stay within the budget, and carry no entifix", async ({

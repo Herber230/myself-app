@@ -6,12 +6,15 @@ import type { EntitySource } from './static-json-source.js';
 
 export type EntityLoad<TEntity extends Entity> =
   | { readonly status: 'idle' }
-  | { readonly status: 'pending' }
+  /**
+   * Waiting for an answer. `previous` is the last answer from the same
+   * source, so a filter being changed keeps showing what it showed.
+   */
+  | { readonly status: 'pending'; readonly previous?: EntityPage<TEntity> }
   | { readonly status: 'done'; readonly page: EntityPage<TEntity> }
   | { readonly status: 'failed'; readonly error: unknown };
 
 const IDLE = { status: 'idle' } as const;
-const PENDING = { status: 'pending' } as const;
 
 /** Every record one request can reach: a filter never pages. */
 const EVERY_RECORD = Number.MAX_SAFE_INTEGER;
@@ -59,7 +62,9 @@ export function useEntityLoad<TEntity extends Entity>(
   }, [source, key]);
 
   if (key === null) return IDLE;
-  return answer?.source === source && answer.key === key
-    ? answer.load
-    : PENDING;
+  if (answer?.source !== source) return { status: 'pending' };
+  if (answer.key === key) return answer.load;
+  return answer.load.status === 'done'
+    ? { status: 'pending', previous: answer.load.page }
+    : { status: 'pending' };
 }

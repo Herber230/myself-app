@@ -42,8 +42,8 @@ describe('parse', () => {
     });
   });
 
-  it('keeps one value of a single parameter, trimmed', () => {
-    expect(query.parse('?q=%20first%20&q=second').q).toEqual(['first']);
+  it('keeps one value of a single parameter, as written', () => {
+    expect(query.parse('?q=first%20&q=second').q).toEqual(['first ']);
   });
 });
 
@@ -86,6 +86,10 @@ describe('request', () => {
   it('matches any year, both ends included', async () => {
     expect(await ids('?year=2025')).toEqual(['static']);
     expect(await ids('?year=2025&year=2026')).toHaveLength(3);
+  });
+
+  it('searches for the text without its surrounding spaces', async () => {
+    expect(await ids('?q=%20queries%20')).toEqual(['queries']);
   });
 
   it('searches the text of the locale asked for', async () => {

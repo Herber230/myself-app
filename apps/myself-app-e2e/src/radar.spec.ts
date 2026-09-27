@@ -58,9 +58,9 @@ test('the export carries the radar as JSON, and it matches the page', async ({
   page,
   request,
 }) => {
-  // Path C of ADR 0003: nothing reads these files yet, but they are the seam
-  // a browser-side filter or a backend adapter would read, and a file that
-  // disagreed with the page beside it would go unnoticed until then.
+  // Path C of ADR 0003, taken by ADR 0016: the radar's filter reads this file
+  // in the browser, so a file that disagreed with the page beside it would
+  // filter the wrong blips.
   const response = await request.get('/data/technology.json');
   expect(response.ok()).toBe(true);
   expect(response.headers()['content-type']).toContain('application/json');
