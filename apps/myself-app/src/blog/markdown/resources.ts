@@ -4,7 +4,7 @@
  * - An image lives beside its post, in `public/blog/<post>/`, and is written
  *   relative to it (`./radar.png`). It must exist and say what it shows, and
  *   its size is written into the page so nothing moves as it loads. Every
- *   image after the first loads lazily.
+ *   image loads lazily.
  * - An internal link is written without a locale (`/tech-radar/nx/`), ends in
  *   `/`, and names a page the site has. The reader's locale is added.
  * - An external link opens with no access to this page.
@@ -45,7 +45,6 @@ function readImage(path: string): Buffer | undefined {
 export const remarkPostResources: Plugin<[ResourceContext], Root> =
   ({ source, post, locale, sitePaths, publicDirectory }) =>
   tree => {
-    let images = 0;
     visit(tree, 'image', node => {
       if (!node.url.startsWith('./')) {
         throw new PostContentError(
@@ -73,14 +72,10 @@ export const remarkPostResources: Plugin<[ResourceContext], Root> =
       const { width, height } = imageSize(bytes);
       node.url = url;
       node.data = {
-        hProperties: {
-          width,
-          height,
-          decoding: 'async',
-          ...(images > 0 && { loading: 'lazy' }),
-        },
+        // Lazy even the first: a post's page is prefetched from the blog's
+        // home, and React preloads every eager image of a prefetched page.
+        hProperties: { width, height, decoding: 'async', loading: 'lazy' },
       };
-      images += 1;
     });
 
     visit(tree, 'link', node => {

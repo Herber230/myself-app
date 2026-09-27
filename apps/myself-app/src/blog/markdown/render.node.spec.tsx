@@ -72,7 +72,7 @@ describe('the paragraph types', () => {
     );
     expect(out).toContain('<figure class="post-figure">');
     expect(out).toContain(
-      '<img src="/blog/entifix-in-the-browser/diagram.svg" alt="A page and a filter" width="640" height="240" decoding="async"/>',
+      '<img src="/blog/entifix-in-the-browser/diagram.svg" alt="A page and a filter" width="640" height="240" decoding="async" loading="lazy"/>',
     );
     expect(out).toContain('<figcaption>The flow</figcaption>');
   });
@@ -96,12 +96,11 @@ describe('the paragraph types', () => {
 });
 
 describe('images', () => {
-  it('load lazily after the first', async () => {
+  it('load lazily, every one of them', async () => {
     const out = await html('![One](./diagram.svg)\n\n![Two](./diagram.svg)');
-    expect(out.match(/loading="lazy"/g)).toHaveLength(1);
-    expect(out.indexOf('loading="lazy"')).toBeGreaterThan(
-      out.indexOf('alt="One"'),
-    );
+    expect(out.match(/loading="lazy"/g)).toHaveLength(2);
+    // An eager image would be preloaded wherever the page is prefetched.
+    expect(out).not.toContain('rel="preload"');
   });
 
   it('stop the build when outside the post, without alt text, or missing', async () => {

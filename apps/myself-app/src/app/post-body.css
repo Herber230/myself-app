@@ -222,6 +222,7 @@
 
   .post-card-chips {
     display: flex;
+    font-size: 0.875rem;
     flex-wrap: wrap;
     gap: var(--spacing-2xs);
     margin: var(--spacing-2xs) 0 0;

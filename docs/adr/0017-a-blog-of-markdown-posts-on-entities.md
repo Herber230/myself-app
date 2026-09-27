@@ -40,7 +40,9 @@ beside entifix's, and tie posts to the file system.
   `dangerouslySetInnerHTML`.
 - **Images and links are checked at build.** An image lives in
   `public/blog/<post>/` and is referenced relatively (`./radar.png`). It must
-  exist and have alt text, and its width and height are written into the page.
+  exist and have alt text, its width and height are written into the page, and
+  it loads lazily: a post is prefetched from the blog's home, and React
+  preloads every eager image of a prefetched page.
   An internal link is written without a locale (`/tech-radar/nx/`), must end
   in `/`, must name a page that exists, and gets the reader's locale. An
   external link gets `rel="noopener noreferrer"`.
