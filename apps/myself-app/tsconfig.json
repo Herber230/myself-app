@@ -13,7 +13,11 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
-    "plugins": [{ "name": "next" }],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "types": ["node"],
     "outDir": "dist",
     "rootDir": ".",
@@ -43,6 +47,9 @@
     },
     {
       "path": "../../packages/content"
+    },
+    {
+      "path": "../../packages/entifix-browser"
     }
   ]
 }

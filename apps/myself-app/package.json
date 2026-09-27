@@ -15,6 +15,7 @@
     "@fontsource/jetbrains-mono": "5.3.0",
     "@myself-app/content": "workspace:*",
     "@myself-app/domain": "workspace:*",
+    "@myself-app/entifix-browser": "workspace:*",
     "@myself-app/static-adapter": "workspace:*",
     "effect": "catalog:",
     "i18next": "26.4.2",

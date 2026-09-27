@@ -42,7 +42,13 @@ const layerConstraints = [
   {
     sourceTag: 'layer:incubator',
     onlyDependOnLibsWithTags: ['layer:incubator'],
-    allowedExternalImports: [...entifixOnly, 'react'],
+    // React for the hooks; the rest only in their specs.
+    allowedExternalImports: [
+      ...entifixOnly,
+      'react',
+      'react-dom/*',
+      '@testing-library/*',
+    ],
   },
   {
     sourceTag: 'layer:domain',

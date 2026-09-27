@@ -89,7 +89,9 @@ function valueAt(record: Entity, property: string): unknown {
       typeof value === 'object' && value !== null
         ? (value as Record<string, unknown>)[key]
         : undefined,
-    plainValue((record as Record<string, unknown>)[member as string]),
+    plainValue(
+      (record as unknown as Record<string, unknown>)[member as string],
+    ),
   );
 }
 

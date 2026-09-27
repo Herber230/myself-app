@@ -23,6 +23,9 @@
     },
     {
       "path": "./tools/conventions"
+    },
+    {
+      "path": "./packages/entifix-browser"
     }
   ]
 }

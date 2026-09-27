@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "out-tsc/entifix-browser",
+    "tsBuildInfoFile": "out-tsc/entifix-browser/tsconfig.tsbuildinfo",
+    "lib": ["dom", "dom.iterable", "esnext", "decorators", "esnext.decorators"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", "out-tsc", "test-output"],
+  "references": [
+    {
+      "path": "../static-adapter"
+    }
+  ]
+}

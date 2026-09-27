@@ -1,0 +1,157 @@
+import type {
+  Entity,
+  EntityFilter,
+  EntityFiltering,
+  EntityLoadRequest,
+  EntitySorting,
+  FilterGroup,
+} from '@entifix/core';
+
+/**
+ * Any entity, as far as a parameter can tell: it names its property by text,
+ * since a dotted path (`title.en`) is no key of the entity's type.
+ */
+type AnyEntity = Entity & Record<string, unknown>;
+
+/** What one parameter of the query string turns into. */
+export type Condition = EntityFilter<AnyEntity> | FilterGroup<AnyEntity>;
+
+/**
+ * One parameter a query string may carry: the values it accepts and the
+ * condition they become. `allowed` drops anything else, so a hand-edited or
+ * stale link filters on what still exists; `single` keeps the first value
+ * only, as a search box has one.
+ */
+export interface UrlParam<TContext> {
+  readonly allowed?: readonly string[];
+  readonly single?: boolean;
+  readonly condition: (
+    values: readonly string[],
+    context: TContext,
+  ) => Condition;
+}
+
+/** The values of every parameter, in the order the URL gave them. */
+export type UrlState<TKey extends string> = Readonly<
+  Record<TKey, readonly string[]>
+>;
+
+export interface UrlQuery<TKey extends string, TContext> {
+  /** Every parameter with no value: no filter at all. */
+  readonly empty: UrlState<TKey>;
+  parse(search: string): UrlState<TKey>;
+  /** `''` for an empty state, else `?` and the parameters in declared order. */
+  serialize(state: UrlState<TKey>): string;
+  isEmpty(state: UrlState<TKey>): boolean;
+  /** The load request the state stands for: one condition per parameter set. */
+  request<TEntity extends Entity>(
+    state: UrlState<TKey>,
+    context: TContext,
+  ): EntityLoadRequest<TEntity>;
+}
+
+export interface UrlQueryOptions<TKey extends string, TContext> {
+  readonly params: Readonly<Record<TKey, UrlParam<TContext>>>;
+  /** Applied to every request, filtered or not. */
+  readonly sorting?: EntitySorting<AnyEntity>[];
+}
+
+/**
+ * A filter kept in the query string, read as an entifix `EntityLoadRequest`
+ * (ADR 0016).
+ *
+ * entifix's own `parseLoadRequestParams` writes RSQL and accepts only members
+ * marked `filterable`, which no collection or localized member may be. This
+ * declares its parameters instead: readable URLs (`?tag=a&tag=b&q=text`) whose
+ * every value is checked, each becoming one condition of the request.
+ */
+export function defineUrlQuery<TKey extends string, TContext = undefined>({
+  params,
+  sorting,
+}: UrlQueryOptions<TKey, TContext>): UrlQuery<TKey, TContext> {
+  const keys = Object.keys(params) as TKey[];
+  const stateOf = (values: (key: TKey) => readonly string[]) =>
+    Object.fromEntries(
+      keys.map(key => [key, values(key)]),
+    ) as unknown as UrlState<TKey>;
+  const empty = stateOf(() => []);
+
+  const accepted = (key: TKey, values: string[]) => {
+    const { allowed, single } = params[key];
+    const kept = values
+      .map(value => value.trim())
+      .filter(value => value !== '')
+      .filter(value => allowed === undefined || allowed.includes(value));
+    const unique = [...new Set(kept)];
+    return single ? unique.slice(0, 1) : unique;
+  };
+
+  return {
+    empty,
+    parse(search) {
+      const query = new URLSearchParams(search);
+      return stateOf(key => accepted(key, query.getAll(key)));
+    },
+    serialize(state) {
+      const query = new URLSearchParams();
+      for (const key of keys) {
+        for (const value of state[key]) query.append(key, value);
+      }
+      const text = query.toString();
+      return text === '' ? '' : `?${text}`;
+    },
+    isEmpty(state) {
+      return keys.every(key => state[key].length === 0);
+    },
+    request<TEntity extends Entity>(state: UrlState<TKey>, context: TContext) {
+      const filtering = keys
+        .filter(key => state[key].length > 0)
+        .map(key => params[key].condition(state[key], context));
+      return {
+        ...(filtering.length > 0 && {
+          filtering: filtering as unknown as EntityFiltering<TEntity>[],
+        }),
+        ...(sorting !== undefined && {
+          sorting: sorting as unknown as EntitySorting<TEntity>[],
+        }),
+      };
+    },
+  };
+}
+
+/** Any of the values: `in`, which matches any element of a collection too. */
+export function anyOf(property: string) {
+  return (values: readonly string[]): Condition => ({
+    property,
+    operator: 'in',
+    values: [...values],
+  });
+}
+
+/**
+ * The text as a substring of a member, case- and accent-insensitive in the
+ * static adapter. `property` names the member for a context, as the locale
+ * picks one text of a localized member (`title.en`).
+ */
+export function containing<TContext>(
+  property: (context: TContext) => string,
+): UrlParam<TContext>['condition'] {
+  return ([value], context) => ({
+    property: property(context),
+    operator: 'like',
+    value: value as string,
+  });
+}
+
+/** A date inside any of the given years (UTC), as `between` per year. */
+export function inAnyYear(property: string) {
+  return (values: readonly string[]): Condition => ({
+    operator: 'or',
+    values: values.map(year => ({
+      property,
+      operator: 'between' as const,
+      start: new Date(`${year}-01-01T00:00:00.000Z`),
+      end: new Date(`${year}-12-31T23:59:59.999Z`),
+    })),
+  });
+}

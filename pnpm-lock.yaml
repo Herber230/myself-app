@@ -250,6 +250,9 @@ importers:
       '@myself-app/domain':
         specifier: workspace:*
         version: link:../../packages/domain
+      '@myself-app/entifix-browser':
+        specifier: workspace:*
+        version: link:../../packages/entifix-browser
       '@myself-app/static-adapter':
         specifier: workspace:*
         version: link:../../packages/static-adapter
@@ -294,6 +297,31 @@ importers:
       effect:
         specifier: 'catalog:'
         version: 3.22.2
+
+  packages/entifix-browser:
+    dependencies:
+      '@entifix/business':
+        specifier: 'catalog:'
+        version: 0.1.2(effect@3.22.2)
+      '@entifix/core':
+        specifier: 'catalog:'
+        version: 0.1.2(effect@3.22.2)
+      '@myself-app/static-adapter':
+        specifier: workspace:*
+        version: link:../static-adapter
+      '@swc/helpers':
+        specifier: 0.5.23
+        version: 0.5.23
+      effect:
+        specifier: 'catalog:'
+        version: 3.22.2
+    devDependencies:
+      react:
+        specifier: 'catalog:'
+        version: 19.3.0
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.3.0(react@19.3.0)
 
   packages/static-adapter:
     dependencies:
