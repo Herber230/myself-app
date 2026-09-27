@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="240" viewBox="0 0 640 240" font-family="Inter, system-ui, sans-serif" font-size="15">
+  <rect width="640" height="240" rx="12" fill="#f5f7fb"/>
+  <g fill="#ffffff" stroke="#2f5bd3" stroke-width="2">
+    <rect x="24" y="36" width="170" height="56" rx="8"/>
+    <rect x="24" y="148" width="170" height="56" rx="8"/>
+    <rect x="252" y="92" width="150" height="56" rx="8"/>
+    <rect x="456" y="92" width="160" height="56" rx="8"/>
+  </g>
+  <g fill="#1b2433" text-anchor="middle">
+    <text x="109" y="69">Page, at build</text>
+    <text x="109" y="181">Filter, in the browser</text>
+    <text x="327" y="125">load use case</text>
+    <text x="536" y="125">Repository</text>
+  </g>
+  <g stroke="#2f5bd3" stroke-width="2" fill="none">
+    <path d="M194 64 L252 112"/>
+    <path d="M194 176 L252 128"/>
+    <path d="M402 120 L456 120"/>
+  </g>
+</svg>

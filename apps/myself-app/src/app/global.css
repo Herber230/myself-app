@@ -5,6 +5,7 @@
 @import 'tailwindcss';
 @import '@entifix/style/tokens.css';
 @import './themes.css';
+@import './post-body.css';
 
 /*
  * ⚠️ Tailwind v4 does not scan `node_modules`. The primitives' classes exist
