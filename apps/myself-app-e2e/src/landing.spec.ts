@@ -133,7 +133,7 @@ test.describe('on a phone', () => {
     const trigger = banner.getByLabel('Menu', { exact: true });
     await trigger.click();
     const menu = banner.getByRole('navigation', { name: 'Sections' });
-    await expect(menu.getByRole('link')).toHaveCount(6);
+    await expect(menu.getByRole('link')).toHaveCount(7);
 
     await menu.getByRole('link', { name: 'Contact' }).click();
     await page.waitForURL('/en/#contact');

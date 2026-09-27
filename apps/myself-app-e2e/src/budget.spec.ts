@@ -35,6 +35,14 @@ const RADAR_SCRIPT_BUDGET = (238 + 10) * KB;
  */
 const RADAR_FILTERED_BUDGET = (242 + 10) * KB;
 /**
+ * The blog's home, filtering as the radar does (ADR 0016, 0017). Measured
+ * 238.0 KB on 2026-09-27, and 238.8 KB after the first filter with
+ * `/data/post.json`, each rounded up, plus 10 KB of room.
+ */
+const BLOG_SCRIPT_BUDGET = (238 + 10) * KB;
+const BLOG_FILTERED_BUDGET = (239 + 10) * KB;
+
+/**
  * Measured 159.6 KB on 2026-09-25, rounded up, plus 10 KB of room: the
  * print button and the customizer's island (ADR 0015).
  */
@@ -158,4 +166,30 @@ test("the CV's scripts stay within the budget, and carry no entifix", async ({
     expect(script.text).not.toContain('EntityRepositoryTag');
     expect(script.text).not.toContain('loadUCFactory');
   }
+});
+
+test("the blog's scripts stay within the budget, filtering through entifix", async ({
+  page,
+}) => {
+  const { loaded, total, afterInteraction } = await scriptsOf(
+    page,
+    '/en/blog/',
+    each => each.getByRole('group', { name: 'Tag' }),
+    async each => {
+      await each.getByRole('button', { name: 'Testing' }).click();
+      await expect(each.locator('article[data-post]')).toHaveCount(1);
+    },
+  );
+  report('blog', total, loaded.length, BLOG_SCRIPT_BUDGET);
+  report(
+    'blog, filtered',
+    afterInteraction,
+    loaded.length,
+    BLOG_FILTERED_BUDGET,
+  );
+  expect(total).toBeLessThanOrEqual(BLOG_SCRIPT_BUDGET);
+  expect(afterInteraction).toBeLessThanOrEqual(BLOG_FILTERED_BUDGET);
+  expect(
+    loaded.some(script => script.text.includes('EntityRepositoryTag')),
+  ).toBe(true);
 });
