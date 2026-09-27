@@ -4,6 +4,7 @@
 - Date: 2026-09-25
 - Area: ui
 - Read when: a blip shows the wrong movement, a ring's meaning is questioned, a technology needs its own page, or the radar's filter is about to query in the browser
+- Revised: 2026-09-27 by [ADR 0016](0016-entifix-queries-run-in-the-browser-too.md) — the filter runs entifix's use case in the browser, no longer a function over props
 
 Decides #39. Answers the question [ADR 0009](0009-a-radar-laid-out-at-build-time.md)
 left open for #41, and stays within
