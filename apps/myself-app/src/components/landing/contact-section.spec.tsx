@@ -3,14 +3,14 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { loadContactChannels } from '../../content/contact';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { ContactSection } from './contact-section';
 
 const channel = (fields: Partial<ContactChannel>) => fields as ContactChannel;
 
 describe('the contact section', () => {
   it('lists every channel from content, in its order', async () => {
-    const channels = await loadContactChannels(SITE_REPOSITORIES);
+    const channels = await loadContactChannels(SITE_CONTENT);
     render(<ContactSection locale="en" channels={channels} />);
     expect(
       screen.getAllByRole('link').map(link => link.getAttribute('href')),

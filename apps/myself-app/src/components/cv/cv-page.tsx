@@ -14,7 +14,7 @@ import {
   loadCvSheet,
   loadCvVariants,
 } from '../../content/cv';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import {
   isSiteLocale,
@@ -49,9 +49,9 @@ const titleOf = (variant: CvVariant, locale: Parameters<typeof localize>[1]) =>
 /** The route's locale and variant, checked, or not found. */
 async function resolve({ locale, variant }: CvRoute) {
   if (!isSiteLocale(locale)) notFound();
-  const defaultVariant = String(await defaultCvVariantId(SITE_REPOSITORIES));
+  const defaultVariant = String(await defaultCvVariantId(SITE_CONTENT));
   const variantId = variant ?? defaultVariant;
-  const sheet = await loadCvSheet(SITE_REPOSITORIES, variantId);
+  const sheet = await loadCvSheet(SITE_CONTENT, variantId);
   if (sheet === undefined) notFound();
   return { locale, variantId, defaultVariant, sheet };
 }
@@ -84,7 +84,7 @@ export async function CvPageView(route: CvRoute) {
   const { locale, variantId, defaultVariant, sheet } = await resolve(route);
   const { mode } = route;
   const t = siteT(locale);
-  const variants = await loadCvVariants(SITE_REPOSITORIES);
+  const variants = await loadCvVariants(SITE_CONTENT);
   const path = cvPath(variantId, mode, defaultVariant);
   // What Chromium and Safari offer as the PDF's name when printing.
   const fileName = [

@@ -5,7 +5,7 @@ import { localize } from '@myself-app/domain';
 import { ImageResponse } from 'next/og';
 
 import { loadProfile } from './content/profile';
-import { SITE_REPOSITORIES } from './content/repositories';
+import { SITE_CONTENT } from './content/repositories';
 import { siteT } from './i18n/server';
 import type { SiteLocale } from './site-locales';
 import { SOCIAL_PALETTE } from './social-palette';
@@ -38,7 +38,7 @@ export async function renderSocialImage(
   post?: { readonly title: string },
 ): Promise<ImageResponse> {
   const t = siteT(locale);
-  const profile = await loadProfile(SITE_REPOSITORIES);
+  const profile = await loadProfile(SITE_CONTENT);
   // One string: `next/og` needs `display: flex` on a box with several
   // children, and `{first} {last}` would make three.
   const name = [profile.firstName, profile.lastName].join(' ');

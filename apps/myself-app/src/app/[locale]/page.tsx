@@ -1,4 +1,3 @@
-import { Technology } from '@myself-app/domain';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -11,8 +10,7 @@ import { SiteNav } from '../../components/site-nav';
 import { loadContactChannels } from '../../content/contact';
 import { loadProfile } from '../../content/profile';
 import { loadFeaturedProjects } from '../../content/projects';
-import { loadEvery } from '../../content/queries';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../site-locales';
 
@@ -34,11 +32,10 @@ export async function generateMetadata({
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const [profile, projects, technologies, channels] = await Promise.all([
-    loadProfile(SITE_REPOSITORIES),
-    loadFeaturedProjects(SITE_REPOSITORIES),
-    loadEvery(SITE_REPOSITORIES, Technology),
-    loadContactChannels(SITE_REPOSITORIES),
+  const [profile, projects, channels] = await Promise.all([
+    loadProfile(SITE_CONTENT),
+    loadFeaturedProjects(SITE_CONTENT),
+    loadContactChannels(SITE_CONTENT),
   ]);
   return (
     <>
@@ -46,13 +43,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
       <main>
         <Hero locale={locale} profile={profile} />
         <AboutSection locale={locale} profile={profile} />
-        <ProjectsSection
-          locale={locale}
-          projects={projects}
-          technologies={
-            new Map(technologies.map(each => [String(each.id), each]))
-          }
-        />
+        <ProjectsSection locale={locale} projects={projects} />
         <EntifixSection locale={locale} />
         <ContactSection locale={locale} channels={channels} />
       </main>

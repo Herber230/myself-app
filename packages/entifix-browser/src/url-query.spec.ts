@@ -1,7 +1,7 @@
 import { makeStaticRepository } from '@myself-app/static-adapter';
+import { loadThroughUseCase } from '@myself-app/static-adapter';
 import { describe, expect, it } from 'vitest';
 
-import { loadThroughUseCase } from './load-through-use-case.js';
 import { Note, NOTES } from './note.fixture.js';
 import { anyOf, containing, defineUrlQuery, inAnyYear } from './url-query.js';
 

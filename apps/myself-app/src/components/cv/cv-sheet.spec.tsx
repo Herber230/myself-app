@@ -3,13 +3,13 @@ import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { type CvSheet as CvSheetContent, loadCvSheet } from '../../content/cv';
-import { SITE_CONTENT as CONTENT } from '../../content/repositories';
-import { SITE_REPOSITORIES } from '../../content/repositories';
-import { buildSiteRepositories } from '../../content/site-content';
+import { SITE_RECORDS as CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
+import { buildSiteContent } from '../../content/site-content';
 import { CvSheet } from './cv-sheet';
 
 const sheetOf = async (variant: string) =>
-  (await loadCvSheet(SITE_REPOSITORIES, variant)) as CvSheetContent;
+  (await loadCvSheet(SITE_CONTENT, variant)) as CvSheetContent;
 
 const headings = () =>
   screen.getAllByRole('heading', { level: 2 }).map(each => each.textContent);
@@ -63,7 +63,7 @@ describe('the CV sheet', () => {
 
   it('shows each employment’s role, employer, dates and highlights', async () => {
     // The site has no highlight yet, so one is written for the check.
-    const repositories = buildSiteRepositories({
+    const content = buildSiteContent({
       ...CONTENT,
       'employment-highlights.json': [
         {
@@ -75,10 +75,7 @@ describe('the CV sheet', () => {
         },
       ],
     });
-    const sheet = (await loadCvSheet(
-      repositories,
-      'frontend',
-    )) as CvSheetContent;
+    const sheet = (await loadCvSheet(content, 'frontend')) as CvSheetContent;
     render(<CvSheet sheet={sheet} locale="en" mode="human" />);
     const roles = screen.getAllByRole('heading', { level: 3 });
     expect(roles[0].textContent).toBe(sheet.employments[0].period.role?.en);

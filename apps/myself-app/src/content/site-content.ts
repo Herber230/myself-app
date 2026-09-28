@@ -1,21 +1,14 @@
 /**
- * The composition root for content (ADR 0002, 0003): where the JSON of
+ * The composition root for content (ADR 0002, 0003, 0018): where the JSON of
  * `@myself-app/content`, the entities of `@myself-app/domain` and the static
  * adapter meet.
  *
  * It runs once, while `next build` renders the pages, and never in the
- * browser. Every record is validated here before any repository serves it,
- * so a record that is wrong stops the export with the path to what is wrong
- * rather than rendering `undefined` into a page.
+ * browser. Every record is validated before any repository serves it, so a
+ * record that is wrong stops the export with the path to what is wrong
+ * rather than rendering `undefined` into a page. What is left here is the
+ * site's own: which file holds which entity, and the rules only it knows.
  */
-import type { EntityRepository } from '@entifix/business';
-import {
-  deserializeEntityCollection,
-  type Entity,
-  type EntityConstructor,
-  type EntityId,
-  type EntityLoadRequest,
-} from '@entifix/core';
 import {
   Certificate,
   ContactChannel,
@@ -39,40 +32,19 @@ import {
   TechnologyUsePeriod,
 } from '@myself-app/domain';
 import {
-  ContentValidationError,
+  atLeast,
+  type ContentSource,
+  defineSource,
+  defineStaticContent,
   type EntityRule,
-  makeStaticRepository,
-  validateRecords,
-  type ValidationProblem,
+  exactly,
+  nonEmpty,
+  notBefore,
+  present,
+  type StaticContent,
 } from '@myself-app/static-adapter';
-import { Effect } from 'effect';
 
-/** One entity, the file it is read from, and what its links point at. */
-interface ContentSource {
-  readonly entity: EntityConstructor<Entity>;
-  readonly file: string;
-  /** Each link member, and the file whose ids it may name. */
-  readonly links?: Readonly<Record<string, string>>;
-  readonly rules?: readonly EntityRule[];
-  /**
-   * What `/data/<key>.json` carries of it, when not every record whole: the
-   * records a request keeps, and the members left out (ADR 0016, 0017).
-   */
-  readonly published?: {
-    readonly request?: EntityLoadRequest<Entity>;
-    readonly omit?: readonly string[];
-  };
-}
-
-/** A period's `end`, when it has one, is not before its `start`. */
-const endNotBeforeStart: EntityRule = (records, report) => {
-  records.forEach((record, index) => {
-    const { start, end } = record;
-    if (start instanceof Date && end instanceof Date && end < start) {
-      report(index, 'end', 'is before start');
-    }
-  });
-};
+import { readPostBodyFile } from './post-bodies';
 
 /** At most one `ContactChannel` per type: the keys the reference app had. */
 const oneChannelPerType: EntityRule = (records, report) => {
@@ -83,24 +55,6 @@ const oneChannelPerType: EntityRule = (records, report) => {
     }
     seen.add(record.type);
   });
-};
-
-/** One profile: the site is about one person. */
-const exactlyOne: EntityRule = (records, report) => {
-  if (records.length !== 1) {
-    report(
-      0,
-      undefined,
-      `holds ${records.length} records, where one is expected`,
-    );
-  }
-};
-
-/** At least one radar edition: a blip's movement is measured against one. */
-const atLeastOne: EntityRule = (records, report) => {
-  if (records.length === 0) {
-    report(0, undefined, 'holds no record, where at least one is expected');
-  }
 };
 
 /**
@@ -115,171 +69,90 @@ const variantIdNotReserved: EntityRule = (records, report) => {
   });
 };
 
-/** A CV variant takes at least one focus, or it shows no highlight at all. */
-const atLeastOneFocus: EntityRule = (records, report) => {
-  records.forEach((record, index) => {
-    const { focuses } = record;
-    if (!Array.isArray(focuses) || focuses.length === 0) {
-      report(index, 'focuses', 'is empty, so the variant shows no highlight');
-    }
-  });
-};
-
-/** A post has a body — read from its files, so absent from the record. */
-const hasBody: EntityRule = (records, report) => {
-  records.forEach((record, index) => {
-    if (record.body === undefined) {
-      report(index, 'body', 'is required, and is missing');
-    }
-  });
-};
-
-/** A post has a tag: tags are what relate posts to each other (ADR 0017). */
-const atLeastOneTag: EntityRule = (records, report) => {
-  records.forEach((record, index) => {
-    const { tags } = record;
-    if (!Array.isArray(tags) || tags.length === 0) {
-      report(index, 'tags', 'is empty, so the post relates to nothing');
-    }
-  });
-};
-
-/** The posts `/data/post.json` carries: no draft is ever exported. */
-const PUBLISHED_POSTS: EntityLoadRequest<Post> = {
-  filtering: [{ property: 'draft', operator: 'eq', value: false }],
-};
-
 export const CONTENT_SOURCES: readonly ContentSource[] = [
-  { entity: Profile, file: 'profile.json', rules: [exactlyOne] },
-  {
+  // One profile: the site is about one person.
+  defineSource({ entity: Profile, file: 'profile.json', rules: [exactly(1)] }),
+  defineSource({
     entity: ContactChannel,
     file: 'contact-channels.json',
     rules: [oneChannelPerType],
-  },
-  { entity: Employer, file: 'employers.json' },
-  {
+  }),
+  defineSource({ entity: Employer, file: 'employers.json' }),
+  defineSource({
     entity: EmploymentPeriod,
     file: 'employment-periods.json',
-    links: { employer: 'employers.json' },
-    rules: [endNotBeforeStart],
-  },
-  { entity: TechnologyArea, file: 'technology-areas.json' },
-  { entity: Quadrant, file: 'quadrants.json' },
-  { entity: Ring, file: 'rings.json' },
-  {
+    rules: [notBefore('end', 'start')],
+  }),
+  defineSource({ entity: TechnologyArea, file: 'technology-areas.json' }),
+  defineSource({ entity: Quadrant, file: 'quadrants.json' }),
+  defineSource({ entity: Ring, file: 'rings.json' }),
+  defineSource({
     entity: RadarEdition,
     file: 'radar-editions.json',
-    rules: [atLeastOne],
-  },
-  {
-    entity: Technology,
-    file: 'technologies.json',
-    links: {
-      quadrant: 'quadrants.json',
-      ring: 'rings.json',
-      areas: 'technology-areas.json',
-    },
-  },
-  {
+    // A blip's movement is measured against an edition.
+    rules: [atLeast(1)],
+  }),
+  defineSource({ entity: Technology, file: 'technologies.json' }),
+  defineSource({
     entity: TechnologyUsePeriod,
     file: 'technology-use-periods.json',
-    links: { technology: 'technologies.json', ring: 'rings.json' },
-    rules: [endNotBeforeStart],
-  },
-  {
-    entity: Project,
-    file: 'projects.json',
-    links: { technologies: 'technologies.json' },
-  },
-  { entity: CvFocus, file: 'cv-focuses.json' },
-  {
+    rules: [notBefore('end', 'start')],
+  }),
+  defineSource({ entity: Project, file: 'projects.json' }),
+  defineSource({ entity: CvFocus, file: 'cv-focuses.json' }),
+  defineSource({
     entity: EmploymentHighlight,
     file: 'employment-highlights.json',
-    links: { period: 'employment-periods.json', focuses: 'cv-focuses.json' },
-  },
-  {
+  }),
+  defineSource({
     entity: CvVariant,
     file: 'cv-variants.json',
-    links: {
-      technologies: 'technologies.json',
-      employments: 'employment-periods.json',
-      focuses: 'cv-focuses.json',
-    },
-    rules: [variantIdNotReserved, atLeastOneFocus],
-  },
-  { entity: Education, file: 'education.json', rules: [endNotBeforeStart] },
-  { entity: Certificate, file: 'certificates.json' },
-  { entity: Tag, file: 'tags.json' },
-  {
+    rules: [
+      variantIdNotReserved,
+      nonEmpty('focuses', 'so the variant shows no highlight'),
+    ],
+  }),
+  defineSource({
+    entity: Education,
+    file: 'education.json',
+    rules: [notBefore('end', 'start')],
+  }),
+  defineSource({ entity: Certificate, file: 'certificates.json' }),
+  defineSource({ entity: Tag, file: 'tags.json' }),
+  defineSource({
     entity: Post,
     file: 'posts.json',
-    links: { tags: 'tags.json', technologies: 'technologies.json' },
-    rules: [hasBody, atLeastOneTag],
+    // Its body is Markdown beside the record (ADR 0017).
+    sidecars: { body: readPostBodyFile },
+    rules: [
+      // Optional on the entity, which the browser's copy lacks (ADR 0017).
+      present('body'),
+      // Tags are what relate posts to each other.
+      nonEmpty('tags', 'so the post relates to nothing'),
+    ],
     // The blog's filter needs no body, and a draft is never exported.
     published: {
-      // Typed for the entity it names; a source list holds every entity.
-      request: PUBLISHED_POSTS as unknown as EntityLoadRequest<Entity>,
+      request: {
+        filtering: [{ property: 'draft', operator: 'eq', value: false }],
+      },
       omit: ['body'],
     },
-  },
+  }),
 ];
 
-/** The ids a file declares, so a link into it can be checked. */
-function idsOf(records: readonly unknown[] = []): ReadonlySet<EntityId> {
-  return new Set(
-    records.flatMap(record =>
-      record !== null && typeof record === 'object' && 'id' in record
-        ? [record.id as EntityId]
-        : [],
-    ),
-  );
-}
-
-/** A repository per entity, read by the entity's class. */
-export type SiteRepositories = ReadonlyMap<
-  EntityConstructor<Entity>,
-  EntityRepository
->;
+/** The site's content, validated and served. */
+export type SiteContent = StaticContent;
 
 /**
- * Validates every file, then builds a repository over each.
- *
- * Every problem in every file is collected before anything throws, so one
- * build reports all of what is wrong with the content, not the first thing.
+ * Validates every file, then serves each entity from its own repository.
+ * Every problem in every file is reported at once.
  */
-export function buildSiteRepositories(
-  content: Readonly<Record<string, readonly unknown[]>>,
+export function buildSiteContent(
+  records: Readonly<Record<string, readonly unknown[]>>,
   sources: readonly ContentSource[] = CONTENT_SOURCES,
-): SiteRepositories {
-  const problems: ValidationProblem[] = [];
-  const validated = sources.map(source => {
-    const result = validateRecords(source.entity, content[source.file] ?? [], {
-      source: source.file,
-      locales: SITE_LOCALES,
-      localizedMembers: localizedMembersOf(source.entity),
-      linkTargets: Object.fromEntries(
-        Object.entries(source.links ?? {}).map(([member, file]) => [
-          member,
-          idsOf(content[file]),
-        ]),
-      ),
-      rules: source.rules,
-    });
-    problems.push(...result.problems);
-    return { source, records: result.records };
+): SiteContent {
+  return defineStaticContent(records, sources, {
+    locales: SITE_LOCALES,
+    localizedMembersOf,
   });
-
-  if (problems.length > 0) throw new ContentValidationError(problems);
-
-  return new Map(
-    validated.map(({ source, records }) => {
-      const instances = Effect.runSync(
-        deserializeEntityCollection(source.entity, records),
-      ) as Entity[];
-      return [
-        source.entity,
-        makeStaticRepository(source.entity, instances),
-      ] as const;
-    }),
-  );
 }

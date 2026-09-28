@@ -16,9 +16,8 @@ import {
   vi,
 } from 'vitest';
 
-import { dataFileContent } from '../../content/data-files';
 import { loadRadarEntries } from '../../content/radar';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { layoutRadar } from './layout';
 import { RadarExplorer } from './radar-explorer';
 import type { RadarLayout } from './types';
@@ -26,11 +25,9 @@ import type { RadarLayout } from './types';
 let layout: RadarLayout;
 
 beforeAll(async () => {
-  layout = layoutRadar(await loadRadarEntries(SITE_REPOSITORIES));
+  layout = layoutRadar(await loadRadarEntries(SITE_CONTENT));
   // The file the export writes, served where the explorer asks for it.
-  const file = JSON.stringify(
-    await dataFileContent(SITE_REPOSITORIES, 'technology.json'),
-  );
+  const file = JSON.stringify(await SITE_CONTENT.dataFile('technology.json'));
   vi.stubGlobal('fetch', async (url: string) =>
     url === '/data/technology.json'
       ? new Response(file)

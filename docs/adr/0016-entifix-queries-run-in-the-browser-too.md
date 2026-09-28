@@ -4,6 +4,7 @@
 - Date: 2026-09-27
 - Area: data
 - Read when: a filter or a list in the browser needs data, a page's scripts grew past its budget, a filtered view disagrees with the page it filters, or code is about to move into entifix
+- Revised: 2026-09-27 by [ADR 0018](0018-the-incubator-owns-content-mechanics.md) — the gaps below are filed as entifix#38–41; `loadThroughUseCase` moved to the static adapter, and a filter is `useUrlFilter`
 
 Decides the browser half of #70. Supersedes the gate of
 [ADR 0003](0003-build-time-pages-and-browser-queries.md), which measured path C
@@ -29,7 +30,7 @@ pages that filter.
 
 - **The same use case answers a page and a filter.**
   `loadThroughUseCase(repository, request)` runs entifix's `load` use case.
-  The build calls it over the site's repositories (`content/queries.ts`). The
+  The build calls it over the site's repositories (`SITE_CONTENT.loadAll`). The
   browser calls it over a repository built from `/data/<key>.json`
   (`staticJsonSource`). A filter is an `EntityLoadRequest`, never a matching
   function.

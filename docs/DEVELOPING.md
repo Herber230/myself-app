@@ -52,9 +52,9 @@ What the pages say about me lives in `packages/content/src/`, one JSON file per 
 
 - **Ids are readable slugs** (`next-js`, `adopt`), because they appear in URLs and in the links between files. A link is the id it names: `"ring": "adopt"`, `"areas": ["css"]`.
 - **Text that a reader sees is `{ "en": …, "es": … }`**, for the members `LOCALIZED_MEMBERS` lists. A locale missing, empty or not text stops `next build`, with the path: `rings.json › adopt › name is missing "es"`.
-- **Every problem is reported at once.** `apps/myself-app/src/content/site-content.ts` validates every file against its entity's metadata before any page renders — required members, dates, enum values, links that point at something — plus the rules only this site has. A new rule is registered there, never in the adapter.
+- **Every problem is reported at once.** `apps/myself-app/src/content/site-content.ts` declares one `defineSource` per file, and the static adapter validates every file against its entity's metadata before any page renders — required members, dates, enum values, links that point at something — plus each source's rules. A link's target comes from the entity, so a source never declares one. A generic rule is one of the adapter's factories (`exactly(1)`, `nonEmpty('tags')`, `notBefore('end', 'start')`…); a rule only this site has is an `EntityRule` beside the sources, never in the adapter (ADR 0018).
 - **A placeholder value carries `TODO(#<issue>)`**, naming the issue that decides it. `apps/myself-app/src/content/pending-content.ts` lists what is left to write, and holds the blog's placeholder posts today: add a path there before shipping a placeholder, and remove it when the value is written, or the build stops.
-- Pages read content in server components through `src/content/queries.ts`, which runs entifix's `load` use case over the repositories. The radar's and the blog's filters run the same use case in the browser, over `/data/*.json` (ADR 0016).
+- Pages read content in server components through `SITE_CONTENT` (`src/content/repositories.ts`): `loadAll(Entity, request, { resolve: ['links'] })` runs entifix's `load` use case and resolves the links asked for, which `targetOf`/`targetsOf` then read — no id maps, no casts. The radar's and the blog's filters run the same use case in the browser, over `/data/*.json`, through `useUrlFilter` (ADR 0016, 0018).
 
 ## Writing a post
 
@@ -138,7 +138,7 @@ The four under `packages/` are the models; copy the one closest to what you need
 
 ## Moving code into entifix
 
-The `layer:incubator` packages (`static-adapter`, `entifix-browser`) know no entity of this site, so moving one into entifix is a copy: take its `src/` and specs into the entifix package it belongs in, release entifix, bump the catalog here, then replace the imports and delete the package. ADR 0016 lists what each would close in entifix.
+The `layer:incubator` packages (`static-adapter`, `entifix-browser`) know no entity of this site, so moving one into entifix is a copy: take its `src/` and specs into the entifix package it belongs in, release entifix, bump the catalog here, then replace the imports and delete the package. ADR 0016 and 0018 list what each would close in entifix (entifix#38–41).
 
 ## Working on entifix from here
 

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { SITE_REPOSITORIES } from './repositories';
+import { SITE_CONTENT } from './repositories';
 import { loadTechnologyDetail } from './technology-detail';
 
-const detailOf = (id: string) => loadTechnologyDetail(SITE_REPOSITORIES, id);
+const detailOf = (id: string) => loadTechnologyDetail(SITE_CONTENT, id);
 
 describe("a technology's detail", () => {
   it('carries its ring history, oldest first', async () => {

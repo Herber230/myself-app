@@ -9,34 +9,39 @@ import {
   type ContactChannel,
   CvVariant,
   Education,
-  Employer,
+  type Employer,
   EmploymentHighlight,
-  EmploymentPeriod,
+  type EmploymentPeriod,
   type Profile,
-  Technology,
+  type Technology,
 } from '@myself-app/domain';
+import {
+  targetOf,
+  targetsOf,
+  type UnpagedRequest,
+} from '@myself-app/static-adapter';
 
 import { loadContactChannels } from './contact';
 import { loadProfile } from './profile';
-import { loadEvery } from './queries';
-import type { SiteRepositories } from './site-content';
+import type { SiteContent } from './site-content';
+
+/** Variants by their order: the first is the one `/[locale]/cv/` shows. */
+const BY_ORDER: UnpagedRequest<CvVariant> = {
+  sorting: [{ 0: { property: 'order', type: 'asc' } }],
+};
 
 /** Every variant, by its order. The first is the one `/[locale]/cv/` shows. */
-export function loadCvVariants(
-  repositories: SiteRepositories,
-): Promise<CvVariant[]> {
-  return loadEvery(repositories, CvVariant, {
-    sorting: [{ 0: { property: 'order', type: 'asc' } }],
-  });
+export function loadCvVariants(content: SiteContent): Promise<CvVariant[]> {
+  return content.loadAll(CvVariant, BY_ORDER);
 }
 
 /** The id of the variant `/[locale]/cv/` shows. */
 export async function defaultCvVariantId(
-  repositories: SiteRepositories,
+  content: SiteContent,
 ): Promise<EntityId> {
   // `cv-variants.json` has at least the default: the page has nothing to show
   // without it, and `cv.spec.ts` holds the content to it.
-  const [first] = await loadCvVariants(repositories);
+  const [first] = await loadCvVariants(content);
   return (first as CvVariant).id;
 }
 
@@ -46,10 +51,10 @@ export async function defaultCvVariantId(
  * The same in every locale.
  */
 export async function cvVariantParams(
-  repositories: SiteRepositories,
+  content: SiteContent,
 ): Promise<{ variant: string }[]> {
-  const [, ...others] = await loadCvVariants(repositories);
-  return others.map(variant => ({ variant: String(variant.id) }));
+  const [, ...others] = await content.ids(CvVariant, BY_ORDER);
+  return others.map(variant => ({ variant }));
 }
 
 export interface CvEmployment {
@@ -73,43 +78,34 @@ export interface CvSheet {
 
 /** Everything one variant's sheet shows, or nothing for an unknown variant. */
 export async function loadCvSheet(
-  repositories: SiteRepositories,
+  content: SiteContent,
   variantId: string,
 ): Promise<CvSheet | undefined> {
-  const [
-    variants,
-    profile,
-    channels,
-    technologies,
-    periods,
-    employers,
-    highlights,
-    education,
-    certificates,
-  ] = await Promise.all([
-    loadCvVariants(repositories),
-    loadProfile(repositories),
-    loadContactChannels(repositories),
-    loadEvery(repositories, Technology),
-    loadEvery(repositories, EmploymentPeriod),
-    loadEvery(repositories, Employer),
-    loadEvery(repositories, EmploymentHighlight, {
-      sorting: [{ 0: { property: 'order', type: 'asc' } }],
-    }),
-    loadEvery(repositories, Education, {
-      sorting: [{ 0: { property: 'order', type: 'asc' } }],
-    }),
-    loadEvery(repositories, Certificate, {
-      sorting: [{ 0: { property: 'order', type: 'asc' } }],
-    }),
-  ]);
-  const variant = variants.find(each => each.id === variantId);
+  const [[variant], profile, channels, highlights, education, certificates] =
+    await Promise.all([
+      content.loadAll(
+        CvVariant,
+        { filtering: [{ property: 'id', operator: 'eq', value: variantId }] },
+        { resolve: ['technologies', 'employments'] },
+      ),
+      loadProfile(content),
+      loadContactChannels(content),
+      content.loadAll(EmploymentHighlight, {
+        sorting: [{ 0: { property: 'order', type: 'asc' } }],
+      }),
+      content.loadAll(Education, {
+        sorting: [{ 0: { property: 'order', type: 'asc' } }],
+      }),
+      content.loadAll(Certificate, {
+        sorting: [{ 0: { property: 'order', type: 'asc' } }],
+      }),
+    ]);
   if (variant === undefined) return undefined;
 
-  // Validation has checked every link, so each id below names a record.
-  const technologyById = byId(technologies);
-  const periodById = byId(periods);
-  const employerById = byId(employers);
+  // An employment's employer is a second step from the variant.
+  const periods = await content.resolve(targetsOf(variant.employments), [
+    'employer',
+  ]);
   const focuses = new Set(variant.focuses.ids);
   const shown = (period: EntityId) =>
     highlights.filter(
@@ -122,24 +118,13 @@ export async function loadCvSheet(
     profile,
     channels,
     variant,
-    technologies: variant.technologies.ids.map(
-      id => technologyById.get(id) as Technology,
-    ),
-    employments: variant.employments.ids.map(id => {
-      const period = periodById.get(id) as EmploymentPeriod;
-      return {
-        period,
-        employer: employerById.get(period.employer.id) as Employer,
-        highlights: shown(id),
-      };
-    }),
+    technologies: targetsOf(variant.technologies),
+    employments: periods.map(period => ({
+      period,
+      employer: targetOf(period.employer),
+      highlights: shown(period.id),
+    })),
     education,
     certificates,
   };
-}
-
-function byId<T extends { id: EntityId }>(
-  records: readonly T[],
-): ReadonlyMap<EntityId, T> {
-  return new Map(records.map(each => [each.id, each]));
 }

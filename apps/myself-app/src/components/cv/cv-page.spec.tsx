@@ -2,7 +2,7 @@ import { screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { type CvSheet, loadCvSheet } from '../../content/cv';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import { renderPage } from '../../test/render';
 import { customizerGroups, cvMetadata, CvPageView } from './cv-page';
@@ -124,7 +124,7 @@ describe('a CV page', () => {
 
 describe("what a CV's customizer offers", () => {
   it('leaves out a section the sheet does not have', async () => {
-    const sheet = (await loadCvSheet(SITE_REPOSITORIES, 'backend')) as CvSheet;
+    const sheet = (await loadCvSheet(SITE_CONTENT, 'backend')) as CvSheet;
     const [sections] = customizerGroups(
       { ...sheet, education: [], certificates: [] },
       'en',

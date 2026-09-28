@@ -9,20 +9,24 @@ import { CONTENT as PACKAGE_CONTENT } from '@myself-app/content';
 import {
   ContactChannel,
   EmploymentPeriod,
+  Post,
   Profile,
   Technology,
 } from '@myself-app/domain';
-import { ContentValidationError } from '@myself-app/static-adapter';
+import {
+  type ContentSource,
+  ContentValidationError,
+  defineSource,
+  type ReadSidecar,
+} from '@myself-app/static-adapter';
 import { describe, expect, it } from 'vitest';
 
-import { withPostBodies } from './post-bodies';
-import { loadEvery } from './queries';
-import { buildSiteRepositories, CONTENT_SOURCES } from './site-content';
+import { buildSiteContent, CONTENT_SOURCES } from './site-content';
 
 type Content = Record<string, readonly unknown[]>;
 
-/** What the build validates: the package's records, with the posts' bodies. */
-const CONTENT = withPostBodies(PACKAGE_CONTENT);
+/** What the build validates: the package's records; bodies come from files. */
+const CONTENT: Content = PACKAGE_CONTENT;
 
 /** The content with one file replaced. */
 const withFile = (file: string, records: unknown[]): Content => ({
@@ -30,10 +34,13 @@ const withFile = (file: string, records: unknown[]): Content => ({
   [file]: records,
 });
 
-/** Every problem `buildSiteRepositories` reports for some content. */
-function problemsIn(content: Content): string[] {
+/** Every problem `buildSiteContent` reports for some content. */
+function problemsIn(
+  content: Content,
+  sources: readonly ContentSource[] = CONTENT_SOURCES,
+): string[] {
   try {
-    buildSiteRepositories(content);
+    buildSiteContent(content, sources);
   } catch (error) {
     expect(error).toBeInstanceOf(ContentValidationError);
     return (error as ContentValidationError).problems.map(
@@ -58,17 +65,17 @@ describe('the content the site ships', () => {
   });
 
   it('is served, with its links and dates in place', async () => {
-    const repositories = buildSiteRepositories(CONTENT);
-    const [profile] = await loadEvery(repositories, Profile);
+    const content = buildSiteContent(CONTENT);
+    const [profile] = await content.loadAll(Profile);
     expect(profile.firstName).toBe('Herber');
 
-    const periods = await loadEvery(repositories, EmploymentPeriod);
+    const periods = await content.loadAll(EmploymentPeriod);
     for (const period of periods) {
       expect(period.start, String(period.id)).toBeInstanceOf(Date);
       expect(period.employer.id, String(period.id)).toBeTypeOf('string');
     }
 
-    const technologies = await loadEvery(repositories, Technology);
+    const technologies = await content.loadAll(Technology);
     expect(technologies.length).toBe(CONTENT['technologies.json'].length);
   });
 });
@@ -216,11 +223,18 @@ describe('the channel type', () => {
 
 describe('a post', () => {
   it('needs a body in every locale, from its files', () => {
-    const posts = records('posts.json');
-    const [first] = posts;
-    posts[0] = { ...first, body: { en: (first?.body as { en: string }).en } };
-    posts[1] = { ...posts[1], body: undefined };
-    expect(problemsIn(withFile('posts.json', posts))).toEqual([
+    // As if one post had lost its Spanish file, and another both.
+    const readBody: ReadSidecar = (id, locale) =>
+      id === 'a-static-site-on-s3' ||
+      (id === 'entifix-in-the-browser' && locale === 'es')
+        ? undefined
+        : `${id} in ${locale}`;
+    const sources = CONTENT_SOURCES.map(source =>
+      source.entity === Post
+        ? defineSource({ ...source, sidecars: { body: readBody } })
+        : source,
+    );
+    expect(problemsIn(CONTENT, sources)).toEqual([
       'posts.json › entifix-in-the-browser › body is missing "es"',
       'posts.json › a-static-site-on-s3 › body is required, and is missing',
     ]);

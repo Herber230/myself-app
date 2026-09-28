@@ -10,7 +10,7 @@ import {
   placeholderPaths,
   placeholderProblems,
 } from './placeholders';
-import { SITE_CONTENT as CONTENT } from './repositories';
+import { SITE_RECORDS as CONTENT } from './repositories';
 
 const messages = (
   content: Record<string, readonly unknown[]>,

@@ -1,27 +1,16 @@
-import { Project, Technology } from '@myself-app/domain';
+import type { Project } from '@myself-app/domain';
+import { targetsOf } from '@myself-app/static-adapter';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { loadFeaturedProjects } from '../../content/projects';
-import { loadEvery } from '../../content/queries';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { ProjectsSection } from './projects-section';
-
-async function technologiesById() {
-  const technologies = await loadEvery(SITE_REPOSITORIES, Technology);
-  return new Map(technologies.map(each => [String(each.id), each]));
-}
 
 describe('the projects section', () => {
   it('shows the featured projects from content, in their order', async () => {
-    const projects = await loadFeaturedProjects(SITE_REPOSITORIES);
-    render(
-      <ProjectsSection
-        locale="en"
-        projects={projects}
-        technologies={await technologiesById()}
-      />,
-    );
+    const projects = await loadFeaturedProjects(SITE_CONTENT);
+    render(<ProjectsSection locale="en" projects={projects} />);
     expect(
       screen
         .getAllByRole('heading', { level: 3 })
@@ -32,25 +21,18 @@ describe('the projects section', () => {
   });
 
   it('links each technology to its place on the radar, by its name', async () => {
-    const [project] = await loadFeaturedProjects(SITE_REPOSITORIES);
-    const technologies = await technologiesById();
-    render(
-      <ProjectsSection
-        locale="es"
-        projects={[project as Project]}
-        technologies={technologies}
-      />,
-    );
+    const [project] = (await loadFeaturedProjects(SITE_CONTENT)) as [Project];
+    render(<ProjectsSection locale="es" projects={[project]} />);
     const list = screen.getByRole('list', {
-      name: `Tecnologías de ${String(project?.name)}`,
+      name: `Tecnologías de ${String(project.name)}`,
     });
     const links = within(list).getAllByRole('link');
-    const ids = project?.technologies.ids.map(String);
+    const technologies = targetsOf(project.technologies);
     expect(links.map(link => link.getAttribute('href'))).toEqual(
-      ids?.map(id => `/es/tech-radar/#tech-${id}`),
+      technologies.map(each => `/es/tech-radar/#tech-${String(each.id)}`),
     );
     expect(links.map(link => link.textContent)).toEqual(
-      ids?.map(id => technologies.get(id)?.name?.es),
+      technologies.map(each => each.name?.es),
     );
   });
 
@@ -58,7 +40,7 @@ describe('the projects section', () => {
     const project = (fields: Record<string, unknown>) =>
       ({
         summary: { en: 'Summary', es: 'Resumen' },
-        technologies: { ids: [] },
+        technologies: { ids: [], values: [] },
         ...fields,
       }) as unknown as Project;
     render(
@@ -73,7 +55,6 @@ describe('the projects section', () => {
           }),
           project({ id: 'b', name: 'B' }),
         ]}
-        technologies={await technologiesById()}
       />,
     );
     const [a, b] = screen.getAllByRole('listitem').map(item => within(item));

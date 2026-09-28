@@ -3,46 +3,25 @@
  * with the page beside it, and one a browser could not read back into the same
  * records.
  */
-import { entity } from '@entifix/core';
 import { Technology } from '@myself-app/domain';
+import { dataFileOf } from '@myself-app/static-adapter';
 import { describe, expect, it } from 'vitest';
 
-import { DATA_FILES, dataFileContent, dataFileOf } from './data-files';
-import { withPostBodies } from './post-bodies';
-import { loadEvery } from './queries';
-import { SITE_REPOSITORIES } from './repositories';
-import { buildSiteRepositories, CONTENT_SOURCES } from './site-content';
+import { SITE_CONTENT } from './repositories';
+import { buildSiteContent, CONTENT_SOURCES } from './site-content';
 
 describe('the data files', () => {
   it('are one per entity, named by its metadata key', () => {
-    expect(DATA_FILES).toHaveLength(CONTENT_SOURCES.length);
-    expect(DATA_FILES).toContain('technology.json');
-    expect(dataFileOf(Technology)).toBe('technology.json');
-  });
-
-  it('fall back to the class name for an entity that declares no key', () => {
-    // Applied by hand: the app's Vitest runs oxc, which cannot parse decorator
-    // syntax, and this is all `@entity()` does with it.
-    class Keyless {
-      id = 'k';
-    }
-    const metadata = {};
-    entity()(Keyless, {
-      kind: 'class',
-      name: 'Keyless',
-      metadata,
-      addInitializer: () => undefined,
-    });
-    Object.defineProperty(Keyless, Symbol.metadata, { value: metadata });
-    expect(dataFileOf(Keyless)).toBe('Keyless.json');
+    expect(SITE_CONTENT.dataFiles).toHaveLength(CONTENT_SOURCES.length);
+    expect(SITE_CONTENT.dataFiles).toContain('technology.json');
   });
 
   it('carry every record the pages render, as entifix serializes it', async () => {
-    const written = (await dataFileContent(
-      SITE_REPOSITORIES,
-      'technology.json',
-    )) as { id: string; quadrant: string }[];
-    const rendered = await loadEvery(SITE_REPOSITORIES, Technology);
+    const written = (await SITE_CONTENT.dataFile('technology.json')) as {
+      id: string;
+      quadrant: string;
+    }[];
+    const rendered = await SITE_CONTENT.loadAll(Technology);
     expect(written.map(record => record.id)).toEqual(
       rendered.map(record => record.id),
     );
@@ -57,38 +36,29 @@ describe('the data files', () => {
           async source =>
             [
               source.file,
-              await dataFileContent(
-                SITE_REPOSITORIES,
-                dataFileOf(source.entity),
-              ),
+              await SITE_CONTENT.dataFile(dataFileOf(source.entity)),
             ] as const,
         ),
       ),
     );
     // `post.json` carries no bodies (ADR 0017): they come from their files.
-    const again = buildSiteRepositories(withPostBodies(content));
+    const again = buildSiteContent(content);
     const [before, after] = await Promise.all([
-      loadEvery(SITE_REPOSITORIES, Technology),
-      loadEvery(again, Technology),
+      SITE_CONTENT.loadAll(Technology),
+      again.loadAll(Technology),
     ]);
     expect(after.map(record => record.name)).toEqual(
       before.map(record => record.name),
     );
   });
-
-  it('refuse a file no entity is written to', async () => {
-    await expect(
-      dataFileContent(SITE_REPOSITORIES, 'nothing.json'),
-    ).rejects.toThrow('No entity is written to /data/nothing.json');
-  });
 });
 
 describe('the posts file', () => {
   it('leaves out every body and every draft', async () => {
-    const written = (await dataFileContent(
-      SITE_REPOSITORIES,
-      'post.json',
-    )) as Record<string, unknown>[];
+    const written = (await SITE_CONTENT.dataFile('post.json')) as Record<
+      string,
+      unknown
+    >[];
     expect(written.length).toBeGreaterThan(0);
     for (const record of written) {
       expect(record).not.toHaveProperty('body');

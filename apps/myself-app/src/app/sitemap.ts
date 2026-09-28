@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-import { SITE_REPOSITORIES } from '../content/repositories';
+import { SITE_CONTENT } from '../content/repositories';
 import { loadSitePaths } from '../content/site-paths';
 import { siteMapEntries } from '../site-map';
 import { siteUrl } from '../site-url';
@@ -13,5 +13,5 @@ export const dynamic = 'force-static';
  * technology's page (ADR 0014) and each post (ADR 0017).
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  return siteMapEntries(siteUrl(), await loadSitePaths(SITE_REPOSITORIES));
+  return siteMapEntries(siteUrl(), await loadSitePaths(SITE_CONTENT));
 }
