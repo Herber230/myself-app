@@ -1,4 +1,3 @@
-import { DATA_FILES, dataFileContent } from '../../../content/data-files';
 import { SITE_CONTENT } from '../../../content/repositories';
 
 /**
@@ -10,7 +9,7 @@ export const dynamic = 'force-static';
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return DATA_FILES.map(file => ({ file }));
+  return SITE_CONTENT.dataFiles.map(file => ({ file }));
 }
 
 export async function GET(
@@ -18,5 +17,5 @@ export async function GET(
   { params }: RouteContext<'/data/[file]'>,
 ) {
   const { file } = await params;
-  return Response.json(await dataFileContent(SITE_CONTENT, file));
+  return Response.json(await SITE_CONTENT.dataFile(file));
 }

@@ -2,11 +2,13 @@
  * The content definition over a small library: sources in, validated
  * repositories and reads out, and link targets found from the entities.
  */
+import { entity } from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
 import {
   ContentDefinitionError,
   type ContentSource,
+  dataFileOf,
   defineSource,
   defineStaticContent,
 } from './content-definition.js';
@@ -214,6 +216,63 @@ describe('what the definition checks', () => {
       new ContentDefinitionError(
         'Reprint.publisher links to Publisher, which no source declares',
       ),
+    );
+  });
+});
+
+@entity()
+class Keyless {
+  id = 'k';
+}
+
+describe('the data files', () => {
+  it('are one per source, named by the entity’s key or else its class', () => {
+    expect(define().dataFiles).toEqual([
+      'author.json',
+      'shelf.json',
+      'book.json',
+    ]);
+    expect(dataFileOf(Keyless)).toBe('Keyless.json');
+  });
+
+  it('carry every record whole, as entifix serializes it', async () => {
+    const [engine] = (await define().dataFile('book.json')) as Record<
+      string,
+      unknown
+    >[];
+    expect(engine).toMatchObject({
+      id: 'engine',
+      author: 'ada',
+      shelves: ['maths', 'machines'],
+      body: { en: 'Notes.', es: 'Notas.' },
+    });
+  });
+
+  it('carry only what a published view keeps', async () => {
+    const content = define(LIBRARY, [
+      ...SOURCES.slice(0, 2),
+      defineSource({
+        entity: Book,
+        file: 'books.json',
+        published: {
+          request: {
+            filtering: [{ property: 'draft', operator: 'eq', value: false }],
+          },
+          omit: ['body'],
+        },
+      }),
+    ]);
+    const written = (await content.dataFile('book.json')) as Record<
+      string,
+      unknown
+    >[];
+    expect(written.map(record => record.id)).toEqual(['engine', 'compiler']);
+    for (const record of written) expect(record).not.toHaveProperty('body');
+  });
+
+  it('refuse a file no entity is written to', async () => {
+    await expect(define().dataFile('nothing.json')).rejects.toThrow(
+      'No entity is written to /data/nothing.json',
     );
   });
 });

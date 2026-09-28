@@ -11,6 +11,8 @@ import {
   type EntityId,
   type EntityLoadRequest,
   type EntityPage,
+  extractMetaEntity,
+  serializeEntityCollection,
 } from '@entifix/core';
 import { Context, Effect } from 'effect';
 
@@ -106,11 +108,24 @@ export interface StaticContent {
     records: readonly TEntity[],
     members: readonly LinkMember<TEntity>[],
   ): Promise<TEntity[]>;
+  /** Every file the browser may read, one per source, by `dataFileOf`. */
+  readonly dataFiles: readonly string[];
+  /**
+   * The records one data file carries, serialized as entifix writes them —
+   * links as ids, dates as ISO strings — through its source's published view.
+   */
+  dataFile(name: string): Promise<unknown[]>;
 }
 
 export interface LoadAllOptions<TEntity extends Entity> {
   /** The link members to resolve on every record loaded. */
   readonly resolve?: readonly LinkMember<TEntity>[];
+}
+
+/** The data file an entity is written to, from its metadata key. */
+export function dataFileOf(entity: EntityConstructor<Entity>): string {
+  const meta = extractMetaEntity(entity);
+  return `${meta.key ?? meta.name}.json`;
 }
 
 /** Thrown when the sources themselves are wrong, whatever the content. */
@@ -232,20 +247,42 @@ export function defineStaticContent(
     members: readonly LinkMember<TEntity>[],
   ) => resolveLinks(records, members, resolver);
 
+  const loadAll = async <TEntity extends Entity>(
+    entity: EntityConstructor<TEntity>,
+    request: UnpagedRequest<TEntity> = {},
+    { resolve: members = [] }: LoadAllOptions<TEntity> = {},
+  ): Promise<TEntity[]> => {
+    // A site's files hold a few dozen records each, so one page as large as
+    // can be counted is all of them.
+    const page = await load(entity, {
+      ...request,
+      page: 1,
+      pageSize: Number.MAX_SAFE_INTEGER,
+    });
+    return resolve(page.items, members);
+  };
+
   return {
     sources,
     repositoryOf,
     load,
+    loadAll,
     resolve,
-    async loadAll(entity, request = {}, { resolve: members = [] } = {}) {
-      // A site's files hold a few dozen records each, so one page as large
-      // as can be counted is all of them.
-      const page = await load(entity, {
-        ...request,
-        page: 1,
-        pageSize: Number.MAX_SAFE_INTEGER,
-      });
-      return resolve(page.items, members);
+    dataFiles: sources.map(source => dataFileOf(source.entity)),
+    async dataFile(name) {
+      const source = sources.find(each => dataFileOf(each.entity) === name);
+      if (source === undefined) {
+        throw new RangeError(`No entity is written to /data/${name}`);
+      }
+      const records = await loadAll(source.entity, source.published?.request);
+      const omitted: readonly string[] = source.published?.omit ?? [];
+      return serializeEntityCollection(source.entity, records).map(record =>
+        Object.fromEntries(
+          Object.entries(record).filter(
+            ([member]) => !omitted.includes(member),
+          ),
+        ),
+      );
     },
   };
 }

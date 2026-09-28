@@ -13,7 +13,6 @@ import {
 } from '@myself-app/entifix-browser';
 import { describe, expect, it } from 'vitest';
 
-import { dataFileContent } from '../../content/data-files';
 import { SITE_CONTENT } from '../../content/repositories';
 import { radarQuery, type RadarVocabulary } from './radar-filter';
 
@@ -36,7 +35,7 @@ async function vocabulary(): Promise<RadarVocabulary> {
 
 /** The browser's source, over the file the export writes. */
 async function browserSource() {
-  const file = await dataFileContent(SITE_CONTENT, 'technology.json');
+  const file = await SITE_CONTENT.dataFile('technology.json');
   return staticJsonSource(
     Technology,
     '/data/technology.json',

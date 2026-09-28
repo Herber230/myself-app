@@ -10,7 +10,6 @@ import {
 } from '@myself-app/entifix-browser';
 import { describe, expect, it } from 'vitest';
 
-import { dataFileContent } from '../../content/data-files';
 import { SITE_CONTENT } from '../../content/repositories';
 import { blogQuery } from './blog-query';
 
@@ -24,7 +23,7 @@ const idsOf = (posts: readonly Post[]) => posts.map(post => String(post.id));
 
 describe('the blog filter', () => {
   it('keeps the same posts in the browser as at build', async () => {
-    const file = await dataFileContent(SITE_CONTENT, 'post.json');
+    const file = await SITE_CONTENT.dataFile('post.json');
     const repository = await staticJsonSource(
       Post,
       '/data/post.json',

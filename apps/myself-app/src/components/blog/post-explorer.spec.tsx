@@ -17,7 +17,6 @@ import {
 } from 'vitest';
 
 import { loadPostPreviews } from '../../content/blog';
-import { dataFileContent } from '../../content/data-files';
 import { SITE_CONTENT } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import type { PostCardData } from './post-card';
@@ -31,7 +30,7 @@ beforeAll(async () => {
     postCardOf(preview, 'en', siteT('en')),
   );
   // The file the export writes, served where the explorer asks for it.
-  const file = JSON.stringify(await dataFileContent(SITE_CONTENT, 'post.json'));
+  const file = JSON.stringify(await SITE_CONTENT.dataFile('post.json'));
   vi.stubGlobal('fetch', async (url: string) =>
     url === '/data/post.json'
       ? new Response(file)
