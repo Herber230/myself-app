@@ -9,13 +9,6 @@
 import { Stack } from '@entifix/react-controls/primitives';
 import type { ReactNode } from 'react';
 
-/** `values` with `value` added, or taken out when it is already there. */
-export function toggled<T>(values: readonly T[], value: T): T[] {
-  return values.includes(value)
-    ? values.filter(each => each !== value)
-    : [...values, value];
-}
-
 export function FilterFieldset({
   label,
   children,

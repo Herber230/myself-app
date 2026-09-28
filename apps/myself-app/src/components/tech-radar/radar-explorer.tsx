@@ -14,18 +14,17 @@
 import { Stack, Text } from '@entifix/react-controls/primitives';
 import { Technology } from '@myself-app/domain/entities/technology';
 import { staticJsonSource } from '@myself-app/entifix-browser';
-import { useEntityLoad, useUrlState } from '@myself-app/entifix-browser/react';
+import { useUrlFilter } from '@myself-app/entifix-browser/react';
 import { type ReactNode, useMemo, useState } from 'react';
 
 import type { SiteLocale } from '../../site-locales';
-import {
-  FilterFieldset,
-  FilterSummary,
-  toggled,
-  ToggleGroup,
-} from '../filters';
+import { FilterFieldset, FilterSummary, ToggleGroup } from '../filters';
 import { RadarChart } from './radar-chart';
-import { radarQuery, type RadarVocabulary } from './radar-filter';
+import {
+  type RadarParam,
+  radarQuery,
+  type RadarVocabulary,
+} from './radar-filter';
 import { RadarLegend } from './radar-legend';
 import type { RadarLayout } from './types';
 
@@ -76,27 +75,24 @@ export function RadarExplorer({
   children,
 }: RadarExplorerProps) {
   const query = useMemo(() => radarQuery(vocabulary), [vocabulary]);
-  // `null` in the static HTML, which is drawn unfiltered and without controls.
-  const [filter, update] = useUrlState(query);
-  const filtering = filter !== null && !query.isEmpty(filter);
-  const load = useEntityLoad<Technology>(
-    TECHNOLOGIES,
-    filtering ? query.request(filter, locale) : null,
+  // `filter` is `null` in the static HTML, drawn unfiltered and without
+  // controls.
+  const { filter, filtering, kept, toggle, set, clear } = useUrlFilter<
+    RadarParam,
+    SiteLocale,
+    Technology
+  >(TECHNOLOGIES, query, locale);
+  const dimmed = useMemo(
+    () =>
+      kept === undefined
+        ? NONE_DIMMED
+        : new Set(
+            layout.blips
+              .filter(blip => !kept.has(blip.id))
+              .map(blip => blip.id),
+          ),
+    [kept, layout],
   );
-  // While a new answer is on its way, the last one stays on screen.
-  const page =
-    load.status === 'done'
-      ? load.page
-      : load.status === 'pending'
-        ? load.previous
-        : undefined;
-  const dimmed = useMemo(() => {
-    if (page === undefined) return NONE_DIMMED;
-    const kept = new Set(page.items.map(technology => String(technology.id)));
-    return new Set(
-      layout.blips.filter(blip => !kept.has(blip.id)).map(blip => blip.id),
-    );
-  }, [page, layout]);
   const [highlighted, setHighlighted] = useState<string>();
 
   const shown = layout.blips.length - dimmed.size;
@@ -111,12 +107,7 @@ export function RadarExplorer({
               name,
             }))}
             selected={filter.quadrant}
-            onToggle={quadrant =>
-              update({
-                ...filter,
-                quadrant: toggled(filter.quadrant, quadrant),
-              })
-            }
+            onToggle={quadrant => toggle('quadrant', quadrant)}
           />
           <ToggleGroup
             label={copy.ring}
@@ -125,27 +116,23 @@ export function RadarExplorer({
               name,
             }))}
             selected={filter.ring}
-            onToggle={ring =>
-              update({ ...filter, ring: toggled(filter.ring, ring) })
-            }
+            onToggle={ring => toggle('ring', ring)}
           />
           <ToggleGroup
             label={copy.area}
             options={areas.map(area => ({ key: area.id, name: area.name }))}
             selected={filter.area}
-            onToggle={area =>
-              update({ ...filter, area: toggled(filter.area, area) })
-            }
+            onToggle={area => toggle('area', area)}
           />
           <FilterSummary
             searchLabel={copy.search}
             search={filter.q[0] ?? ''}
-            onSearch={text => update({ ...filter, q: [text] })}
+            onSearch={text => set('q', [text])}
             showing={copy.showing
               .replace('{{shown}}', String(shown))
               .replace('{{total}}', String(layout.blips.length))}
             clearLabel={copy.clear}
-            onClear={filtering ? () => update(query.empty) : undefined}
+            onClear={filtering ? clear : undefined}
           />
         </FilterFieldset>
       )}

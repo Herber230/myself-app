@@ -1,14 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { FilterFieldset, FilterSummary, toggled, ToggleGroup } from './filters';
-
-describe('toggled', () => {
-  it('adds a value, and takes it out again', () => {
-    expect(toggled(['a'], 'b')).toEqual(['a', 'b']);
-    expect(toggled(['a', 'b'], 'a')).toEqual(['b']);
-  });
-});
+import { FilterFieldset, FilterSummary, ToggleGroup } from './filters';
 
 describe('the filter controls', () => {
   it('group their controls under a named fieldset', () => {
