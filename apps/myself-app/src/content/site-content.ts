@@ -39,9 +39,14 @@ import {
   TechnologyUsePeriod,
 } from '@myself-app/domain';
 import {
+  atLeast,
   ContentValidationError,
   type EntityRule,
+  exactly,
   makeStaticRepository,
+  nonEmpty,
+  notBefore,
+  present,
   validateRecords,
   type ValidationProblem,
 } from '@myself-app/static-adapter';
@@ -64,16 +69,6 @@ interface ContentSource {
   };
 }
 
-/** A period's `end`, when it has one, is not before its `start`. */
-const endNotBeforeStart: EntityRule = (records, report) => {
-  records.forEach((record, index) => {
-    const { start, end } = record;
-    if (start instanceof Date && end instanceof Date && end < start) {
-      report(index, 'end', 'is before start');
-    }
-  });
-};
-
 /** At most one `ContactChannel` per type: the keys the reference app had. */
 const oneChannelPerType: EntityRule = (records, report) => {
   const seen = new Set<unknown>();
@@ -83,24 +78,6 @@ const oneChannelPerType: EntityRule = (records, report) => {
     }
     seen.add(record.type);
   });
-};
-
-/** One profile: the site is about one person. */
-const exactlyOne: EntityRule = (records, report) => {
-  if (records.length !== 1) {
-    report(
-      0,
-      undefined,
-      `holds ${records.length} records, where one is expected`,
-    );
-  }
-};
-
-/** At least one radar edition: a blip's movement is measured against one. */
-const atLeastOne: EntityRule = (records, report) => {
-  if (records.length === 0) {
-    report(0, undefined, 'holds no record, where at least one is expected');
-  }
 };
 
 /**
@@ -115,42 +92,14 @@ const variantIdNotReserved: EntityRule = (records, report) => {
   });
 };
 
-/** A CV variant takes at least one focus, or it shows no highlight at all. */
-const atLeastOneFocus: EntityRule = (records, report) => {
-  records.forEach((record, index) => {
-    const { focuses } = record;
-    if (!Array.isArray(focuses) || focuses.length === 0) {
-      report(index, 'focuses', 'is empty, so the variant shows no highlight');
-    }
-  });
-};
-
-/** A post has a body — read from its files, so absent from the record. */
-const hasBody: EntityRule = (records, report) => {
-  records.forEach((record, index) => {
-    if (record.body === undefined) {
-      report(index, 'body', 'is required, and is missing');
-    }
-  });
-};
-
-/** A post has a tag: tags are what relate posts to each other (ADR 0017). */
-const atLeastOneTag: EntityRule = (records, report) => {
-  records.forEach((record, index) => {
-    const { tags } = record;
-    if (!Array.isArray(tags) || tags.length === 0) {
-      report(index, 'tags', 'is empty, so the post relates to nothing');
-    }
-  });
-};
-
 /** The posts `/data/post.json` carries: no draft is ever exported. */
 const PUBLISHED_POSTS: EntityLoadRequest<Post> = {
   filtering: [{ property: 'draft', operator: 'eq', value: false }],
 };
 
 export const CONTENT_SOURCES: readonly ContentSource[] = [
-  { entity: Profile, file: 'profile.json', rules: [exactlyOne] },
+  // One profile: the site is about one person.
+  { entity: Profile, file: 'profile.json', rules: [exactly(1)] },
   {
     entity: ContactChannel,
     file: 'contact-channels.json',
@@ -161,7 +110,7 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
     entity: EmploymentPeriod,
     file: 'employment-periods.json',
     links: { employer: 'employers.json' },
-    rules: [endNotBeforeStart],
+    rules: [notBefore('end', 'start')],
   },
   { entity: TechnologyArea, file: 'technology-areas.json' },
   { entity: Quadrant, file: 'quadrants.json' },
@@ -169,7 +118,8 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
   {
     entity: RadarEdition,
     file: 'radar-editions.json',
-    rules: [atLeastOne],
+    // A blip's movement is measured against an edition.
+    rules: [atLeast(1)],
   },
   {
     entity: Technology,
@@ -184,7 +134,7 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
     entity: TechnologyUsePeriod,
     file: 'technology-use-periods.json',
     links: { technology: 'technologies.json', ring: 'rings.json' },
-    rules: [endNotBeforeStart],
+    rules: [notBefore('end', 'start')],
   },
   {
     entity: Project,
@@ -205,16 +155,28 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
       employments: 'employment-periods.json',
       focuses: 'cv-focuses.json',
     },
-    rules: [variantIdNotReserved, atLeastOneFocus],
+    rules: [
+      variantIdNotReserved,
+      nonEmpty('focuses', 'so the variant shows no highlight'),
+    ],
   },
-  { entity: Education, file: 'education.json', rules: [endNotBeforeStart] },
+  {
+    entity: Education,
+    file: 'education.json',
+    rules: [notBefore('end', 'start')],
+  },
   { entity: Certificate, file: 'certificates.json' },
   { entity: Tag, file: 'tags.json' },
   {
     entity: Post,
     file: 'posts.json',
     links: { tags: 'tags.json', technologies: 'technologies.json' },
-    rules: [hasBody, atLeastOneTag],
+    rules: [
+      // Read from its files, so absent from the record (ADR 0017).
+      present('body'),
+      // Tags are what relate posts to each other.
+      nonEmpty('tags', 'so the post relates to nothing'),
+    ],
     // The blog's filter needs no body, and a draft is never exported.
     published: {
       // Typed for the entity it names; a source list holds every entity.
