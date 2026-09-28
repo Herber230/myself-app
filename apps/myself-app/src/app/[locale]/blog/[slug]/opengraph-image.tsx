@@ -1,7 +1,7 @@
 import { localize, type LocalizedText } from '@myself-app/domain';
 import { notFound } from 'next/navigation';
 
-import { loadPost, loadPosts } from '../../../../content/blog';
+import { loadPost, loadPostIds } from '../../../../content/blog';
 import { SITE_CONTENT } from '../../../../content/repositories';
 import { en } from '../../../../i18n/catalogs/en';
 import { isSiteLocale, SITE_LOCALES } from '../../../../site-locales';
@@ -12,10 +12,8 @@ export const dynamic = 'force-static';
 
 /** Every segment of a metadata image route is listed here (ADR 0001). */
 export async function generateStaticParams() {
-  const posts = await loadPosts(SITE_CONTENT);
-  return SITE_LOCALES.flatMap(locale =>
-    posts.map(post => ({ locale, slug: String(post.id) })),
-  );
+  const posts = await loadPostIds(SITE_CONTENT);
+  return SITE_LOCALES.flatMap(locale => posts.map(slug => ({ locale, slug })));
 }
 
 export const size = SOCIAL_IMAGE_SIZE;

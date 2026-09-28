@@ -30,7 +30,7 @@ pages that filter.
 
 - **The same use case answers a page and a filter.**
   `loadThroughUseCase(repository, request)` runs entifix's `load` use case.
-  The build calls it over the site's repositories (`content/queries.ts`). The
+  The build calls it over the site's repositories (`SITE_CONTENT.loadAll`). The
   browser calls it over a repository built from `/data/<key>.json`
   (`staticJsonSource`). A filter is an `EntityLoadRequest`, never a matching
   function.

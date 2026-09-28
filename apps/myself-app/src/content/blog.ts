@@ -13,7 +13,7 @@ import {
   type SiteLocale,
   Tag,
 } from '@myself-app/domain';
-import { targetsOf } from '@myself-app/static-adapter';
+import { targetsOf, type UnpagedRequest } from '@myself-app/static-adapter';
 
 import type { SiteContent } from './site-content';
 
@@ -59,16 +59,32 @@ const PUBLISHED: EntityFilter<Post> = {
   value: false,
 };
 
+/** The request for every post a filter keeps, newest first. */
+function postsRequest(
+  { includeDrafts = SHOW_DRAFTS }: BlogReadOptions,
+  filtering: readonly EntityFilter<Post>[] = [],
+): UnpagedRequest<Post> {
+  return {
+    filtering: includeDrafts ? [...filtering] : [PUBLISHED, ...filtering],
+    sorting: [{ 0: { property: 'publishedAt', type: 'desc' } }],
+  };
+}
+
 /** Every post a filter keeps, newest first. */
 export function loadPosts(
   content: SiteContent,
-  { includeDrafts = SHOW_DRAFTS }: BlogReadOptions = {},
+  options: BlogReadOptions = {},
   filtering: readonly EntityFilter<Post>[] = [],
 ): Promise<Post[]> {
-  return content.loadAll(Post, {
-    filtering: includeDrafts ? [...filtering] : [PUBLISHED, ...filtering],
-    sorting: [{ 0: { property: 'publishedAt', type: 'desc' } }],
-  });
+  return content.loadAll(Post, postsRequest(options, filtering));
+}
+
+/** Every post's id, newest first: its page's slug. */
+export function loadPostIds(
+  content: SiteContent,
+  options: BlogReadOptions = {},
+): Promise<string[]> {
+  return content.ids(Post, postsRequest(options));
 }
 
 /** One post, or `undefined` when there is none by that id to show. */

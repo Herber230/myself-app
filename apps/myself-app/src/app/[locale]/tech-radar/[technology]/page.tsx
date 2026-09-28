@@ -32,8 +32,8 @@ import {
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  const technologies = await SITE_CONTENT.loadAll(Technology);
-  return technologies.map(each => ({ technology: String(each.id) }));
+  const technologies = await SITE_CONTENT.ids(Technology);
+  return technologies.map(technology => ({ technology }));
 }
 
 async function detailOf(

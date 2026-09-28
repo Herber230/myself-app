@@ -130,6 +130,14 @@ export interface StaticContent {
     records: readonly TEntity[],
     members: readonly LinkMember<TEntity>[],
   ): Promise<TEntity[]>;
+  /**
+   * The ids of every record a request keeps, as text: what a page's static
+   * params and a sitemap are made of.
+   */
+  ids<TEntity extends Entity>(
+    entity: EntityConstructor<TEntity>,
+    request?: UnpagedRequest<TEntity>,
+  ): Promise<string[]>;
   /** Every file the browser may read, one per source, by `dataFileOf`. */
   readonly dataFiles: readonly string[];
   /**
@@ -325,6 +333,10 @@ export function defineStaticContent(
     load,
     loadAll,
     resolve,
+    async ids(entity, request) {
+      const records = await loadAll(entity, request);
+      return records.map(record => String(record.id));
+    },
     dataFiles: sources.map(source => dataFileOf(source.entity)),
     async dataFile(name) {
       const source = sources.find(each => dataFileOf(each.entity) === name);

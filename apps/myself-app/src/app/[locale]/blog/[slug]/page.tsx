@@ -19,6 +19,7 @@ import { SiteNav } from '../../../../components/site-nav';
 import { technologyPath } from '../../../../components/tech-radar/radar-paths';
 import {
   loadPost,
+  loadPostIds,
   loadPosts,
   previewsOf,
   relatedPosts,
@@ -36,8 +37,8 @@ import {
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  const posts = await loadPosts(SITE_CONTENT);
-  return posts.map(each => ({ slug: String(each.id) }));
+  const posts = await loadPostIds(SITE_CONTENT);
+  return posts.map(slug => ({ slug }));
 }
 
 async function postOf(params: PageProps<'/[locale]/blog/[slug]'>['params']) {

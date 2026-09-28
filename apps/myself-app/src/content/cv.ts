@@ -15,17 +15,24 @@ import {
   type Profile,
   type Technology,
 } from '@myself-app/domain';
-import { targetOf, targetsOf } from '@myself-app/static-adapter';
+import {
+  targetOf,
+  targetsOf,
+  type UnpagedRequest,
+} from '@myself-app/static-adapter';
 
 import { loadContactChannels } from './contact';
 import { loadProfile } from './profile';
 import type { SiteContent } from './site-content';
 
+/** Variants by their order: the first is the one `/[locale]/cv/` shows. */
+const BY_ORDER: UnpagedRequest<CvVariant> = {
+  sorting: [{ 0: { property: 'order', type: 'asc' } }],
+};
+
 /** Every variant, by its order. The first is the one `/[locale]/cv/` shows. */
 export function loadCvVariants(content: SiteContent): Promise<CvVariant[]> {
-  return content.loadAll(CvVariant, {
-    sorting: [{ 0: { property: 'order', type: 'asc' } }],
-  });
+  return content.loadAll(CvVariant, BY_ORDER);
 }
 
 /** The id of the variant `/[locale]/cv/` shows. */
@@ -46,8 +53,8 @@ export async function defaultCvVariantId(
 export async function cvVariantParams(
   content: SiteContent,
 ): Promise<{ variant: string }[]> {
-  const [, ...others] = await loadCvVariants(content);
-  return others.map(variant => ({ variant: String(variant.id) }));
+  const [, ...others] = await content.ids(CvVariant, BY_ORDER);
+  return others.map(variant => ({ variant }));
 }
 
 export interface CvEmployment {

@@ -96,6 +96,16 @@ describe('a content definition', () => {
     ).toHaveLength(2);
   });
 
+  it('lists the ids a request keeps, as text', async () => {
+    const content = define();
+    expect(await content.ids(Author)).toEqual(['ada', 'grace']);
+    expect(
+      await content.ids(Book, {
+        filtering: [{ property: 'draft', operator: 'eq', value: true }],
+      }),
+    ).toEqual(['cobol']);
+  });
+
   it('parses dates and keeps links as ids', async () => {
     const [engine] = await define().loadAll(Book, {
       filtering: [{ property: 'id', operator: 'eq', value: 'engine' }],
