@@ -276,3 +276,87 @@ describe('the data files', () => {
     );
   });
 });
+
+describe('a sidecar member', () => {
+  /** Bodies kept beside the books: `engine` in both locales, `compiler` in one. */
+  const readBody = (id: string, locale: string) =>
+    id === 'engine' || (id === 'compiler' && locale === 'en')
+      ? `${id} in ${locale}`
+      : undefined;
+
+  const withBodies = (content = LIBRARY) =>
+    define(content, [
+      ...SOURCES.slice(0, 2),
+      defineSource({
+        entity: Book,
+        file: 'books.json',
+        sidecars: { body: readBody },
+      }),
+    ]);
+
+  const withoutBodies = () =>
+    Object.fromEntries(
+      Object.entries(LIBRARY).map(([file, records]) => [
+        file,
+        records.map(record =>
+          Object.fromEntries(
+            Object.entries(record as object).filter(([key]) => key !== 'body'),
+          ),
+        ),
+      ]),
+    );
+
+  it('is attached from its files, in every locale that has one', () => {
+    const problems: string[] = [];
+    try {
+      withBodies(withoutBodies());
+    } catch (error) {
+      problems.push(
+        ...(error as ContentValidationError).problems.map(
+          problem => `${problem.path} ${problem.message}`,
+        ),
+      );
+    }
+    // `cobol` has no file, so it has no body, which the entity allows.
+    expect(problems).toEqual(['books.json › compiler › body is missing "es"']);
+  });
+
+  it('is what the records carry once validated', () => {
+    const content = withBodies({
+      ...withoutBodies(),
+      'books.json': (withoutBodies()['books.json'] as unknown[]).slice(0, 1),
+    });
+    expect(content.records['books.json']).toEqual([
+      expect.objectContaining({
+        id: 'engine',
+        body: { en: 'engine in en', es: 'engine in es' },
+      }),
+    ]);
+  });
+
+  it('leaves a record with no id for validation to report', () => {
+    expect(
+      problemsIn(
+        { ...LIBRARY, 'books.json': ['not a record', { draft: false }] },
+        [
+          ...SOURCES.slice(0, 2),
+          defineSource({
+            entity: Book,
+            file: 'books.json',
+            sidecars: { body: readBody },
+          }),
+        ],
+      ),
+    ).toEqual([
+      'books.json › #0 is not a record',
+      'books.json › #1 › id is missing',
+    ]);
+  });
+
+  it('reads nothing for a source with no records file', () => {
+    const noBooks = Object.fromEntries(
+      Object.entries(LIBRARY).filter(([file]) => file !== 'books.json'),
+    );
+    expect(withBodies(noBooks).records['books.json']).toEqual([]);
+  });
+});

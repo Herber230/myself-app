@@ -43,13 +43,28 @@ export type UnpagedRequest<TEntity extends Entity> = Omit<
 >;
 
 /**
+ * A member of an entity by name: any name for a source whose entity is no
+ * longer known (`ContentSource` erased by `defineSource`).
+ */
+export type MemberOf<TEntity extends Entity> = Entity extends TEntity
+  ? string
+  : keyof TEntity & string;
+
+/**
  * What `/data/<key>.json` carries of an entity, when not every record whole:
  * the records a request keeps, and the members left out (entifix#40).
  */
 export interface PublishedView<TEntity extends Entity> {
   readonly request?: UnpagedRequest<TEntity>;
-  readonly omit?: readonly (keyof TEntity & string)[];
+  readonly omit?: readonly MemberOf<TEntity>[];
 }
+
+/**
+ * The text of one localized member of one record, kept in a file beside the
+ * records rather than in them (a post's Markdown body), or `undefined` when
+ * that locale has no file.
+ */
+export type ReadSidecar = (id: string, locale: string) => string | undefined;
 
 /** One entity, the file it is read from, and what else holds of it. */
 export interface ContentSource<TEntity extends Entity = Entity> {
@@ -57,6 +72,11 @@ export interface ContentSource<TEntity extends Entity = Entity> {
   readonly file: string;
   readonly rules?: readonly EntityRule[];
   readonly published?: PublishedView<TEntity>;
+  /**
+   * Members read from files beside the records, attached per locale before
+   * validation, so a missing locale fails with its path.
+   */
+  readonly sidecars?: Readonly<Partial<Record<MemberOf<TEntity>, ReadSidecar>>>;
 }
 
 /**
@@ -84,6 +104,8 @@ export interface StaticContentOptions {
 /** The content, validated and served. */
 export interface StaticContent {
   readonly sources: readonly ContentSource[];
+  /** The records as validated: the files, with every sidecar attached. */
+  readonly records: Readonly<Record<string, readonly unknown[]>>;
   /** The repository an entity is served from; throws for one with no source. */
   repositoryOf(entity: EntityConstructor<Entity>): EntityRepository;
   /** One page of records, as the use case returns it. */
@@ -172,16 +194,50 @@ function linkedSources(
 }
 
 /**
+ * The content with every source's sidecars attached: per record, an object of
+ * the locales whose file exists, or nothing when none does. A record with no
+ * id is left for validation to report.
+ */
+function withSidecars(
+  content: Readonly<Record<string, readonly unknown[]>>,
+  sources: readonly ContentSource[],
+  locales: readonly string[],
+): Readonly<Record<string, readonly unknown[]>> {
+  const attached: Record<string, readonly unknown[]> = { ...content };
+  for (const { file, sidecars = {} } of sources) {
+    const members = Object.entries(sidecars) as [string, ReadSidecar][];
+    if (members.length === 0) continue;
+    attached[file] = (content[file] ?? []).map(record => {
+      if (record === null || typeof record !== 'object') return record;
+      const { id } = record as { id?: unknown };
+      if (typeof id !== 'string' && typeof id !== 'number') return record;
+      const texts = members.flatMap(([member, read]) => {
+        const text = Object.fromEntries(
+          locales.flatMap(locale => {
+            const found = read(String(id), locale);
+            return found === undefined ? [] : [[locale, found]];
+          }),
+        );
+        return Object.keys(text).length === 0 ? [] : [[member, text]];
+      });
+      return { ...record, ...Object.fromEntries(texts) };
+    });
+  }
+  return attached;
+}
+
+/**
  * Validates every file, then builds a repository over each.
  *
  * Every problem in every file is collected before anything throws, so one
  * build reports all of what is wrong with the content, not the first thing.
  */
 export function defineStaticContent(
-  content: Readonly<Record<string, readonly unknown[]>>,
+  files: Readonly<Record<string, readonly unknown[]>>,
   sources: readonly ContentSource[],
   { locales, localizedMembersOf = () => [] }: StaticContentOptions,
 ): StaticContent {
+  const content = withSidecars(files, sources, locales);
   const problems: ValidationProblem[] = [];
   const validated = sources.map(source => {
     const result = validateRecords(source.entity, content[source.file] ?? [], {
@@ -264,6 +320,7 @@ export function defineStaticContent(
 
   return {
     sources,
+    records: content,
     repositoryOf,
     load,
     loadAll,

@@ -8,12 +8,11 @@
 import { CONTENT } from '@myself-app/content';
 
 import { assertNoUnlistedPlaceholders } from './placeholders';
-import { withPostBodies } from './post-bodies';
 import { buildSiteContent } from './site-content';
 
+export const SITE_CONTENT = buildSiteContent(CONTENT);
+
 /** The content package's records, with each post's body read from its files. */
-export const SITE_RECORDS = withPostBodies(CONTENT);
+export const SITE_RECORDS = SITE_CONTENT.records;
 
 assertNoUnlistedPlaceholders(SITE_RECORDS);
-
-export const SITE_CONTENT = buildSiteContent(SITE_RECORDS);

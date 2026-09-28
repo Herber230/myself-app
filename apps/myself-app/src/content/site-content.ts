@@ -44,6 +44,8 @@ import {
   type StaticContent,
 } from '@myself-app/static-adapter';
 
+import { readPostBodyFile } from './post-bodies';
+
 /** At most one `ContactChannel` per type: the keys the reference app had. */
 const oneChannelPerType: EntityRule = (records, report) => {
   const seen = new Set<unknown>();
@@ -120,8 +122,10 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
   defineSource({
     entity: Post,
     file: 'posts.json',
+    // Its body is Markdown beside the record (ADR 0017).
+    sidecars: { body: readPostBodyFile },
     rules: [
-      // Read from its files, so absent from the record (ADR 0017).
+      // Optional on the entity, which the browser's copy lacks (ADR 0017).
       present('body'),
       // Tags are what relate posts to each other.
       nonEmpty('tags', 'so the post relates to nothing'),

@@ -7,7 +7,6 @@ import { Technology } from '@myself-app/domain';
 import { dataFileOf } from '@myself-app/static-adapter';
 import { describe, expect, it } from 'vitest';
 
-import { withPostBodies } from './post-bodies';
 import { SITE_CONTENT } from './repositories';
 import { buildSiteContent, CONTENT_SOURCES } from './site-content';
 
@@ -43,7 +42,7 @@ describe('the data files', () => {
       ),
     );
     // `post.json` carries no bodies (ADR 0017): they come from their files.
-    const again = buildSiteContent(withPostBodies(content));
+    const again = buildSiteContent(content);
     const [before, after] = await Promise.all([
       SITE_CONTENT.loadAll(Technology),
       again.loadAll(Technology),
