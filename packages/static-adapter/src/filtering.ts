@@ -16,6 +16,12 @@ import { plainValue } from './link-values.js';
  * matches, as Mongo's `$in` does. The double compares the whole array with
  * `===` and so never matches (entifix#34), and "technologies in any of these
  * areas" is the first query the radar needs.
+ *
+ * Two more follow Mongo too. A property may be a dotted path into a member
+ * holding an object, which is how a filter reaches one locale of a localized
+ * text (`name.en`). And `like` compares folded text, lower case and without
+ * accents, as a case- and diacritic-insensitive collation does: "tecnicas"
+ * finds "Técnicas".
  */
 
 /**
@@ -31,11 +37,17 @@ function isFilterGroup<TEntity extends Entity>(
   );
 }
 
-/** Mongo's `$regex` with `$options: 'i'`, over a literal needle. */
+/** Lower case, without accents. */
+function folded(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
+}
+
+/** A substring match over folded text, as an insensitive collation has it. */
 function matchesLike(actual: unknown, value: string): boolean {
-  return String(actual ?? '')
-    .toLowerCase()
-    .includes(value.toLowerCase());
+  return folded(String(actual ?? '')).includes(folded(value));
 }
 
 /** `$in` semantics: an array member matches, and so does a scalar. */
@@ -65,13 +77,29 @@ function isEqual(actual: unknown, value: unknown): boolean {
   return comparable(actual) === comparable(value);
 }
 
+/**
+ * The value a property names: a member, or a dotted path into one. A path
+ * through something that is not an object ends in `undefined`, as a missing
+ * field does in Mongo.
+ */
+function valueAt(record: Entity, property: string): unknown {
+  const [member, ...path] = property.split('.');
+  return path.reduce<unknown>(
+    (value, key) =>
+      typeof value === 'object' && value !== null
+        ? (value as Record<string, unknown>)[key]
+        : undefined,
+    plainValue(
+      (record as unknown as Record<string, unknown>)[member as string],
+    ),
+  );
+}
+
 function matchesFilter<TEntity extends Entity>(
   record: TEntity,
   filter: EntityFilter<TEntity>,
 ): boolean {
-  const actual = plainValue(
-    (record as Record<string, unknown>)[filter.property as string],
-  );
+  const actual = valueAt(record, filter.property as string);
   switch (filter.operator) {
     case 'eq':
       return isEqual(actual, filter.value);

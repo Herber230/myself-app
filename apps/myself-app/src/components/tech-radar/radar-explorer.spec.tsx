@@ -1,7 +1,22 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
-import { afterEach, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
+import { dataFileContent } from '../../content/data-files';
 import { loadRadarEntries } from '../../content/radar';
 import { SITE_REPOSITORIES } from '../../content/repositories';
 import { layoutRadar } from './layout';
@@ -12,6 +27,19 @@ let layout: RadarLayout;
 
 beforeAll(async () => {
   layout = layoutRadar(await loadRadarEntries(SITE_REPOSITORIES));
+  // The file the export writes, served where the explorer asks for it.
+  const file = JSON.stringify(
+    await dataFileContent(SITE_REPOSITORIES, 'technology.json'),
+  );
+  vi.stubGlobal('fetch', async (url: string) =>
+    url === '/data/technology.json'
+      ? new Response(file)
+      : new Response('', { status: 404 }),
+  );
+});
+
+afterAll(() => {
+  vi.unstubAllGlobals();
 });
 
 afterEach(() => {
@@ -67,11 +95,11 @@ describe('the radar explorer', () => {
     expect(html).toContain('The ring key');
   });
 
-  it('reads its filter from the URL, and dims what it leaves out', () => {
+  it('reads its filter from the URL, and dims what it leaves out', async () => {
     window.history.replaceState(null, '', '/en/tech-radar/?area=monorepo');
     render(explorer());
     const total = layout.blips.length;
-    expect(dimmedBlips()).toHaveLength(total - 3);
+    await waitFor(() => expect(dimmedBlips()).toHaveLength(total - 3));
     expect(screen.getByText(`Showing 3 of ${total}`)).toBeTruthy();
     expect(
       screen
@@ -84,6 +112,17 @@ describe('the radar explorer', () => {
     expect(
       document.querySelector('#tech-typescript')?.hasAttribute('data-dimmed'),
     ).toBe(true);
+  });
+
+  it('keeps the last answer on screen while the next one is asked', async () => {
+    window.history.replaceState(null, '', '/en/tech-radar/?area=monorepo');
+    render(explorer());
+    const total = layout.blips.length;
+    await waitFor(() => expect(dimmedBlips()).toHaveLength(total - 3));
+    fireEvent.click(screen.getByRole('button', { name: 'CSS' }));
+    // Answered on a later tick: until then, the monorepo answer stays.
+    expect(dimmedBlips()).toHaveLength(total - 3);
+    await waitFor(() => expect(dimmedBlips().length).not.toBe(total - 3));
   });
 
   it('writes each toggle to the URL, and clears them all', () => {
@@ -112,14 +151,16 @@ describe('the radar explorer', () => {
     ).toBeNull();
   });
 
-  it('follows the URL back and forward', () => {
+  it('follows the URL back and forward', async () => {
     render(explorer());
     act(() => {
       window.history.pushState(null, '', '/en/tech-radar/?q=typescript');
       window.dispatchEvent(new PopStateEvent('popstate'));
     });
+    await waitFor(() =>
+      expect(dimmedBlips()).toHaveLength(layout.blips.length - 1),
+    );
     expect(dimmedBlips()).not.toContain('typescript');
-    expect(dimmedBlips()).toHaveLength(layout.blips.length - 1);
   });
 
   it('marks a blip while its legend entry is hovered or focused, and back', () => {

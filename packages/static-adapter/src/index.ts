@@ -1,3 +1,4 @@
+export * from './dates.js';
 export * from './filtering.js';
 export * from './link-resolver.js';
 export * from './sorting.js';

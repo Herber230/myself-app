@@ -325,7 +325,7 @@ describe('every project sits in one layer', () => {
   const LAYERS = [
     'layer:app',
     'layer:domain',
-    'layer:static-adapter',
+    'layer:incubator',
     'layer:content',
     'layer:infra',
     'layer:e2e',

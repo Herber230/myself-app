@@ -1,7 +1,7 @@
-import { CONTENT } from '@myself-app/content';
 import { describe, expect, it } from 'vitest';
 
 import { loadContactChannels } from './contact';
+import { SITE_CONTENT as CONTENT } from './repositories';
 import { SITE_REPOSITORIES } from './repositories';
 import { buildSiteRepositories } from './site-content';
 

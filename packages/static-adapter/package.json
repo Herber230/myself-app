@@ -18,7 +18,7 @@
   },
   "nx": {
     "tags": [
-      "layer:static-adapter"
+      "layer:incubator"
     ],
     "targets": {
       "build": {

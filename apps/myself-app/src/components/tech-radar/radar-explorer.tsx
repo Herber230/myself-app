@@ -1,31 +1,38 @@
 'use client';
 
 /**
- * The radar with its filter (#41, ADR 0014): the one client part of the page.
+ * The radar with its filter (#41, ADR 0014, 0016): the one client part of the
+ * page.
  *
- * It filters the layout the build passed down and dims what it leaves out, so
- * the radar keeps its shape and no entifix code reaches the browser. The
- * filter is the query string, read once hydrated: the static HTML is the whole
- * radar, which is also what a visitor without scripting gets, with no controls
- * that could not work.
+ * The filter is the query string, read once hydrated, and answered by
+ * entifix's `load` use case over `/data/technology.json` — the same use case
+ * the build rendered the radar through. What the answer leaves out is dimmed,
+ * so the radar keeps its shape. The static HTML is the whole radar, which is
+ * also what a visitor without scripting gets, with no controls that could not
+ * work.
  */
 import { Stack, Text } from '@entifix/react-controls/primitives';
-import { type ReactNode, useMemo, useState, useSyncExternalStore } from 'react';
+import { Technology } from '@myself-app/domain/entities/technology';
+import { staticJsonSource } from '@myself-app/entifix-browser';
+import { useEntityLoad, useUrlState } from '@myself-app/entifix-browser/react';
+import { type ReactNode, useMemo, useState } from 'react';
 
 import type { SiteLocale } from '../../site-locales';
-import { RadarChart } from './radar-chart';
 import {
-  isFiltering,
-  matches,
-  NO_FILTER,
-  parseFilter,
-  type RadarFilter,
-  type RadarVocabulary,
-  serializeFilter,
+  FilterFieldset,
+  FilterSummary,
   toggled,
-} from './radar-filter';
+  ToggleGroup,
+} from '../filters';
+import { RadarChart } from './radar-chart';
+import { radarQuery, type RadarVocabulary } from './radar-filter';
 import { RadarLegend } from './radar-legend';
-import type { QuadrantIndex, RadarLayout, RingIndex } from './types';
+import type { RadarLayout } from './types';
+
+/** Every technology, as the export writes them (ADR 0003, 0016). */
+const TECHNOLOGIES = staticJsonSource(Technology, '/data/technology.json');
+
+const NONE_DIMMED: ReadonlySet<string> = new Set();
 
 /** Every string the controls show, translated at build. */
 export interface RadarExplorerCopy {
@@ -58,20 +65,6 @@ export interface RadarExplorerProps {
   readonly children?: ReactNode;
 }
 
-/** Tells the explorer the query string changed under it. */
-const SEARCH_CHANGED = 'radar-search-changed';
-
-function subscribe(onChange: () => void) {
-  window.addEventListener('popstate', onChange);
-  window.addEventListener(SEARCH_CHANGED, onChange);
-  return () => {
-    window.removeEventListener('popstate', onChange);
-    window.removeEventListener(SEARCH_CHANGED, onChange);
-  };
-}
-
-const noSubscription = () => () => undefined;
-
 export function RadarExplorer({
   layout,
   locale,
@@ -82,107 +75,79 @@ export function RadarExplorer({
   copy,
   children,
 }: RadarExplorerProps) {
-  const hydrated = useSyncExternalStore(
-    noSubscription,
-    () => true,
-    () => false,
+  const query = useMemo(() => radarQuery(vocabulary), [vocabulary]);
+  // `null` in the static HTML, which is drawn unfiltered and without controls.
+  const [filter, update] = useUrlState(query);
+  const filtering = filter !== null && !query.isEmpty(filter);
+  const load = useEntityLoad<Technology>(
+    TECHNOLOGIES,
+    filtering ? query.request(filter, locale) : null,
   );
-  // `null` in the static HTML, which is drawn unfiltered.
-  const search = useSyncExternalStore(
-    subscribe,
-    () => window.location.search,
-    () => null,
-  );
-  const filter = useMemo(
-    () => (search === null ? NO_FILTER : parseFilter(search, vocabulary)),
-    [search, vocabulary],
-  );
-  const dimmed = useMemo(
-    () =>
-      new Set(
-        layout.blips
-          .filter(blip => !matches(blip, filter, locale))
-          .map(blip => blip.id),
-      ),
-    [layout, filter, locale],
-  );
+  // While a new answer is on its way, the last one stays on screen.
+  const page =
+    load.status === 'done'
+      ? load.page
+      : load.status === 'pending'
+        ? load.previous
+        : undefined;
+  const dimmed = useMemo(() => {
+    if (page === undefined) return NONE_DIMMED;
+    const kept = new Set(page.items.map(technology => String(technology.id)));
+    return new Set(
+      layout.blips.filter(blip => !kept.has(blip.id)).map(blip => blip.id),
+    );
+  }, [page, layout]);
   const [highlighted, setHighlighted] = useState<string>();
-
-  const update = (next: RadarFilter) => {
-    const url = new URL(window.location.href);
-    url.search = serializeFilter(next, vocabulary);
-    window.history.replaceState(window.history.state, '', url);
-    window.dispatchEvent(new Event(SEARCH_CHANGED));
-  };
 
   const shown = layout.blips.length - dimmed.size;
   return (
     <Stack gap="l">
-      {hydrated && (
-        <fieldset className="radar-filters">
-          <legend className="sr-only">{copy.filters}</legend>
-          <Stack gap="s">
-            <ToggleGroup
-              label={copy.quadrant}
-              options={quadrants.map((name, index) => ({
-                key: index as QuadrantIndex,
-                name,
-              }))}
-              selected={filter.quadrants}
-              onToggle={quadrant =>
-                update({
-                  ...filter,
-                  quadrants: toggled(filter.quadrants, quadrant),
-                })
-              }
-            />
-            <ToggleGroup
-              label={copy.ring}
-              options={rings.map((name, index) => ({
-                key: index as RingIndex,
-                name,
-              }))}
-              selected={filter.rings}
-              onToggle={ring =>
-                update({ ...filter, rings: toggled(filter.rings, ring) })
-              }
-            />
-            <ToggleGroup
-              label={copy.area}
-              options={areas.map(area => ({ key: area.id, name: area.name }))}
-              selected={filter.areas}
-              onToggle={area =>
-                update({ ...filter, areas: toggled(filter.areas, area) })
-              }
-            />
-            <div className="radar-filter-row">
-              <label className="radar-search">
-                <span className="radar-filter-label">{copy.search}</span>
-                <input
-                  type="search"
-                  value={filter.query}
-                  onChange={event =>
-                    update({ ...filter, query: event.currentTarget.value })
-                  }
-                />
-              </label>
-              <output aria-live="polite" className="radar-filter-count">
-                {copy.showing
-                  .replace('{{shown}}', String(shown))
-                  .replace('{{total}}', String(layout.blips.length))}
-              </output>
-              {isFiltering(filter) && (
-                <button
-                  type="button"
-                  className="radar-filter-clear"
-                  onClick={() => update(NO_FILTER)}
-                >
-                  {copy.clear}
-                </button>
-              )}
-            </div>
-          </Stack>
-        </fieldset>
+      {filter !== null && (
+        <FilterFieldset label={copy.filters}>
+          <ToggleGroup
+            label={copy.quadrant}
+            options={quadrants.map((name, index) => ({
+              key: vocabulary.quadrants[index] as string,
+              name,
+            }))}
+            selected={filter.quadrant}
+            onToggle={quadrant =>
+              update({
+                ...filter,
+                quadrant: toggled(filter.quadrant, quadrant),
+              })
+            }
+          />
+          <ToggleGroup
+            label={copy.ring}
+            options={rings.map((name, index) => ({
+              key: vocabulary.rings[index] as string,
+              name,
+            }))}
+            selected={filter.ring}
+            onToggle={ring =>
+              update({ ...filter, ring: toggled(filter.ring, ring) })
+            }
+          />
+          <ToggleGroup
+            label={copy.area}
+            options={areas.map(area => ({ key: area.id, name: area.name }))}
+            selected={filter.area}
+            onToggle={area =>
+              update({ ...filter, area: toggled(filter.area, area) })
+            }
+          />
+          <FilterSummary
+            searchLabel={copy.search}
+            search={filter.q[0] ?? ''}
+            onSearch={text => update({ ...filter, q: [text] })}
+            showing={copy.showing
+              .replace('{{shown}}', String(shown))
+              .replace('{{total}}', String(layout.blips.length))}
+            clearLabel={copy.clear}
+            onClear={filtering ? () => update(query.empty) : undefined}
+          />
+        </FilterFieldset>
       )}
       {/* On a phone the picture goes last: too small to read there, it
           follows the legend, which is the primary view (#40). */}
@@ -214,36 +179,5 @@ export function RadarExplorer({
         />
       </Stack>
     </Stack>
-  );
-}
-
-function ToggleGroup<T extends string | number>({
-  label,
-  options,
-  selected,
-  onToggle,
-}: {
-  label: string;
-  options: readonly { key: T; name: string }[];
-  selected: readonly T[];
-  onToggle: (key: T) => void;
-}) {
-  return (
-    <div role="group" aria-label={label} className="radar-filter-row">
-      <span aria-hidden className="radar-filter-label">
-        {label}
-      </span>
-      {options.map(option => (
-        <button
-          key={option.key}
-          type="button"
-          className="landing-chip"
-          aria-pressed={selected.includes(option.key)}
-          onClick={() => onToggle(option.key)}
-        >
-          {option.name}
-        </button>
-      ))}
-    </div>
   );
 }

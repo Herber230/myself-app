@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   CV_VARIANT_ROUTE,
+  POST_ROUTE,
   SITE_PATHS,
   siteMapEntries,
   siteRobots,
@@ -26,6 +27,7 @@ describe('the sitemap', () => {
         ...SITE_PATHS,
         CV_VARIANT_ROUTE,
         TECHNOLOGY_ROUTE,
+        POST_ROUTE,
         ...UNLISTED_ROUTES,
       ].sort(),
     ).toEqual(pages.sort());
@@ -39,6 +41,8 @@ describe('the sitemap', () => {
       'https://herber.example/es/cv/',
       'https://herber.example/en/tech-radar/',
       'https://herber.example/es/tech-radar/',
+      'https://herber.example/en/blog/',
+      'https://herber.example/es/blog/',
     ]);
   });
 

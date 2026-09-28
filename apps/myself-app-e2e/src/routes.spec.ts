@@ -123,9 +123,13 @@ test('the sitemap lists every page in every locale, and robots.txt points at it'
       'cv/frontend/',
       'cv/devops/',
       'tech-radar/',
+      'blog/',
+      'blog/a-static-site-on-s3/',
     ]) {
       expect(xml).toContain(`/${locale}/${path}</loc>`);
     }
+    // A draft is served by `next dev` only (ADR 0017).
+    expect(xml).not.toContain('/effect-four/</loc>');
     // The ATS pages are noindex, so not listed (ADR 0012).
     expect(xml).not.toContain('/ats/</loc>');
   }

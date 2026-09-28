@@ -72,6 +72,15 @@ export function SiteNav({
           {t('techRadar')}
         </Link>
       </li>
+      <li>
+        <Link
+          className={`${linkClass} site-nav-link`}
+          href={localePath(locale, '/blog')}
+        >
+          <NavIcon name="blog" />
+          {t('blog')}
+        </Link>
+      </li>
     </ul>
   );
   return (

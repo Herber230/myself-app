@@ -1,9 +1,9 @@
-import { CONTENT } from '@myself-app/content';
 import type { Certificate, Technology } from '@myself-app/domain';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { type CvSheet as CvSheetContent, loadCvSheet } from '../../content/cv';
+import { SITE_CONTENT as CONTENT } from '../../content/repositories';
 import { SITE_REPOSITORIES } from '../../content/repositories';
 import { buildSiteRepositories } from '../../content/site-content';
 import { CvSheet } from './cv-sheet';

@@ -5,6 +5,7 @@
 - Area: data
 - Read when: a component needs data, or a page's client bundle grew
 - Revised: 2026-09-18 by #27 — the gate was measured, and C is not used by any page
+- Revised: 2026-09-27 by [ADR 0016](0016-entifix-queries-run-in-the-browser-too.md) — the gate is superseded: the pages that filter take path C
 
 ## Context
 
@@ -51,7 +52,7 @@ The JavaScript each exported page loads, gzipped at level 9, summed over every
 the radar's entries. It worked in Chromium against the export served like the
 bucket: twenty entries, from the files alone.
 
-**Not acceptable, so no page uses C.** Seventy-eight kilobytes is what
+**Not acceptable, so no page uses C.** _Superseded by [ADR 0016](0016-entifix-queries-run-in-the-browser-too.md), which takes C on the pages that filter, for maintainability over bytes._ Seventy-eight kilobytes is what
 [ADR 0006](0006-tailwind-and-entifix-style.md) spent its effort removing, and
 here it would buy a filter over twenty records whose data is already in the
 HTML. Interactive parts — the radar's filter first (#41) — filter props passed

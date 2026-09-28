@@ -20,7 +20,7 @@ function renderNav(props: Parameters<typeof SiteNav>[0]) {
 }
 
 describe('the site nav', () => {
-  it('lists the sections, the CV and the radar, inline and in the menu', () => {
+  it('lists the sections, the CV, the radar and the blog, inline and in the menu', () => {
     renderNav({ locale: 'en', path: '/cv' });
     const lists = screen.getAllByRole('navigation', {
       name: 'Sections',
@@ -36,6 +36,7 @@ describe('the site nav', () => {
         '/en/#contact',
         '/en/cv/',
         '/en/tech-radar/',
+        '/en/blog/',
       ]);
     }
     expect(

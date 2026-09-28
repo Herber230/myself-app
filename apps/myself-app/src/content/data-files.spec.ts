@@ -8,6 +8,7 @@ import { Technology } from '@myself-app/domain';
 import { describe, expect, it } from 'vitest';
 
 import { DATA_FILES, dataFileContent, dataFileOf } from './data-files';
+import { withPostBodies } from './post-bodies';
 import { loadEvery } from './queries';
 import { SITE_REPOSITORIES } from './repositories';
 import { buildSiteRepositories, CONTENT_SOURCES } from './site-content';
@@ -64,7 +65,8 @@ describe('the data files', () => {
         ),
       ),
     );
-    const again = buildSiteRepositories(content);
+    // `post.json` carries no bodies (ADR 0017): they come from their files.
+    const again = buildSiteRepositories(withPostBodies(content));
     const [before, after] = await Promise.all([
       loadEvery(SITE_REPOSITORIES, Technology),
       loadEvery(again, Technology),
@@ -78,5 +80,20 @@ describe('the data files', () => {
     await expect(
       dataFileContent(SITE_REPOSITORIES, 'nothing.json'),
     ).rejects.toThrow('No entity is written to /data/nothing.json');
+  });
+});
+
+describe('the posts file', () => {
+  it('leaves out every body and every draft', async () => {
+    const written = (await dataFileContent(
+      SITE_REPOSITORIES,
+      'post.json',
+    )) as Record<string, unknown>[];
+    expect(written.length).toBeGreaterThan(0);
+    for (const record of written) {
+      expect(record).not.toHaveProperty('body');
+      expect(record.draft).toBe(false);
+    }
+    expect(written.map(record => record.id)).not.toContain('effect-four');
   });
 });

@@ -5,21 +5,16 @@
  * The use case is what a backend would serve too. Going through it here, rather
  * than reading the arrays directly, is what keeps the static adapter a real
  * `EntityRepository` behind a real port — the seam a REST adapter replaces.
+ * The browser's filters make the same call (`@myself-app/entifix-browser`,
+ * ADR 0016).
  */
-import {
-  ConfigurationRepositoryTag,
-  EntityLoadRequestTag,
-  EntityRepositoryTag,
-  loadUCFactory,
-} from '@entifix/business';
-import {
-  ConfigurationClientInMemory,
-  type Entity,
-  type EntityConstructor,
-  type EntityLoadRequest,
-  type EntityPage,
+import type {
+  Entity,
+  EntityConstructor,
+  EntityLoadRequest,
+  EntityPage,
 } from '@entifix/core';
-import { Context, Effect } from 'effect';
+import { loadThroughUseCase } from '@myself-app/entifix-browser';
 
 import type { SiteRepositories } from './site-content';
 
@@ -35,16 +30,7 @@ export function loadPage<TEntity extends Entity>(
       new Error(`No repository is registered for ${entity.name}`),
     );
   }
-  // A static source reads no configuration, but the port leaves
-  // `ConfigurationRepositoryTag` on every method's requirement channel.
-  const context = Context.make(EntityRepositoryTag, repository).pipe(
-    Context.add(
-      ConfigurationRepositoryTag,
-      new ConfigurationClientInMemory({}),
-    ),
-    Context.add(EntityLoadRequestTag, request as unknown as EntityLoadRequest),
-  );
-  return Effect.runPromise(Effect.provide(loadUCFactory<TEntity>(), context));
+  return loadThroughUseCase(repository, request);
 }
 
 /**

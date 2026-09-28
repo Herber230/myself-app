@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "The entities the three pages read, compiled by SWC with 2022-03 decorators — which Next's own compiler cannot do.",
+  "description": "The entities the three pages read, compiled by SWC with 2022-03 decorators \u2014 which Next's own compiler cannot do.",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,6 +14,12 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./entities/*": {
+      "@myself-app/source": "./src/entities/*.entity.ts",
+      "types": "./dist/entities/*.entity.d.ts",
+      "import": "./dist/entities/*.entity.js",
+      "default": "./dist/entities/*.entity.js"
     }
   },
   "sideEffects": true,

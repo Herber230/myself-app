@@ -14,6 +14,7 @@ import {
   type Entity,
   type EntityConstructor,
   type EntityId,
+  type EntityLoadRequest,
 } from '@entifix/core';
 import {
   Certificate,
@@ -25,12 +26,14 @@ import {
   EmploymentHighlight,
   EmploymentPeriod,
   localizedMembersOf,
+  Post,
   Profile,
   Project,
   Quadrant,
   RadarEdition,
   Ring,
   SITE_LOCALES,
+  Tag,
   Technology,
   TechnologyArea,
   TechnologyUsePeriod,
@@ -51,6 +54,14 @@ interface ContentSource {
   /** Each link member, and the file whose ids it may name. */
   readonly links?: Readonly<Record<string, string>>;
   readonly rules?: readonly EntityRule[];
+  /**
+   * What `/data/<key>.json` carries of it, when not every record whole: the
+   * records a request keeps, and the members left out (ADR 0016, 0017).
+   */
+  readonly published?: {
+    readonly request?: EntityLoadRequest<Entity>;
+    readonly omit?: readonly string[];
+  };
 }
 
 /** A period's `end`, when it has one, is not before its `start`. */
@@ -114,6 +125,30 @@ const atLeastOneFocus: EntityRule = (records, report) => {
   });
 };
 
+/** A post has a body — read from its files, so absent from the record. */
+const hasBody: EntityRule = (records, report) => {
+  records.forEach((record, index) => {
+    if (record.body === undefined) {
+      report(index, 'body', 'is required, and is missing');
+    }
+  });
+};
+
+/** A post has a tag: tags are what relate posts to each other (ADR 0017). */
+const atLeastOneTag: EntityRule = (records, report) => {
+  records.forEach((record, index) => {
+    const { tags } = record;
+    if (!Array.isArray(tags) || tags.length === 0) {
+      report(index, 'tags', 'is empty, so the post relates to nothing');
+    }
+  });
+};
+
+/** The posts `/data/post.json` carries: no draft is ever exported. */
+const PUBLISHED_POSTS: EntityLoadRequest<Post> = {
+  filtering: [{ property: 'draft', operator: 'eq', value: false }],
+};
+
 export const CONTENT_SOURCES: readonly ContentSource[] = [
   { entity: Profile, file: 'profile.json', rules: [exactlyOne] },
   {
@@ -174,6 +209,19 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
   },
   { entity: Education, file: 'education.json', rules: [endNotBeforeStart] },
   { entity: Certificate, file: 'certificates.json' },
+  { entity: Tag, file: 'tags.json' },
+  {
+    entity: Post,
+    file: 'posts.json',
+    links: { tags: 'tags.json', technologies: 'technologies.json' },
+    rules: [hasBody, atLeastOneTag],
+    // The blog's filter needs no body, and a draft is never exported.
+    published: {
+      // Typed for the entity it names; a source list holds every entity.
+      request: PUBLISHED_POSTS as unknown as EntityLoadRequest<Entity>,
+      omit: ['body'],
+    },
+  },
 ];
 
 /** The ids a file declares, so a link into it can be checked. */

@@ -11,13 +11,16 @@ import type { MetadataRoute } from 'next';
 import { localeAlternates, localePath, SITE_LOCALES } from './site-locales';
 
 /** Every page under `app/[locale]/` whose path is fixed, locale-free. */
-export const SITE_PATHS = ['/', '/cv', '/tech-radar'] as const;
+export const SITE_PATHS = ['/', '/cv', '/tech-radar', '/blog'] as const;
 
 /** The CV page of each variant but the default: listed from the content. */
 export const CV_VARIANT_ROUTE = '/cv/[variant]';
 
 /** Each technology's page (ADR 0014): listed from the content. */
 export const TECHNOLOGY_ROUTE = '/tech-radar/[technology]';
+
+/** Each post (ADR 0017): listed from the content, drafts left out. */
+export const POST_ROUTE = '/blog/[slug]';
 
 /**
  * The CV's ATS pages, left out: each is `noindex`, with its human page as
