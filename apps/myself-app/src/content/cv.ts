@@ -9,12 +9,13 @@ import {
   type ContactChannel,
   CvVariant,
   Education,
-  Employer,
+  type Employer,
   EmploymentHighlight,
-  EmploymentPeriod,
+  type EmploymentPeriod,
   type Profile,
-  Technology,
+  type Technology,
 } from '@myself-app/domain';
+import { targetOf, targetsOf } from '@myself-app/static-adapter';
 
 import { loadContactChannels } from './contact';
 import { loadProfile } from './profile';
@@ -73,40 +74,31 @@ export async function loadCvSheet(
   content: SiteContent,
   variantId: string,
 ): Promise<CvSheet | undefined> {
-  const [
-    variants,
-    profile,
-    channels,
-    technologies,
-    periods,
-    employers,
-    highlights,
-    education,
-    certificates,
-  ] = await Promise.all([
-    loadCvVariants(content),
-    loadProfile(content),
-    loadContactChannels(content),
-    content.loadAll(Technology),
-    content.loadAll(EmploymentPeriod),
-    content.loadAll(Employer),
-    content.loadAll(EmploymentHighlight, {
-      sorting: [{ 0: { property: 'order', type: 'asc' } }],
-    }),
-    content.loadAll(Education, {
-      sorting: [{ 0: { property: 'order', type: 'asc' } }],
-    }),
-    content.loadAll(Certificate, {
-      sorting: [{ 0: { property: 'order', type: 'asc' } }],
-    }),
-  ]);
-  const variant = variants.find(each => each.id === variantId);
+  const [[variant], profile, channels, highlights, education, certificates] =
+    await Promise.all([
+      content.loadAll(
+        CvVariant,
+        { filtering: [{ property: 'id', operator: 'eq', value: variantId }] },
+        { resolve: ['technologies', 'employments'] },
+      ),
+      loadProfile(content),
+      loadContactChannels(content),
+      content.loadAll(EmploymentHighlight, {
+        sorting: [{ 0: { property: 'order', type: 'asc' } }],
+      }),
+      content.loadAll(Education, {
+        sorting: [{ 0: { property: 'order', type: 'asc' } }],
+      }),
+      content.loadAll(Certificate, {
+        sorting: [{ 0: { property: 'order', type: 'asc' } }],
+      }),
+    ]);
   if (variant === undefined) return undefined;
 
-  // Validation has checked every link, so each id below names a record.
-  const technologyById = byId(technologies);
-  const periodById = byId(periods);
-  const employerById = byId(employers);
+  // An employment's employer is a second step from the variant.
+  const periods = await content.resolve(targetsOf(variant.employments), [
+    'employer',
+  ]);
   const focuses = new Set(variant.focuses.ids);
   const shown = (period: EntityId) =>
     highlights.filter(
@@ -119,24 +111,13 @@ export async function loadCvSheet(
     profile,
     channels,
     variant,
-    technologies: variant.technologies.ids.map(
-      id => technologyById.get(id) as Technology,
-    ),
-    employments: variant.employments.ids.map(id => {
-      const period = periodById.get(id) as EmploymentPeriod;
-      return {
-        period,
-        employer: employerById.get(period.employer.id) as Employer,
-        highlights: shown(id),
-      };
-    }),
+    technologies: targetsOf(variant.technologies),
+    employments: periods.map(period => ({
+      period,
+      employer: targetOf(period.employer),
+      highlights: shown(period.id),
+    })),
     education,
     certificates,
   };
-}
-
-function byId<T extends { id: EntityId }>(
-  records: readonly T[],
-): ReadonlyMap<EntityId, T> {
-  return new Map(records.map(each => [each.id, each]));
 }

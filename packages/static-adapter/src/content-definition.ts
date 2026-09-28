@@ -1,4 +1,7 @@
-import type { EntityRepository } from '@entifix/business';
+import {
+  EntityLinkResolverTag,
+  type EntityRepository,
+} from '@entifix/business';
 import {
   describeEntityColumns,
   deserializeEntityCollection,
@@ -9,9 +12,11 @@ import {
   type EntityLoadRequest,
   type EntityPage,
 } from '@entifix/core';
-import { Effect } from 'effect';
+import { Context, Effect } from 'effect';
 
+import { makeStaticLinkResolver } from './link-resolver.js';
 import { loadThroughUseCase } from './load-through-use-case.js';
+import { type LinkMember, resolveLinks } from './resolved-links.js';
 import { makeStaticRepository } from './static-repository.js';
 import {
   ContentValidationError,
@@ -84,11 +89,28 @@ export interface StaticContent {
     entity: EntityConstructor<TEntity>,
     request?: EntityLoadRequest<TEntity>,
   ): Promise<EntityPage<TEntity>>;
-  /** Every record a request keeps, filtered and sorted as asked. */
+  /**
+   * Every record a request keeps, filtered and sorted as asked, with the
+   * links named in `resolve` read as the records they point at.
+   */
   loadAll<TEntity extends Entity>(
     entity: EntityConstructor<TEntity>,
     request?: UnpagedRequest<TEntity>,
+    options?: LoadAllOptions<TEntity>,
   ): Promise<TEntity[]>;
+  /**
+   * Resolves links of records already loaded — the second step from a
+   * record, as a CV's employments to their employers.
+   */
+  resolve<TEntity extends Entity>(
+    records: readonly TEntity[],
+    members: readonly LinkMember<TEntity>[],
+  ): Promise<TEntity[]>;
+}
+
+export interface LoadAllOptions<TEntity extends Entity> {
+  /** The link members to resolve on every record loaded. */
+  readonly resolve?: readonly LinkMember<TEntity>[];
 }
 
 /** Thrown when the sources themselves are wrong, whatever the content. */
@@ -200,11 +222,22 @@ export function defineStaticContent(
     }
   };
 
+  // entifix's own link resolver, over the same repositories.
+  const resolver = Context.get(
+    makeStaticLinkResolver([...repositories]),
+    EntityLinkResolverTag,
+  );
+  const resolve = <TEntity extends Entity>(
+    records: readonly TEntity[],
+    members: readonly LinkMember<TEntity>[],
+  ) => resolveLinks(records, members, resolver);
+
   return {
     sources,
     repositoryOf,
     load,
-    async loadAll(entity, request = {}) {
+    resolve,
+    async loadAll(entity, request = {}, { resolve: members = [] } = {}) {
       // A site's files hold a few dozen records each, so one page as large
       // as can be counted is all of them.
       const page = await load(entity, {
@@ -212,7 +245,7 @@ export function defineStaticContent(
         page: 1,
         pageSize: Number.MAX_SAFE_INTEGER,
       });
-      return page.items;
+      return resolve(page.items, members);
     },
   };
 }

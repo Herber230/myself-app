@@ -1,4 +1,3 @@
-import { Technology } from '@myself-app/domain';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -33,10 +32,9 @@ export async function generateMetadata({
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const [profile, projects, technologies, channels] = await Promise.all([
+  const [profile, projects, channels] = await Promise.all([
     loadProfile(SITE_CONTENT),
     loadFeaturedProjects(SITE_CONTENT),
-    SITE_CONTENT.loadAll(Technology),
     loadContactChannels(SITE_CONTENT),
   ]);
   return (
@@ -45,13 +43,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
       <main>
         <Hero locale={locale} profile={profile} />
         <AboutSection locale={locale} profile={profile} />
-        <ProjectsSection
-          locale={locale}
-          projects={projects}
-          technologies={
-            new Map(technologies.map(each => [String(each.id), each]))
-          }
-        />
+        <ProjectsSection locale={locale} projects={projects} />
         <EntifixSection locale={locale} />
         <ContactSection locale={locale} channels={channels} />
       </main>

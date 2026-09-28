@@ -18,6 +18,7 @@ import {
   Reprint,
   Shelf,
 } from './library.fixture.js';
+import { targetOf, targetsOf } from './resolved-links.js';
 import { nonEmpty } from './rules.js';
 import { ContentValidationError } from './validation.js';
 
@@ -100,6 +101,30 @@ describe('a content definition', () => {
     expect(engine?.publishedAt).toEqual(new Date('1843-10-01'));
     expect(engine?.author.id).toBe('ada');
     expect(engine?.shelves.ids).toEqual(['maths', 'machines']);
+  });
+
+  it('resolves the links it is asked to, and leaves the rest as ids', async () => {
+    const [engine] = (await define().loadAll(
+      Book,
+      { filtering: [{ property: 'id', operator: 'eq', value: 'engine' }] },
+      { resolve: ['shelves'] },
+    )) as [Book];
+    expect(targetsOf(engine.shelves).map(shelf => shelf.id)).toEqual([
+      'maths',
+      'machines',
+    ]);
+    expect(engine.author.isLoaded).toBe(false);
+  });
+
+  it('resolves links of records already loaded', async () => {
+    const content = define();
+    const books = await content.loadAll(Book);
+    const resolved = await content.resolve(books, ['author']);
+    expect(resolved.map(book => targetOf(book.author).name)).toEqual([
+      'Ada',
+      'Grace',
+      'Grace',
+    ]);
   });
 
   it('refuses an entity it has no source for', async () => {

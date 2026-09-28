@@ -12,8 +12,8 @@ import {
   SITE_LOCALES,
   type SiteLocale,
   Tag,
-  Technology,
 } from '@myself-app/domain';
+import { targetsOf } from '@myself-app/static-adapter';
 
 import type { SiteContent } from './site-content';
 
@@ -91,16 +91,9 @@ export async function previewsOf(
   content: SiteContent,
   posts: readonly Post[],
 ): Promise<PostPreview[]> {
-  const [tags, technologies] = await Promise.all([
-    content.loadAll(Tag),
-    content.loadAll(Technology),
-  ]);
-  const tagLabel = new Map(tags.map(tag => [tag.id, tag.label]));
-  const technologyName = new Map(
-    technologies.map(technology => [technology.id, technology.name]),
-  );
-  // Validation has made every link, localized text and date present.
-  return posts.map(post => ({
+  const resolved = await content.resolve(posts, ['tags', 'technologies']);
+  // Validation has made every localized text and date present.
+  return resolved.map(post => ({
     id: String(post.id),
     title: post.title as LocalizedText,
     summary: post.summary as LocalizedText,
@@ -113,13 +106,13 @@ export async function previewsOf(
         readingMinutes((post.body as LocalizedText)[locale]),
       ]),
     ) as Record<SiteLocale, number>,
-    tags: post.tags.ids.map(id => ({
-      id: String(id),
-      label: tagLabel.get(id) as LocalizedText,
+    tags: targetsOf(post.tags).map(tag => ({
+      id: String(tag.id),
+      label: tag.label as LocalizedText,
     })),
-    technologies: post.technologies.ids.map(id => ({
-      id: String(id),
-      name: technologyName.get(id) as LocalizedText,
+    technologies: targetsOf(post.technologies).map(technology => ({
+      id: String(technology.id),
+      name: technology.name as LocalizedText,
     })),
   }));
 }

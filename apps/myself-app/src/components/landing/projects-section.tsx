@@ -6,12 +6,8 @@ import {
   Stack,
   Text,
 } from '@entifix/react-controls/primitives';
-import {
-  localize,
-  type LocalizedText,
-  type Project,
-  type Technology,
-} from '@myself-app/domain';
+import { localize, type LocalizedText, type Project } from '@myself-app/domain';
+import { targetsOf } from '@myself-app/static-adapter';
 import Link from 'next/link';
 
 import { siteT } from '../../i18n/server';
@@ -32,12 +28,10 @@ export function projectAnchor(projectId: string): string {
 export function ProjectsSection({
   locale,
   projects,
-  technologies,
 }: {
   locale: SiteLocale;
+  /** With their technologies resolved (`loadFeaturedProjects`). */
   projects: readonly Project[];
-  /** Every technology, by id, to name a project's links. */
-  technologies: ReadonlyMap<string, Technology>;
 }) {
   const t = siteT(locale);
   return (
@@ -66,17 +60,14 @@ export function ProjectsSection({
                     project: project.name,
                   })}
                 >
-                  {project.technologies.ids.map(String).map(id => (
-                    <li key={id}>
+                  {targetsOf(project.technologies).map(technology => (
+                    <li key={String(technology.id)}>
                       <Link
-                        href={radarEntryPath(locale, id)}
+                        href={radarEntryPath(locale, String(technology.id))}
                         className="landing-chip"
                       >
-                        {/* Validation has checked every link to a technology. */}
-                        {localize(
-                          technologies.get(id)?.name as LocalizedText,
-                          locale,
-                        )}
+                        {/* Validation requires a name in every locale. */}
+                        {localize(technology.name as LocalizedText, locale)}
                       </Link>
                     </li>
                   ))}

@@ -7,12 +7,13 @@
  * movement from the periods it spent in each ring.
  */
 import {
-  Quadrant,
+  type Quadrant,
   RadarEdition,
-  Ring,
+  type Ring,
   Technology,
   TechnologyUsePeriod,
 } from '@myself-app/domain';
+import { targetOf } from '@myself-app/static-adapter';
 
 import type {
   Movement,
@@ -86,41 +87,33 @@ function toIndex(order: number | undefined, what: string): number {
 export async function loadRadarEntries(
   content: SiteContent,
 ): Promise<RadarEntry[]> {
-  const [technologies, quadrants, rings, periods, edition] = await Promise.all([
-    content.loadAll(Technology),
-    content.loadAll(Quadrant),
-    content.loadAll(Ring),
-    content.loadAll(TechnologyUsePeriod),
+  const [technologies, periods, edition] = await Promise.all([
+    content.loadAll(Technology, {}, { resolve: ['quadrant', 'ring'] }),
+    content.loadAll(TechnologyUsePeriod, {}, { resolve: ['ring'] }),
     loadEditionDate(content),
   ]);
 
-  const quadrantOrder = new Map(quadrants.map(each => [each.id, each.order]));
-  const ringOrder = new Map(rings.map(each => [each.id, each.order]));
+  const orderOf = (record: Quadrant | Ring, what: string) =>
+    toIndex(record.order, `${what} ${String(record.id)}`);
 
   return technologies.map(technology => {
     const ringPeriods = periods
       .filter(period => period.technology.id === technology.id)
       .map(period => ({
-        ring: toIndex(
-          ringOrder.get(period.ring.id),
-          `ring ${String(period.ring.id)}`,
-        ),
+        ring: orderOf(targetOf(period.ring), 'ring'),
         start: period.start as Date,
         end: period.end,
       }));
-    // Validation has made every one of these present; the casts say so.
+    // Validation has made the name present; the cast says so.
     const label = technology.name as RadarEntry['label'];
     return {
       id: String(technology.id),
       label,
-      quadrant: toIndex(
-        quadrantOrder.get(technology.quadrant.id),
-        `quadrant ${String(technology.quadrant.id)}`,
+      quadrant: orderOf(
+        targetOf(technology.quadrant),
+        'quadrant',
       ) as QuadrantIndex,
-      ring: toIndex(
-        ringOrder.get(technology.ring.id),
-        `ring ${String(technology.ring.id)}`,
-      ) as RingIndex,
+      ring: orderOf(targetOf(technology.ring), 'ring') as RingIndex,
       movement: movementOf(ringPeriods, edition),
       areas: technology.areas.ids.map(String),
     };
