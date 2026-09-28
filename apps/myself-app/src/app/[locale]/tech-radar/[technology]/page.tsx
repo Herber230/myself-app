@@ -19,8 +19,7 @@ import { projectAnchor } from '../../../../components/landing/projects-section';
 import { SiteNav } from '../../../../components/site-nav';
 import { radarEntryPath } from '../../../../components/tech-radar/radar-paths';
 import { loadPostsForTechnology } from '../../../../content/blog';
-import { loadEvery } from '../../../../content/queries';
-import { SITE_REPOSITORIES } from '../../../../content/repositories';
+import { SITE_CONTENT } from '../../../../content/repositories';
 import { loadTechnologyDetail } from '../../../../content/technology-detail';
 import { siteT } from '../../../../i18n/server';
 import {
@@ -33,7 +32,7 @@ import {
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  const technologies = await loadEvery(SITE_REPOSITORIES, Technology);
+  const technologies = await SITE_CONTENT.loadAll(Technology);
   return technologies.map(each => ({ technology: String(each.id) }));
 }
 
@@ -42,7 +41,7 @@ async function detailOf(
 ) {
   const { locale, technology } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const detail = await loadTechnologyDetail(SITE_REPOSITORIES, technology);
+  const detail = await loadTechnologyDetail(SITE_CONTENT, technology);
   if (detail === undefined) notFound();
   return { locale, detail };
 }
@@ -76,7 +75,7 @@ export default async function TechnologyPage({
   // The landing page shows only the featured ones, and each links to its card.
   const projects = detail.projects.filter(project => project.featured);
   const id = String(technology.id);
-  const posts = await loadPostsForTechnology(SITE_REPOSITORIES, id);
+  const posts = await loadPostsForTechnology(SITE_CONTENT, id);
   return (
     <>
       <SiteNav locale={locale} path={`/tech-radar/${id}`} />

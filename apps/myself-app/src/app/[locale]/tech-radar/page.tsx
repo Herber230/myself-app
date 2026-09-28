@@ -19,9 +19,8 @@ import { SiteNav } from '../../../components/site-nav';
 import { layoutRadar } from '../../../components/tech-radar/layout';
 import { RadarExplorer } from '../../../components/tech-radar/radar-explorer';
 import { RingKey } from '../../../components/tech-radar/ring-key';
-import { loadEvery } from '../../../content/queries';
 import { loadRadarEntries } from '../../../content/radar';
-import { SITE_REPOSITORIES } from '../../../content/repositories';
+import { SITE_CONTENT } from '../../../content/repositories';
 import { siteT } from '../../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../../site-locales';
 
@@ -34,21 +33,21 @@ const PATH = '/tech-radar';
  * rather than a value, because the entries arrive through entifix's `load`
  * use case.
  */
-const LAYOUT = loadRadarEntries(SITE_REPOSITORIES).then(entries =>
+const LAYOUT = loadRadarEntries(SITE_CONTENT).then(entries =>
   layoutRadar(entries),
 );
 
 /** Innermost first, as the chart draws them. */
-const RINGS = loadEvery(SITE_REPOSITORIES, Ring, {
+const RINGS = SITE_CONTENT.loadAll(Ring, {
   sorting: [{ 0: { property: 'order', type: 'asc' } }],
 });
 
 /** By index, as the chart numbers them: the ids the filter's URL uses. */
-const QUADRANTS = loadEvery(SITE_REPOSITORIES, Quadrant, {
+const QUADRANTS = SITE_CONTENT.loadAll(Quadrant, {
   sorting: [{ 0: { property: 'order', type: 'asc' } }],
 });
 
-const AREAS = loadEvery(SITE_REPOSITORIES, TechnologyArea);
+const AREAS = SITE_CONTENT.loadAll(TechnologyArea);
 
 export async function generateMetadata({
   params,

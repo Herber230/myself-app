@@ -16,8 +16,7 @@ import { ContentValidationError } from '@myself-app/static-adapter';
 import { describe, expect, it } from 'vitest';
 
 import { withPostBodies } from './post-bodies';
-import { loadEvery } from './queries';
-import { buildSiteRepositories, CONTENT_SOURCES } from './site-content';
+import { buildSiteContent, CONTENT_SOURCES } from './site-content';
 
 type Content = Record<string, readonly unknown[]>;
 
@@ -30,10 +29,10 @@ const withFile = (file: string, records: unknown[]): Content => ({
   [file]: records,
 });
 
-/** Every problem `buildSiteRepositories` reports for some content. */
+/** Every problem `buildSiteContent` reports for some content. */
 function problemsIn(content: Content): string[] {
   try {
-    buildSiteRepositories(content);
+    buildSiteContent(content);
   } catch (error) {
     expect(error).toBeInstanceOf(ContentValidationError);
     return (error as ContentValidationError).problems.map(
@@ -58,17 +57,17 @@ describe('the content the site ships', () => {
   });
 
   it('is served, with its links and dates in place', async () => {
-    const repositories = buildSiteRepositories(CONTENT);
-    const [profile] = await loadEvery(repositories, Profile);
+    const content = buildSiteContent(CONTENT);
+    const [profile] = await content.loadAll(Profile);
     expect(profile.firstName).toBe('Herber');
 
-    const periods = await loadEvery(repositories, EmploymentPeriod);
+    const periods = await content.loadAll(EmploymentPeriod);
     for (const period of periods) {
       expect(period.start, String(period.id)).toBeInstanceOf(Date);
       expect(period.employer.id, String(period.id)).toBeTypeOf('string');
     }
 
-    const technologies = await loadEvery(repositories, Technology);
+    const technologies = await content.loadAll(Technology);
     expect(technologies.length).toBe(CONTENT['technologies.json'].length);
   });
 });

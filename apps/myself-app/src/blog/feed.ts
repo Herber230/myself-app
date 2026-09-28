@@ -7,7 +7,7 @@ import type { LocalizedText } from '@myself-app/domain';
 import { postPath } from '../components/blog/post-cards';
 import { inLocale } from '../components/cv/cv-format';
 import { loadPosts } from '../content/blog';
-import type { SiteRepositories } from '../content/site-content';
+import type { SiteContent } from '../content/site-content';
 import { siteT } from '../i18n/server';
 import { localePath, type SiteLocale } from '../site-locales';
 
@@ -21,12 +21,12 @@ export function escapeXml(text: string): string {
 }
 
 export async function renderFeed(
-  repositories: SiteRepositories,
+  content: SiteContent,
   locale: SiteLocale,
   base: URL,
 ): Promise<string> {
   const t = siteT(locale);
-  const posts = await loadPosts(repositories, { includeDrafts: false });
+  const posts = await loadPosts(content, { includeDrafts: false });
   const absolute = (path: string) => new URL(path, base).href;
   const items = posts.map(post => {
     const link = absolute(postPath(locale, String(post.id)));

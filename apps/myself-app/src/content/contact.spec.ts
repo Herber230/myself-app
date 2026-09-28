@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
 import { loadContactChannels } from './contact';
-import { SITE_CONTENT as CONTENT } from './repositories';
-import { SITE_REPOSITORIES } from './repositories';
-import { buildSiteRepositories } from './site-content';
+import { SITE_RECORDS as CONTENT } from './repositories';
+import { SITE_CONTENT } from './repositories';
+import { buildSiteContent } from './site-content';
 
 const ids = (channels: { id: unknown }[]) => channels.map(each => each.id);
 
 describe('the contact channels', () => {
   it('are the shipped ones, in their order', async () => {
-    expect(ids(await loadContactChannels(SITE_REPOSITORIES))).toEqual([
+    expect(ids(await loadContactChannels(SITE_CONTENT))).toEqual([
       'email',
       'github',
       'linkedin',
@@ -20,14 +20,14 @@ describe('the contact channels', () => {
     const channels = structuredClone(
       CONTENT['contact-channels.json'],
     ) as Record<string, unknown>[];
-    const repositories = buildSiteRepositories({
+    const content = buildSiteContent({
       ...CONTENT,
       'contact-channels.json': channels.map((channel, index) => ({
         ...channel,
         order: channels.length - index,
       })),
     });
-    expect(ids(await loadContactChannels(repositories))).toEqual([
+    expect(ids(await loadContactChannels(content))).toEqual([
       'linkedin',
       'github',
       'email',

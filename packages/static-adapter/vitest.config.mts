@@ -42,6 +42,8 @@ export default defineConfig({
         // the package ships. It carries no branch a spec could reach except by
         // running it, which is what `static-repository.spec.ts` does.
         'src/contracts/**',
+        // Fixture entities the specs share, not code the package ships.
+        'src/**/*.fixture.ts',
       ],
       reportsDirectory: './test-output/vitest/coverage',
       thresholds: {

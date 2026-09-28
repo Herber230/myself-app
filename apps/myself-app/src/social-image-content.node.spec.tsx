@@ -45,7 +45,7 @@ describe("the social preview image's words", () => {
 
   it('leave the title out when the profile has none', async () => {
     const profile = await loadProfile(
-      (await import('./content/repositories')).SITE_REPOSITORIES,
+      (await import('./content/repositories')).SITE_CONTENT,
     );
     vi.mocked(loadProfile).mockResolvedValueOnce({
       ...profile,

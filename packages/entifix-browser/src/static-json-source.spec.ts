@@ -1,6 +1,6 @@
+import { loadThroughUseCase } from '@myself-app/static-adapter';
 import { describe, expect, it } from 'vitest';
 
-import { loadThroughUseCase } from './load-through-use-case.js';
 import { fetchServing, Note, NOTES_FILE } from './note.fixture.js';
 import { staticJsonSource } from './static-json-source.js';
 

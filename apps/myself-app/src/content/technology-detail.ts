@@ -17,8 +17,7 @@ import {
   TechnologyUsePeriod,
 } from '@myself-app/domain';
 
-import { loadEvery } from './queries';
-import type { SiteRepositories } from './site-content';
+import type { SiteContent } from './site-content';
 
 /** One stretch in one ring. */
 export interface RingStretch {
@@ -41,19 +40,19 @@ export interface TechnologyDetail {
 }
 
 export async function loadTechnologyDetail(
-  repositories: SiteRepositories,
+  content: SiteContent,
   id: string,
 ): Promise<TechnologyDetail | undefined> {
   const [technologies, quadrants, areas, rings, periods, projects] =
     await Promise.all([
-      loadEvery(repositories, Technology),
-      loadEvery(repositories, Quadrant),
-      loadEvery(repositories, TechnologyArea),
-      loadEvery(repositories, Ring),
-      loadEvery(repositories, TechnologyUsePeriod, {
+      content.loadAll(Technology),
+      content.loadAll(Quadrant),
+      content.loadAll(TechnologyArea),
+      content.loadAll(Ring),
+      content.loadAll(TechnologyUsePeriod, {
         sorting: [{ 0: { property: 'start', type: 'asc' } }],
       }),
-      loadEvery(repositories, Project, {
+      content.loadAll(Project, {
         sorting: [{ 0: { property: 'order', type: 'asc' } }],
       }),
     ]);

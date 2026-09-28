@@ -20,8 +20,7 @@ import type {
   RadarEntry,
   RingIndex,
 } from '../components/tech-radar/types';
-import { loadEvery } from './queries';
-import type { SiteRepositories } from './site-content';
+import type { SiteContent } from './site-content';
 
 /**
  * The date the radar compares against: the latest `RadarEdition` in content
@@ -30,10 +29,8 @@ import type { SiteRepositories } from './site-content';
  * than taken from the build's clock, so the same content always draws the
  * same radar.
  */
-export async function loadEditionDate(
-  repositories: SiteRepositories,
-): Promise<Date> {
-  const editions = await loadEvery(repositories, RadarEdition, {
+export async function loadEditionDate(content: SiteContent): Promise<Date> {
+  const editions = await content.loadAll(RadarEdition, {
     sorting: [{ 0: { property: 'date', type: 'desc' } }],
   });
   // Validation requires at least one edition, with a date.
@@ -87,14 +84,14 @@ function toIndex(order: number | undefined, what: string): number {
 
 /** Every technology as a blip, in no particular order: the layout numbers them. */
 export async function loadRadarEntries(
-  repositories: SiteRepositories,
+  content: SiteContent,
 ): Promise<RadarEntry[]> {
   const [technologies, quadrants, rings, periods, edition] = await Promise.all([
-    loadEvery(repositories, Technology),
-    loadEvery(repositories, Quadrant),
-    loadEvery(repositories, Ring),
-    loadEvery(repositories, TechnologyUsePeriod),
-    loadEditionDate(repositories),
+    content.loadAll(Technology),
+    content.loadAll(Quadrant),
+    content.loadAll(Ring),
+    content.loadAll(TechnologyUsePeriod),
+    loadEditionDate(content),
   ]);
 
   const quadrantOrder = new Map(quadrants.map(each => [each.id, each.order]));

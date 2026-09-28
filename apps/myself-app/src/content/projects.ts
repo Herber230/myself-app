@@ -4,13 +4,10 @@
  */
 import { Project } from '@myself-app/domain';
 
-import { loadEvery } from './queries';
-import type { SiteRepositories } from './site-content';
+import type { SiteContent } from './site-content';
 
-export function loadFeaturedProjects(
-  repositories: SiteRepositories,
-): Promise<Project[]> {
-  return loadEvery(repositories, Project, {
+export function loadFeaturedProjects(content: SiteContent): Promise<Project[]> {
+  return content.loadAll(Project, {
     filtering: [{ property: 'featured', operator: 'eq', value: true }],
     sorting: [{ 0: { property: 'order', type: 'asc' } }],
   });

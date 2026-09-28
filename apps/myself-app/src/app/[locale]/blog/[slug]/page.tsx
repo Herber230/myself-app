@@ -23,7 +23,7 @@ import {
   previewsOf,
   relatedPosts,
 } from '../../../../content/blog';
-import { SITE_REPOSITORIES } from '../../../../content/repositories';
+import { SITE_CONTENT } from '../../../../content/repositories';
 import { loadSitePaths } from '../../../../content/site-paths';
 import { siteT } from '../../../../i18n/server';
 import {
@@ -36,14 +36,14 @@ import {
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  const posts = await loadPosts(SITE_REPOSITORIES);
+  const posts = await loadPosts(SITE_CONTENT);
   return posts.map(each => ({ slug: String(each.id) }));
 }
 
 async function postOf(params: PageProps<'/[locale]/blog/[slug]'>['params']) {
   const { locale, slug } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const post = await loadPost(SITE_REPOSITORIES, slug);
+  const post = await loadPost(SITE_CONTENT, slug);
   if (post === undefined) notFound();
   return { locale, post, id: slug };
 }
@@ -75,16 +75,13 @@ export default async function PostPage({
   const { locale, post, id } = await postOf(params);
   const t = siteT(locale);
   const [[preview], posts, sitePaths] = await Promise.all([
-    previewsOf(SITE_REPOSITORIES, [post]),
-    loadPosts(SITE_REPOSITORIES),
-    loadSitePaths(SITE_REPOSITORIES),
+    previewsOf(SITE_CONTENT, [post]),
+    loadPosts(SITE_CONTENT),
+    loadSitePaths(SITE_CONTENT),
   ]);
   // Every post has one: it was read from the same repository.
   const card = postCardOf(preview as NonNullable<typeof preview>, locale, t);
-  const related = await previewsOf(
-    SITE_REPOSITORIES,
-    relatedPosts(post, posts),
-  );
+  const related = await previewsOf(SITE_CONTENT, relatedPosts(post, posts));
   const body = await renderPostBody({
     id,
     markdown: inLocale(post.body as LocalizedText, locale),

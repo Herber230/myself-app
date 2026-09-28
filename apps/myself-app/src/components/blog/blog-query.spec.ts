@@ -11,8 +11,7 @@ import {
 import { describe, expect, it } from 'vitest';
 
 import { dataFileContent } from '../../content/data-files';
-import { loadEvery } from '../../content/queries';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { blogQuery } from './blog-query';
 
 const query = blogQuery({
@@ -25,7 +24,7 @@ const idsOf = (posts: readonly Post[]) => posts.map(post => String(post.id));
 
 describe('the blog filter', () => {
   it('keeps the same posts in the browser as at build', async () => {
-    const file = await dataFileContent(SITE_REPOSITORIES, 'post.json');
+    const file = await dataFileContent(SITE_CONTENT, 'post.json');
     const repository = await staticJsonSource(
       Post,
       '/data/post.json',
@@ -46,7 +45,7 @@ describe('the blog filter', () => {
       for (const locale of ['en', 'es'] as const) {
         const request = query.request<Post>(query.parse(search), locale);
         const [atBuild, inBrowser] = await Promise.all([
-          loadEvery(SITE_REPOSITORIES, Post, {
+          SITE_CONTENT.loadAll(Post, {
             ...request,
             filtering: [
               { property: 'draft', operator: 'eq', value: false },
@@ -68,8 +67,7 @@ describe('the blog filter', () => {
   it('finds posts by tag, technology, year and title, newest first', async () => {
     const find = async (search: string, locale: 'en' | 'es' = 'en') =>
       idsOf(
-        await loadEvery(
-          SITE_REPOSITORIES,
+        await SITE_CONTENT.loadAll(
           Post,
           query.request(query.parse(search), locale),
         ),

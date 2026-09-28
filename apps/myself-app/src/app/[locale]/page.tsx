@@ -11,8 +11,7 @@ import { SiteNav } from '../../components/site-nav';
 import { loadContactChannels } from '../../content/contact';
 import { loadProfile } from '../../content/profile';
 import { loadFeaturedProjects } from '../../content/projects';
-import { loadEvery } from '../../content/queries';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../site-locales';
 
@@ -35,10 +34,10 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
   const [profile, projects, technologies, channels] = await Promise.all([
-    loadProfile(SITE_REPOSITORIES),
-    loadFeaturedProjects(SITE_REPOSITORIES),
-    loadEvery(SITE_REPOSITORIES, Technology),
-    loadContactChannels(SITE_REPOSITORIES),
+    loadProfile(SITE_CONTENT),
+    loadFeaturedProjects(SITE_CONTENT),
+    SITE_CONTENT.loadAll(Technology),
+    loadContactChannels(SITE_CONTENT),
   ]);
   return (
     <>

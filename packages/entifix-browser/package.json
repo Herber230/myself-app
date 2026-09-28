@@ -39,6 +39,11 @@
           "skipTypeCheck": true,
           "stripLeadingPaths": true
         }
+      },
+      "test": {
+        "dependsOn": [
+          "^build"
+        ]
       }
     }
   },

@@ -18,25 +18,22 @@ import {
 
 import { loadContactChannels } from './contact';
 import { loadProfile } from './profile';
-import { loadEvery } from './queries';
-import type { SiteRepositories } from './site-content';
+import type { SiteContent } from './site-content';
 
 /** Every variant, by its order. The first is the one `/[locale]/cv/` shows. */
-export function loadCvVariants(
-  repositories: SiteRepositories,
-): Promise<CvVariant[]> {
-  return loadEvery(repositories, CvVariant, {
+export function loadCvVariants(content: SiteContent): Promise<CvVariant[]> {
+  return content.loadAll(CvVariant, {
     sorting: [{ 0: { property: 'order', type: 'asc' } }],
   });
 }
 
 /** The id of the variant `/[locale]/cv/` shows. */
 export async function defaultCvVariantId(
-  repositories: SiteRepositories,
+  content: SiteContent,
 ): Promise<EntityId> {
   // `cv-variants.json` has at least the default: the page has nothing to show
   // without it, and `cv.spec.ts` holds the content to it.
-  const [first] = await loadCvVariants(repositories);
+  const [first] = await loadCvVariants(content);
   return (first as CvVariant).id;
 }
 
@@ -46,9 +43,9 @@ export async function defaultCvVariantId(
  * The same in every locale.
  */
 export async function cvVariantParams(
-  repositories: SiteRepositories,
+  content: SiteContent,
 ): Promise<{ variant: string }[]> {
-  const [, ...others] = await loadCvVariants(repositories);
+  const [, ...others] = await loadCvVariants(content);
   return others.map(variant => ({ variant: String(variant.id) }));
 }
 
@@ -73,7 +70,7 @@ export interface CvSheet {
 
 /** Everything one variant's sheet shows, or nothing for an unknown variant. */
 export async function loadCvSheet(
-  repositories: SiteRepositories,
+  content: SiteContent,
   variantId: string,
 ): Promise<CvSheet | undefined> {
   const [
@@ -87,19 +84,19 @@ export async function loadCvSheet(
     education,
     certificates,
   ] = await Promise.all([
-    loadCvVariants(repositories),
-    loadProfile(repositories),
-    loadContactChannels(repositories),
-    loadEvery(repositories, Technology),
-    loadEvery(repositories, EmploymentPeriod),
-    loadEvery(repositories, Employer),
-    loadEvery(repositories, EmploymentHighlight, {
+    loadCvVariants(content),
+    loadProfile(content),
+    loadContactChannels(content),
+    content.loadAll(Technology),
+    content.loadAll(EmploymentPeriod),
+    content.loadAll(Employer),
+    content.loadAll(EmploymentHighlight, {
       sorting: [{ 0: { property: 'order', type: 'asc' } }],
     }),
-    loadEvery(repositories, Education, {
+    content.loadAll(Education, {
       sorting: [{ 0: { property: 'order', type: 'asc' } }],
     }),
-    loadEvery(repositories, Certificate, {
+    content.loadAll(Certificate, {
       sorting: [{ 0: { property: 'order', type: 'asc' } }],
     }),
   ]);

@@ -1,5 +1,5 @@
 /**
- * The site's repositories, built once per bundle from the content package.
+ * The site's content, built once per bundle from the content package.
  *
  * Importing this module is what validates the content: a record that is wrong
  * throws a `ContentValidationError` here, and `next build` stops on it. So does
@@ -9,11 +9,11 @@ import { CONTENT } from '@myself-app/content';
 
 import { assertNoUnlistedPlaceholders } from './placeholders';
 import { withPostBodies } from './post-bodies';
-import { buildSiteRepositories } from './site-content';
+import { buildSiteContent } from './site-content';
 
 /** The content package's records, with each post's body read from its files. */
-export const SITE_CONTENT = withPostBodies(CONTENT);
+export const SITE_RECORDS = withPostBodies(CONTENT);
 
-assertNoUnlistedPlaceholders(SITE_CONTENT);
+assertNoUnlistedPlaceholders(SITE_RECORDS);
 
-export const SITE_REPOSITORIES = buildSiteRepositories(SITE_CONTENT);
+export const SITE_CONTENT = buildSiteContent(SITE_RECORDS);

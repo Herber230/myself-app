@@ -14,8 +14,7 @@ import {
 import { describe, expect, it } from 'vitest';
 
 import { dataFileContent } from '../../content/data-files';
-import { loadEvery } from '../../content/queries';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { radarQuery, type RadarVocabulary } from './radar-filter';
 
 const byOrder = {
@@ -24,9 +23,9 @@ const byOrder = {
 
 async function vocabulary(): Promise<RadarVocabulary> {
   const [quadrants, rings, areas] = await Promise.all([
-    loadEvery(SITE_REPOSITORIES, Quadrant, byOrder as never),
-    loadEvery(SITE_REPOSITORIES, Ring, byOrder as never),
-    loadEvery(SITE_REPOSITORIES, TechnologyArea),
+    SITE_CONTENT.loadAll(Quadrant, byOrder as never),
+    SITE_CONTENT.loadAll(Ring, byOrder as never),
+    SITE_CONTENT.loadAll(TechnologyArea),
   ]);
   return {
     quadrants: quadrants.map(each => String(each.id)),
@@ -37,7 +36,7 @@ async function vocabulary(): Promise<RadarVocabulary> {
 
 /** The browser's source, over the file the export writes. */
 async function browserSource() {
-  const file = await dataFileContent(SITE_REPOSITORIES, 'technology.json');
+  const file = await dataFileContent(SITE_CONTENT, 'technology.json');
   return staticJsonSource(
     Technology,
     '/data/technology.json',
@@ -65,7 +64,7 @@ describe('the radar filter', () => {
       for (const locale of ['en', 'es'] as const) {
         const request = query.request<Technology>(query.parse(search), locale);
         const [atBuild, inBrowser] = await Promise.all([
-          loadEvery(SITE_REPOSITORIES, Technology, request),
+          SITE_CONTENT.loadAll(Technology, request),
           loadThroughUseCase<Technology>(repository, {
             ...request,
             pageSize: Number.MAX_SAFE_INTEGER,
@@ -80,8 +79,7 @@ describe('the radar filter', () => {
 
   it('keeps every technology tagged with an area, and no other', async () => {
     const query = radarQuery(await vocabulary());
-    const kept = await loadEvery(
-      SITE_REPOSITORIES,
+    const kept = await SITE_CONTENT.loadAll(
       Technology,
       query.request(query.parse('?area=monorepo'), 'en'),
     );
@@ -92,8 +90,7 @@ describe('the radar filter', () => {
     const query = radarQuery(await vocabulary());
     const search = async (q: string, locale: 'en' | 'es') =>
       idsOf(
-        await loadEvery(
-          SITE_REPOSITORIES,
+        await SITE_CONTENT.loadAll(
           Technology,
           query.request(query.parse(`?q=${encodeURIComponent(q)}`), locale),
         ),

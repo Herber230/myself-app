@@ -11,7 +11,7 @@ import {
   relatedPosts,
   SHOW_DRAFTS,
 } from './blog';
-import { SITE_REPOSITORIES } from './repositories';
+import { SITE_CONTENT } from './repositories';
 
 const ids = (posts: readonly { id: unknown }[]) =>
   posts.map(post => String(post.id));
@@ -19,24 +19,24 @@ const ids = (posts: readonly { id: unknown }[]) =>
 describe('the blog’s posts', () => {
   it('are newest first, and leave drafts out unless asked', async () => {
     expect(SHOW_DRAFTS).toBe(false);
-    expect(ids(await loadPosts(SITE_REPOSITORIES))).toEqual([
+    expect(ids(await loadPosts(SITE_CONTENT))).toEqual([
       'entifix-in-the-browser',
       'a-static-site-on-s3',
       'coverage-at-one-hundred',
     ]);
-    expect(
-      ids(await loadPosts(SITE_REPOSITORIES, { includeDrafts: true }))[0],
-    ).toBe('effect-four');
+    expect(ids(await loadPosts(SITE_CONTENT, { includeDrafts: true }))[0]).toBe(
+      'effect-four',
+    );
   });
 
   it('are found by id, and a draft only when drafts are shown', async () => {
-    expect((await loadPost(SITE_REPOSITORIES, 'a-static-site-on-s3'))?.id).toBe(
+    expect((await loadPost(SITE_CONTENT, 'a-static-site-on-s3'))?.id).toBe(
       'a-static-site-on-s3',
     );
-    expect(await loadPost(SITE_REPOSITORIES, 'effect-four')).toBeUndefined();
+    expect(await loadPost(SITE_CONTENT, 'effect-four')).toBeUndefined();
     expect(
       (
-        await loadPost(SITE_REPOSITORIES, 'effect-four', {
+        await loadPost(SITE_CONTENT, 'effect-four', {
           includeDrafts: true,
         })
       )?.id,
@@ -45,21 +45,21 @@ describe('the blog’s posts', () => {
 
   it('are listed for a technology they are about', async () => {
     expect(
-      ids(await loadPostsForTechnology(SITE_REPOSITORIES, 'cloudfront')),
+      ids(await loadPostsForTechnology(SITE_CONTENT, 'cloudfront')),
     ).toEqual(['a-static-site-on-s3']);
     expect(
-      ids(await loadPostsForTechnology(SITE_REPOSITORIES, 'angularjs')),
+      ids(await loadPostsForTechnology(SITE_CONTENT, 'angularjs')),
     ).toEqual([]);
   });
 
   it('carry every tag the filter lists', async () => {
-    expect(ids(await loadTags(SITE_REPOSITORIES))).toContain('testing');
+    expect(ids(await loadTags(SITE_CONTENT))).toContain('testing');
   });
 });
 
 describe('a post’s preview', () => {
   it('names its tags and technologies, and dates it', async () => {
-    const [preview] = await loadPostPreviews(SITE_REPOSITORIES);
+    const [preview] = await loadPostPreviews(SITE_CONTENT);
     expect(preview?.id).toBe('entifix-in-the-browser');
     expect(preview?.publishedAt).toBe('2026-09-27T00:00:00.000Z');
     expect(preview?.updatedAt).toBeUndefined();
@@ -72,7 +72,7 @@ describe('a post’s preview', () => {
   });
 
   it('carries the date it was last updated, when it was', async () => {
-    const previews = await loadPostPreviews(SITE_REPOSITORIES);
+    const previews = await loadPostPreviews(SITE_CONTENT);
     expect(
       previews.find(each => each.id === 'a-static-site-on-s3')?.updatedAt,
     ).toBe('2026-09-20T00:00:00.000Z');

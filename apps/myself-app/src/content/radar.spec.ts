@@ -6,11 +6,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { layoutRadar } from '../components/tech-radar/layout';
-import { loadPage } from './queries';
 import { loadEditionDate, loadRadarEntries, movementOf } from './radar';
-import { SITE_CONTENT as CONTENT } from './repositories';
-import { SITE_REPOSITORIES } from './repositories';
-import { buildSiteRepositories } from './site-content';
+import { SITE_RECORDS as CONTENT } from './repositories';
+import { SITE_CONTENT } from './repositories';
+import { buildSiteContent } from './site-content';
 
 const at = (iso: string) => new Date(`${iso}T00:00:00.000Z`);
 const EDITION = at('2026-01-01');
@@ -53,21 +52,21 @@ describe('a blip movement', () => {
   });
 
   it('compares against the latest edition in content', async () => {
-    expect(await loadEditionDate(SITE_REPOSITORIES)).toEqual(at('2026-09-25'));
-    const repositories = buildSiteRepositories({
+    expect(await loadEditionDate(SITE_CONTENT)).toEqual(at('2026-09-25'));
+    const content = buildSiteContent({
       ...CONTENT,
       'radar-editions.json': [
         { id: 'first', date: '2025-01-01' },
         { id: 'second', date: '2026-06-01' },
       ],
     });
-    expect(await loadEditionDate(repositories)).toEqual(at('2026-06-01'));
+    expect(await loadEditionDate(content)).toEqual(at('2026-06-01'));
   });
 });
 
 describe('the radar entries read from content', () => {
   it('are one per technology, each placed and labelled in both languages', async () => {
-    const entries = await loadRadarEntries(SITE_REPOSITORIES);
+    const entries = await loadRadarEntries(SITE_CONTENT);
     expect(entries).toHaveLength(CONTENT['technologies.json'].length);
     for (const entry of entries) {
       expect(entry.label.en, entry.id).toBeTruthy();
@@ -78,7 +77,7 @@ describe('the radar entries read from content', () => {
   });
 
   it('draw a technique by its translated name', async () => {
-    const entries = await loadRadarEntries(SITE_REPOSITORIES);
+    const entries = await loadRadarEntries(SITE_CONTENT);
     const clean = entries.find(entry => entry.id === 'clean-architecture');
     expect(clean?.label).toEqual({
       en: 'Clean Architecture',
@@ -93,7 +92,7 @@ describe('the radar entries read from content', () => {
     const periods = (
       CONTENT['technology-use-periods.json'] as { technology: string }[]
     ).filter(period => !['typescript', 'angular'].includes(period.technology));
-    const repositories = buildSiteRepositories({
+    const content = buildSiteContent({
       ...CONTENT,
       'radar-editions.json': [{ id: 'then', date: '2016-01-01' }],
       'technology-use-periods.json': [
@@ -120,7 +119,7 @@ describe('the radar entries read from content', () => {
       ],
     });
     const movements = new Map(
-      (await loadRadarEntries(repositories)).map(entry => [
+      (await loadRadarEntries(content)).map(entry => [
         entry.id,
         entry.movement,
       ]),
@@ -132,14 +131,14 @@ describe('the radar entries read from content', () => {
   });
 
   it('show no movement in the first edition', async () => {
-    const entries = await loadRadarEntries(SITE_REPOSITORIES);
+    const entries = await loadRadarEntries(SITE_CONTENT);
     expect(new Set(entries.map(entry => entry.movement))).toEqual(
       new Set(['none']),
     );
   });
 
   it('lay out without an overlap or a stray', async () => {
-    const layout = layoutRadar(await loadRadarEntries(SITE_REPOSITORIES));
+    const layout = layoutRadar(await loadRadarEntries(SITE_CONTENT));
     expect(layout.blips).toHaveLength(CONTENT['technologies.json'].length);
   });
 
@@ -148,11 +147,11 @@ describe('the radar entries read from content', () => {
       order: number;
     }[];
     quadrants[0].order = 7;
-    const repositories = buildSiteRepositories({
+    const content = buildSiteContent({
       ...CONTENT,
       'quadrants.json': quadrants,
     });
-    await expect(loadRadarEntries(repositories)).rejects.toThrow(
+    await expect(loadRadarEntries(content)).rejects.toThrow(
       'quadrant techniques has order 7; the radar draws four, 0 to 3',
     );
   });
@@ -162,23 +161,10 @@ describe('the radar entries read from content', () => {
       order: number;
     }[];
     rings[0].order = 1.5;
-    const repositories = buildSiteRepositories({
+    const content = buildSiteContent({
       ...CONTENT,
       'rings.json': rings,
     });
-    await expect(loadRadarEntries(repositories)).rejects.toThrow(
-      'has order 1.5',
-    );
-  });
-});
-
-describe('a query for an entity nothing serves', () => {
-  it('fails with the entity name rather than returning nothing', async () => {
-    class Unserved {
-      id = 'x';
-    }
-    await expect(loadPage(new Map(), Unserved)).rejects.toThrow(
-      'No repository is registered for Unserved',
-    );
+    await expect(loadRadarEntries(content)).rejects.toThrow('has order 1.5');
   });
 });

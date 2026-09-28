@@ -3,7 +3,7 @@
  * entity, written into the export by a `force-static` route handler as
  * `/data/<key>.json`. The radar's filter answers from `technology.json`.
  *
- * Produced from the same repositories the pages render from, through the same
+ * Produced from the same content the pages render from, through the same
  * `load` use case, so the files and the pages cannot disagree. A record goes
  * out as entifix serializes it — links as ids, dates as ISO strings — which is
  * what the browser's own mapping expects back.
@@ -15,8 +15,7 @@ import {
   serializeEntityCollection,
 } from '@entifix/core';
 
-import { loadEvery } from './queries';
-import { CONTENT_SOURCES, type SiteRepositories } from './site-content';
+import { CONTENT_SOURCES, type SiteContent } from './site-content';
 
 /** The file an entity is written to, from its own metadata key. */
 export function dataFileOf(entity: EntityConstructor<Entity>): string {
@@ -31,19 +30,18 @@ export const DATA_FILES: readonly string[] = CONTENT_SOURCES.map(source =>
 
 /** The records of the entity a file is named for, serialized. */
 export async function dataFileContent(
-  repositories: SiteRepositories,
+  content: SiteContent,
   file: string,
 ): Promise<unknown[]> {
   const source = CONTENT_SOURCES.find(each => dataFileOf(each.entity) === file);
   if (source === undefined) {
     throw new RangeError(`No entity is written to /data/${file}`);
   }
-  const records = await loadEvery(
-    repositories,
+  const records = await content.loadAll(
     source.entity,
     source.published?.request,
   );
-  const omitted = source.published?.omit ?? [];
+  const omitted: readonly string[] = source.published?.omit ?? [];
   return serializeEntityCollection(source.entity, records).map(record =>
     Object.fromEntries(
       Object.entries(record).filter(([member]) => !omitted.includes(member)),

@@ -3,12 +3,12 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { loadProfile } from '../../content/profile';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { Hero } from './hero';
 
 describe('the hero', () => {
   it('shows the name, the title, the tagline and the two calls to action', async () => {
-    const profile = await loadProfile(SITE_REPOSITORIES);
+    const profile = await loadProfile(SITE_CONTENT);
     render(<Hero locale="es" profile={profile} />);
     expect(
       screen.getByRole('heading', { level: 1, name: 'Herber Colop' }),

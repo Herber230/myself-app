@@ -14,7 +14,7 @@ import { postCardOf } from '../../../components/blog/post-cards';
 import { PostExplorer } from '../../../components/blog/post-explorer';
 import { SiteNav } from '../../../components/site-nav';
 import { loadPostPreviews } from '../../../content/blog';
-import { SITE_REPOSITORIES } from '../../../content/repositories';
+import { SITE_CONTENT } from '../../../content/repositories';
 import { siteT } from '../../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../../site-locales';
 
@@ -57,7 +57,7 @@ export default async function BlogPage({
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
   const t = siteT(locale);
-  const previews = await loadPostPreviews(SITE_REPOSITORIES);
+  const previews = await loadPostPreviews(SITE_CONTENT);
   const years = [
     ...new Set(previews.map(each => each.publishedAt.slice(0, 4))),
   ];

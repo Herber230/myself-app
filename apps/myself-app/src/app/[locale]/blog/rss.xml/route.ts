@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { renderFeed } from '../../../../blog/feed';
-import { SITE_REPOSITORIES } from '../../../../content/repositories';
+import { SITE_CONTENT } from '../../../../content/repositories';
 import { isSiteLocale, SITE_LOCALES } from '../../../../site-locales';
 import { siteUrl } from '../../../../site-url';
 
@@ -23,7 +23,7 @@ export async function GET(
 ) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  return new Response(await renderFeed(SITE_REPOSITORIES, locale, siteUrl()), {
+  return new Response(await renderFeed(SITE_CONTENT, locale, siteUrl()), {
     headers: { 'content-type': 'application/rss+xml; charset=utf-8' },
   });
 }

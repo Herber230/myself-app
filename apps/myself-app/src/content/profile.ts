@@ -3,13 +3,10 @@
  */
 import { Profile } from '@myself-app/domain';
 
-import { loadEvery } from './queries';
-import type { SiteRepositories } from './site-content';
+import type { SiteContent } from './site-content';
 
-export async function loadProfile(
-  repositories: SiteRepositories,
-): Promise<Profile> {
-  const [profile] = await loadEvery(repositories, Profile);
+export async function loadProfile(content: SiteContent): Promise<Profile> {
+  const [profile] = await content.loadAll(Profile);
   // `site-content.ts` holds `profile.json` to exactly one record, so a build
   // with none or two never reaches a page.
   return profile as Profile;

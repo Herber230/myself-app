@@ -3,18 +3,17 @@ import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { loadFeaturedProjects } from '../../content/projects';
-import { loadEvery } from '../../content/queries';
-import { SITE_REPOSITORIES } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
 import { ProjectsSection } from './projects-section';
 
 async function technologiesById() {
-  const technologies = await loadEvery(SITE_REPOSITORIES, Technology);
+  const technologies = await SITE_CONTENT.loadAll(Technology);
   return new Map(technologies.map(each => [String(each.id), each]));
 }
 
 describe('the projects section', () => {
   it('shows the featured projects from content, in their order', async () => {
-    const projects = await loadFeaturedProjects(SITE_REPOSITORIES);
+    const projects = await loadFeaturedProjects(SITE_CONTENT);
     render(
       <ProjectsSection
         locale="en"
@@ -32,7 +31,7 @@ describe('the projects section', () => {
   });
 
   it('links each technology to its place on the radar, by its name', async () => {
-    const [project] = await loadFeaturedProjects(SITE_REPOSITORIES);
+    const [project] = await loadFeaturedProjects(SITE_CONTENT);
     const technologies = await technologiesById();
     render(
       <ProjectsSection

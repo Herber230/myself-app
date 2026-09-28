@@ -15,8 +15,7 @@ import {
   Technology,
 } from '@myself-app/domain';
 
-import { loadEvery } from './queries';
-import type { SiteRepositories } from './site-content';
+import type { SiteContent } from './site-content';
 
 /** Whether drafts are read: only while `next dev` serves the site. */
 export const SHOW_DRAFTS = process.env.NODE_ENV === 'development';
@@ -62,11 +61,11 @@ const PUBLISHED: EntityFilter<Post> = {
 
 /** Every post a filter keeps, newest first. */
 export function loadPosts(
-  repositories: SiteRepositories,
+  content: SiteContent,
   { includeDrafts = SHOW_DRAFTS }: BlogReadOptions = {},
   filtering: readonly EntityFilter<Post>[] = [],
 ): Promise<Post[]> {
-  return loadEvery(repositories, Post, {
+  return content.loadAll(Post, {
     filtering: includeDrafts ? [...filtering] : [PUBLISHED, ...filtering],
     sorting: [{ 0: { property: 'publishedAt', type: 'desc' } }],
   });
@@ -74,27 +73,27 @@ export function loadPosts(
 
 /** One post, or `undefined` when there is none by that id to show. */
 export async function loadPost(
-  repositories: SiteRepositories,
+  content: SiteContent,
   id: string,
   options: BlogReadOptions = {},
 ): Promise<Post | undefined> {
-  const posts = await loadPosts(repositories, options);
+  const posts = await loadPosts(content, options);
   return posts.find(post => post.id === id);
 }
 
 /** Every tag, as the filter lists them. */
-export function loadTags(repositories: SiteRepositories): Promise<Tag[]> {
-  return loadEvery(repositories, Tag);
+export function loadTags(content: SiteContent): Promise<Tag[]> {
+  return content.loadAll(Tag);
 }
 
 /** The previews of these posts, in the order given. */
 export async function previewsOf(
-  repositories: SiteRepositories,
+  content: SiteContent,
   posts: readonly Post[],
 ): Promise<PostPreview[]> {
   const [tags, technologies] = await Promise.all([
-    loadEvery(repositories, Tag),
-    loadEvery(repositories, Technology),
+    content.loadAll(Tag),
+    content.loadAll(Technology),
   ]);
   const tagLabel = new Map(tags.map(tag => [tag.id, tag.label]));
   const technologyName = new Map(
@@ -127,10 +126,10 @@ export async function previewsOf(
 
 /** Every post's preview, newest first. */
 export async function loadPostPreviews(
-  repositories: SiteRepositories,
+  content: SiteContent,
   options: BlogReadOptions = {},
 ): Promise<PostPreview[]> {
-  return previewsOf(repositories, await loadPosts(repositories, options));
+  return previewsOf(content, await loadPosts(content, options));
 }
 
 /** Two points per shared tag, one per shared technology. */
@@ -166,12 +165,12 @@ export function relatedPosts(post: Post, posts: readonly Post[]): Post[] {
 
 /** The posts about a technology, newest first. */
 export function loadPostsForTechnology(
-  repositories: SiteRepositories,
+  content: SiteContent,
   technology: string,
   options: BlogReadOptions = {},
 ): Promise<Post[]> {
   // `in` over a collection matches any of its ids, as Mongo's does.
-  return loadPosts(repositories, options, [
+  return loadPosts(content, options, [
     { property: 'technologies', operator: 'in', values: [technology] },
   ]);
 }

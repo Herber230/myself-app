@@ -9,9 +9,8 @@ import { describe, expect, it } from 'vitest';
 
 import { DATA_FILES, dataFileContent, dataFileOf } from './data-files';
 import { withPostBodies } from './post-bodies';
-import { loadEvery } from './queries';
-import { SITE_REPOSITORIES } from './repositories';
-import { buildSiteRepositories, CONTENT_SOURCES } from './site-content';
+import { SITE_CONTENT } from './repositories';
+import { buildSiteContent, CONTENT_SOURCES } from './site-content';
 
 describe('the data files', () => {
   it('are one per entity, named by its metadata key', () => {
@@ -39,10 +38,10 @@ describe('the data files', () => {
 
   it('carry every record the pages render, as entifix serializes it', async () => {
     const written = (await dataFileContent(
-      SITE_REPOSITORIES,
+      SITE_CONTENT,
       'technology.json',
     )) as { id: string; quadrant: string }[];
-    const rendered = await loadEvery(SITE_REPOSITORIES, Technology);
+    const rendered = await SITE_CONTENT.loadAll(Technology);
     expect(written.map(record => record.id)).toEqual(
       rendered.map(record => record.id),
     );
@@ -57,19 +56,16 @@ describe('the data files', () => {
           async source =>
             [
               source.file,
-              await dataFileContent(
-                SITE_REPOSITORIES,
-                dataFileOf(source.entity),
-              ),
+              await dataFileContent(SITE_CONTENT, dataFileOf(source.entity)),
             ] as const,
         ),
       ),
     );
     // `post.json` carries no bodies (ADR 0017): they come from their files.
-    const again = buildSiteRepositories(withPostBodies(content));
+    const again = buildSiteContent(withPostBodies(content));
     const [before, after] = await Promise.all([
-      loadEvery(SITE_REPOSITORIES, Technology),
-      loadEvery(again, Technology),
+      SITE_CONTENT.loadAll(Technology),
+      again.loadAll(Technology),
     ]);
     expect(after.map(record => record.name)).toEqual(
       before.map(record => record.name),
@@ -77,16 +73,16 @@ describe('the data files', () => {
   });
 
   it('refuse a file no entity is written to', async () => {
-    await expect(
-      dataFileContent(SITE_REPOSITORIES, 'nothing.json'),
-    ).rejects.toThrow('No entity is written to /data/nothing.json');
+    await expect(dataFileContent(SITE_CONTENT, 'nothing.json')).rejects.toThrow(
+      'No entity is written to /data/nothing.json',
+    );
   });
 });
 
 describe('the posts file', () => {
   it('leaves out every body and every draft', async () => {
     const written = (await dataFileContent(
-      SITE_REPOSITORIES,
+      SITE_CONTENT,
       'post.json',
     )) as Record<string, unknown>[];
     expect(written.length).toBeGreaterThan(0);
