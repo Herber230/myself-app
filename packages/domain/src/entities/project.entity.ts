@@ -10,12 +10,13 @@ import type { LocalizedText } from '../localized-text.js';
 import { Technology } from './technology.entity.js';
 
 /**
- * Something I built, for the landing page's projects section.
+ * Something I built, shown in the landing page's projects section. Part of the
+ * profile: the landing page is a page, not a business area (#75).
  *
  * No `imageUrl`: ADR 0008 settled the section as text and links, so a record
  * carrying a picture nothing renders would only rot.
  */
-@entity({ key: 'project', domain: 'landing' })
+@entity({ key: 'project', domain: 'profile' })
 export class Project implements Entity {
   #id?: EntityId;
   #name = '';

@@ -336,6 +336,9 @@ importers:
       '@entifix/core':
         specifier: 'catalog:'
         version: 0.1.2(effect@3.22.2)
+      '@myself-app/entifix-incubator-static-adapter':
+        specifier: workspace:*
+        version: link:../entifix-incubator/static-adapter
       '@swc/helpers':
         specifier: 0.5.23
         version: 0.5.23

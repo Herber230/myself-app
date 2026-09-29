@@ -7,7 +7,8 @@
  * browser. Every record is validated before any repository serves it, so a
  * record that is wrong stops the export with the path to what is wrong
  * rather than rendering `undefined` into a page. What is left here is the
- * site's own: which file holds which entity, and the rules only it knows.
+ * site's own: which file holds which entity, and which rules apply to it (the
+ * rules only the site knows are the domain's).
  */
 import {
   Certificate,
@@ -19,6 +20,7 @@ import {
   EmploymentHighlight,
   EmploymentPeriod,
   localizedMembersOf,
+  oneChannelPerType,
   Post,
   Profile,
   Project,
@@ -30,13 +32,13 @@ import {
   Technology,
   TechnologyArea,
   TechnologyUsePeriod,
+  variantIdNotReserved,
 } from '@myself-app/domain';
 import {
   atLeast,
   type ContentSource,
   defineSource,
   defineStaticContent,
-  type EntityRule,
   exactly,
   nonEmpty,
   notBefore,
@@ -45,29 +47,6 @@ import {
 } from '@myself-app/entifix-incubator-static-adapter';
 
 import { readPostBodyFile } from './post-bodies';
-
-/** At most one `ContactChannel` per type: the keys the reference app had. */
-const oneChannelPerType: EntityRule = (records, report) => {
-  const seen = new Set<unknown>();
-  records.forEach((record, index) => {
-    if (seen.has(record.type)) {
-      report(index, 'type', `is a second ${String(record.type)} channel`);
-    }
-    seen.add(record.type);
-  });
-};
-
-/**
- * A CV variant's id is a URL segment beside `ats`, which is the ATS mode's
- * (ADR 0012): a variant named `ats` would be shadowed by it.
- */
-const variantIdNotReserved: EntityRule = (records, report) => {
-  records.forEach((record, index) => {
-    if (record.id === 'ats') {
-      report(index, 'id', 'is "ats", which the CV reserves for its ATS mode');
-    }
-  });
-};
 
 export const CONTENT_SOURCES: readonly ContentSource[] = [
   // One profile: the site is about one person.

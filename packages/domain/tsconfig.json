@@ -5,5 +5,10 @@
     "tsBuildInfoFile": "out-tsc/domain/tsconfig.tsbuildinfo"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["dist", "out-tsc", "test-output"]
+  "exclude": ["dist", "out-tsc", "test-output"],
+  "references": [
+    {
+      "path": "../entifix-incubator/static-adapter"
+    }
+  ]
 }

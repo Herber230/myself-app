@@ -51,8 +51,10 @@ const layerConstraints = [
     ],
   },
   {
+    // The domain reads content through the static adapter's `StaticContent`,
+    // the port entifix will own once the incubator moves there (#75).
     sourceTag: 'layer:domain',
-    onlyDependOnLibsWithTags: [],
+    onlyDependOnLibsWithTags: ['layer:incubator'],
     allowedExternalImports: entifixOnly,
   },
   {

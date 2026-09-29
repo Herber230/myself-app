@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "The entities the three pages read, compiled by SWC with 2022-03 decorators \u2014 which Next's own compiler cannot do.",
+  "description": "The site's business: its entities, the use cases that read them and the rules content must keep, compiled by SWC with 2022-03 decorators — which Next's own compiler cannot do.",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,6 +20,12 @@
       "types": "./dist/entities/*.entity.d.ts",
       "import": "./dist/entities/*.entity.js",
       "default": "./dist/entities/*.entity.js"
+    },
+    "./locales": {
+      "@myself-app/source": "./src/locales.ts",
+      "types": "./dist/locales.d.ts",
+      "import": "./dist/locales.js",
+      "default": "./dist/locales.js"
     }
   },
   "sideEffects": true,
@@ -45,6 +51,7 @@
   },
   "dependencies": {
     "@entifix/core": "catalog:",
+    "@myself-app/entifix-incubator-static-adapter": "workspace:*",
     "@swc/helpers": "0.5.23",
     "effect": "catalog:"
   }
