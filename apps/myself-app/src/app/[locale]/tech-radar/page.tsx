@@ -1,31 +1,14 @@
-import {
-  Card,
-  Center,
-  Lead,
-  Stack,
-  Text,
-} from '@entifix/react-controls/primitives';
-import {
-  localize,
-  type LocalizedText,
-  Quadrant,
-  Ring,
-  TechnologyArea,
-} from '@myself-app/domain';
+import { Quadrant, Ring, TechnologyArea } from '@myself-app/domain';
 import { loadRadarPlacements } from '@myself-app/domain/use-cases';
-import {
-  layoutRadar,
-  RingKey,
-} from '@myself-app/entifix-incubator-react-controls';
+import { layoutRadar } from '@myself-app/entifix-incubator-react-controls';
 import { siteT } from '@myself-app/implementation-ui/i18n';
-import { SiteNav } from '@myself-app/implementation-ui/organisms';
 import { radarEntriesOf } from '@myself-app/implementation-ui/organisms';
-import { RadarExplorer } from '@myself-app/implementation-ui/organisms';
 import {
   isSiteLocale,
   localeAlternates,
   SITE_DEFAULT_LOCALE,
 } from '@myself-app/implementation-ui/routing';
+import { TechRadarPageView } from '@myself-app/implementation-ui/templates';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -74,86 +57,21 @@ export default async function TechRadarPage({
 }: PageProps<'/[locale]/tech-radar'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const t = siteT(locale);
-  const [layout, ringRecords, quadrantRecords, areaRecords] = await Promise.all(
-    [LAYOUT, RINGS, QUADRANTS, AREAS],
-  );
-  const quadrants = [
-    t('radar.quadrants.techniques'),
-    t('radar.quadrants.tools'),
-    t('radar.quadrants.platforms'),
-    t('radar.quadrants.languages'),
-  ];
-  const rings = [
-    t('radar.rings.adopt'),
-    t('radar.rings.trial'),
-    t('radar.rings.assess'),
-    t('radar.rings.hold'),
-  ];
-  const areas = areaRecords
-    .map(area => ({
-      id: String(area.id),
-      name: localize(area.name as LocalizedText, locale),
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name, locale));
+  const [layout, rings, quadrants, areas] = await Promise.all([
+    LAYOUT,
+    RINGS,
+    QUADRANTS,
+    AREAS,
+  ]);
   return (
-    <>
-      <SiteNav locale={locale} path={PATH} />
-      <Center as="main" gutters className="py-2xl">
-        <Card>
-          <Stack gap="l">
-            <Stack gap="s">
-              <Text as="h1" step={3} weight="semibold">
-                {t('techRadar')}
-              </Text>
-              <Lead muted>{t('techRadarLead')}</Lead>
-            </Stack>
-            <BrowserSources>
-              <RadarExplorer
-                layout={layout}
-                locale={locale}
-                quadrants={quadrants}
-                rings={rings}
-                areas={areas}
-                vocabulary={{
-                  quadrants: quadrantRecords.map(each => String(each.id)),
-                  rings: ringRecords.map(each => String(each.id)),
-                  areas: areas.map(area => area.id),
-                }}
-                copy={{
-                  chartLabel: t('radar.chartLabel'),
-                  legend: t('radar.legend'),
-                  filters: t('radar.filter.label'),
-                  quadrant: t('radar.filter.quadrant'),
-                  ring: t('radar.filter.ring'),
-                  area: t('radar.filter.area'),
-                  search: t('radar.filter.search'),
-                  clear: t('radar.filter.clear'),
-                  showing: t('radar.filter.showing', {
-                    shown: '{{shown}}',
-                    total: '{{total}}',
-                  }),
-                }}
-              >
-                <Stack gap="s">
-                  <Text as="h2" step={2} weight="semibold">
-                    {t('radar.ringKey')}
-                  </Text>
-                  <RingKey
-                    rings={ringRecords.map((ring, index) => ({
-                      name: rings[index],
-                      meaning: localize(
-                        ring.description as LocalizedText,
-                        locale,
-                      ),
-                    }))}
-                  />
-                </Stack>
-              </RadarExplorer>
-            </BrowserSources>
-          </Stack>
-        </Card>
-      </Center>
-    </>
+    <BrowserSources>
+      <TechRadarPageView
+        locale={locale}
+        layout={layout}
+        rings={rings}
+        quadrants={quadrants}
+        areas={areas}
+      />
+    </BrowserSources>
   );
 }

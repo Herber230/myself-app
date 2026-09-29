@@ -7,7 +7,7 @@ import { renderPostBody } from './post-body.js';
 
 const PUBLIC = join(
   import.meta.dirname,
-  '../../../../../apps/myself-app/public',
+  '../../../../../../apps/myself-app/public',
 );
 
 describe("a post's body", () => {
@@ -25,5 +25,6 @@ describe("a post's body", () => {
     // Outside Next, `Link` knows nothing of `trailingSlash`.
     expect(html).toContain('href="/es/tech-radar"');
     expect(html).toContain('Read this.');
-  });
+    // Shiki loads its grammars and themes on the first render: seconds.
+  }, 30_000);
 });

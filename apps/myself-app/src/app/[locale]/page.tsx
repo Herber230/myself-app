@@ -1,17 +1,14 @@
-import { loadContactChannels } from '@myself-app/domain/use-cases';
-import { loadProfile } from '@myself-app/domain/use-cases';
-import { loadFeaturedProjects } from '@myself-app/domain/use-cases';
+import {
+  loadContactChannels,
+  loadFeaturedProjects,
+  loadProfile,
+} from '@myself-app/domain/use-cases';
 import { siteT } from '@myself-app/implementation-ui/i18n';
-import { AboutSection } from '@myself-app/implementation-ui/organisms';
-import { ContactSection } from '@myself-app/implementation-ui/organisms';
-import { EntifixSection } from '@myself-app/implementation-ui/organisms';
-import { Hero } from '@myself-app/implementation-ui/organisms';
-import { ProjectsSection } from '@myself-app/implementation-ui/organisms';
-import { SiteNav } from '@myself-app/implementation-ui/organisms';
 import {
   isSiteLocale,
   localeAlternates,
 } from '@myself-app/implementation-ui/routing';
+import { LandingPageView } from '@myself-app/implementation-ui/templates';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -31,7 +28,6 @@ export async function generateMetadata({
   };
 }
 
-/** The sections run in `LANDING_SECTIONS` order: the nav's anchors follow it. */
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
@@ -41,15 +37,11 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
     loadContactChannels(SITE_CONTENT),
   ]);
   return (
-    <>
-      <SiteNav locale={locale} path={PATH} reveal />
-      <main>
-        <Hero locale={locale} profile={profile} />
-        <AboutSection locale={locale} profile={profile} />
-        <ProjectsSection locale={locale} projects={projects} />
-        <EntifixSection locale={locale} />
-        <ContactSection locale={locale} channels={channels} />
-      </main>
-    </>
+    <LandingPageView
+      locale={locale}
+      profile={profile}
+      projects={projects}
+      channels={channels}
+    />
   );
 }
