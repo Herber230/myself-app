@@ -11,8 +11,8 @@
  */
 import { Lead, Stack, Text } from '@entifix/react-controls/primitives';
 import { Post } from '@myself-app/domain/entities/post';
-import { staticJsonSource } from '@myself-app/entifix-browser';
-import { useUrlFilter } from '@myself-app/entifix-browser/react';
+import { staticJsonSource } from '@myself-app/entifix-incubator-browser';
+import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
 import { useMemo } from 'react';
 
 import { localePath } from '../../locale-path';

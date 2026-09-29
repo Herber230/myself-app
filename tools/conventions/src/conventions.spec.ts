@@ -332,8 +332,17 @@ describe('every project sits in one layer', () => {
     'layer:tooling',
   ];
 
-  /** The workspace globs of `pnpm-workspace.yaml`, one level deep. */
-  const projects = ['apps', 'packages', 'tools'].flatMap(group => {
+  /**
+   * The workspace globs of `pnpm-workspace.yaml`, each `<dir>/*`: a layer's
+   * folder (`packages/implementation/*`) is a glob of its own, so a package
+   * nested one level deeper is found the way pnpm finds it.
+   */
+  const globs = readFileSync(join(REPO_ROOT, 'pnpm-workspace.yaml'), 'utf8')
+    .match(/^packages:\n((?:[ \t]+- .*\n)+)/m)![1]
+    .split('\n')
+    .map(line => line.match(/^\s+- '?([^'*]+)\/\*'?$/)?.[1])
+    .filter(group => group !== undefined);
+  const projects = globs.flatMap(group => {
     const dir = join(REPO_ROOT, group);
     if (!existsSync(dir)) return [];
     return readdirSync(dir, { withFileTypes: true })

@@ -7,7 +7,7 @@ import {
 import {
   makeStaticRepository,
   withDatesParsed,
-} from '@myself-app/static-adapter';
+} from '@myself-app/entifix-incubator-static-adapter';
 import { Effect } from 'effect';
 
 /** Where a repository comes from: asked for once, answered once. */

@@ -13,8 +13,8 @@
  */
 import { Stack, Text } from '@entifix/react-controls/primitives';
 import { Technology } from '@myself-app/domain/entities/technology';
-import { staticJsonSource } from '@myself-app/entifix-browser';
-import { useUrlFilter } from '@myself-app/entifix-browser/react';
+import { staticJsonSource } from '@myself-app/entifix-incubator-browser';
+import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
 import { type ReactNode, useMemo, useState } from 'react';
 
 import type { SiteLocale } from '../../site-locales';

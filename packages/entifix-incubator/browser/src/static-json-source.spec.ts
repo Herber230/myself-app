@@ -1,4 +1,4 @@
-import { loadThroughUseCase } from '@myself-app/static-adapter';
+import { loadThroughUseCase } from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
 import { fetchServing, Note, NOTES_FILE } from './note.fixture.js';

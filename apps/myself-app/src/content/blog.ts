@@ -13,7 +13,10 @@ import {
   type SiteLocale,
   Tag,
 } from '@myself-app/domain';
-import { targetsOf, type UnpagedRequest } from '@myself-app/static-adapter';
+import {
+  targetsOf,
+  type UnpagedRequest,
+} from '@myself-app/entifix-incubator-static-adapter';
 
 import { excerptOf } from '../blog/markdown/excerpt';
 import type { SiteContent } from './site-content';

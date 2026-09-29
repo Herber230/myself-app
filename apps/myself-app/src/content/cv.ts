@@ -19,7 +19,7 @@ import {
   targetOf,
   targetsOf,
   type UnpagedRequest,
-} from '@myself-app/static-adapter';
+} from '@myself-app/entifix-incubator-static-adapter';
 
 import { loadContactChannels } from './contact';
 import { loadProfile } from './profile';

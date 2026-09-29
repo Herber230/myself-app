@@ -19,13 +19,13 @@
       "path": "./packages/domain"
     },
     {
-      "path": "./packages/static-adapter"
+      "path": "./packages/entifix-incubator/static-adapter"
     },
     {
       "path": "./tools/conventions"
     },
     {
-      "path": "./packages/entifix-browser"
+      "path": "./packages/entifix-incubator/browser"
     }
   ]
 }

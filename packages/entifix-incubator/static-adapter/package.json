@@ -1,5 +1,5 @@
 {
-  "name": "@myself-app/static-adapter",
+  "name": "@myself-app/entifix-incubator-static-adapter",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -27,9 +27,9 @@
           "{options.outputPath}"
         ],
         "options": {
-          "outputPath": "packages/static-adapter/dist",
-          "main": "packages/static-adapter/src/index.ts",
-          "tsConfig": "packages/static-adapter/tsconfig.lib.json",
+          "outputPath": "packages/entifix-incubator/static-adapter/dist",
+          "main": "packages/entifix-incubator/static-adapter/src/index.ts",
+          "tsConfig": "packages/entifix-incubator/static-adapter/tsconfig.lib.json",
           "skipTypeCheck": true,
           "stripLeadingPaths": true
         }

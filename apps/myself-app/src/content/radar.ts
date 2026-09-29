@@ -13,7 +13,7 @@ import {
   Technology,
   TechnologyUsePeriod,
 } from '@myself-app/domain';
-import { targetOf } from '@myself-app/static-adapter';
+import { targetOf } from '@myself-app/entifix-incubator-static-adapter';
 
 import type {
   Movement,

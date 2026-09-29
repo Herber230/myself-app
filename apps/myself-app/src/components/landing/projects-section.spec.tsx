@@ -1,5 +1,5 @@
 import type { Project } from '@myself-app/domain';
-import { targetsOf } from '@myself-app/static-adapter';
+import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 

@@ -1,7 +1,7 @@
 /**
  * Placeholder text is listed, and the list only shrinks (#26).
  */
-import { ContentValidationError } from '@myself-app/static-adapter';
+import { ContentValidationError } from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
 import { PENDING_CONTENT } from './pending-content';

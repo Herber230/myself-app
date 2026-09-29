@@ -3,8 +3,9 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   root: import.meta.dirname,
-  // The package knows no entity. Its specs declare fixture entities, and
-  // Vite's own oxc does not implement stage-3 decorators.
+  // The adapter itself needs no decorators — it knows no entity. Its specs do:
+  // they declare fixture entities to resolve links between, and Vite's own oxc
+  // does not implement stage-3 decorators.
   plugins: [
     swc.vite({
       swcrc: false,
@@ -22,23 +23,26 @@ export default defineConfig({
     }),
   ],
   test: {
-    name: '@myself-app/entifix-browser',
-    // The hooks read `window`; the rest runs there just as well.
-    environment: 'jsdom',
-    environmentOptions: { jsdom: { url: 'http://localhost/en/list/' } },
+    name: '@myself-app/entifix-incubator-static-adapter',
+    environment: 'node',
     include: ['src/**/*.spec.ts'],
     reporters: ['default'],
-    // Gated at 100%, and collected on every run (see the static adapter).
+    // Gated at 100%, and collected on every run rather than only under CI's
+    // `--coverage`: a threshold nothing local enforces is one that breaks in
+    // the pull request instead of on the machine that wrote it.
     coverage: {
       provider: 'v8',
       enabled: true,
       all: true,
       include: ['src/**/*.ts'],
       exclude: [
-        // Pure re-export barrels, as entifix excludes its own.
+        // A pure re-export barrel, as entifix excludes its own.
         'src/index.ts',
-        'src/react.ts',
-        // Test material the specs share, not code the package ships.
+        // Test material: the contract suite is what the specs run, not code
+        // the package ships. It carries no branch a spec could reach except by
+        // running it, which is what `static-repository.spec.ts` does.
+        'src/contracts/**',
+        // Fixture entities the specs share, not code the package ships.
         'src/**/*.fixture.ts',
       ],
       reportsDirectory: './test-output/vitest/coverage',

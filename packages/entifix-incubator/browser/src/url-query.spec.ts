@@ -1,5 +1,5 @@
-import { makeStaticRepository } from '@myself-app/static-adapter';
-import { loadThroughUseCase } from '@myself-app/static-adapter';
+import { makeStaticRepository } from '@myself-app/entifix-incubator-static-adapter';
+import { loadThroughUseCase } from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
 import { Note, NOTES } from './note.fixture.js';

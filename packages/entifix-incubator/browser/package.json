@@ -1,5 +1,5 @@
 {
-  "name": "@myself-app/entifix-browser",
+  "name": "@myself-app/entifix-incubator-browser",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -33,9 +33,9 @@
           "{options.outputPath}"
         ],
         "options": {
-          "outputPath": "packages/entifix-browser/dist",
-          "main": "packages/entifix-browser/src/index.ts",
-          "tsConfig": "packages/entifix-browser/tsconfig.lib.json",
+          "outputPath": "packages/entifix-incubator/browser/dist",
+          "main": "packages/entifix-incubator/browser/src/index.ts",
+          "tsConfig": "packages/entifix-incubator/browser/tsconfig.lib.json",
           "skipTypeCheck": true,
           "stripLeadingPaths": true
         }
@@ -50,7 +50,7 @@
   "dependencies": {
     "@entifix/business": "catalog:",
     "@entifix/core": "catalog:",
-    "@myself-app/static-adapter": "workspace:*",
+    "@myself-app/entifix-incubator-static-adapter": "workspace:*",
     "@swc/helpers": "0.5.23",
     "effect": "catalog:"
   },

@@ -18,7 +18,7 @@ import {
   ContentValidationError,
   defineSource,
   type ReadSidecar,
-} from '@myself-app/static-adapter';
+} from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
 import { buildSiteContent, CONTENT_SOURCES } from './site-content';

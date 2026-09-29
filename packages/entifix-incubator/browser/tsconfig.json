@@ -1,8 +1,8 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "out-tsc/entifix-browser",
-    "tsBuildInfoFile": "out-tsc/entifix-browser/tsconfig.tsbuildinfo",
+    "outDir": "out-tsc/browser",
+    "tsBuildInfoFile": "out-tsc/browser/tsconfig.tsbuildinfo",
     "lib": ["dom", "dom.iterable", "esnext", "decorators", "esnext.decorators"]
   },
   "include": ["src/**/*.ts"],

@@ -1,6 +1,8 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+  - 'packages/entifix-incubator/*'
+  - 'packages/implementation/*'
   - 'tools/*'
 
 # One version per dependency the workspace shares. `@entifix/*` moves only

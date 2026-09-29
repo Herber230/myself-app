@@ -10,7 +10,7 @@ import { Quadrant, Ring, Technology, TechnologyArea } from '@myself-app/domain';
 import {
   loadThroughUseCase,
   staticJsonSource,
-} from '@myself-app/entifix-browser';
+} from '@myself-app/entifix-incubator-browser';
 import { describe, expect, it } from 'vitest';
 
 import { SITE_CONTENT } from '../../content/repositories';

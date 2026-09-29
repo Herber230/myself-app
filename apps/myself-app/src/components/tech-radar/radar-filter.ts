@@ -13,7 +13,7 @@ import {
   defineUrlQuery,
   type UrlQuery,
   type UrlState,
-} from '@myself-app/entifix-browser';
+} from '@myself-app/entifix-incubator-browser';
 
 import type { SiteLocale } from '../../site-locales';
 

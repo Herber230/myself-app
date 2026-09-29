@@ -7,7 +7,7 @@ import {
   Text,
 } from '@entifix/react-controls/primitives';
 import { localize, type LocalizedText, type Project } from '@myself-app/domain';
-import { targetsOf } from '@myself-app/static-adapter';
+import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
 import Link from 'next/link';
 
 import { siteT } from '../../i18n/server';

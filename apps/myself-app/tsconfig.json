@@ -40,7 +40,7 @@
   ],
   "references": [
     {
-      "path": "../../packages/static-adapter"
+      "path": "../../packages/entifix-incubator/static-adapter"
     },
     {
       "path": "../../packages/domain"
@@ -49,7 +49,7 @@
       "path": "../../packages/content"
     },
     {
-      "path": "../../packages/entifix-browser"
+      "path": "../../packages/entifix-incubator/browser"
     }
   ]
 }

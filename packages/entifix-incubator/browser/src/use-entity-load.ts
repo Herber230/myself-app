@@ -1,5 +1,5 @@
 import type { Entity, EntityLoadRequest, EntityPage } from '@entifix/core';
-import { loadThroughUseCase } from '@myself-app/static-adapter';
+import { loadThroughUseCase } from '@myself-app/entifix-incubator-static-adapter';
 import { useEffect, useState } from 'react';
 
 import type { EntitySource } from './static-json-source.js';

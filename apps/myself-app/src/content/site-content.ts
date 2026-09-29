@@ -42,7 +42,7 @@ import {
   notBefore,
   present,
   type StaticContent,
-} from '@myself-app/static-adapter';
+} from '@myself-app/entifix-incubator-static-adapter';
 
 import { readPostBodyFile } from './post-bodies';
 

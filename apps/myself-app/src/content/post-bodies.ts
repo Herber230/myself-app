@@ -11,7 +11,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import type { ReadSidecar } from '@myself-app/static-adapter';
+import type { ReadSidecar } from '@myself-app/entifix-incubator-static-adapter';
 
 /** Where the bodies are, from the app's folder, which build and test run in. */
 const POSTS_DIRECTORY = join(

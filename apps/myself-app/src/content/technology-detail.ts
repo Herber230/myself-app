@@ -15,7 +15,10 @@ import {
   type TechnologyArea,
   TechnologyUsePeriod,
 } from '@myself-app/domain';
-import { targetOf, targetsOf } from '@myself-app/static-adapter';
+import {
+  targetOf,
+  targetsOf,
+} from '@myself-app/entifix-incubator-static-adapter';
 
 import type { SiteContent } from './site-content';
 

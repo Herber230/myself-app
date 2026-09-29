@@ -10,7 +10,7 @@
 import {
   ContentValidationError,
   type ValidationProblem,
-} from '@myself-app/static-adapter';
+} from '@myself-app/entifix-incubator-static-adapter';
 
 import { PENDING_CONTENT } from './pending-content';
 

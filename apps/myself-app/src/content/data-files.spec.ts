@@ -4,7 +4,7 @@
  * records.
  */
 import { Technology } from '@myself-app/domain';
-import { dataFileOf } from '@myself-app/static-adapter';
+import { dataFileOf } from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
 import { SITE_CONTENT } from './repositories';
