@@ -1,16 +1,51 @@
-import { type CvSheet, loadCvSheet } from '@myself-app/domain/use-cases';
+import {
+  type CvSheet,
+  defaultCvVariantId,
+  loadCvSheet,
+  loadCvVariants,
+} from '@myself-app/domain/use-cases';
 import { screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { SITE_CONTENT } from '../../composition';
 import { siteT } from '../../i18n/server';
 import { renderPage } from '../../test/render';
-import { customizerGroups, cvMetadata, CvPageView } from './cv-page';
+import type { CvMode } from './cv-format';
+import {
+  customizerGroups,
+  cvMetadata,
+  type CvPageData,
+  CvPageView,
+} from './cv-page';
+
+/** What a CV route loads, as the app's route does. */
+async function pageOf({
+  locale,
+  variant,
+  mode,
+}: {
+  locale: 'en' | 'es';
+  variant?: string;
+  mode: CvMode;
+}): Promise<CvPageData> {
+  const defaultVariant = String(await defaultCvVariantId(SITE_CONTENT));
+  const variantId = variant ?? defaultVariant;
+  return {
+    locale,
+    mode,
+    variantId,
+    defaultVariant,
+    sheet: (await loadCvSheet(SITE_CONTENT, variantId)) as CvSheet,
+    variants: await loadCvVariants(SITE_CONTENT),
+  };
+}
 
 describe('a CV page', () => {
   it('shows the sheet under the nav, with the reading and the mode it is in', async () => {
     await renderPage(
-      CvPageView({ locale: 'en', variant: 'backend', mode: 'ats' }),
+      pageOf({ locale: 'en', variant: 'backend', mode: 'ats' }).then(
+        CvPageView,
+      ),
       'en',
     );
     // The site's bar, then the sheet's own header (jsdom counts both as
@@ -41,7 +76,10 @@ describe('a CV page', () => {
   });
 
   it('offers to print, with the settings that print it cleanly', async () => {
-    await renderPage(CvPageView({ locale: 'en', mode: 'ats' }), 'en');
+    await renderPage(
+      pageOf({ locale: 'en', mode: 'ats' }).then(CvPageView),
+      'en',
+    );
     expect(
       screen.getByRole('button', { name: 'Print or save as PDF' }),
     ).toBeTruthy();
@@ -50,7 +88,9 @@ describe('a CV page', () => {
 
   it('keeps the page in the language switch', async () => {
     await renderPage(
-      CvPageView({ locale: 'es', variant: 'devops', mode: 'human' }),
+      pageOf({ locale: 'es', variant: 'devops', mode: 'human' }).then(
+        CvPageView,
+      ),
       'es',
     );
     const english = screen.getByRole('link', { name: 'English' });
@@ -58,7 +98,10 @@ describe('a CV page', () => {
   });
 
   it('shows the default variant with no variant in the route', async () => {
-    await renderPage(CvPageView({ locale: 'en', mode: 'human' }), 'en');
+    await renderPage(
+      pageOf({ locale: 'en', mode: 'human' }).then(CvPageView),
+      'en',
+    );
     const reading = screen.getByRole('navigation', { name: 'Reading' });
     const current = within(reading).getByText(
       (_, element) => element?.getAttribute('aria-current') === 'page',
@@ -70,7 +113,9 @@ describe('a CV page', () => {
 
   it('offers to customize the human sheet, hiding what its URL hides before paint', async () => {
     await renderPage(
-      CvPageView({ locale: 'en', variant: 'backend', mode: 'human' }),
+      pageOf({ locale: 'en', variant: 'backend', mode: 'human' }).then(
+        CvPageView,
+      ),
       'en',
     );
     const customize = screen.getByText('Customize').closest('details');
@@ -107,18 +152,13 @@ describe('a CV page', () => {
 
   it('leaves the ATS sheet as it is built: no customizer, no script', async () => {
     await renderPage(
-      CvPageView({ locale: 'en', variant: 'backend', mode: 'ats' }),
+      pageOf({ locale: 'en', variant: 'backend', mode: 'ats' }).then(
+        CvPageView,
+      ),
       'en',
     );
     expect(screen.queryByText('Customize')).toBeNull();
     expect(document.querySelector('main script')).toBeNull();
-  });
-
-  it('is not found for an unknown locale or variant', async () => {
-    await expect(CvPageView({ locale: 'fr', mode: 'human' })).rejects.toThrow();
-    await expect(
-      CvPageView({ locale: 'en', variant: 'astronaut', mode: 'human' }),
-    ).rejects.toThrow();
   });
 });
 
@@ -140,11 +180,13 @@ describe("what a CV's customizer offers", () => {
 
 describe("a CV page's metadata", () => {
   it('names the reading, and is its own canonical for people', async () => {
-    const metadata = await cvMetadata({
-      locale: 'en',
-      variant: 'backend',
-      mode: 'human',
-    });
+    const metadata = cvMetadata(
+      await pageOf({
+        locale: 'en',
+        variant: 'backend',
+        mode: 'human',
+      }),
+    );
     expect(metadata.title).toMatch(/^CV: .+ — Herber Colop$/);
     expect(metadata.title).not.toContain('(ATS)');
     expect(metadata.alternates?.canonical).toBe('/en/cv/backend/');
@@ -152,7 +194,7 @@ describe("a CV page's metadata", () => {
   });
 
   it('is not indexed in the ATS mode, and points at its human page', async () => {
-    const metadata = await cvMetadata({ locale: 'es', mode: 'ats' });
+    const metadata = cvMetadata(await pageOf({ locale: 'es', mode: 'ats' }));
     expect(metadata.title).toContain('(ATS)');
     expect(metadata.alternates?.canonical).toBe('/es/cv/');
     expect(metadata.alternates?.languages).toMatchObject({

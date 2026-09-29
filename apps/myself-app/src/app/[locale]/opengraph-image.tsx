@@ -1,5 +1,7 @@
+import { loadProfile } from '@myself-app/domain/use-cases';
 import { notFound } from 'next/navigation';
 
+import { SITE_CONTENT } from '../../composition';
 import { en } from '../../i18n/catalogs/en';
 import { isSiteLocale, SITE_LOCALES } from '../../site-locales';
 import { renderSocialImage, SOCIAL_IMAGE_SIZE } from '../../social-image';
@@ -27,5 +29,5 @@ export default async function OpenGraphImage({
 }) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  return renderSocialImage(locale);
+  return renderSocialImage(locale, await loadProfile(SITE_CONTENT));
 }

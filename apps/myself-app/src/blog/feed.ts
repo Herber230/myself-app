@@ -2,9 +2,7 @@
  * The blog's RSS 2.0 feed for one locale (ADR 0017): every published post,
  * newest first, each linking to its page. Written once into the export.
  */
-import type { LocalizedText } from '@myself-app/domain';
-import { loadPosts } from '@myself-app/domain/use-cases';
-import type { StaticContent as SiteContent } from '@myself-app/entifix-incubator-static-adapter';
+import type { LocalizedText, Post } from '@myself-app/domain';
 
 import { postPath } from '../components/blog/post-cards';
 import { inLocale } from '../components/cv/cv-format';
@@ -20,13 +18,13 @@ export function escapeXml(text: string): string {
     .replace(/"/g, '&quot;');
 }
 
-export async function renderFeed(
-  content: SiteContent,
+/** The feed of these posts — every published one, newest first. */
+export function renderFeed(
+  posts: readonly Post[],
   locale: SiteLocale,
   base: URL,
-): Promise<string> {
+): string {
   const t = siteT(locale);
-  const posts = await loadPosts(content, { includeDrafts: false });
   const absolute = (path: string) => new URL(path, base).href;
   const items = posts.map(post => {
     const link = absolute(postPath(locale, String(post.id)));

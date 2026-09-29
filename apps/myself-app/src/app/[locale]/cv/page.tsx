@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
 
 import { cvMetadata, CvPageView } from '../../../components/cv/cv-page';
+import { loadCvPage } from './cv-route';
 
 /** The default variant, for people (ADR 0012). */
 export async function generateMetadata({
   params,
 }: PageProps<'/[locale]/cv'>): Promise<Metadata> {
   const { locale } = await params;
-  return cvMetadata({ locale, mode: 'human' });
+  return cvMetadata(await loadCvPage({ locale, mode: 'human' }));
 }
 
 export default async function CvPage({ params }: PageProps<'/[locale]/cv'>) {
   const { locale } = await params;
-  return CvPageView({ locale, mode: 'human' });
+  return CvPageView(await loadCvPage({ locale, mode: 'human' }));
 }

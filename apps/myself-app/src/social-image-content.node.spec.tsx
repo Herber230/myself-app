@@ -2,8 +2,9 @@ import type { Profile } from '@myself-app/domain';
 import { loadProfile } from '@myself-app/domain/use-cases';
 import type { ReactElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
+import { SITE_CONTENT } from './composition';
 import { renderSocialImage } from './social-image';
 
 // What the image says, rather than how it is drawn: `next/og` is replaced by
@@ -16,12 +17,10 @@ vi.mock('next/og', () => ({
     }
   },
 }));
-vi.mock('@myself-app/domain/use-cases', { spy: true });
+const PROFILE = await loadProfile(SITE_CONTENT);
 
-afterEach(() => vi.mocked(loadProfile).mockRestore());
-
-async function textFor(locale: 'en' | 'es') {
-  await renderSocialImage(locale);
+async function textFor(locale: 'en' | 'es', profile: Profile = PROFILE) {
+  await renderSocialImage(locale, profile);
   return renderToStaticMarkup(drawn.element as ReactElement).replace(
     /<[^>]+>/g,
     '|',
@@ -44,14 +43,10 @@ describe("the social preview image's words", () => {
   });
 
   it('leave the title out when the profile has none', async () => {
-    const profile = await loadProfile(
-      (await import('./composition')).SITE_CONTENT,
-    );
-    vi.mocked(loadProfile).mockResolvedValueOnce({
-      ...profile,
+    const text = await textFor('en', {
+      ...PROFILE,
       title: undefined,
     } as Profile);
-    const text = await textFor('en');
     expect(text).not.toContain('Software Engineer');
   });
 });

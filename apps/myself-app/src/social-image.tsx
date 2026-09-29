@@ -1,11 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { localize } from '@myself-app/domain';
-import { loadProfile } from '@myself-app/domain/use-cases';
+import { localize, type Profile } from '@myself-app/domain';
 import { ImageResponse } from 'next/og';
 
-import { SITE_CONTENT } from './composition';
 import { siteT } from './i18n/server';
 import type { SiteLocale } from './site-locales';
 import { SOCIAL_PALETTE } from './social-palette';
@@ -34,11 +32,12 @@ async function font(file: string): Promise<ArrayBuffer> {
  */
 export async function renderSocialImage(
   locale: SiteLocale,
+  /** Whose name and title it shows, as the page read it. */
+  profile: Profile,
   /** A post's preview instead (ADR 0017): its title, over the name. */
   post?: { readonly title: string },
 ): Promise<ImageResponse> {
   const t = siteT(locale);
-  const profile = await loadProfile(SITE_CONTENT);
   // One string: `next/og` needs `display: flex` on a box with several
   // children, and `{first} {last}` would make three.
   const name = [profile.firstName, profile.lastName].join(' ');

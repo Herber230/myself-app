@@ -1,5 +1,6 @@
 import { localize, type LocalizedText } from '@myself-app/domain';
 import { loadPost, loadPostIds } from '@myself-app/domain/use-cases';
+import { loadProfile } from '@myself-app/domain/use-cases';
 import { notFound } from 'next/navigation';
 
 import { SITE_CONTENT } from '../../../../composition';
@@ -31,7 +32,7 @@ export default async function PostImage({
   if (!isSiteLocale(locale)) notFound();
   const post = await loadPost(SITE_CONTENT, slug, BLOG_READS);
   if (post === undefined) notFound();
-  return renderSocialImage(locale, {
+  return renderSocialImage(locale, await loadProfile(SITE_CONTENT), {
     title: localize(post.title as LocalizedText, locale),
   });
 }

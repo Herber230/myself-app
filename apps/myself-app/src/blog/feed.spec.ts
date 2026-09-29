@@ -1,3 +1,4 @@
+import { loadPosts } from '@myself-app/domain/use-cases';
 import { describe, expect, it } from 'vitest';
 
 import { SITE_CONTENT } from '../composition';
@@ -7,7 +8,7 @@ const BASE = new URL('https://herber.example');
 
 describe('the blog’s feed', () => {
   it('lists every published post, newest first, with absolute links', async () => {
-    const feed = await renderFeed(SITE_CONTENT, 'es', BASE);
+    const feed = renderFeed(await loadPosts(SITE_CONTENT), 'es', BASE);
     expect(feed.startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(
       true,
     );

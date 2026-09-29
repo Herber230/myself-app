@@ -1,3 +1,4 @@
+import { loadPosts } from '@myself-app/domain/use-cases';
 import { notFound } from 'next/navigation';
 
 import { renderFeed } from '../../../../blog/feed';
@@ -23,7 +24,9 @@ export async function GET(
 ) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  return new Response(await renderFeed(SITE_CONTENT, locale, siteUrl()), {
+  // The feed never carries a draft, `next dev` or not.
+  const posts = await loadPosts(SITE_CONTENT, { includeDrafts: false });
+  return new Response(renderFeed(posts, locale, siteUrl()), {
     headers: { 'content-type': 'application/rss+xml; charset=utf-8' },
   });
 }

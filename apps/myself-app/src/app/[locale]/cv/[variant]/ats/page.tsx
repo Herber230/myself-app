@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 
 import { cvMetadata, CvPageView } from '../../../../../components/cv/cv-page';
 import { SITE_CONTENT } from '../../../../../composition';
+import { loadCvPage } from '../../cv-route';
 
 /** A variant, for an applicant tracking system (ADR 0012). */
 export const dynamicParams = false;
@@ -16,12 +17,12 @@ export async function generateMetadata({
   params,
 }: PageProps<'/[locale]/cv/[variant]/ats'>): Promise<Metadata> {
   const { locale, variant } = await params;
-  return cvMetadata({ locale, variant, mode: 'ats' });
+  return cvMetadata(await loadCvPage({ locale, variant, mode: 'ats' }));
 }
 
 export default async function CvVariantAtsPage({
   params,
 }: PageProps<'/[locale]/cv/[variant]/ats'>) {
   const { locale, variant } = await params;
-  return CvPageView({ locale, variant, mode: 'ats' });
+  return CvPageView(await loadCvPage({ locale, variant, mode: 'ats' }));
 }

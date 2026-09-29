@@ -4,20 +4,12 @@ import {
   localize,
   type LocalizedText,
 } from '@myself-app/domain';
-import {
-  type CvSheet as CvSheetContent,
-  defaultCvVariantId,
-  loadCvSheet,
-  loadCvVariants,
-} from '@myself-app/domain/use-cases';
+import type { CvSheet as CvSheetContent } from '@myself-app/domain/use-cases';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 
-import { SITE_CONTENT } from '../../composition';
 import { siteT } from '../../i18n/server';
 import {
-  isSiteLocale,
   localeAlternates,
   localePath,
   type SiteLocale,
@@ -33,58 +25,57 @@ import { CvSheet } from './cv-sheet';
 
 /**
  * Every CV route renders through here (ADR 0012): `/cv/`, `/cv/ats/`,
- * `/cv/[variant]/` and `/cv/[variant]/ats/`. `variant` is absent on the first
- * two, which show the default.
+ * `/cv/[variant]/` and `/cv/[variant]/ats/`, each with what its route loaded.
  */
-interface CvRoute {
-  readonly locale: string;
-  readonly variant?: string;
+export interface CvPageData {
+  readonly locale: SiteLocale;
   readonly mode: CvMode;
+  /** The variant shown: the route's, or the default. */
+  readonly variantId: string;
+  /** The variant `/cv/` shows, which has no segment of its own. */
+  readonly defaultVariant: string;
+  readonly sheet: CvSheetContent;
+  /** Every variant, by its order, for the switch between them. */
+  readonly variants: readonly CvVariant[];
 }
 
 /** A variant's title: required, so validation has made it present. */
 const titleOf = (variant: CvVariant, locale: Parameters<typeof localize>[1]) =>
   localize(variant.title as LocalizedText, locale);
 
-/** The route's locale and variant, checked, or not found. */
-async function resolve({ locale, variant }: CvRoute) {
-  if (!isSiteLocale(locale)) notFound();
-  const defaultVariant = String(await defaultCvVariantId(SITE_CONTENT));
-  const variantId = variant ?? defaultVariant;
-  const sheet = await loadCvSheet(SITE_CONTENT, variantId);
-  if (sheet === undefined) notFound();
-  return { locale, variantId, defaultVariant, sheet };
-}
-
 /**
  * The title names the variant and the mode, and the ATS page is not indexed:
  * its human page is the canonical one, so search shows one sheet per variant.
  */
-export async function cvMetadata(route: CvRoute): Promise<Metadata> {
-  const { locale, variantId, defaultVariant, sheet } = await resolve(route);
+export function cvMetadata({
+  locale,
+  mode,
+  variantId,
+  defaultVariant,
+  sheet,
+}: CvPageData): Metadata {
   const t = siteT(locale);
   const variantTitle = titleOf(sheet.variant, locale);
-  const suffix = route.mode === 'ats' ? ` (${t('cvPage.atsTitle')})` : '';
+  const suffix = mode === 'ats' ? ` (${t('cvPage.atsTitle')})` : '';
   const human = cvPath(variantId, 'human', defaultVariant);
-  const own = localeAlternates(
-    locale,
-    cvPath(variantId, route.mode, defaultVariant),
-  );
+  const own = localeAlternates(locale, cvPath(variantId, mode, defaultVariant));
   return {
     title: `${t('cv')}: ${variantTitle}${suffix} — ${t('siteName')}`,
     alternates:
-      route.mode === 'ats'
-        ? { ...own, canonical: localePath(locale, human) }
-        : own,
-    ...(route.mode === 'ats' && { robots: { index: false, follow: true } }),
+      mode === 'ats' ? { ...own, canonical: localePath(locale, human) } : own,
+    ...(mode === 'ats' && { robots: { index: false, follow: true } }),
   };
 }
 
-export async function CvPageView(route: CvRoute) {
-  const { locale, variantId, defaultVariant, sheet } = await resolve(route);
-  const { mode } = route;
+export function CvPageView({
+  locale,
+  mode,
+  variantId,
+  defaultVariant,
+  sheet,
+  variants,
+}: CvPageData) {
   const t = siteT(locale);
-  const variants = await loadCvVariants(SITE_CONTENT);
   const path = cvPath(variantId, mode, defaultVariant);
   // What Chromium and Safari offer as the PDF's name when printing.
   const fileName = [
