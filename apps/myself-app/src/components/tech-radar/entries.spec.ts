@@ -3,64 +3,27 @@
  * the wrong place because its order was read wrongly, and a movement arrow
  * that points the wrong way — neither of which any other check would notice.
  */
+import {
+  loadEditionDate,
+  loadRadarPlacements,
+} from '@myself-app/domain/use-cases';
+import type { StaticContent } from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
-import { layoutRadar } from '../components/tech-radar/layout';
-import { loadEditionDate, loadRadarEntries, movementOf } from './radar';
-import { SITE_RECORDS as CONTENT } from './repositories';
-import { SITE_CONTENT } from './repositories';
-import { buildSiteContent } from './site-content';
+import { SITE_RECORDS as CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../content/repositories';
+import { buildSiteContent } from '../../content/site-content';
+import { radarEntriesOf } from './entries';
+import { layoutRadar } from './layout';
 
 const at = (iso: string) => new Date(`${iso}T00:00:00.000Z`);
-const EDITION = at('2026-01-01');
 
-describe('a blip movement', () => {
-  it('is none when it sat in the same ring at the last edition', () => {
-    expect(movementOf([{ ring: 1, start: at('2023-01-01') }], EDITION)).toBe(
-      'none',
-    );
-  });
+const loadRadarEntries = async (content: StaticContent) =>
+  radarEntriesOf(await loadRadarPlacements(content));
 
-  it('is new when it sat in no ring at the last edition', () => {
-    expect(movementOf([{ ring: 2, start: at('2026-06-01') }], EDITION)).toBe(
-      'new',
-    );
-  });
-
-  it('is in when it moved towards the centre, and out when away', () => {
-    const moved = (from: number, to: number) =>
-      movementOf(
-        [
-          { ring: to, start: at('2026-03-01') },
-          { ring: from, start: at('2023-01-01'), end: at('2026-03-01') },
-        ],
-        EDITION,
-      );
-    expect(moved(2, 1)).toBe('in');
-    expect(moved(2, 3)).toBe('out');
-    expect(moved(2, 2)).toBe('none');
-  });
-
-  it('is none for a technology with no period at all', () => {
-    expect(movementOf([], EDITION)).toBe('none');
-  });
-
-  it('treats a period that ended exactly at the edition as over', () => {
-    expect(
-      movementOf([{ ring: 0, start: at('2023-01-01'), end: EDITION }], EDITION),
-    ).toBe('new');
-  });
-
-  it('compares against the latest edition in content', async () => {
+describe('the edition compared against', () => {
+  it('is the latest in content', async () => {
     expect(await loadEditionDate(SITE_CONTENT)).toEqual(at('2026-09-25'));
-    const content = buildSiteContent({
-      ...CONTENT,
-      'radar-editions.json': [
-        { id: 'first', date: '2025-01-01' },
-        { id: 'second', date: '2026-06-01' },
-      ],
-    });
-    expect(await loadEditionDate(content)).toEqual(at('2026-06-01'));
   });
 });
 

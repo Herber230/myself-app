@@ -8,6 +8,8 @@ import {
   Text,
 } from '@entifix/react-controls/primitives';
 import { Technology } from '@myself-app/domain';
+import { loadPostsForTechnology } from '@myself-app/domain/use-cases';
+import { loadTechnologyDetail } from '@myself-app/domain/use-cases';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -18,9 +20,8 @@ import { ExternalLink } from '../../../../components/landing/external-link';
 import { projectAnchor } from '../../../../components/landing/projects-section';
 import { SiteNav } from '../../../../components/site-nav';
 import { radarEntryPath } from '../../../../components/tech-radar/radar-paths';
-import { loadPostsForTechnology } from '../../../../content/blog';
+import { BLOG_READS } from '../../../../content/blog-reads';
 import { SITE_CONTENT } from '../../../../content/repositories';
-import { loadTechnologyDetail } from '../../../../content/technology-detail';
 import { siteT } from '../../../../i18n/server';
 import {
   isSiteLocale,
@@ -75,7 +76,7 @@ export default async function TechnologyPage({
   // The landing page shows only the featured ones, and each links to its card.
   const projects = detail.projects.filter(project => project.featured);
   const id = String(technology.id);
-  const posts = await loadPostsForTechnology(SITE_CONTENT, id);
+  const posts = await loadPostsForTechnology(SITE_CONTENT, id, BLOG_READS);
   return (
     <>
       <SiteNav locale={locale} path={`/tech-radar/${id}`} />

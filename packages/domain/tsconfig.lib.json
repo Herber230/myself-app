@@ -10,7 +10,13 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.spec.ts", "dist", "out-tsc", "test-output"],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/**/*.fixture.ts",
+    "dist",
+    "out-tsc",
+    "test-output"
+  ],
   "references": [
     {
       "path": "../entifix-incubator/static-adapter/tsconfig.lib.json"

@@ -1,3 +1,6 @@
+import { loadContactChannels } from '@myself-app/domain/use-cases';
+import { loadProfile } from '@myself-app/domain/use-cases';
+import { loadFeaturedProjects } from '@myself-app/domain/use-cases';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -7,9 +10,6 @@ import { EntifixSection } from '../../components/landing/entifix-section';
 import { Hero } from '../../components/landing/hero';
 import { ProjectsSection } from '../../components/landing/projects-section';
 import { SiteNav } from '../../components/site-nav';
-import { loadContactChannels } from '../../content/contact';
-import { loadProfile } from '../../content/profile';
-import { loadFeaturedProjects } from '../../content/projects';
 import { SITE_CONTENT } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../site-locales';

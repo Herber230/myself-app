@@ -12,14 +12,15 @@ import {
   Ring,
   TechnologyArea,
 } from '@myself-app/domain';
+import { loadRadarPlacements } from '@myself-app/domain/use-cases';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { SiteNav } from '../../../components/site-nav';
+import { radarEntriesOf } from '../../../components/tech-radar/entries';
 import { layoutRadar } from '../../../components/tech-radar/layout';
 import { RadarExplorer } from '../../../components/tech-radar/radar-explorer';
 import { RingKey } from '../../../components/tech-radar/ring-key';
-import { loadRadarEntries } from '../../../content/radar';
 import { SITE_CONTENT } from '../../../content/repositories';
 import { siteT } from '../../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../../site-locales';
@@ -33,8 +34,8 @@ const PATH = '/tech-radar';
  * rather than a value, because the entries arrive through entifix's `load`
  * use case.
  */
-const LAYOUT = loadRadarEntries(SITE_CONTENT).then(entries =>
-  layoutRadar(entries),
+const LAYOUT = loadRadarPlacements(SITE_CONTENT).then(placements =>
+  layoutRadar(radarEntriesOf(placements)),
 );
 
 /** Innermost first, as the chart draws them. */

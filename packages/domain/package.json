@@ -26,6 +26,12 @@
       "types": "./dist/locales.d.ts",
       "import": "./dist/locales.js",
       "default": "./dist/locales.js"
+    },
+    "./use-cases": {
+      "@myself-app/source": "./src/use-cases/index.ts",
+      "types": "./dist/use-cases/index.d.ts",
+      "import": "./dist/use-cases/index.js",
+      "default": "./dist/use-cases/index.js"
     }
   },
   "sideEffects": true,

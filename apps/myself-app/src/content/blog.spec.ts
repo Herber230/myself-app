@@ -1,6 +1,4 @@
 import { Post } from '@myself-app/domain';
-import { describe, expect, it } from 'vitest';
-
 import {
   loadPost,
   loadPostPreviews,
@@ -9,8 +7,10 @@ import {
   loadTags,
   readingMinutes,
   relatedPosts,
-  SHOW_DRAFTS,
-} from './blog';
+} from '@myself-app/domain/use-cases';
+import { describe, expect, it } from 'vitest';
+
+import { BLOG_PREVIEWS, SHOW_DRAFTS } from './blog-reads';
 import { SITE_CONTENT } from './repositories';
 
 const ids = (posts: readonly { id: unknown }[]) =>
@@ -66,7 +66,7 @@ describe('the blog’s posts', () => {
 
 describe('a post’s preview', () => {
   it('names its tags and technologies, and dates it', async () => {
-    const [preview] = await loadPostPreviews(SITE_CONTENT);
+    const [preview] = await loadPostPreviews(SITE_CONTENT, BLOG_PREVIEWS);
     expect(preview?.id).toBe('entifix-in-the-browser');
     expect(preview?.publishedAt).toBe('2026-09-27T00:00:00.000Z');
     expect(preview?.updatedAt).toBeUndefined();
@@ -79,7 +79,7 @@ describe('a post’s preview', () => {
   });
 
   it('carries the date it was last updated, when it was', async () => {
-    const previews = await loadPostPreviews(SITE_CONTENT);
+    const previews = await loadPostPreviews(SITE_CONTENT, BLOG_PREVIEWS);
     expect(
       previews.find(each => each.id === 'a-static-site-on-s3')?.updatedAt,
     ).toBe('2026-09-20T00:00:00.000Z');

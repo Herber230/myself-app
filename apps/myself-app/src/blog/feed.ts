@@ -3,10 +3,10 @@
  * newest first, each linking to its page. Written once into the export.
  */
 import type { LocalizedText } from '@myself-app/domain';
+import { loadPosts } from '@myself-app/domain/use-cases';
 
 import { postPath } from '../components/blog/post-cards';
 import { inLocale } from '../components/cv/cv-format';
-import { loadPosts } from '../content/blog';
 import type { SiteContent } from '../content/site-content';
 import { siteT } from '../i18n/server';
 import { localePath, type SiteLocale } from '../site-locales';

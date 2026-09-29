@@ -2,9 +2,9 @@
  * A post's preview as its card shows it (ADR 0017): translated, formatted and
  * linked at build, for a server page and the browser's filter alike.
  */
+import type { PostPreview } from '@myself-app/domain/use-cases';
 import type { TFunction } from 'i18next';
 
-import type { PostPreview } from '../../content/blog';
 import { localePath } from '../../locale-path';
 import type { SiteLocale } from '../../site-locales';
 import { inLocale } from '../cv/cv-format';

@@ -5,6 +5,14 @@ import {
   Text,
 } from '@entifix/react-controls/primitives';
 import type { LocalizedText } from '@myself-app/domain';
+import {
+  loadPost,
+  loadPostIds,
+  loadPostPreviews,
+  loadPosts,
+  previewsOf,
+  relatedPosts,
+} from '@myself-app/domain/use-cases';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -18,14 +26,7 @@ import { formatDay, postCardOf } from '../../../../components/blog/post-cards';
 import { inLocale } from '../../../../components/cv/cv-format';
 import { SiteNav } from '../../../../components/site-nav';
 import { technologyPath } from '../../../../components/tech-radar/radar-paths';
-import {
-  loadPost,
-  loadPostIds,
-  loadPostPreviews,
-  loadPosts,
-  previewsOf,
-  relatedPosts,
-} from '../../../../content/blog';
+import { BLOG_PREVIEWS, BLOG_READS } from '../../../../content/blog-reads';
 import { SITE_CONTENT } from '../../../../content/repositories';
 import { loadSitePaths } from '../../../../content/site-paths';
 import { siteT } from '../../../../i18n/server';
@@ -39,14 +40,14 @@ import {
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  const posts = await loadPostIds(SITE_CONTENT);
+  const posts = await loadPostIds(SITE_CONTENT, BLOG_READS);
   return posts.map(slug => ({ slug }));
 }
 
 async function postOf(params: PageProps<'/[locale]/blog/[slug]'>['params']) {
   const { locale, slug } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const post = await loadPost(SITE_CONTENT, slug);
+  const post = await loadPost(SITE_CONTENT, slug, BLOG_READS);
   if (post === undefined) notFound();
   return { locale, post, id: slug };
 }
@@ -78,9 +79,9 @@ export default async function PostPage({
   const { locale, post, id } = await postOf(params);
   const t = siteT(locale);
   const [[preview], posts, previews, sitePaths] = await Promise.all([
-    previewsOf(SITE_CONTENT, [post]),
-    loadPosts(SITE_CONTENT),
-    loadPostPreviews(SITE_CONTENT),
+    previewsOf(SITE_CONTENT, [post], BLOG_PREVIEWS),
+    loadPosts(SITE_CONTENT, BLOG_READS),
+    loadPostPreviews(SITE_CONTENT, BLOG_PREVIEWS),
     loadSitePaths(SITE_CONTENT),
   ]);
   const options = filterOptionsOf(previews, locale);
@@ -88,7 +89,11 @@ export default async function PostPage({
     list.map(each => ({ key: each.id, name: each.name }));
   // Every post has one: it was read from the same repository.
   const card = postCardOf(preview as NonNullable<typeof preview>, locale, t);
-  const related = await previewsOf(SITE_CONTENT, relatedPosts(post, posts));
+  const related = await previewsOf(
+    SITE_CONTENT,
+    relatedPosts(post, posts),
+    BLOG_PREVIEWS,
+  );
   const body = await renderPostBody({
     id,
     markdown: inLocale(post.body as LocalizedText, locale),

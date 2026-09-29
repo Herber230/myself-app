@@ -2,9 +2,9 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import { localize } from '@myself-app/domain';
+import { loadProfile } from '@myself-app/domain/use-cases';
 import { ImageResponse } from 'next/og';
 
-import { loadProfile } from './content/profile';
 import { SITE_CONTENT } from './content/repositories';
 import { siteT } from './i18n/server';
 import type { SiteLocale } from './site-locales';

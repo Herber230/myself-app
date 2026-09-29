@@ -1,8 +1,8 @@
 import type { Profile } from '@myself-app/domain';
+import { loadProfile } from '@myself-app/domain/use-cases';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { loadProfile } from '../../content/profile';
 import { SITE_CONTENT } from '../../content/repositories';
 import { Hero } from './hero';
 

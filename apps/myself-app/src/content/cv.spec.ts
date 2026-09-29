@@ -1,11 +1,11 @@
-import { describe, expect, it } from 'vitest';
-
 import {
   cvVariantParams,
   defaultCvVariantId,
   loadCvSheet,
   loadCvVariants,
-} from './cv';
+} from '@myself-app/domain/use-cases';
+import { describe, expect, it } from 'vitest';
+
 import { SITE_RECORDS as CONTENT } from './repositories';
 import { SITE_CONTENT } from './repositories';
 import { buildSiteContent } from './site-content';

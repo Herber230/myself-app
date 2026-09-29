@@ -1,9 +1,9 @@
 import type { Profile } from '@myself-app/domain';
+import { loadProfile } from '@myself-app/domain/use-cases';
 import type { ReactElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { loadProfile } from './content/profile';
 import { renderSocialImage } from './social-image';
 
 // What the image says, rather than how it is drawn: `next/og` is replaced by
@@ -16,7 +16,7 @@ vi.mock('next/og', () => ({
     }
   },
 }));
-vi.mock('./content/profile', { spy: true });
+vi.mock('@myself-app/domain/use-cases', { spy: true });
 
 afterEach(() => vi.mocked(loadProfile).mockRestore());
 

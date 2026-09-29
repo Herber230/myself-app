@@ -1,9 +1,11 @@
 import type { Project } from '@myself-app/domain';
-import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
+import {
+  type FeaturedProject,
+  loadFeaturedProjects,
+} from '@myself-app/domain/use-cases';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { loadFeaturedProjects } from '../../content/projects';
 import { SITE_CONTENT } from '../../content/repositories';
 import { ProjectsSection } from './projects-section';
 
@@ -15,19 +17,21 @@ describe('the projects section', () => {
       screen
         .getAllByRole('heading', { level: 3 })
         .map(heading => heading.textContent),
-    ).toEqual(projects.map(project => project.name));
+    ).toEqual(projects.map(({ project }) => project.name));
     // Each card is an anchor a technology's page links to (#42).
     expect(document.getElementById('project-myself-app')).not.toBeNull();
   });
 
   it('links each technology to its place on the radar, by its name', async () => {
-    const [project] = (await loadFeaturedProjects(SITE_CONTENT)) as [Project];
-    render(<ProjectsSection locale="es" projects={[project]} />);
+    const [featured] = (await loadFeaturedProjects(SITE_CONTENT)) as [
+      FeaturedProject,
+    ];
+    const { project, technologies } = featured;
+    render(<ProjectsSection locale="es" projects={[featured]} />);
     const list = screen.getByRole('list', {
       name: `Tecnologías de ${String(project.name)}`,
     });
     const links = within(list).getAllByRole('link');
-    const technologies = targetsOf(project.technologies);
     expect(links.map(link => link.getAttribute('href'))).toEqual(
       technologies.map(each => `/es/tech-radar/#tech-${String(each.id)}`),
     );
@@ -37,12 +41,13 @@ describe('the projects section', () => {
   });
 
   it('links the site and the source only where a project has them', async () => {
-    const project = (fields: Record<string, unknown>) =>
-      ({
+    const project = (fields: Record<string, unknown>): FeaturedProject => ({
+      project: {
         summary: { en: 'Summary', es: 'Resumen' },
-        technologies: { ids: [], values: [] },
         ...fields,
-      }) as unknown as Project;
+      } as unknown as Project,
+      technologies: [],
+    });
     render(
       <ProjectsSection
         locale="en"

@@ -1,6 +1,6 @@
+import { loadContactChannels } from '@myself-app/domain/use-cases';
 import { describe, expect, it } from 'vitest';
 
-import { loadContactChannels } from './contact';
 import { SITE_RECORDS as CONTENT } from './repositories';
 import { SITE_CONTENT } from './repositories';
 import { buildSiteContent } from './site-content';

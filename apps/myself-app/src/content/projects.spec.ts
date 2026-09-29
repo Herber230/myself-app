@@ -1,11 +1,15 @@
+import {
+  type FeaturedProject,
+  loadFeaturedProjects,
+} from '@myself-app/domain/use-cases';
 import { describe, expect, it } from 'vitest';
 
-import { loadFeaturedProjects } from './projects';
 import { SITE_RECORDS as CONTENT } from './repositories';
 import { SITE_CONTENT } from './repositories';
 import { buildSiteContent } from './site-content';
 
-const ids = (projects: { id: unknown }[]) => projects.map(each => each.id);
+const ids = (featured: FeaturedProject[]) =>
+  featured.map(each => each.project.id);
 
 describe('the featured projects', () => {
   it('are the shipped ones, in their order', async () => {

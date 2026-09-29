@@ -4,16 +4,16 @@ import {
   localize,
   type LocalizedText,
 } from '@myself-app/domain';
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-
 import {
   type CvSheet as CvSheetContent,
   defaultCvVariantId,
   loadCvSheet,
   loadCvVariants,
-} from '../../content/cv';
+} from '@myself-app/domain/use-cases';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+
 import { SITE_CONTENT } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import {

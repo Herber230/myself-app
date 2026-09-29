@@ -6,8 +6,8 @@ import {
   Stack,
   Text,
 } from '@entifix/react-controls/primitives';
-import { localize, type LocalizedText, type Project } from '@myself-app/domain';
-import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
+import { localize, type LocalizedText } from '@myself-app/domain';
+import type { FeaturedProject } from '@myself-app/domain/use-cases';
 import Link from 'next/link';
 
 import { siteT } from '../../i18n/server';
@@ -30,14 +30,14 @@ export function ProjectsSection({
   projects,
 }: {
   locale: SiteLocale;
-  /** With their technologies resolved (`loadFeaturedProjects`). */
-  projects: readonly Project[];
+  /** With their technologies (`loadFeaturedProjects`). */
+  projects: readonly FeaturedProject[];
 }) {
   const t = siteT(locale);
   return (
     <LandingSection id="projects" locale={locale}>
       <Grid as="ul" min="18rem" gap="l" className="landing-list">
-        {projects.map(project => (
+        {projects.map(({ project, technologies }) => (
           <li
             key={String(project.id)}
             id={projectAnchor(String(project.id))}
@@ -60,7 +60,7 @@ export function ProjectsSection({
                     project: project.name,
                   })}
                 >
-                  {targetsOf(project.technologies).map(technology => (
+                  {technologies.map(technology => (
                     <li key={String(technology.id)}>
                       <Link
                         href={radarEntryPath(locale, String(technology.id))}

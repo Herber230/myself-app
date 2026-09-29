@@ -4,8 +4,8 @@
  * and a post's sidebar alike.
  */
 import { localize, type LocalizedText } from '@myself-app/domain';
+import type { PostPreview } from '@myself-app/domain/use-cases';
 
-import type { PostPreview } from '../../content/blog';
 import type { SiteLocale } from '../../site-locales';
 
 export interface FilterOption {

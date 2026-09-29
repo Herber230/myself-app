@@ -1,7 +1,7 @@
+import { cvVariantParams } from '@myself-app/domain/use-cases';
 import type { Metadata } from 'next';
 
 import { cvMetadata, CvPageView } from '../../../../../components/cv/cv-page';
-import { cvVariantParams } from '../../../../../content/cv';
 import { SITE_CONTENT } from '../../../../../content/repositories';
 
 /** A variant, for an applicant tracking system (ADR 0012). */

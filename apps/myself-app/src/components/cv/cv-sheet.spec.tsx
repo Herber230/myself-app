@@ -1,8 +1,11 @@
 import type { Certificate, Technology } from '@myself-app/domain';
+import {
+  type CvSheet as CvSheetContent,
+  loadCvSheet,
+} from '@myself-app/domain/use-cases';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { type CvSheet as CvSheetContent, loadCvSheet } from '../../content/cv';
 import { SITE_RECORDS as CONTENT } from '../../content/repositories';
 import { SITE_CONTENT } from '../../content/repositories';
 import { buildSiteContent } from '../../content/site-content';

@@ -1,3 +1,4 @@
+import { loadRadarPlacements } from '@myself-app/domain/use-cases';
 import {
   act,
   fireEvent,
@@ -16,8 +17,8 @@ import {
   vi,
 } from 'vitest';
 
-import { loadRadarEntries } from '../../content/radar';
 import { SITE_CONTENT } from '../../content/repositories';
+import { radarEntriesOf } from './entries';
 import { layoutRadar } from './layout';
 import { RadarExplorer } from './radar-explorer';
 import type { RadarLayout } from './types';
@@ -25,7 +26,7 @@ import type { RadarLayout } from './types';
 let layout: RadarLayout;
 
 beforeAll(async () => {
-  layout = layoutRadar(await loadRadarEntries(SITE_CONTENT));
+  layout = layoutRadar(radarEntriesOf(await loadRadarPlacements(SITE_CONTENT)));
   // The file the export writes, served where the explorer asks for it.
   const file = JSON.stringify(await SITE_CONTENT.dataFile('technology.json'));
   vi.stubGlobal('fetch', async (url: string) =>

@@ -1,6 +1,9 @@
 import type { ContactChannel } from '@myself-app/domain';
+import type {
+  CvEmployment,
+  CvSheet as CvSheetContent,
+} from '@myself-app/domain/use-cases';
 
-import type { CvEmployment, CvSheet as CvSheetContent } from '../../content/cv';
 import { siteT } from '../../i18n/server';
 import type { SiteLocale } from '../../site-locales';
 import { ChannelIcon, LocationIcon } from '../icons';

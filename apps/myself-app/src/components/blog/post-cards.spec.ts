@@ -1,6 +1,6 @@
+import type { PostPreview } from '@myself-app/domain/use-cases';
 import { describe, expect, it } from 'vitest';
 
-import type { PostPreview } from '../../content/blog';
 import { siteT } from '../../i18n/server';
 import { formatDay, postCardOf, postPath } from './post-cards';
 

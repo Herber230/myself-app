@@ -1,6 +1,6 @@
+import { loadProfile } from '@myself-app/domain/use-cases';
 import { describe, expect, it } from 'vitest';
 
-import { loadProfile } from './profile';
 import { SITE_CONTENT } from './repositories';
 
 describe('the profile', () => {

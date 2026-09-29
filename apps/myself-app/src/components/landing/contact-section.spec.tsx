@@ -1,8 +1,8 @@
 import type { ContactChannel } from '@myself-app/domain';
+import { loadContactChannels } from '@myself-app/domain/use-cases';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { loadContactChannels } from '../../content/contact';
 import { SITE_CONTENT } from '../../content/repositories';
 import { ContactSection } from './contact-section';
 

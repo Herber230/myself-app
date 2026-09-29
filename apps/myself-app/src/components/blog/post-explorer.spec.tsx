@@ -1,3 +1,4 @@
+import { loadPostPreviews } from '@myself-app/domain/use-cases';
 import {
   act,
   fireEvent,
@@ -17,7 +18,7 @@ import {
   vi,
 } from 'vitest';
 
-import { loadPostPreviews } from '../../content/blog';
+import { BLOG_PREVIEWS } from '../../content/blog-reads';
 import { SITE_CONTENT } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import type { PostCardData } from './post-card';
@@ -27,7 +28,7 @@ import { PostExplorer } from './post-explorer';
 let posts: PostCardData[];
 
 beforeAll(async () => {
-  posts = (await loadPostPreviews(SITE_CONTENT)).map(preview =>
+  posts = (await loadPostPreviews(SITE_CONTENT, BLOG_PREVIEWS)).map(preview =>
     postCardOf(preview, 'en', siteT('en')),
   );
   // The file the export writes, served where the explorer asks for it.

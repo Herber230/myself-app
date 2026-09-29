@@ -1,49 +1,25 @@
-/**
- * Everything a blip's detail shows (#42): the technology, its quadrant and
- * ring, its areas, the
- * stretches it spent in each ring — oldest first, so the list is its ring
- * history — and the projects that use it.
- *
- * Its links are resolved by the load (ADR 0018), and the periods and projects
- * are filtered on their links to it, which the static adapter compares by id.
- */
 import {
-  Project,
-  type Quadrant,
-  type Ring,
-  Technology,
-  type TechnologyArea,
-  TechnologyUsePeriod,
-} from '@myself-app/domain';
-import {
+  type StaticContent,
   targetOf,
   targetsOf,
 } from '@myself-app/entifix-incubator-static-adapter';
 
-import type { SiteContent } from './site-content';
+import { Project } from '../../entities/project.entity.js';
+import { Technology } from '../../entities/technology.entity.js';
+import { TechnologyUsePeriod } from '../../entities/technology-use-period.entity.js';
+import type { TechnologyDetail } from './load-technology-detail.types.js';
 
-/** One stretch in one ring. */
-export interface RingStretch {
-  readonly ring: Ring;
-  readonly start: Date;
-  readonly end?: Date;
-}
-
-export interface TechnologyDetail {
-  readonly technology: Technology;
-  readonly quadrant: Quadrant;
-  /** Where it sits now. */
-  readonly ring: Ring;
-  /** In the order the technology lists them. */
-  readonly areas: readonly TechnologyArea[];
-  /** Oldest first. */
-  readonly history: readonly RingStretch[];
-  /** By the projects' own order. */
-  readonly projects: readonly Project[];
-}
-
+/**
+ * Everything a technology's detail shows (#42): the technology, its quadrant
+ * and ring, its areas, the stretches it spent in each ring — oldest first, so
+ * the list is its ring history — and the projects that use it. Nothing for an
+ * id that names no technology.
+ *
+ * Its links are resolved by the load (ADR 0018), and the periods and projects
+ * are filtered on their links to it, which the static adapter compares by id.
+ */
 export async function loadTechnologyDetail(
-  content: SiteContent,
+  content: StaticContent,
   id: string,
 ): Promise<TechnologyDetail | undefined> {
   const [[technology], periods, projects] = await Promise.all([
