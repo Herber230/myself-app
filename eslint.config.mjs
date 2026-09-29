@@ -34,10 +34,29 @@ const layerConstraints = [
   {
     sourceTag: 'layer:app',
     onlyDependOnLibsWithTags: [
+      'layer:implementation',
+      'layer:domain',
+      'layer:incubator',
+    ],
+  },
+  {
+    // A domain wired to a delivery mechanism (#75): the UI, and the adapters
+    // that say where content is read from. Neither imports the other; the app
+    // is where they meet.
+    sourceTag: 'layer:implementation',
+    onlyDependOnLibsWithTags: [
       'layer:domain',
       'layer:content',
       'layer:incubator',
     ],
+  },
+  {
+    sourceTag: 'implementation:adapters',
+    notDependOnLibsWithTags: ['implementation:ui'],
+  },
+  {
+    sourceTag: 'implementation:ui',
+    notDependOnLibsWithTags: ['implementation:adapters', 'layer:content'],
   },
   {
     sourceTag: 'layer:incubator',
@@ -51,8 +70,10 @@ const layerConstraints = [
     ],
   },
   {
+    // The domain reads content through the static adapter's `StaticContent`,
+    // the port entifix will own once the incubator moves there (#75).
     sourceTag: 'layer:domain',
-    onlyDependOnLibsWithTags: [],
+    onlyDependOnLibsWithTags: ['layer:incubator'],
     allowedExternalImports: entifixOnly,
   },
   {
@@ -97,6 +118,38 @@ export default [
           enforceBuildableLibDependency: true,
           allow: allowEslintConfig,
           depConstraints: layerConstraints,
+        },
+      ],
+    },
+  },
+  {
+    // A UI spec may hold a component to the content the site ships, which the
+    // adapters build (#75). Specs only: the UI's own code never loads content,
+    // the app's pages do. The one edge a spec gets that its file does not, as
+    // r10c gives its specs the `type:testing` libraries.
+    files: ['**/*.spec.ts', '**/*.spec.tsx', '**/src/test/**/*.ts'],
+    rules: {
+      '@nx/enforce-module-boundaries': [
+        'error',
+        {
+          enforceBuildableLibDependency: true,
+          allow: allowEslintConfig,
+          depConstraints: layerConstraints.map(constraint => {
+            if (constraint.sourceTag === 'implementation:ui') {
+              // The adapters it reaches read the content: that edge is theirs.
+              return { ...constraint, notDependOnLibsWithTags: [] };
+            }
+            if (constraint.sourceTag === 'layer:implementation') {
+              return {
+                ...constraint,
+                onlyDependOnLibsWithTags: [
+                  ...constraint.onlyDependOnLibsWithTags,
+                  'layer:implementation',
+                ],
+              };
+            }
+            return constraint;
+          }),
         },
       ],
     },

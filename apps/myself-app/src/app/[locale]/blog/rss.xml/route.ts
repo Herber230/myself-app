@@ -1,8 +1,12 @@
+import { loadPosts } from '@myself-app/domain/use-cases';
+import { renderFeed } from '@myself-app/implementation-ui/feed';
+import {
+  isSiteLocale,
+  SITE_LOCALES,
+} from '@myself-app/implementation-ui/routing';
 import { notFound } from 'next/navigation';
 
-import { renderFeed } from '../../../../blog/feed';
-import { SITE_CONTENT } from '../../../../content/repositories';
-import { isSiteLocale, SITE_LOCALES } from '../../../../site-locales';
+import { SITE_CONTENT } from '../../../../composition';
 import { siteUrl } from '../../../../site-url';
 
 /**
@@ -23,7 +27,9 @@ export async function GET(
 ) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  return new Response(await renderFeed(SITE_CONTENT, locale, siteUrl()), {
+  // The feed never carries a draft, `next dev` or not.
+  const posts = await loadPosts(SITE_CONTENT, { includeDrafts: false });
+  return new Response(renderFeed(posts, locale, siteUrl()), {
     headers: { 'content-type': 'application/rss+xml; charset=utf-8' },
   });
 }

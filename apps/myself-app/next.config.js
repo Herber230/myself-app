@@ -24,7 +24,12 @@ const nextConfig = {
     // `@entifix/core` import brings Effect: ~300 KB of gzipped JavaScript
     // instead of ~200 KB. Rewriting barrel imports to the modules actually
     // used is what keeps a static page's bundle to what it renders (ADR 0006).
-    optimizePackageImports: ['@entifix/react-controls', '@entifix/core'],
+    optimizePackageImports: [
+      '@entifix/react-controls',
+      '@entifix/core',
+      '@myself-app/entifix-incubator-react-controls',
+      '@myself-app/implementation-ui',
+    ],
   },
 };
 

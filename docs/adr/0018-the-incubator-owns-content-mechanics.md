@@ -4,6 +4,7 @@
 - Date: 2026-09-27
 - Area: data
 - Read when: a loader builds an id → record map or casts a link, a new entity needs a source, a content rule is about to be written by hand, a page's filter is about to be wired again, or code is about to move into entifix
+- Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — the sources and the posts' reader are `implementation/adapters`' (`siteContent()`), the loaders are the domain's use cases, and the app keeps its composition root in `src/composition.ts`
 
 Continues [ADR 0016](0016-entifix-queries-run-in-the-browser-too.md), which
 opened the incubator layer, and [ADR 0010](0010-content-checked-from-entity-metadata.md),
@@ -32,7 +33,7 @@ instance (`new Post().tags.entityConstructor`).
 ## Decision
 
 - **Content is defined once, in the incubator.** `defineStaticContent(content,
-sources, options)` in `@myself-app/static-adapter` validates every file,
+sources, options)` in `@myself-app/entifix-incubator-static-adapter` validates every file,
   builds a repository per entity and returns a `StaticContent`: `load` (a
   page), `loadAll` (every record a request keeps), `ids`, the data files, and
   the records it was given. The app hands it `{ entity, file, rules?,
@@ -65,7 +66,7 @@ read }` attaches, per record and per locale, what `read(id, locale)`
   need it and `entifix-browser` already depends on `static-adapter`, so
   `loadThroughUseCase` moves down and `entifix-browser` re-exports it.
 - **A filter kept in the URL is one hook.** `useUrlFilter(source, query,
-context)` in `@myself-app/entifix-browser/react` reads the state, answers it
+context)` in `@myself-app/entifix-incubator-browser/react` reads the state, answers it
   through the use case, keeps the last answer while a new one loads, and
   returns `toggle`, `set`, `clear` and the ids kept. An explorer only lays out
   its controls.

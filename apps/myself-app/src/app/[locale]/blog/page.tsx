@@ -1,14 +1,16 @@
+import { loadPostPreviews } from '@myself-app/domain/use-cases';
+import { siteT } from '@myself-app/implementation-ui/i18n';
+import {
+  isSiteLocale,
+  localeAlternates,
+} from '@myself-app/implementation-ui/routing';
+import { BlogPageView } from '@myself-app/implementation-ui/templates';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { filterOptionsOf } from '../../../components/blog/filter-options';
-import { postCardOf } from '../../../components/blog/post-cards';
-import { PostExplorer } from '../../../components/blog/post-explorer';
-import { SiteNav } from '../../../components/site-nav';
-import { loadPostPreviews } from '../../../content/blog';
-import { SITE_CONTENT } from '../../../content/repositories';
-import { siteT } from '../../../i18n/server';
-import { isSiteLocale, localeAlternates } from '../../../site-locales';
+import { SITE_CONTENT } from '../../../composition';
+import { BLOG_PREVIEWS } from '../../../content/blog-reads';
+import { BrowserSources } from '../../../providers/browser-sources';
 
 const PATH = '/blog';
 
@@ -37,37 +39,10 @@ export default async function BlogPage({
 }: PageProps<'/[locale]/blog'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const t = siteT(locale);
-  const previews = await loadPostPreviews(SITE_CONTENT);
-  const { tags, technologies, years } = filterOptionsOf(previews, locale);
+  const previews = await loadPostPreviews(SITE_CONTENT, BLOG_PREVIEWS);
   return (
-    <>
-      <SiteNav locale={locale} path={PATH} />
-      <PostExplorer
-        posts={previews.map(preview => postCardOf(preview, locale, t))}
-        locale={locale}
-        tags={tags}
-        technologies={technologies}
-        years={years}
-        copy={{
-          filters: t('blogPage.filter.label'),
-          tag: t('blogPage.filter.tag'),
-          technology: t('blogPage.filter.technology'),
-          year: t('blogPage.filter.year'),
-          search: t('blogPage.filter.search'),
-          clear: t('blogPage.filter.clear'),
-          showing: t('blogPage.filter.showing', {
-            shown: '{{shown}}',
-            total: '{{total}}',
-          }),
-          empty: t('blogPage.empty'),
-          showSidebar: t('blogPage.sidebar.show'),
-          hideSidebar: t('blogPage.sidebar.hide'),
-        }}
-        title={t('blog')}
-        lead={t('blogLead')}
-        feed={{ href: `/${locale}/blog/rss.xml`, label: t('blogPage.feed') }}
-      />
-    </>
+    <BrowserSources>
+      <BlogPageView locale={locale} previews={previews} />
+    </BrowserSources>
   );
 }

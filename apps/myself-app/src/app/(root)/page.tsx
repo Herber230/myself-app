@@ -1,7 +1,9 @@
+import { siteT } from '@myself-app/implementation-ui/i18n';
+import {
+  localePath,
+  SITE_DEFAULT_LOCALE,
+} from '@myself-app/implementation-ui/routing';
 import type { Metadata } from 'next';
-
-import { siteT } from '../../i18n/server';
-import { localePath, SITE_DEFAULT_LOCALE } from '../../site-locales';
 
 const target = localePath(SITE_DEFAULT_LOCALE, '/');
 const t = siteT(SITE_DEFAULT_LOCALE);

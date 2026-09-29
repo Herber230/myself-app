@@ -19,3 +19,4 @@ export * from './entities/technology-use-period.entity.js';
 export * from './locales.js';
 export * from './localized-members.js';
 export * from './localized-text.js';
+export * from './rules.js';

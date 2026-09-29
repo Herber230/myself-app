@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from './repositories';
+import { SITE_CONTENT } from '../composition';
 import { loadSitePaths } from './site-paths';
 
 describe('the site’s paths', () => {

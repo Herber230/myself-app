@@ -5,6 +5,7 @@
 - Area: platform
 - Read when: adding a package or an import between two, or putting an entity class somewhere
 - Revised: 2026-09-18 by #21 — the three packages exist, each building to `dist` (ADR 0010)
+- Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — packages are grouped by layer (`entifix-incubator/`, `implementation/`), and the domain now reads content through the static adapter
 
 ## Context
 

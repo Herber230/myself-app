@@ -1,0 +1,29 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "out-tsc/ui",
+    "tsBuildInfoFile": "out-tsc/ui/tsconfig.tsbuildinfo",
+    "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "esnext", "decorators", "esnext.decorators"],
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["dist", "out-tsc", "test-output"],
+  "references": [
+    {
+      "path": "../../entifix-incubator/static-adapter"
+    },
+    {
+      "path": "../../entifix-incubator/react-controls"
+    },
+    {
+      "path": "../../entifix-incubator/browser"
+    },
+    {
+      "path": "../../domain"
+    },
+    {
+      "path": "../adapters"
+    }
+  ]
+}

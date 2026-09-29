@@ -1,12 +1,11 @@
 import { LOCALES } from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
-import { isSiteLocale, SITE_DEFAULT_LOCALE, SITE_LOCALES } from './locales.js';
+import { isSiteLocale, SITE_LOCALES } from './locales.js';
 
 describe('the site locales', () => {
-  it('are English and Spanish, English first and by default', () => {
+  it('are English and Spanish, English first', () => {
     expect(SITE_LOCALES).toEqual(['en', 'es']);
-    expect(SITE_DEFAULT_LOCALE).toBe('en');
   });
 
   it('are all locales entifix knows', () => {
@@ -15,10 +14,10 @@ describe('the site locales', () => {
     }
   });
 
-  it('do not take entifix default, which is the other one', () => {
-    // entifix#35: its own list is r10c's, `es` first. The site's default is
+  it('do not take entifix order, which starts with the other one', () => {
+    // entifix#35: its own list is r10c's, `es` first. The site starts with
     // English, which is why the list is declared here at all.
-    expect(SITE_DEFAULT_LOCALE).not.toBe(LOCALES[0]);
+    expect(SITE_LOCALES[0]).not.toBe(LOCALES[0]);
   });
 
   it('recognises a site locale and nothing else', () => {

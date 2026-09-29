@@ -71,6 +71,7 @@ jobs:
             node_modules
             apps/*/node_modules
             packages/*/node_modules
+            packages/*/*/node_modules
             tools/*/node_modules
       - name: Install dependencies
         if: steps.deps.outputs.cache-hit != 'true'
@@ -84,6 +85,7 @@ jobs:
             node_modules
             apps/*/node_modules
             packages/*/node_modules
+            packages/*/*/node_modules
             tools/*/node_modules
 
       - name: Resolve affected base/head
@@ -154,6 +156,7 @@ jobs:
             node_modules
             apps/*/node_modules
             packages/*/node_modules
+            packages/*/*/node_modules
             tools/*/node_modules
       - run: pnpm nx run-many -t lint --projects="${{ needs.initialize.outputs.lint-projects }}"
 
@@ -182,6 +185,7 @@ jobs:
             node_modules
             apps/*/node_modules
             packages/*/node_modules
+            packages/*/*/node_modules
             tools/*/node_modules
       - name: Build
         if: needs.initialize.outputs.build-projects != ''
@@ -215,6 +219,7 @@ jobs:
             node_modules
             apps/*/node_modules
             packages/*/node_modules
+            packages/*/*/node_modules
             tools/*/node_modules
       # Every project with logic collects coverage on each run and fails below
       # 100%; `--coverage` also covers any project that does not enable it.
@@ -245,6 +250,7 @@ jobs:
             node_modules
             apps/*/node_modules
             packages/*/node_modules
+            packages/*/*/node_modules
             tools/*/node_modules
       - name: Resolve the Playwright version
         id: playwright
@@ -332,6 +338,7 @@ jobs:
             node_modules
             apps/*/node_modules
             packages/*/node_modules
+            packages/*/*/node_modules
             tools/*/node_modules
       - uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -373,6 +380,7 @@ jobs:
             node_modules
             apps/*/node_modules
             packages/*/node_modules
+            packages/*/*/node_modules
             tools/*/node_modules
       # `always()` on every step, so one failure does not hide the next. The
       # job still fails if any step does.
@@ -409,6 +417,7 @@ jobs:
             node_modules
             apps/*/node_modules
             packages/*/node_modules
+            packages/*/*/node_modules
             tools/*/node_modules
 
       - name: Every commit in the range

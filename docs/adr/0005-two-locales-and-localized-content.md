@@ -5,6 +5,7 @@
 - Area: i18n
 - Read when: adding copy or content, or when a translation is missing
 - Revised: 2026-09-18 by #23 — the locale list lives in `@myself-app/domain`, and `site-locales.ts` re-exports it
+- Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — the default locale is routing, declared in `@myself-app/implementation-ui/routing`; the list stays in the domain
 
 ## Context
 
@@ -23,11 +24,11 @@ language and as the controls' starting locale
 ## Decision
 
 - **`en` and `es`, `en` by default.** The site declares its own
-  `SITE_LOCALES = ['en', 'es']` and `SITE_DEFAULT_LOCALE = 'en'`, typed as a
+  `SITE_LOCALES = ['en', 'es']`, `en` by default, typed as a
   subset of entifix's `Locale`. That one list drives the routes, the catalogs and
   content validation. It is declared in `@myself-app/domain`, because content
-  validation needs it and no package may import the app; the app's
-  `src/site-locales.ts` re-exports it, and the adapter is handed it.
+  validation needs it; the UI's `routing/site-locales.ts` re-exports it beside
+  `SITE_DEFAULT_LOCALE`, which is routing, and the adapter is handed it.
 - **Routes carry the locale**: `/[locale]/…` with `generateStaticParams`. `/`
   sends the visitor to `/en/` without a server.
 - **UI copy** lives in catalogs, and a key present in one locale only fails the

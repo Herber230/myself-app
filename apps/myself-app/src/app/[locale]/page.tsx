@@ -1,18 +1,18 @@
+import {
+  loadContactChannels,
+  loadFeaturedProjects,
+  loadProfile,
+} from '@myself-app/domain/use-cases';
+import { siteT } from '@myself-app/implementation-ui/i18n';
+import {
+  isSiteLocale,
+  localeAlternates,
+} from '@myself-app/implementation-ui/routing';
+import { LandingPageView } from '@myself-app/implementation-ui/templates';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { AboutSection } from '../../components/landing/about-section';
-import { ContactSection } from '../../components/landing/contact-section';
-import { EntifixSection } from '../../components/landing/entifix-section';
-import { Hero } from '../../components/landing/hero';
-import { ProjectsSection } from '../../components/landing/projects-section';
-import { SiteNav } from '../../components/site-nav';
-import { loadContactChannels } from '../../content/contact';
-import { loadProfile } from '../../content/profile';
-import { loadFeaturedProjects } from '../../content/projects';
-import { SITE_CONTENT } from '../../content/repositories';
-import { siteT } from '../../i18n/server';
-import { isSiteLocale, localeAlternates } from '../../site-locales';
+import { SITE_CONTENT } from '../../composition';
 
 const PATH = '/';
 
@@ -28,7 +28,6 @@ export async function generateMetadata({
   };
 }
 
-/** The sections run in `LANDING_SECTIONS` order: the nav's anchors follow it. */
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
@@ -38,15 +37,11 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
     loadContactChannels(SITE_CONTENT),
   ]);
   return (
-    <>
-      <SiteNav locale={locale} path={PATH} reveal />
-      <main>
-        <Hero locale={locale} profile={profile} />
-        <AboutSection locale={locale} profile={profile} />
-        <ProjectsSection locale={locale} projects={projects} />
-        <EntifixSection locale={locale} />
-        <ContactSection locale={locale} channels={channels} />
-      </main>
-    </>
+    <LandingPageView
+      locale={locale}
+      profile={profile}
+      projects={projects}
+      channels={channels}
+    />
   );
 }

@@ -1,4 +1,4 @@
-import { SITE_CONTENT } from '../../../content/repositories';
+import { SITE_CONTENT } from '../../../composition';
 
 /**
  * `/data/<entity>.json`, written once into the export (ADR 0003, path C).

@@ -1,0 +1,51 @@
+{
+  "name": "@myself-app/entifix-incubator-react-controls",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "React controls that know no entity and no page of this site, over entifix's tokens: a filter's controls, a navigation dropdown, a tech radar. Meant for @entifix/react-controls.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@myself-app/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "nx": {
+    "tags": [
+      "layer:incubator"
+    ],
+    "targets": {
+      "build": {
+        "executor": "@nx/js:swc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "packages/entifix-incubator/react-controls/dist",
+          "main": "packages/entifix-incubator/react-controls/src/index.ts",
+          "tsConfig": "packages/entifix-incubator/react-controls/tsconfig.lib.json",
+          "skipTypeCheck": true,
+          "stripLeadingPaths": true
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@entifix/react-controls": "catalog:",
+    "@swc/helpers": "0.5.23"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  }
+}

@@ -324,6 +324,7 @@ describe('the enforcement surfaces are wired to that predicate', () => {
 describe('every project sits in one layer', () => {
   const LAYERS = [
     'layer:app',
+    'layer:implementation',
     'layer:domain',
     'layer:incubator',
     'layer:content',
@@ -332,8 +333,17 @@ describe('every project sits in one layer', () => {
     'layer:tooling',
   ];
 
-  /** The workspace globs of `pnpm-workspace.yaml`, one level deep. */
-  const projects = ['apps', 'packages', 'tools'].flatMap(group => {
+  /**
+   * The workspace globs of `pnpm-workspace.yaml`, each `<dir>/*`: a layer's
+   * folder (`packages/implementation/*`) is a glob of its own, so a package
+   * nested one level deeper is found the way pnpm finds it.
+   */
+  const globs = readFileSync(join(REPO_ROOT, 'pnpm-workspace.yaml'), 'utf8')
+    .match(/^packages:\n((?:[ \t]+- .*\n)+)/m)![1]
+    .split('\n')
+    .map(line => line.match(/^\s+- '?([^'*]+)\/\*'?$/)?.[1])
+    .filter(group => group !== undefined);
+  const projects = globs.flatMap(group => {
     const dir = join(REPO_ROOT, group);
     if (!existsSync(dir)) return [];
     return readdirSync(dir, { withFileTypes: true })
@@ -354,6 +364,18 @@ describe('every project sits in one layer', () => {
     expect(layers, `${path} needs one "layer:*" in nx.tags`).toHaveLength(1);
     expect(LAYERS).toContain(layers[0]);
   });
+
+  it.each(projects)(
+    '%s names which implementation it is, when it is one',
+    path => {
+      const manifest = JSON.parse(readFileSync(join(REPO_ROOT, path), 'utf8'));
+      const tags: string[] = manifest.nx?.tags ?? [];
+      const kinds = tags.filter(tag => tag.startsWith('implementation:'));
+      expect(kinds, `${path} needs one "implementation:*"`).toHaveLength(
+        tags.includes('layer:implementation') ? 1 : 0,
+      );
+    },
+  );
 
   it('each layer the spec knows has a constraint in the lint config', () => {
     const config = readFileSync(join(REPO_ROOT, 'eslint.config.mjs'), 'utf8');

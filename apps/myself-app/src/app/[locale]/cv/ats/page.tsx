@@ -1,18 +1,22 @@
+import {
+  cvMetadata,
+  CvPageView,
+} from '@myself-app/implementation-ui/templates';
 import type { Metadata } from 'next';
 
-import { cvMetadata, CvPageView } from '../../../../components/cv/cv-page';
+import { loadCvPage } from '../cv-route';
 
 /** The default variant, for an applicant tracking system (ADR 0012). */
 export async function generateMetadata({
   params,
 }: PageProps<'/[locale]/cv/ats'>): Promise<Metadata> {
   const { locale } = await params;
-  return cvMetadata({ locale, mode: 'ats' });
+  return cvMetadata(await loadCvPage({ locale, mode: 'ats' }));
 }
 
 export default async function CvAtsPage({
   params,
 }: PageProps<'/[locale]/cv/ats'>) {
   const { locale } = await params;
-  return CvPageView({ locale, mode: 'ats' });
+  return CvPageView(await loadCvPage({ locale, mode: 'ats' }));
 }

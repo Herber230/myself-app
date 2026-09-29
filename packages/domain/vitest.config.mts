@@ -38,9 +38,10 @@ export default defineConfig({
       enabled: true,
       all: true,
       include: ['src/**/*.ts'],
-      // A pure re-export barrel, as entifix excludes its own. If it ever grows
-      // logic, the logic moves out rather than the exception staying.
-      exclude: ['src/index.ts'],
+      // Pure re-export barrels, as entifix excludes its own. If one ever grows
+      // logic, the logic moves out rather than the exception staying. The
+      // fixture is test material the specs share, not code the package ships.
+      exclude: ['src/**/index.ts', 'src/**/*.fixture.ts'],
       reportsDirectory: './test-output/vitest/coverage',
       thresholds: {
         statements: 100,

@@ -40,16 +40,22 @@
   ],
   "references": [
     {
-      "path": "../../packages/static-adapter"
+      "path": "../../packages/entifix-incubator/static-adapter"
     },
     {
       "path": "../../packages/domain"
     },
     {
-      "path": "../../packages/content"
+      "path": "../../packages/entifix-incubator/browser"
     },
     {
-      "path": "../../packages/entifix-browser"
+      "path": "../../packages/implementation/adapters"
+    },
+    {
+      "path": "../../packages/entifix-incubator/react-controls"
+    },
+    {
+      "path": "../../packages/implementation/ui"
     }
   ]
 }

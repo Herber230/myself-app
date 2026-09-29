@@ -5,6 +5,7 @@
 - Area: data
 - Read when: loading content, or tempted to import `@entifix/testing-unit` outside a spec
 - Revised: 2026-09-18 by #22 — the adapter exists, and how it validates is ADR 0010
+- Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — the adapter is `@myself-app/entifix-incubator-static-adapter`, in `packages/entifix-incubator/`
 
 ## Context
 
@@ -28,7 +29,7 @@ purpose. Two defects make it unsuitable beyond that:
 ## Decision
 
 **A read-only static adapter, written in this repository, implementing the
-public `EntityRepository` port.** It lives in `packages/static-adapter` and knows
+public `EntityRepository` port.** It lives in `packages/entifix-incubator/static-adapter` and knows
 no entity of this site.
 
 - `get` / `load` with the Mongo adapter's filter, sort and paging semantics,

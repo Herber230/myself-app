@@ -1,8 +1,16 @@
+import { loadProfile } from '@myself-app/domain/use-cases';
+import { en } from '@myself-app/implementation-ui/i18n/catalogs';
+import {
+  isSiteLocale,
+  SITE_LOCALES,
+} from '@myself-app/implementation-ui/routing';
+import {
+  renderSocialImage,
+  SOCIAL_IMAGE_SIZE,
+} from '@myself-app/implementation-ui/social';
 import { notFound } from 'next/navigation';
 
-import { en } from '../../i18n/catalogs/en';
-import { isSiteLocale, SITE_LOCALES } from '../../site-locales';
-import { renderSocialImage, SOCIAL_IMAGE_SIZE } from '../../social-image';
+import { SITE_CONTENT } from '../../composition';
 
 /** Written once per locale at build (ADR 0001). */
 export const dynamic = 'force-static';
@@ -27,5 +35,5 @@ export default async function OpenGraphImage({
 }) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  return renderSocialImage(locale);
+  return renderSocialImage(locale, await loadProfile(SITE_CONTENT));
 }

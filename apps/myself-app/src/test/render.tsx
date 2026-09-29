@@ -3,11 +3,10 @@
  * components: each is awaited first, and its result rendered as any element
  * is, inside the providers every page gets from its layout.
  */
+import { Providers } from '@myself-app/implementation-ui/providers';
+import type { SiteLocale } from '@myself-app/implementation-ui/routing';
 import { render } from '@testing-library/react';
 import type { ReactNode } from 'react';
-
-import { Providers } from '../app/[locale]/providers';
-import type { SiteLocale } from '../site-locales';
 
 export async function renderPage(page: Promise<ReactNode>, locale: SiteLocale) {
   return render(
