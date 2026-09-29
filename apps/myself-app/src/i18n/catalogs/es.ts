@@ -162,6 +162,11 @@ export const es = {
     readingTime: '{{minutes}} min de lectura',
     draft: 'Borrador',
     back: '← Todas las entradas',
+    /** The toggle that folds the blog's sidebar away, and back. */
+    sidebar: {
+      show: 'Mostrar filtros',
+      hide: 'Ocultar filtros',
+    },
     tags: 'Etiquetas',
     technologies: 'En el radar',
     related: 'Entradas relacionadas',

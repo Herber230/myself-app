@@ -3,6 +3,7 @@
 - Status: Accepted
 - Date: 2026-09-27
 - Area: data
+- Revised: 2026-09-28 by #70 — the filter sits in a sidebar that folds away (open on the home, closed on a post); the home is a timeline by year whose cards fade the body's opening, read at build; the first posts include seven imported from Medium
 - Read when: adding or editing a post, a post fails `next build`, a draft appears in the export, a post's image or link breaks, or the blog's filter shows the wrong posts
 
 Decides the blog half of #70. Builds on
@@ -52,7 +53,11 @@ beside entifix's, and tie posts to the file system.
   technology, newest first on a tie; the top three are shown.
 - **The blog home filters in the browser**, by tag, technology, year and
   title (`?tag=&tech=&year=&q=`), through the use case (ADR 0016). There are
-  no tag pages: the query string is the only filter.
+  no tag pages: the query string is the only filter. The filter is a sidebar,
+  a `<details>` open on the home and closed on a post, where it is links to
+  the home; before hydration the home's sidebar is those links too. The home
+  lists posts as a timeline by year, each card fading the opening of its body
+  (`excerptOf`, plain text read at build, never in `/data/post.json`).
 - **Each post has an Open Graph image, and each locale an RSS feed**
   (`/<locale>/blog/rss.xml`).
 
@@ -64,7 +69,9 @@ beside entifix's, and tie posts to the file system.
 - A technology's page lists the posts about it.
 - Styling a post is `post-body.css`, over the theme tokens; a new paragraph
   type is a directive, its class and its styles.
-- The first posts are placeholders marked `TODO(#70)`.
+- The first posts were placeholders marked `TODO(#70)`; seven more were
+  imported from Medium with their translations, each noting where it was
+  first published.
 
 ## Alternatives considered
 

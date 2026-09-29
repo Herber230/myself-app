@@ -1,6 +1,4 @@
 import {
-  Card,
-  Center,
   Cluster,
   linkClassName,
   Stack,
@@ -11,6 +9,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { BlogLayout } from '../../../../components/blog/blog-layout';
+import { FilterLinks } from '../../../../components/blog/filter-links';
+import { filterOptionsOf } from '../../../../components/blog/filter-options';
 import { renderPostBody } from '../../../../components/blog/post-body';
 import { PostCard } from '../../../../components/blog/post-card';
 import { formatDay, postCardOf } from '../../../../components/blog/post-cards';
@@ -20,6 +21,7 @@ import { technologyPath } from '../../../../components/tech-radar/radar-paths';
 import {
   loadPost,
   loadPostIds,
+  loadPostPreviews,
   loadPosts,
   previewsOf,
   relatedPosts,
@@ -75,11 +77,15 @@ export default async function PostPage({
 }: PageProps<'/[locale]/blog/[slug]'>) {
   const { locale, post, id } = await postOf(params);
   const t = siteT(locale);
-  const [[preview], posts, sitePaths] = await Promise.all([
+  const [[preview], posts, previews, sitePaths] = await Promise.all([
     previewsOf(SITE_CONTENT, [post]),
     loadPosts(SITE_CONTENT),
+    loadPostPreviews(SITE_CONTENT),
     loadSitePaths(SITE_CONTENT),
   ]);
+  const options = filterOptionsOf(previews, locale);
+  const named = (list: readonly { id: string; name: string }[]) =>
+    list.map(each => ({ key: each.id, name: each.name }));
   // Every post has one: it was read from the same repository.
   const card = postCardOf(preview as NonNullable<typeof preview>, locale, t);
   const related = await previewsOf(SITE_CONTENT, relatedPosts(post, posts));
@@ -90,20 +96,55 @@ export default async function PostPage({
     sitePaths,
   });
   const blogPath = localePath(locale, '/blog');
+  const sidebar = (
+    <Stack gap="l">
+      <Stack gap="s">
+        <h2 className="blog-sidebar-heading">{t('blogPage.filter.label')}</h2>
+        <FilterLinks
+          blogPath={blogPath}
+          groups={[
+            {
+              param: 'tag',
+              label: t('blogPage.filter.tag'),
+              options: named(options.tags),
+            },
+            {
+              param: 'tech',
+              label: t('blogPage.filter.technology'),
+              options: named(options.technologies),
+            },
+            {
+              param: 'year',
+              label: t('blogPage.filter.year'),
+              options: options.years.map(year => ({ key: year, name: year })),
+            },
+          ]}
+        />
+      </Stack>
+      <a href={`/${locale}/blog/rss.xml`} className="blog-feed-link">
+        {t('blogPage.feed')}
+      </a>
+    </Stack>
+  );
   return (
     <>
       <SiteNav locale={locale} path={`/blog/${id}`} />
-      <Center as="main" gutters className="py-2xl">
-        <Card>
-          <article>
-            <Stack gap="l">
-              <Link href={blogPath} className={linkClassName}>
-                {t('blogPage.back')}
-              </Link>
+      <BlogLayout
+        sidebar={sidebar}
+        sidebarOpen={false}
+        copy={{
+          label: t('blogPage.filter.label'),
+          show: t('blogPage.sidebar.show'),
+          hide: t('blogPage.sidebar.hide'),
+        }}
+      >
+        <Link href={blogPath} className={`${linkClassName} blog-back`}>
+          {t('blogPage.back')}
+        </Link>
+        <article className="blog-article">
+          <Stack gap="l">
+            <header className="blog-article-header">
               <Stack gap="s">
-                <Text as="h1" step={3} weight="semibold">
-                  {card.title}
-                </Text>
                 <p className="post-card-meta">
                   <time dateTime={card.publishedAt}>{card.date}</time>
                   {post.updatedAt && (
@@ -118,20 +159,25 @@ export default async function PostPage({
                     <span className="post-card-draft">{card.draft}</span>
                   )}
                 </p>
+                <Text as="h1" step={3} weight="semibold">
+                  {card.title}
+                </Text>
                 <Cluster gap="xs" aria-label={t('blogPage.tags')}>
                   {card.tags.map(tag => (
                     <Link
                       key={tag.id}
                       href={`${blogPath}?tag=${encodeURIComponent(tag.id)}`}
-                      className="landing-chip"
+                      className="landing-chip post-chip-tag"
                     >
                       {tag.label}
                     </Link>
                   ))}
                 </Cluster>
               </Stack>
-              {body}
-              {card.technologies.length > 0 && (
+            </header>
+            {body}
+            {card.technologies.length > 0 && (
+              <footer className="blog-article-footer">
                 <Stack gap="s">
                   <Text as="h2" step={1} weight="semibold">
                     {t('blogPage.technologies')}
@@ -141,35 +187,34 @@ export default async function PostPage({
                       <Link
                         key={technology.id}
                         href={technologyPath(locale, technology.id)}
-                        className="landing-chip"
+                        className="landing-chip post-chip-tech"
                       >
                         {technology.name}
                       </Link>
                     ))}
                   </Cluster>
                 </Stack>
-              )}
-              {related.length > 0 && (
-                <Stack gap="s">
-                  <Text as="h2" step={1} weight="semibold">
-                    {t('blogPage.related')}
-                  </Text>
-                  <ol className="post-list">
-                    {related.map(each => (
-                      <li key={each.id}>
-                        <PostCard
-                          post={postCardOf(each, locale, t)}
-                          heading="h3"
-                        />
-                      </li>
-                    ))}
-                  </ol>
-                </Stack>
-              )}
+              </footer>
+            )}
+          </Stack>
+        </article>
+        {related.length > 0 && (
+          <section className="blog-related">
+            <Stack gap="s">
+              <Text as="h2" step={1} weight="semibold">
+                {t('blogPage.related')}
+              </Text>
+              <ol className="post-list">
+                {related.map(each => (
+                  <li key={each.id}>
+                    <PostCard post={postCardOf(each, locale, t)} heading="h3" />
+                  </li>
+                ))}
+              </ol>
             </Stack>
-          </article>
-        </Card>
-      </Center>
+          </section>
+        )}
+      </BlogLayout>
     </>
   );
 }

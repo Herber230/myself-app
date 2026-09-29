@@ -25,6 +25,13 @@ describe('a post’s page', () => {
       { slug: 'entifix-in-the-browser' },
       { slug: 'a-static-site-on-s3' },
       { slug: 'coverage-at-one-hundred' },
+      { slug: 'then-i-saw-you-dance' },
+      { slug: 'books' },
+      { slug: 'rxjs-exceptions-react-hooks' },
+      { slug: 'what-do-you-think' },
+      { slug: 'the-first-entifix-application' },
+      { slug: 'the-embodiment-of-irony' },
+      { slug: 'an-analogy-for-life-plans' },
     ]);
     expect(dynamicParams).toBe(false);
   });
@@ -42,7 +49,7 @@ describe('a post’s page', () => {
     ).toHaveProperty('pathname', '/es/blog/');
     expect(screen.getByText('Actualizada el 20 sept 2026')).toBeTruthy();
     expect(
-      screen
+      within(document.querySelector('.blog-article-header') as HTMLElement)
         .getByRole('link', { name: 'Infraestructura' })
         .getAttribute('href'),
     ).toBe('/es/blog/?tag=infrastructure');
@@ -70,7 +77,33 @@ describe('a post’s page', () => {
       within(related)
         .getAllByRole('heading', { level: 3 })
         .map(heading => heading.textContent),
-    ).toEqual(['A static site behind CloudFront, defined in Pulumi']);
+    ).toEqual([
+      'The first Entifix application',
+      'A static site behind CloudFront, defined in Pulumi',
+      'Handling exceptions with Rxjs and React hooks',
+    ]);
+  });
+
+  it('folds its sidebar away, with the filter as links to the blog', async () => {
+    await renderPage(PostPage(propsOf('es', 'a-static-site-on-s3')), 'es');
+    const sidebar = screen.getByRole('complementary', {
+      name: 'Filtrar las entradas',
+    });
+    expect(sidebar.querySelector('details')?.open).toBe(false);
+    expect(within(sidebar).getByText('Mostrar filtros')).toBeTruthy();
+    expect(
+      within(sidebar)
+        .getByRole('link', { name: 'Pruebas' })
+        .getAttribute('href'),
+    ).toBe('/es/blog/?tag=testing');
+    expect(
+      within(sidebar).getByRole('link', { name: '2019' }).getAttribute('href'),
+    ).toBe('/es/blog/?year=2019');
+    expect(
+      within(sidebar)
+        .getByRole('link', { name: 'Feed RSS' })
+        .getAttribute('href'),
+    ).toBe('/es/blog/rss.xml');
   });
 
   it('shows no related posts or technologies where there are none', async () => {

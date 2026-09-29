@@ -36,6 +36,7 @@ export function postCardOf(
     href: postPath(locale, preview.id),
     title: inLocale(preview.title, locale),
     summary: inLocale(preview.summary, locale),
+    excerpt: preview.excerpt[locale],
     publishedAt: preview.publishedAt,
     date: formatDay(new Date(preview.publishedAt), locale),
     readingTime: t('blogPage.readingTime', {

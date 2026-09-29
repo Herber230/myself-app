@@ -1,15 +1,7 @@
-import {
-  Card,
-  Center,
-  Lead,
-  linkClassName,
-  Stack,
-  Text,
-} from '@entifix/react-controls/primitives';
-import { localize, type LocalizedText } from '@myself-app/domain';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { filterOptionsOf } from '../../../components/blog/filter-options';
 import { postCardOf } from '../../../components/blog/post-cards';
 import { PostExplorer } from '../../../components/blog/post-explorer';
 import { SiteNav } from '../../../components/site-nav';
@@ -36,17 +28,6 @@ export async function generateMetadata({
   };
 }
 
-/** Names, in the reader's language, sorted as they would look them up. */
-function namesOf(
-  records: readonly { id: string; text: LocalizedText }[],
-  locale: 'en' | 'es',
-) {
-  const unique = new Map(records.map(each => [each.id, each.text]));
-  return [...unique]
-    .map(([id, text]) => ({ id, name: localize(text, locale) }))
-    .sort((a, b) => a.name.localeCompare(b.name, locale));
-}
-
 /**
  * The blog's home (ADR 0017): every post, newest first, and a filter by tag,
  * technology, year and title that runs in the browser (ADR 0016).
@@ -58,63 +39,35 @@ export default async function BlogPage({
   if (!isSiteLocale(locale)) notFound();
   const t = siteT(locale);
   const previews = await loadPostPreviews(SITE_CONTENT);
-  const years = [
-    ...new Set(previews.map(each => each.publishedAt.slice(0, 4))),
-  ];
+  const { tags, technologies, years } = filterOptionsOf(previews, locale);
   return (
     <>
       <SiteNav locale={locale} path={PATH} />
-      <Center as="main" gutters className="py-2xl">
-        <Card>
-          <Stack gap="l">
-            <Stack gap="s">
-              <Text as="h1" step={3} weight="semibold">
-                {t('blog')}
-              </Text>
-              <Lead muted>{t('blogLead')}</Lead>
-              <a
-                href={`/${locale}/blog/rss.xml`}
-                className={`${linkClassName} self-start`}
-              >
-                {t('blogPage.feed')}
-              </a>
-            </Stack>
-            <PostExplorer
-              posts={previews.map(preview => postCardOf(preview, locale, t))}
-              locale={locale}
-              tags={namesOf(
-                previews.flatMap(each =>
-                  each.tags.map(tag => ({ id: tag.id, text: tag.label })),
-                ),
-                locale,
-              )}
-              technologies={namesOf(
-                previews.flatMap(each =>
-                  each.technologies.map(technology => ({
-                    id: technology.id,
-                    text: technology.name,
-                  })),
-                ),
-                locale,
-              )}
-              years={years}
-              copy={{
-                filters: t('blogPage.filter.label'),
-                tag: t('blogPage.filter.tag'),
-                technology: t('blogPage.filter.technology'),
-                year: t('blogPage.filter.year'),
-                search: t('blogPage.filter.search'),
-                clear: t('blogPage.filter.clear'),
-                showing: t('blogPage.filter.showing', {
-                  shown: '{{shown}}',
-                  total: '{{total}}',
-                }),
-                empty: t('blogPage.empty'),
-              }}
-            />
-          </Stack>
-        </Card>
-      </Center>
+      <PostExplorer
+        posts={previews.map(preview => postCardOf(preview, locale, t))}
+        locale={locale}
+        tags={tags}
+        technologies={technologies}
+        years={years}
+        copy={{
+          filters: t('blogPage.filter.label'),
+          tag: t('blogPage.filter.tag'),
+          technology: t('blogPage.filter.technology'),
+          year: t('blogPage.filter.year'),
+          search: t('blogPage.filter.search'),
+          clear: t('blogPage.filter.clear'),
+          showing: t('blogPage.filter.showing', {
+            shown: '{{shown}}',
+            total: '{{total}}',
+          }),
+          empty: t('blogPage.empty'),
+          showSidebar: t('blogPage.sidebar.show'),
+          hideSidebar: t('blogPage.sidebar.hide'),
+        }}
+        title={t('blog')}
+        lead={t('blogLead')}
+        feed={{ href: `/${locale}/blog/rss.xml`, label: t('blogPage.feed') }}
+      />
     </>
   );
 }
