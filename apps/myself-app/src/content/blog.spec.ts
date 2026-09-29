@@ -23,6 +23,13 @@ describe('the blog’s posts', () => {
       'entifix-in-the-browser',
       'a-static-site-on-s3',
       'coverage-at-one-hundred',
+      'then-i-saw-you-dance',
+      'books',
+      'rxjs-exceptions-react-hooks',
+      'what-do-you-think',
+      'the-first-entifix-application',
+      'the-embodiment-of-irony',
+      'an-analogy-for-life-plans',
     ]);
     expect(ids(await loadPosts(SITE_CONTENT, { includeDrafts: true }))[0]).toBe(
       'effect-four',

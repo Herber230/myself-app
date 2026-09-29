@@ -1,26 +1,86 @@
 [
   {
     "id": "entifix",
-    "label": { "en": "entifix", "es": "entifix" }
+    "label": {
+      "en": "entifix",
+      "es": "entifix"
+    }
   },
   {
     "id": "architecture",
-    "label": { "en": "Architecture", "es": "Arquitectura" }
+    "label": {
+      "en": "Architecture",
+      "es": "Arquitectura"
+    }
   },
   {
     "id": "performance",
-    "label": { "en": "Performance", "es": "Rendimiento" }
+    "label": {
+      "en": "Performance",
+      "es": "Rendimiento"
+    }
   },
   {
     "id": "infrastructure",
-    "label": { "en": "Infrastructure", "es": "Infraestructura" }
+    "label": {
+      "en": "Infrastructure",
+      "es": "Infraestructura"
+    }
   },
   {
     "id": "static-sites",
-    "label": { "en": "Static sites", "es": "Sitios estáticos" }
+    "label": {
+      "en": "Static sites",
+      "es": "Sitios estáticos"
+    }
   },
   {
     "id": "testing",
-    "label": { "en": "Testing", "es": "Pruebas" }
+    "label": {
+      "en": "Testing",
+      "es": "Pruebas"
+    }
+  },
+  {
+    "id": "essays",
+    "label": {
+      "en": "Essays",
+      "es": "Ensayos"
+    }
+  },
+  {
+    "id": "fiction",
+    "label": {
+      "en": "Fiction",
+      "es": "Ficción"
+    }
+  },
+  {
+    "id": "critical-thinking",
+    "label": {
+      "en": "Critical thinking",
+      "es": "Pensamiento crítico"
+    }
+  },
+  {
+    "id": "artificial-intelligence",
+    "label": {
+      "en": "Artificial intelligence",
+      "es": "Inteligencia artificial"
+    }
+  },
+  {
+    "id": "reactive-programming",
+    "label": {
+      "en": "Reactive programming",
+      "es": "Programación reactiva"
+    }
+  },
+  {
+    "id": "society",
+    "label": {
+      "en": "Society",
+      "es": "Sociedad"
+    }
   }
 ]

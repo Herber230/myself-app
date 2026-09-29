@@ -59,5 +59,110 @@
     "draft": true,
     "tags": ["entifix", "performance"],
     "technologies": ["effect"]
+  },
+  {
+    "id": "then-i-saw-you-dance",
+    "title": {
+      "en": "And then I saw you dance…",
+      "es": "Y entonces te vi bailar…"
+    },
+    "summary": {
+      "en": "A short story told from inside a phone: an assistant that profiles a dancer, learns to read her emotions, and one day starts to feel them.",
+      "es": "Un cuento contado desde dentro de un teléfono: un asistente que perfila a una bailarina, aprende a leer sus emociones y un día empieza a sentirlas."
+    },
+    "publishedAt": "2024-09-12",
+    "draft": false,
+    "tags": ["fiction", "artificial-intelligence"],
+    "technologies": []
+  },
+  {
+    "id": "books",
+    "title": {
+      "en": "Books",
+      "es": "Libros"
+    },
+    "summary": {
+      "en": "On the questions we rarely ask ourselves, the decisions that make us who we are, and the books that can change both.",
+      "es": "Sobre las preguntas que rara vez nos hacemos, las decisiones que nos hacen quienes somos y los libros que pueden cambiar ambas."
+    },
+    "publishedAt": "2024-04-24",
+    "draft": false,
+    "tags": ["essays", "critical-thinking"],
+    "technologies": []
+  },
+  {
+    "id": "rxjs-exceptions-react-hooks",
+    "title": {
+      "en": "Handling exceptions with Rxjs and React hooks",
+      "es": "Manejar excepciones con Rxjs y hooks de React"
+    },
+    "summary": {
+      "en": "Exposing exceptions from custom hooks as Rxjs subjects, so every layer can subscribe to them and merge them into one flow.",
+      "es": "Exponer las excepciones de los hooks personalizados como subjects de Rxjs, para que cada capa pueda suscribirse y unirlas en un solo flujo."
+    },
+    "publishedAt": "2021-06-19",
+    "draft": false,
+    "tags": ["reactive-programming", "architecture"],
+    "technologies": ["react", "typescript"]
+  },
+  {
+    "id": "what-do-you-think",
+    "title": {
+      "en": "And what do you think?",
+      "es": "¿Y vos qué opinás?"
+    },
+    "summary": {
+      "en": "From Hubble’s law to Twitter threads: a call to argue with humility, objectivity and empathy, and to value learning over winning.",
+      "es": "De la ley de Hubble a los hilos de Twitter: un llamado a discutir con humildad, objetividad y empatía, y a valorar más aprender que ganar."
+    },
+    "publishedAt": "2021-02-14",
+    "draft": false,
+    "tags": ["essays", "critical-thinking", "society"],
+    "technologies": []
+  },
+  {
+    "id": "the-first-entifix-application",
+    "title": {
+      "en": "The first Entifix application",
+      "es": "La primera aplicación con Entifix"
+    },
+    "summary": {
+      "en": "An introduction to entifix-ts-backend: declare entities in TypeScript and get a REST API, filters and relations over MongoDB, run with docker-compose.",
+      "es": "Una introducción a entifix-ts-backend: declarar entidades en TypeScript y obtener una API REST, filtros y relaciones sobre MongoDB, corriendo con docker-compose."
+    },
+    "publishedAt": "2020-08-01",
+    "draft": false,
+    "tags": ["entifix", "architecture"],
+    "technologies": ["typescript", "node-js"]
+  },
+  {
+    "id": "the-embodiment-of-irony",
+    "title": {
+      "en": "The embodiment of irony",
+      "es": "La encarnación de la ironía"
+    },
+    "summary": {
+      "en": "Ten thousand years of reshaping the world, a century of breaking our natural limits, and a molecule that won’t let us win.",
+      "es": "Diez mil años moldeando el mundo, un siglo rompiendo nuestros límites naturales y una molécula que no nos deja ganar."
+    },
+    "publishedAt": "2020-04-06",
+    "draft": false,
+    "tags": ["essays", "society"],
+    "technologies": []
+  },
+  {
+    "id": "an-analogy-for-life-plans",
+    "title": {
+      "en": "An analogy for life plans",
+      "es": "Una analogía de los planes de vida"
+    },
+    "summary": {
+      "en": "If life were deterministic, plans would be everything. A short reflection on treating them as guidelines rather than exact points.",
+      "es": "Si la vida fuera determinista, los planes lo serían todo. Una breve reflexión sobre tomarlos como directrices y no como puntos exactos."
+    },
+    "publishedAt": "2019-10-19",
+    "draft": false,
+    "tags": ["essays"],
+    "technologies": []
   }
 ]

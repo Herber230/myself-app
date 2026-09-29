@@ -14,7 +14,7 @@ describe('a post’s social image', () => {
       locale: 'es',
       slug: 'a-static-site-on-s3',
     });
-    expect(params).toHaveLength(6);
+    expect(params).toHaveLength(20);
   });
 
   it('draws the post’s title', async () => {

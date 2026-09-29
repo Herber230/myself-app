@@ -21,6 +21,13 @@ describe('the blog’s feed', () => {
       'https://herber.example/es/blog/entifix-in-the-browser/',
       'https://herber.example/es/blog/a-static-site-on-s3/',
       'https://herber.example/es/blog/coverage-at-one-hundred/',
+      'https://herber.example/es/blog/then-i-saw-you-dance/',
+      'https://herber.example/es/blog/books/',
+      'https://herber.example/es/blog/rxjs-exceptions-react-hooks/',
+      'https://herber.example/es/blog/what-do-you-think/',
+      'https://herber.example/es/blog/the-first-entifix-application/',
+      'https://herber.example/es/blog/the-embodiment-of-irony/',
+      'https://herber.example/es/blog/an-analogy-for-life-plans/',
     ]);
     expect(feed).toContain('<pubDate>Fri, 12 Jun 2026 00:00:00 GMT</pubDate>');
   });
