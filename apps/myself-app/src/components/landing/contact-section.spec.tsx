@@ -3,7 +3,7 @@ import { loadContactChannels } from '@myself-app/domain/use-cases';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../composition';
 import { ContactSection } from './contact-section';
 
 const channel = (fields: Partial<ContactChannel>) => fields as ContactChannel;

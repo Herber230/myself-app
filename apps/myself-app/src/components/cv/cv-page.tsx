@@ -14,7 +14,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { SITE_CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../composition';
 import { siteT } from '../../i18n/server';
 import {
   isSiteLocale,

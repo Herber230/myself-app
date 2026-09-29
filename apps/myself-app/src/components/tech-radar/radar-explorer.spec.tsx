@@ -17,7 +17,7 @@ import {
   vi,
 } from 'vitest';
 
-import { SITE_CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../composition';
 import { radarEntriesOf } from './entries';
 import { layoutRadar } from './layout';
 import { RadarExplorer } from './radar-explorer';

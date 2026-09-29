@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { renderFeed } from '../../../../blog/feed';
-import { SITE_CONTENT } from '../../../../content/repositories';
+import { SITE_CONTENT } from '../../../../composition';
 import { isSiteLocale, SITE_LOCALES } from '../../../../site-locales';
 import { siteUrl } from '../../../../site-url';
 

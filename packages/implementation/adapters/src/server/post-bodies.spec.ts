@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { readPostBodyFile } from './post-bodies';
+import { readPostBodyFile } from './post-bodies.js';
 
 describe('readPostBodyFile', () => {
   it('reads a post’s Markdown from the content package', () => {

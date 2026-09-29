@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from '../../../content/repositories';
+import { SITE_CONTENT } from '../../../composition';
 import { dynamic, dynamicParams, generateStaticParams, GET } from './route';
 
 describe('the data route', () => {

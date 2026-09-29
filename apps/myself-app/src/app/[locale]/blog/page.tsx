@@ -6,8 +6,8 @@ import { filterOptionsOf } from '../../../components/blog/filter-options';
 import { postCardOf } from '../../../components/blog/post-cards';
 import { PostExplorer } from '../../../components/blog/post-explorer';
 import { SiteNav } from '../../../components/site-nav';
+import { SITE_CONTENT } from '../../../composition';
 import { BLOG_PREVIEWS } from '../../../content/blog-reads';
-import { SITE_CONTENT } from '../../../content/repositories';
 import { siteT } from '../../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../../site-locales';
 

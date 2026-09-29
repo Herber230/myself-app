@@ -10,7 +10,7 @@ import { EntifixSection } from '../../components/landing/entifix-section';
 import { Hero } from '../../components/landing/hero';
 import { ProjectsSection } from '../../components/landing/projects-section';
 import { SiteNav } from '../../components/site-nav';
-import { SITE_CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../composition';
 import { siteT } from '../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../site-locales';
 

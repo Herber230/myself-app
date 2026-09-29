@@ -4,13 +4,13 @@
 import { ContentValidationError } from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
-import { PENDING_CONTENT } from './pending-content';
+import { PENDING_CONTENT } from './pending-content.js';
 import {
   assertNoUnlistedPlaceholders,
   placeholderPaths,
   placeholderProblems,
-} from './placeholders';
-import { SITE_RECORDS as CONTENT } from './repositories';
+} from './placeholders.js';
+import { SITE_RECORDS as CONTENT } from './shipped-content.fixture.js';
 
 const messages = (
   content: Record<string, readonly unknown[]>,

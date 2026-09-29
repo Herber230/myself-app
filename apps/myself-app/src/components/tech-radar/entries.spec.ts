@@ -8,11 +8,11 @@ import {
   loadRadarPlacements,
 } from '@myself-app/domain/use-cases';
 import type { StaticContent } from '@myself-app/entifix-incubator-static-adapter';
+import { buildSiteContent } from '@myself-app/implementation-adapters/server';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_RECORDS as CONTENT } from '../../content/repositories';
-import { SITE_CONTENT } from '../../content/repositories';
-import { buildSiteContent } from '../../content/site-content';
+import { SITE_RECORDS as CONTENT } from '../../composition';
+import { SITE_CONTENT } from '../../composition';
 import { radarEntriesOf } from './entries';
 import { layoutRadar } from './layout';
 

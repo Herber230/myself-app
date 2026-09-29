@@ -13,8 +13,8 @@
  */
 import { Stack, Text } from '@entifix/react-controls/primitives';
 import { Technology } from '@myself-app/domain/entities/technology';
-import { staticJsonSource } from '@myself-app/entifix-incubator-browser';
 import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
+import { browserSources } from '@myself-app/implementation-adapters/browser';
 import { type ReactNode, useMemo, useState } from 'react';
 
 import type { SiteLocale } from '../../site-locales';
@@ -29,7 +29,7 @@ import { RadarLegend } from './radar-legend';
 import type { RadarLayout } from './types';
 
 /** Every technology, as the export writes them (ADR 0003, 0016). */
-const TECHNOLOGIES = staticJsonSource(Technology, '/data/technology.json');
+const TECHNOLOGIES = browserSources.technologies;
 
 const NONE_DIMMED: ReadonlySet<string> = new Set();
 

@@ -2,8 +2,8 @@ import { localize, type LocalizedText } from '@myself-app/domain';
 import { loadPost, loadPostIds } from '@myself-app/domain/use-cases';
 import { notFound } from 'next/navigation';
 
+import { SITE_CONTENT } from '../../../../composition';
 import { BLOG_READS } from '../../../../content/blog-reads';
-import { SITE_CONTENT } from '../../../../content/repositories';
 import { en } from '../../../../i18n/catalogs/en';
 import { isSiteLocale, SITE_LOCALES } from '../../../../site-locales';
 import { renderSocialImage, SOCIAL_IMAGE_SIZE } from '../../../../social-image';

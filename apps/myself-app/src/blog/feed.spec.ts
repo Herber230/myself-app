@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from '../content/repositories';
+import { SITE_CONTENT } from '../composition';
 import { escapeXml, renderFeed } from './feed';
 
 const BASE = new URL('https://herber.example');

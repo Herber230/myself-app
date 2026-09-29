@@ -20,8 +20,8 @@ import { ExternalLink } from '../../../../components/landing/external-link';
 import { projectAnchor } from '../../../../components/landing/projects-section';
 import { SiteNav } from '../../../../components/site-nav';
 import { radarEntryPath } from '../../../../components/tech-radar/radar-paths';
+import { SITE_CONTENT } from '../../../../composition';
 import { BLOG_READS } from '../../../../content/blog-reads';
-import { SITE_CONTENT } from '../../../../content/repositories';
 import { siteT } from '../../../../i18n/server';
 import {
   isSiteLocale,

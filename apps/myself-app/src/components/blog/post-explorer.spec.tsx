@@ -18,8 +18,8 @@ import {
   vi,
 } from 'vitest';
 
+import { SITE_CONTENT } from '../../composition';
 import { BLOG_PREVIEWS } from '../../content/blog-reads';
-import { SITE_CONTENT } from '../../content/repositories';
 import { siteT } from '../../i18n/server';
 import type { PostCardData } from './post-card';
 import { postCardOf } from './post-cards';

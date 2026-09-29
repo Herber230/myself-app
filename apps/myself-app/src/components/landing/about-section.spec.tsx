@@ -3,7 +3,7 @@ import { loadProfile } from '@myself-app/domain/use-cases';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../composition';
 import { AboutSection } from './about-section';
 
 describe('the about section', () => {

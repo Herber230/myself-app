@@ -6,9 +6,9 @@ import {
 } from '@myself-app/domain/use-cases';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_RECORDS as CONTENT } from './repositories';
-import { SITE_CONTENT } from './repositories';
-import { buildSiteContent } from './site-content';
+import { SITE_RECORDS as CONTENT } from '../shipped-content.fixture.js';
+import { SITE_CONTENT } from '../shipped-content.fixture.js';
+import { buildSiteContent } from '../site-content.js';
 
 const ids = (records: readonly { id: unknown }[]) =>
   records.map(each => each.id);

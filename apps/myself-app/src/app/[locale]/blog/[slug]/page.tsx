@@ -26,8 +26,8 @@ import { formatDay, postCardOf } from '../../../../components/blog/post-cards';
 import { inLocale } from '../../../../components/cv/cv-format';
 import { SiteNav } from '../../../../components/site-nav';
 import { technologyPath } from '../../../../components/tech-radar/radar-paths';
+import { SITE_CONTENT } from '../../../../composition';
 import { BLOG_PREVIEWS, BLOG_READS } from '../../../../content/blog-reads';
-import { SITE_CONTENT } from '../../../../content/repositories';
 import { loadSitePaths } from '../../../../content/site-paths';
 import { siteT } from '../../../../i18n/server';
 import {

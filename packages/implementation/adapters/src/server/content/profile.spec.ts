@@ -1,7 +1,7 @@
 import { loadProfile } from '@myself-app/domain/use-cases';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from './repositories';
+import { SITE_CONTENT } from '../shipped-content.fixture.js';
 
 describe('the profile', () => {
   it('is the one shipped record, with its name and title', async () => {

@@ -1,0 +1,57 @@
+{
+  "name": "@myself-app/implementation-adapters",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The site's content wired to where it is read from: the static adapter over the content package on the server, the export's data files in the browser.",
+  "exports": {
+    "./package.json": "./package.json",
+    "./server": {
+      "@myself-app/source": "./src/server.ts",
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js",
+      "default": "./dist/server.js"
+    },
+    "./browser": {
+      "@myself-app/source": "./src/browser.ts",
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js",
+      "default": "./dist/browser.js"
+    }
+  },
+  "sideEffects": false,
+  "nx": {
+    "tags": [
+      "layer:implementation",
+      "implementation:adapters"
+    ],
+    "targets": {
+      "build": {
+        "executor": "@nx/js:swc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "packages/implementation/adapters/dist",
+          "main": "packages/implementation/adapters/src/server.ts",
+          "tsConfig": "packages/implementation/adapters/tsconfig.lib.json",
+          "skipTypeCheck": true,
+          "stripLeadingPaths": true
+        }
+      },
+      "test": {
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "@entifix/core": "catalog:",
+    "@myself-app/content": "workspace:*",
+    "@myself-app/domain": "workspace:*",
+    "@myself-app/entifix-incubator-browser": "workspace:*",
+    "@myself-app/entifix-incubator-static-adapter": "workspace:*",
+    "@swc/helpers": "0.5.23"
+  }
+}

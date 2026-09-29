@@ -3,6 +3,7 @@
  */
 import { join } from 'node:path';
 
+import { readPostBodyFile } from '@myself-app/implementation-adapters/server';
 import type { ComponentPropsWithoutRef } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
@@ -167,7 +168,6 @@ describe('what the body may hold', () => {
   });
 
   it('renders a post as it ships, in both locales', async () => {
-    const { readPostBodyFile } = await import('../../content/post-bodies');
     for (const locale of ['en', 'es'] as const) {
       const body = readPostBodyFile('entifix-in-the-browser', locale) as string;
       const sitePaths = new Set([...CONTEXT.sitePaths]);

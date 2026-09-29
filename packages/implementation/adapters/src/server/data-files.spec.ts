@@ -7,8 +7,8 @@ import { Technology } from '@myself-app/domain';
 import { dataFileOf } from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from './repositories';
-import { buildSiteContent, CONTENT_SOURCES } from './site-content';
+import { SITE_CONTENT } from './shipped-content.fixture.js';
+import { buildSiteContent, CONTENT_SOURCES } from './site-content.js';
 
 describe('the data files', () => {
   it('are one per entity, named by its metadata key', () => {

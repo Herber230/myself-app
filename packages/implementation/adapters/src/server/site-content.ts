@@ -46,7 +46,7 @@ import {
   type StaticContent,
 } from '@myself-app/entifix-incubator-static-adapter';
 
-import { readPostBodyFile } from './post-bodies';
+import { readPostBodyFile } from './post-bodies.js';
 
 export const CONTENT_SOURCES: readonly ContentSource[] = [
   // One profile: the site is about one person.

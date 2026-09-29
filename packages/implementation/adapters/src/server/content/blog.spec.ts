@@ -1,24 +1,22 @@
-import { Post } from '@myself-app/domain';
 import {
   loadPost,
   loadPostPreviews,
   loadPosts,
   loadPostsForTechnology,
   loadTags,
-  readingMinutes,
-  relatedPosts,
 } from '@myself-app/domain/use-cases';
 import { describe, expect, it } from 'vitest';
 
-import { BLOG_PREVIEWS, SHOW_DRAFTS } from './blog-reads';
-import { SITE_CONTENT } from './repositories';
+import { SITE_CONTENT } from '../shipped-content.fixture.js';
+
+/** The excerpt is the UI's to read; here the body stands in for it. */
+const PREVIEWS = { excerptOf: (markdown: string) => markdown };
 
 const ids = (posts: readonly { id: unknown }[]) =>
   posts.map(post => String(post.id));
 
 describe('the blog’s posts', () => {
   it('are newest first, and leave drafts out unless asked', async () => {
-    expect(SHOW_DRAFTS).toBe(false);
     expect(ids(await loadPosts(SITE_CONTENT))).toEqual([
       'entifix-in-the-browser',
       'a-static-site-on-s3',
@@ -66,7 +64,7 @@ describe('the blog’s posts', () => {
 
 describe('a post’s preview', () => {
   it('names its tags and technologies, and dates it', async () => {
-    const [preview] = await loadPostPreviews(SITE_CONTENT, BLOG_PREVIEWS);
+    const [preview] = await loadPostPreviews(SITE_CONTENT, PREVIEWS);
     expect(preview?.id).toBe('entifix-in-the-browser');
     expect(preview?.publishedAt).toBe('2026-09-27T00:00:00.000Z');
     expect(preview?.updatedAt).toBeUndefined();
@@ -79,50 +77,9 @@ describe('a post’s preview', () => {
   });
 
   it('carries the date it was last updated, when it was', async () => {
-    const previews = await loadPostPreviews(SITE_CONTENT, BLOG_PREVIEWS);
+    const previews = await loadPostPreviews(SITE_CONTENT, PREVIEWS);
     expect(
       previews.find(each => each.id === 'a-static-site-on-s3')?.updatedAt,
     ).toBe('2026-09-20T00:00:00.000Z');
-  });
-});
-
-describe('reading time', () => {
-  it('counts words at two hundred a minute, and at least one minute', () => {
-    expect(readingMinutes('')).toBe(1);
-    expect(readingMinutes('a few words, and ::: markup')).toBe(1);
-    expect(readingMinutes('word '.repeat(401))).toBe(3);
-  });
-});
-
-describe('related posts', () => {
-  const post = (
-    id: string,
-    tags: string[],
-    technologies: string[],
-    publishedAt: string,
-  ) => {
-    const record = new Post();
-    record.id = id;
-    record.tags.setIds(tags);
-    record.technologies.setIds(technologies);
-    record.publishedAt = new Date(publishedAt);
-    return record;
-  };
-
-  it('rank by shared tags, then technologies, then date, and drop the rest', () => {
-    const subject = post('subject', ['a', 'b'], ['x'], '2026-01-01');
-    const posts = [
-      subject,
-      post('one-tag-old', ['a'], [], '2024-01-01'),
-      post('one-tag-new', ['b'], [], '2025-01-01'),
-      post('technology', [], ['x'], '2026-02-01'),
-      post('two-tags', ['a', 'b'], [], '2023-01-01'),
-      post('nothing', ['c'], ['y'], '2026-03-01'),
-    ];
-    expect(ids(relatedPosts(subject, posts))).toEqual([
-      'two-tags',
-      'one-tag-new',
-      'one-tag-old',
-    ]);
   });
 });

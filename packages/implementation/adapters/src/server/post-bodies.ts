@@ -9,16 +9,29 @@
  * and a placeholder in a body is found like any other.
  */
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
 
 import type { ReadSidecar } from '@myself-app/entifix-incubator-static-adapter';
 
-/** Where the bodies are, from the app's folder, which build and test run in. */
+/** The folder a package lives in, resolved from another's. */
+function packageFolder(name: string, from: string): string {
+  return dirname(
+    createRequire(join(from, 'package.json')).resolve(`${name}/package.json`),
+  );
+}
+
+/**
+ * Where the bodies are. Build and test run in a package's folder — the app's,
+ * or this one's — and both resolve this package by name (the app depends on
+ * it; a package may name itself). From here, the content package is this
+ * package's own dependency, so the app need not depend on it (#75).
+ */
 const POSTS_DIRECTORY = join(
-  process.cwd(),
-  'node_modules',
-  '@myself-app',
-  'content',
+  packageFolder(
+    '@myself-app/content',
+    packageFolder('@myself-app/implementation-adapters', process.cwd()),
+  ),
   'src',
   'posts',
 );

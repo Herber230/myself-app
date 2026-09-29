@@ -1,7 +1,7 @@
 import { loadTechnologyDetail } from '@myself-app/domain/use-cases';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from './repositories';
+import { SITE_CONTENT } from '../shipped-content.fixture.js';
 
 const detailOf = (id: string) => loadTechnologyDetail(SITE_CONTENT, id);
 

@@ -21,7 +21,7 @@ import { radarEntriesOf } from '../../../components/tech-radar/entries';
 import { layoutRadar } from '../../../components/tech-radar/layout';
 import { RadarExplorer } from '../../../components/tech-radar/radar-explorer';
 import { RingKey } from '../../../components/tech-radar/ring-key';
-import { SITE_CONTENT } from '../../../content/repositories';
+import { SITE_CONTENT } from '../../../composition';
 import { siteT } from '../../../i18n/server';
 import { isSiteLocale, localeAlternates } from '../../../site-locales';
 

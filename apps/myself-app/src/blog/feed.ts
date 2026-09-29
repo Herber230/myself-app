@@ -4,10 +4,10 @@
  */
 import type { LocalizedText } from '@myself-app/domain';
 import { loadPosts } from '@myself-app/domain/use-cases';
+import type { StaticContent as SiteContent } from '@myself-app/entifix-incubator-static-adapter';
 
 import { postPath } from '../components/blog/post-cards';
 import { inLocale } from '../components/cv/cv-format';
-import type { SiteContent } from '../content/site-content';
 import { siteT } from '../i18n/server';
 import { localePath, type SiteLocale } from '../site-locales';
 

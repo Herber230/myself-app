@@ -3,12 +3,12 @@ import {
   type CvSheet as CvSheetContent,
   loadCvSheet,
 } from '@myself-app/domain/use-cases';
+import { buildSiteContent } from '@myself-app/implementation-adapters/server';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_RECORDS as CONTENT } from '../../content/repositories';
-import { SITE_CONTENT } from '../../content/repositories';
-import { buildSiteContent } from '../../content/site-content';
+import { SITE_RECORDS as CONTENT } from '../../composition';
+import { SITE_CONTENT } from '../../composition';
 import { CvSheet } from './cv-sheet';
 
 const sheetOf = async (variant: string) =>

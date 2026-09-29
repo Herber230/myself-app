@@ -2,7 +2,7 @@ import { cvVariantParams } from '@myself-app/domain/use-cases';
 import type { Metadata } from 'next';
 
 import { cvMetadata, CvPageView } from '../../../../components/cv/cv-page';
-import { SITE_CONTENT } from '../../../../content/repositories';
+import { SITE_CONTENT } from '../../../../composition';
 
 /** Every variant but the default, which lives at `/cv/` (ADR 0012). */
 export const dynamicParams = false;

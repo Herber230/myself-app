@@ -34,10 +34,29 @@ const layerConstraints = [
   {
     sourceTag: 'layer:app',
     onlyDependOnLibsWithTags: [
+      'layer:implementation',
+      'layer:domain',
+      'layer:incubator',
+    ],
+  },
+  {
+    // A domain wired to a delivery mechanism (#75): the UI, and the adapters
+    // that say where content is read from. Neither imports the other; the app
+    // is where they meet.
+    sourceTag: 'layer:implementation',
+    onlyDependOnLibsWithTags: [
       'layer:domain',
       'layer:content',
       'layer:incubator',
     ],
+  },
+  {
+    sourceTag: 'implementation:adapters',
+    notDependOnLibsWithTags: ['implementation:ui'],
+  },
+  {
+    sourceTag: 'implementation:ui',
+    notDependOnLibsWithTags: ['implementation:adapters', 'layer:content'],
   },
   {
     sourceTag: 'layer:incubator',

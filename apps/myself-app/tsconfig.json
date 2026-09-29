@@ -46,10 +46,10 @@
       "path": "../../packages/domain"
     },
     {
-      "path": "../../packages/content"
+      "path": "../../packages/entifix-incubator/browser"
     },
     {
-      "path": "../../packages/entifix-incubator/browser"
+      "path": "../../packages/implementation/adapters"
     }
   ]
 }

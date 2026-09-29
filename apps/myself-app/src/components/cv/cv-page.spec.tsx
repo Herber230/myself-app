@@ -2,7 +2,7 @@ import { type CvSheet, loadCvSheet } from '@myself-app/domain/use-cases';
 import { screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../composition';
 import { siteT } from '../../i18n/server';
 import { renderPage } from '../../test/render';
 import { customizerGroups, cvMetadata, CvPageView } from './cv-page';

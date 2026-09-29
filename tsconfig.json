@@ -26,6 +26,9 @@
     },
     {
       "path": "./packages/entifix-incubator/browser"
+    },
+    {
+      "path": "./packages/implementation/adapters"
     }
   ]
 }

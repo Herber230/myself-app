@@ -10,7 +10,7 @@ import {
 } from '@myself-app/entifix-incubator-browser';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../composition';
 import { blogQuery } from './blog-query';
 
 const query = blogQuery({

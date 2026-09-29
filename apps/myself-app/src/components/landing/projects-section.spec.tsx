@@ -6,7 +6,7 @@ import {
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../composition';
 import { ProjectsSection } from './projects-section';
 
 describe('the projects section', () => {

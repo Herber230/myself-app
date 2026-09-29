@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-import { SITE_CONTENT } from '../content/repositories';
+import { SITE_CONTENT } from '../composition';
 import { loadSitePaths } from '../content/site-paths';
 import { siteMapEntries } from '../site-map';
 import { siteUrl } from '../site-url';

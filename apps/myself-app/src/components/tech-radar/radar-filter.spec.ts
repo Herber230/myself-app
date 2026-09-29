@@ -13,7 +13,7 @@ import {
 } from '@myself-app/entifix-incubator-browser';
 import { describe, expect, it } from 'vitest';
 
-import { SITE_CONTENT } from '../../content/repositories';
+import { SITE_CONTENT } from '../../composition';
 import { radarQuery, type RadarVocabulary } from './radar-filter';
 
 const byOrder = {

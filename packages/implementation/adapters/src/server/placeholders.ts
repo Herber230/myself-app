@@ -12,7 +12,7 @@ import {
   type ValidationProblem,
 } from '@myself-app/entifix-incubator-static-adapter';
 
-import { PENDING_CONTENT } from './pending-content';
+import { PENDING_CONTENT } from './pending-content.js';
 
 /**
  * What a value still to be written carries: `TODO(#26)` in text, and

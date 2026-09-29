@@ -11,8 +11,8 @@
  */
 import { Lead, Stack, Text } from '@entifix/react-controls/primitives';
 import { Post } from '@myself-app/domain/entities/post';
-import { staticJsonSource } from '@myself-app/entifix-incubator-browser';
 import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
+import { browserSources } from '@myself-app/implementation-adapters/browser';
 import { useMemo } from 'react';
 
 import { localePath } from '../../locale-path';
@@ -25,7 +25,7 @@ import type { PostCardData } from './post-card';
 import { PostTimeline } from './post-timeline';
 
 /** Every published post, as the export writes them (ADR 0017). */
-const POSTS = staticJsonSource(Post, '/data/post.json');
+const POSTS = browserSources.posts;
 
 /** Every string the controls show, translated at build. */
 export interface PostExplorerCopy {

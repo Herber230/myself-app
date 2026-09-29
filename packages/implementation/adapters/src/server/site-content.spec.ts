@@ -21,7 +21,7 @@ import {
 } from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
-import { buildSiteContent, CONTENT_SOURCES } from './site-content';
+import { buildSiteContent, CONTENT_SOURCES } from './site-content.js';
 
 type Content = Record<string, readonly unknown[]>;
 
