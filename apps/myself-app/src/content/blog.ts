@@ -15,6 +15,7 @@ import {
 } from '@myself-app/domain';
 import { targetsOf, type UnpagedRequest } from '@myself-app/static-adapter';
 
+import { excerptOf } from '../blog/markdown/excerpt';
 import type { SiteContent } from './site-content';
 
 /** Whether drafts are read: only while `next dev` serves the site. */
@@ -24,7 +25,10 @@ export interface BlogReadOptions {
   readonly includeDrafts?: boolean;
 }
 
-/** A post as its preview shows it: no body, links resolved to names. */
+/**
+ * A post as its preview shows it: no body but its opening, links resolved to
+ * names.
+ */
 export interface PostPreview {
   readonly id: string;
   readonly title: LocalizedText;
@@ -35,6 +39,8 @@ export interface PostPreview {
   readonly draft: boolean;
   /** Minutes to read, per locale, from the body's words. */
   readonly readingMinutes: Readonly<Record<SiteLocale, number>>;
+  /** The prose the body opens with, per locale, as plain text. */
+  readonly excerpt: Readonly<Record<SiteLocale, string>>;
   readonly tags: readonly {
     readonly id: string;
     readonly label: LocalizedText;
@@ -122,6 +128,12 @@ export async function previewsOf(
         readingMinutes((post.body as LocalizedText)[locale]),
       ]),
     ) as Record<SiteLocale, number>,
+    excerpt: Object.fromEntries(
+      SITE_LOCALES.map(locale => [
+        locale,
+        excerptOf((post.body as LocalizedText)[locale]),
+      ]),
+    ) as Record<SiteLocale, string>,
     tags: targetsOf(post.tags).map(tag => ({
       id: String(tag.id),
       label: tag.label as LocalizedText,

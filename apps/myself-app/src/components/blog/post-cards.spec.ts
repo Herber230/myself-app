@@ -11,6 +11,7 @@ const PREVIEW: PostPreview = {
   publishedAt: '2026-09-27T00:00:00.000Z',
   draft: false,
   readingMinutes: { en: 3, es: 4 },
+  excerpt: { en: 'A bucket.', es: 'Un bucket.' },
   tags: [{ id: 'web', label: { en: 'Web', es: 'Web' } }],
   technologies: [
     { id: 'amazon-s3', name: { en: 'Amazon S3', es: 'Amazon S3' } },
@@ -24,6 +25,7 @@ describe('a post’s card data', () => {
       href: '/es/blog/static-sites/',
       title: 'Sitios estáticos',
       summary: 'En S3.',
+      excerpt: 'Un bucket.',
       publishedAt: '2026-09-27T00:00:00.000Z',
       date: '27 sept 2026',
       readingTime: '4 min de lectura',
