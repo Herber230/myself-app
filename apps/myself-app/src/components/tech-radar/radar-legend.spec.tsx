@@ -1,16 +1,20 @@
+import { loadRadarPlacements } from '@myself-app/domain/use-cases';
+import { layoutRadar } from '@myself-app/entifix-incubator-react-controls';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { FIXTURE_RADAR_ENTRIES } from './fixture-entries';
-import { layoutRadar } from './layout';
+import { SITE_CONTENT } from '../../composition';
+import { radarEntriesOf } from './entries';
 import { RadarLegend } from './radar-legend';
 
 const QUADRANTS = ['Techniques', 'Tools', 'Platforms', 'Languages'];
 const RINGS = ['Adopt', 'Trial', 'Assess', 'Hold'];
 
+const ENTRIES = radarEntriesOf(await loadRadarPlacements(SITE_CONTENT));
+
 describe('the radar legend', () => {
   it('lists every blip by quadrant and ring, in number order', () => {
-    const layout = layoutRadar(FIXTURE_RADAR_ENTRIES);
+    const layout = layoutRadar(ENTRIES);
     render(
       <RadarLegend
         layout={layout}
@@ -31,7 +35,7 @@ describe('the radar legend', () => {
   });
 
   it('anchors each entry by its technology', () => {
-    const layout = layoutRadar(FIXTURE_RADAR_ENTRIES);
+    const layout = layoutRadar(ENTRIES);
     render(
       <RadarLegend
         layout={layout}
@@ -47,7 +51,7 @@ describe('the radar legend', () => {
   });
 
   it("links each entry to its technology's page", () => {
-    const layout = layoutRadar(FIXTURE_RADAR_ENTRIES);
+    const layout = layoutRadar(ENTRIES);
     render(
       <RadarLegend
         layout={layout}
@@ -63,9 +67,7 @@ describe('the radar legend', () => {
   });
 
   it('leaves out a ring with nothing in it', () => {
-    const layout = layoutRadar(
-      FIXTURE_RADAR_ENTRIES.filter(entry => entry.ring === 0),
-    );
+    const layout = layoutRadar(ENTRIES.filter(entry => entry.ring === 0));
     render(
       <RadarLegend
         layout={layout}

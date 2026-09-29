@@ -250,6 +250,9 @@ importers:
       '@myself-app/entifix-incubator-browser':
         specifier: workspace:*
         version: link:../../packages/entifix-incubator/browser
+      '@myself-app/entifix-incubator-react-controls':
+        specifier: workspace:*
+        version: link:../../packages/entifix-incubator/react-controls
       '@myself-app/entifix-incubator-static-adapter':
         specifier: workspace:*
         version: link:../../packages/entifix-incubator/static-adapter
@@ -363,6 +366,22 @@ importers:
       effect:
         specifier: 'catalog:'
         version: 3.22.2
+    devDependencies:
+      react:
+        specifier: 'catalog:'
+        version: 19.3.0
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.3.0(react@19.3.0)
+
+  packages/entifix-incubator/react-controls:
+    dependencies:
+      '@entifix/react-controls':
+        specifier: 'catalog:'
+        version: 0.1.2(@entifix/i18n@0.1.2(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3)))(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)
+      '@swc/helpers':
+        specifier: 0.5.23
+        version: 0.5.23
     devDependencies:
       react:
         specifier: 'catalog:'

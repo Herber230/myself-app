@@ -3,6 +3,7 @@
  * sidebar shows, and what the home's shows until its filter is hydrated. Each
  * chip opens the home filtered on that one value.
  */
+import { FilterRow } from '@myself-app/entifix-incubator-react-controls';
 import Link from 'next/link';
 
 import type { BlogParam } from './blog-query';
@@ -22,17 +23,14 @@ export function FilterLinks({
   groups: readonly FilterLinkGroup[];
 }) {
   return (
-    <div className="filters">
+    <div data-slot="filter-links" className="text-[0.875rem]">
       {groups.map(group => (
-        <div
+        <FilterRow
           key={group.param}
           role="group"
           aria-label={group.label}
-          className="filter-row"
+          label={group.label}
         >
-          <span aria-hidden className="filter-label">
-            {group.label}
-          </span>
           {group.options.map(option => (
             <Link
               key={option.key}
@@ -42,7 +40,7 @@ export function FilterLinks({
               {option.name}
             </Link>
           ))}
-        </div>
+        </FilterRow>
       ))}
     </div>
   );

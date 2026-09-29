@@ -1,6 +1,5 @@
 /**
- * What each ring means on a one-person radar (#39, ADR 0014), innermost first.
- * The names are the chart's, from the catalog; the meanings are content.
+ * What each ring of a radar means, innermost first: its name beside it.
  */
 import { Text } from '@entifix/react-controls/primitives';
 
@@ -13,7 +12,7 @@ export interface RingKeyProps {
 
 export function RingKey({ rings }: RingKeyProps) {
   return (
-    <dl className="radar-ring-key m-0 grid gap-x-m gap-y-2xs">
+    <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-m gap-y-2xs">
       {rings.map(ring => (
         <div key={ring.name} className="contents">
           <Text as="dt" weight="semibold">

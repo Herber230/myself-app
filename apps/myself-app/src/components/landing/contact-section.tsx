@@ -1,10 +1,10 @@
 import { Cluster, linkClassName } from '@entifix/react-controls/primitives';
 import type { ContactChannel } from '@myself-app/domain';
+import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 
 import { siteT } from '../../i18n/server';
 import type { SiteLocale } from '../../site-locales';
 import { ChannelIcon } from '../icons';
-import { ExternalLink } from './external-link';
 import { LandingSection } from './landing-section';
 
 const LINK = `${linkClassName} landing-link`;

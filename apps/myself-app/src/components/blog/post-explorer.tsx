@@ -12,12 +12,16 @@
 import { Lead, Stack, Text } from '@entifix/react-controls/primitives';
 import { Post } from '@myself-app/domain/entities/post';
 import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
+import {
+  FilterFieldset,
+  FilterSummary,
+  ToggleGroup,
+} from '@myself-app/entifix-incubator-react-controls';
 import { browserSources } from '@myself-app/implementation-adapters/browser';
 import { useMemo } from 'react';
 
 import { localePath } from '../../locale-path';
 import type { SiteLocale } from '../../site-locales';
-import { FilterFieldset, FilterSummary, ToggleGroup } from '../filters';
 import { BlogLayout } from './blog-layout';
 import { type BlogParam, blogQuery } from './blog-query';
 import { FilterLinks } from './filter-links';

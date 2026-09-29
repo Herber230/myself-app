@@ -5,8 +5,8 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { SITE_LOCALES } from '../../site-locales';
-import { FIXTURE_RADAR_ENTRIES } from './fixture-entries';
+/** The locales the fixture's labels carry. */
+const LOCALES = ['en', 'es'] as const;
 import {
   BLIP_RADIUS,
   CENTRE_RADIUS,
@@ -15,6 +15,7 @@ import {
   RING_RADII,
 } from './geometry';
 import { layoutRadar } from './layout';
+import { FIXTURE_RADAR_ENTRIES } from './radar-chart.fixture';
 import type { SeededRandom } from './random';
 import type { QuadrantIndex, RadarEntry, RingIndex } from './types';
 
@@ -125,7 +126,7 @@ describe('a blip number', () => {
   });
 
   it('does not depend on the locale the page is read in', () => {
-    const numbersByLocale = SITE_LOCALES.map(locale =>
+    const numbersByLocale = LOCALES.map(locale =>
       layoutRadar(FIXTURE_RADAR_ENTRIES)
         .blips.map(blip => `${blip.number}:${blip.label[locale]}`)
         .map(pair => pair.split(':')[0]),
@@ -199,5 +200,31 @@ describe('an empty or crowded radar', () => {
       quadrant: 9,
     } as unknown as RadarEntry;
     expect(() => layoutRadar([stray])).toThrow(RangeError);
+  });
+});
+
+describe('the numbering locale', () => {
+  it('is the one the site names, and a label without it sorts first', () => {
+    const entry = (id: string, label: Record<string, string>): RadarEntry => ({
+      id,
+      label,
+      quadrant: 0,
+      ring: 0,
+      movement: 'none',
+      areas: [],
+    });
+    const entries = [
+      entry('b', { en: 'Alpha', es: 'Zeta' }),
+      entry('a', { en: 'Zulu', es: 'Alfa' }),
+      entry('c', { en: 'Mike' }),
+    ];
+    const numbers = (sortLocale?: string) =>
+      Object.fromEntries(
+        layoutRadar(entries, sortLocale ? { sortLocale } : {}).blips.map(
+          blip => [blip.id, blip.number],
+        ),
+      );
+    expect(numbers()).toEqual({ b: 1, c: 2, a: 3 });
+    expect(numbers('es')).toEqual({ c: 1, a: 2, b: 3 });
   });
 });

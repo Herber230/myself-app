@@ -7,8 +7,11 @@
  * can only draw from 0 to 3.
  */
 import type { RadarPlacement } from '@myself-app/domain/use-cases';
-
-import type { QuadrantIndex, RadarEntry, RingIndex } from './types';
+import {
+  type QuadrantIndex,
+  type RadarEntry,
+  type RingIndex,
+} from '@myself-app/entifix-incubator-react-controls';
 
 function toIndex(order: number, what: string): number {
   if (!Number.isInteger(order) || order < 0 || order > 3) {

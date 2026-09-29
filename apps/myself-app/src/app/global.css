@@ -13,6 +13,7 @@
  * nothing reports it.
  */
 @source '../../node_modules/@entifix/react-controls/dist';
+@source '../../node_modules/@myself-app/entifix-incubator-react-controls/dist';
 
 html {
   -webkit-text-size-adjust: 100%;
@@ -112,39 +113,13 @@ body {
   /* The smallest phones: the chevrons go and the name steps down, or the
      bar is wider than a 320px screen. */
   @media (max-width: 24rem) {
-    .site-nav-tools .nav-menu-chevron {
-      display: none;
-    }
-
     .site-nav-brand {
       font-size: 1rem;
     }
   }
 
-  /* The narrow screen's menu: a panel as wide as the bar, dropping below it,
-     with rows tall enough to tap. */
-  .nav-menu.nav-menu-sheet {
-    position: static;
-  }
-
-  .nav-menu-sheet > .nav-menu-panel {
-    left: 0;
-    right: 0;
-    top: 100%;
-    max-height: calc(100dvh - 4rem);
-    overflow-y: auto;
-    padding: var(--spacing-2xs) var(--spacing-m) var(--spacing-s);
-    border-width: 0 0 1px;
-    border-radius: 0;
-  }
-
-  .nav-menu-sheet .nav-menu-panel ul {
-    display: flex;
-    flex-direction: column;
-    max-width: 72rem;
-    margin-inline: auto;
-  }
-
+  /* The narrow screen's menu: rows tall enough to tap (its panel is below,
+     with the other overrides of the incubator's controls). */
   .nav-menu-sheet .site-nav-link {
     min-height: 2.75rem;
     gap: var(--spacing-xs);
@@ -157,11 +132,11 @@ body {
   }
 
   .nav-icon-when-open,
-  .nav-menu[open] .nav-icon-when-closed {
+  [data-slot='nav-menu'][open] .nav-icon-when-closed {
     display: none;
   }
 
-  .nav-menu[open] .nav-icon-when-open {
+  [data-slot='nav-menu'][open] .nav-icon-when-open {
     display: block;
   }
 
@@ -203,40 +178,8 @@ body {
     }
   }
 
-  /* ── The bar's dropdowns (`NavMenu`) ──────────────────────────────── */
-
-  .nav-menu {
-    position: relative;
-  }
-
-  .nav-menu-trigger {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-3xs);
-    height: 2rem;
-    padding-inline: var(--spacing-2xs);
-    border: 1px solid transparent;
-    border-radius: var(--radius-md);
-    color: var(--color-content);
-    font-size: 0.875rem;
-    font-weight: var(--font-weight-medium);
-    cursor: pointer;
-    list-style: none;
-    user-select: none;
-    transition:
-      background-color var(--duration-fast, 150ms) ease,
-      border-color var(--duration-fast, 150ms) ease;
-  }
-
-  .nav-menu-trigger::-webkit-details-marker {
-    display: none;
-  }
-
-  .nav-menu-trigger:hover,
-  .nav-menu[open] > .nav-menu-trigger {
-    border-color: var(--color-border);
-    background-color: color-mix(in srgb, var(--color-content) 6%, transparent);
-  }
+  /* ── The bar's dropdowns: `NavMenu` styles itself; these are the entries
+     and the pieces the site puts in it ─────────────────────────────── */
 
   .nav-menu-placeholder {
     display: block;
@@ -244,56 +187,19 @@ body {
     height: 2rem;
   }
 
-  .nav-icon,
-  .nav-menu-chevron,
-  .nav-menu-check {
+  .nav-icon {
     flex: none;
+    width: 1rem;
+    height: 1rem;
     fill: none;
     stroke: currentColor;
+    stroke-width: 1.5;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
-  .nav-icon {
-    width: 1rem;
-    height: 1rem;
-    stroke-width: 1.5;
-  }
-
-  .nav-menu-chevron {
-    width: 0.875rem;
-    height: 0.875rem;
-    stroke-width: 2;
-    color: var(--color-content-muted);
-    transition: rotate var(--duration-fast, 150ms) ease;
-  }
-
-  .nav-menu[open] .nav-menu-chevron {
-    rotate: 180deg;
-  }
-
   .nav-menu-code {
     letter-spacing: 0.04em;
-  }
-
-  .nav-menu-panel {
-    position: absolute;
-    top: calc(100% + var(--spacing-3xs));
-    right: 0;
-    z-index: 60;
-    min-width: 10rem;
-    padding: var(--spacing-3xs);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background-color: var(--color-surface-elevated);
-    box-shadow: var(--shadow-overlay);
-    animation: menu-enter 120ms ease-out;
-  }
-
-  .nav-menu-panel ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
   }
 
   .nav-menu-item {
@@ -323,12 +229,6 @@ body {
   .nav-menu-item[aria-pressed='true'] {
     color: var(--color-primary);
     cursor: default;
-  }
-
-  .nav-menu-check {
-    width: 1rem;
-    height: 1rem;
-    stroke-width: 2;
   }
 
   /* The landing variant: fixed, and translucent over the page it follows. */
@@ -528,21 +428,8 @@ body {
     color: var(--color-primary);
   }
 
-  /* A blip under the pointer, and the one its legend entry names (#40). */
-  .radar-blip {
-    cursor: pointer;
-  }
-
-  .radar-blip[data-highlighted] path {
-    stroke: var(--color-content);
-    stroke-width: 2;
-  }
-
-  /* Left out by the filter (#41): faint, in place, so the shape still reads. */
-  .radar-blip[data-dimmed] {
-    opacity: 0.18;
-  }
-
+  /* A legend entry the filter leaves out (#41), and the one under the
+     pointer on the chart (#40). */
   .radar-legend-entry[data-dimmed] {
     opacity: 0.45;
   }
@@ -550,82 +437,6 @@ body {
   .radar-legend-entry[data-highlighted] {
     background: var(--color-radar-ring-fill);
     border-radius: 2px;
-  }
-
-  /* A filter over a list — the radar's, the blog's (#41, #70). */
-  .filters {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    min-width: 0;
-    font-size: 0.875rem;
-  }
-
-  .filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--spacing-xs);
-  }
-
-  .filter-label {
-    min-width: 6rem;
-    color: var(--color-content-muted);
-  }
-
-  /* On a phone each label heads its own row of chips. */
-  @media (width < 40rem) {
-    .filter-label {
-      flex-basis: 100%;
-    }
-  }
-
-  .filters button {
-    cursor: pointer;
-    background: none;
-    font: inherit;
-  }
-
-  .filters .landing-chip[aria-pressed='true'] {
-    border-color: var(--color-primary);
-    background: var(--color-primary);
-    color: var(--color-surface);
-  }
-
-  .filter-search {
-    display: flex;
-    flex: 1 1 16rem;
-    align-items: center;
-    gap: var(--spacing-xs);
-    min-width: 0;
-    max-width: 28rem;
-  }
-
-  .filter-search input {
-    flex: 1;
-    width: 100%;
-    min-width: 0;
-    padding: 0.125rem var(--spacing-xs);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    background: var(--color-surface);
-    color: inherit;
-    font: inherit;
-  }
-
-  .filter-count {
-    color: var(--color-content-muted);
-  }
-
-  .filter-clear {
-    border: 0;
-    color: var(--color-primary);
-    text-decoration: underline;
-  }
-
-  /* A ring's name beside what it means (#39). */
-  .radar-ring-key {
-    grid-template-columns: max-content 1fr;
   }
 
   /* A technology or a project reached from a link (#30, #42): clear of the
@@ -691,13 +502,6 @@ body {
   }
 }
 
-@keyframes menu-enter {
-  from {
-    opacity: 0;
-    translate: 0 -0.25rem;
-  }
-}
-
 @keyframes cue-bob {
   50% {
     translate: 0 0.35rem;
@@ -720,7 +524,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-beat,
   .hero-glyph,
-  .nav-menu-panel,
   .scroll-cue-link,
   .scroll-cue-chevron {
     animation: none;
@@ -1125,5 +928,41 @@ body {
 
   .cv-heading {
     break-after: avoid;
+  }
+}
+
+/*
+ * Overrides of the incubator's controls (#75). They style themselves with
+ * utilities and name their parts with `data-slot`; these rules restyle a part
+ * for this site. Unlayered, so they win over the controls' utilities.
+ */
+
+/* The narrow screen's menu: a panel as wide as the bar, dropping below it. */
+.nav-menu-sheet {
+  position: static;
+}
+
+.nav-menu-sheet > [data-slot='nav-menu-panel'] {
+  left: 0;
+  right: 0;
+  top: 100%;
+  max-height: calc(100dvh - 4rem);
+  overflow-y: auto;
+  padding: var(--spacing-2xs) var(--spacing-m) var(--spacing-s);
+  border-width: 0 0 1px;
+  border-radius: 0;
+}
+
+.nav-menu-sheet [data-slot='nav-menu-panel'] ul {
+  display: flex;
+  flex-direction: column;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+/* The smallest phones: the chevrons go, or the bar is wider than 320px. */
+@media (max-width: 24rem) {
+  .site-nav-tools [data-slot='nav-menu-chevron'] {
+    display: none;
   }
 }

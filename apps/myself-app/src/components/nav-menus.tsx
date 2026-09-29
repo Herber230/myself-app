@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-const OPEN = 'details.nav-menu[open]';
+const OPEN = 'details[data-slot="nav-menu"][open]';
 
 /**
  * What a dropdown is expected to do, over the bar's `<details>` menus: one

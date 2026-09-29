@@ -8,12 +8,12 @@ import {
 } from '@entifix/react-controls/primitives';
 import { localize, type LocalizedText } from '@myself-app/domain';
 import type { FeaturedProject } from '@myself-app/domain/use-cases';
+import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 import Link from 'next/link';
 
 import { siteT } from '../../i18n/server';
 import type { SiteLocale } from '../../site-locales';
 import { radarEntryPath } from '../tech-radar/radar-paths';
-import { ExternalLink } from './external-link';
 import { LandingSection } from './landing-section';
 
 /** A project card's `id`, linked to from a technology's page (#42). */

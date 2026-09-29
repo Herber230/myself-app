@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   type FakeObserver,
   stubIntersectionObserver,
-} from '../test/intersection-observer';
+} from '../../../test/intersection-observer';
 import { ActiveSection } from './active-section';
 
 let made: FakeObserver[];

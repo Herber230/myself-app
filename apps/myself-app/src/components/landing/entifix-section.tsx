@@ -1,8 +1,8 @@
 import { Cluster, Lead, Text } from '@entifix/react-controls/primitives';
+import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 
 import { siteT } from '../../i18n/server';
 import type { SiteLocale } from '../../site-locales';
-import { ExternalLink } from './external-link';
 import { LandingSection } from './landing-section';
 
 const REPOSITORY = 'https://github.com/r10c-technologies/entifix';

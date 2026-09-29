@@ -1,0 +1,29 @@
+{
+  "jsc": {
+    "target": "es2022",
+    "parser": {
+      "syntax": "typescript",
+      "tsx": true,
+      "dynamicImport": true
+    },
+    "transform": {
+      "react": {
+        "runtime": "automatic"
+      }
+    },
+    "keepClassNames": true,
+    "externalHelpers": true,
+    "loose": true
+  },
+  "module": {
+    "type": "es6"
+  },
+  "sourceMaps": true,
+  "exclude": [
+    ".*\\.spec.tsx?$",
+    ".*\\.test.tsx?$",
+    ".*\\.fixture.ts$",
+    "./src/test/.*",
+    ".*.js$"
+  ]
+}

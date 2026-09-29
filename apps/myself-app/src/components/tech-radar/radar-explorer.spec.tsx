@@ -1,5 +1,9 @@
 import { loadRadarPlacements } from '@myself-app/domain/use-cases';
 import {
+  layoutRadar,
+  type RadarLayout,
+} from '@myself-app/entifix-incubator-react-controls';
+import {
   act,
   fireEvent,
   render,
@@ -19,9 +23,7 @@ import {
 
 import { SITE_CONTENT } from '../../composition';
 import { radarEntriesOf } from './entries';
-import { layoutRadar } from './layout';
 import { RadarExplorer } from './radar-explorer';
-import type { RadarLayout } from './types';
 
 let layout: RadarLayout;
 
@@ -89,7 +91,7 @@ describe('the radar explorer', () => {
   it('is the whole radar in the static HTML, with no controls', () => {
     const html = renderToString(explorer());
     expect(html).not.toContain('Filter the radar');
-    expect(html).not.toContain('data-dimmed');
+    expect(html).not.toMatch(/data-dimmed=/);
     expect(html).toContain('The ring key');
   });
 

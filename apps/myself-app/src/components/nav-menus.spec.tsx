@@ -6,11 +6,11 @@ import { NavMenus } from './nav-menus';
 function renderMenus() {
   return render(
     <>
-      <details className="nav-menu" data-testid="one">
+      <details data-slot="nav-menu" data-testid="one">
         <summary>One</summary>
         <a href="#about">About</a>
       </details>
-      <details className="nav-menu" data-testid="two">
+      <details data-slot="nav-menu" data-testid="two">
         <summary>Two</summary>
         <button type="button">Blue</button>
       </details>
@@ -72,7 +72,7 @@ describe('the nav menus', () => {
   it('close on Escape even when a menu has no trigger to refocus', () => {
     const { container } = render(
       <>
-        <details className="nav-menu" open />
+        <details data-slot="nav-menu" open />
         <NavMenus />
       </>,
     );

@@ -29,6 +29,9 @@
     },
     {
       "path": "./packages/implementation/adapters"
+    },
+    {
+      "path": "./packages/entifix-incubator/react-controls"
     }
   ]
 }

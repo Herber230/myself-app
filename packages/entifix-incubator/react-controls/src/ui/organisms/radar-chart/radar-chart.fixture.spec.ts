@@ -5,9 +5,10 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { SITE_LOCALES } from '../../site-locales';
-import { FIXTURE_RADAR_ENTRIES } from './fixture-entries';
+/** The locales the fixture's labels carry. */
+const LOCALES = ['en', 'es'] as const;
 import { QUADRANT_INDICES, RING_INDICES } from './geometry';
+import { FIXTURE_RADAR_ENTRIES } from './radar-chart.fixture';
 import { MOVEMENTS } from './types';
 
 describe('the fixture radar entries', () => {
@@ -43,7 +44,7 @@ describe('the fixture radar entries', () => {
 
   it('are labelled in every site locale', () => {
     for (const entry of FIXTURE_RADAR_ENTRIES) {
-      for (const locale of SITE_LOCALES) {
+      for (const locale of LOCALES) {
         expect(entry.label[locale], `${entry.id} › ${locale}`).toBeTruthy();
         expect(entry.label[locale].trim(), `${entry.id} › ${locale}`).toBe(
           entry.label[locale],

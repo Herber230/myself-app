@@ -1,6 +1,11 @@
 /**
  * The radar itself: rings, axes and one blip per technology.
  *
+ * Its colours are custom properties the page defines: `--color-radar-grid`,
+ * `--color-radar-ring-fill`, `--color-radar-ring-1` to `-4` (one per ring,
+ * innermost first) and `--color-radar-blip-ink`, beside entifix's
+ * `--color-content-muted` and `--color-surface-elevated`.
+ *
  * A server component with no state and no effects — the layout is already
  * computed by `next build`, so the export carries the finished SVG and the
  * page ships no JavaScript for it (ADR 0003). Each blip links to its
@@ -12,17 +17,26 @@
  * assistive technology, which Chromium would otherwise expose even inside a
  * `role="img"`.
  */
-import type { SiteLocale } from '../../site-locales';
-import { BLIP_RADIUS } from './geometry';
-import { technologyPath } from './radar-paths';
-import type { Movement, PlacedBlip, RadarLayout } from './types';
+import { BLIP_RADIUS } from './geometry.js';
+import type { Movement, PlacedBlip, RadarLayout } from './types.js';
+
+/**
+ * A blip under the pointer, and the one its legend entry names (#40), is
+ * outlined; one a filter leaves out (#41) is faint, in place, so the shape
+ * still reads.
+ */
+const BLIP =
+  'cursor-pointer data-dimmed:opacity-[0.18] [&[data-highlighted]_path]:stroke-(--color-content) [&[data-highlighted]_path]:stroke-2';
 
 /** Room around the outer ring for the ring labels along the vertical axis. */
 const MARGIN = 26;
 
 export interface RadarChartProps {
   readonly layout: RadarLayout;
-  readonly locale: SiteLocale;
+  /** Which of each label to show. */
+  readonly locale: string;
+  /** Where a blip links: its technology's own page. */
+  readonly hrefOf: (id: string) => string;
   /** Quadrant names, by quadrant index. */
   readonly quadrants: readonly string[];
   /** Ring names, innermost first. */
@@ -40,6 +54,7 @@ export interface RadarChartProps {
 export function RadarChart({
   layout,
   locale,
+  hrefOf,
   quadrants,
   rings,
   label,
@@ -102,7 +117,8 @@ export function RadarChart({
         <Blip
           key={blip.id}
           blip={blip}
-          locale={locale}
+          href={hrefOf(blip.id)}
+          title={`${blip.number}. ${blip.label[locale] ?? blip.id}`}
           dimmed={dimmed?.has(blip.id) === true}
           highlighted={highlighted === blip.id}
           onHighlight={onHighlight}
@@ -133,28 +149,29 @@ export function RadarChart({
 
 function Blip({
   blip,
-  locale,
+  href,
+  title,
   dimmed,
   highlighted,
   onHighlight,
 }: {
   blip: PlacedBlip;
-  locale: SiteLocale;
+  href: string;
+  title: string;
   dimmed: boolean;
   highlighted: boolean;
   onHighlight?: (id: string | undefined) => void;
 }) {
   const colour = `var(--color-radar-ring-${blip.ring + 1})`;
-  const title = `${blip.number}. ${blip.label[locale]}`;
   return (
     <a
-      href={technologyPath(locale, blip.id)}
+      href={href}
       tabIndex={-1}
       aria-hidden
       data-blip={blip.id}
       data-dimmed={dimmed || undefined}
       data-highlighted={highlighted || undefined}
-      className="radar-blip"
+      className={BLIP}
       onPointerEnter={() => onHighlight?.(blip.id)}
       onPointerLeave={() => onHighlight?.(undefined)}
     >

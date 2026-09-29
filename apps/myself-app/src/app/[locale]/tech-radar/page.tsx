@@ -13,17 +13,23 @@ import {
   TechnologyArea,
 } from '@myself-app/domain';
 import { loadRadarPlacements } from '@myself-app/domain/use-cases';
+import {
+  layoutRadar,
+  RingKey,
+} from '@myself-app/entifix-incubator-react-controls';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { SiteNav } from '../../../components/site-nav';
 import { radarEntriesOf } from '../../../components/tech-radar/entries';
-import { layoutRadar } from '../../../components/tech-radar/layout';
 import { RadarExplorer } from '../../../components/tech-radar/radar-explorer';
-import { RingKey } from '../../../components/tech-radar/ring-key';
 import { SITE_CONTENT } from '../../../composition';
 import { siteT } from '../../../i18n/server';
-import { isSiteLocale, localeAlternates } from '../../../site-locales';
+import {
+  isSiteLocale,
+  localeAlternates,
+  SITE_DEFAULT_LOCALE,
+} from '../../../site-locales';
 
 const PATH = '/tech-radar';
 
@@ -35,7 +41,7 @@ const PATH = '/tech-radar';
  * use case.
  */
 const LAYOUT = loadRadarPlacements(SITE_CONTENT).then(placements =>
-  layoutRadar(radarEntriesOf(placements)),
+  layoutRadar(radarEntriesOf(placements), { sortLocale: SITE_DEFAULT_LOCALE }),
 );
 
 /** Innermost first, as the chart draws them. */

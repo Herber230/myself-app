@@ -26,21 +26,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import { SITE_DEFAULT_LOCALE } from '../../site-locales';
 import {
   BLIP_RADIUS,
   RING_INDICES,
   RING_RADII,
   type Segment,
   segment,
-} from './geometry';
-import { createRandom, DEFAULT_SEED, type SeededRandom } from './random';
+} from './geometry.js';
+import { createRandom, DEFAULT_SEED, type SeededRandom } from './random.js';
 import type {
   PlacedBlip,
   QuadrantIndex,
   RadarEntry,
   RadarLayout,
-} from './types';
+} from './types.js';
 
 /**
  * Zalando numbers the quadrants in this order, which walks the legend columns
@@ -71,6 +70,12 @@ export interface LayoutOptions {
    * to hand it a generator that does.
    */
   readonly random?: SeededRandom;
+  /**
+   * The locale whose labels order blips within a cell, and so their numbers.
+   * One locale for every page, or a blip would change number between them:
+   * a site passes its default. English unless told.
+   */
+  readonly sortLocale?: string;
 }
 
 interface WorkingBlip {
@@ -94,13 +99,16 @@ export function layoutRadar(
     seed = DEFAULT_SEED,
     passes = RELAX_PASSES,
     random = createRandom(seed),
+    sortLocale = 'en',
   }: LayoutOptions = {},
 ): RadarLayout {
-  const blips = numbered(entries).map<WorkingBlip>(({ entry, number }) => {
-    const cell = segment(entry.quadrant, entry.ring);
-    const point = cell.randomPoint(random);
-    return { entry, number, segment: cell, x: point.x, y: point.y };
-  });
+  const blips = numbered(entries, sortLocale).map<WorkingBlip>(
+    ({ entry, number }) => {
+      const cell = segment(entry.quadrant, entry.ring);
+      const point = cell.randomPoint(random);
+      return { entry, number, segment: cell, x: point.x, y: point.y };
+    },
+  );
 
   relax(blips, passes, random);
 
@@ -115,22 +123,18 @@ export function layoutRadar(
  * The 1-based number the legend repeats: by quadrant in Zalando's order, then
  * by ring outwards, then alphabetically.
  *
- * Sorted by the **default locale's** label, not the reader's: the number is
+ * Sorted by one locale's label (`sortLocale`), not the reader's: the number is
  * printed inside the blip, and a blip must not change number between the
  * English and Spanish pages.
  */
-function numbered(entries: readonly RadarEntry[]) {
+function numbered(entries: readonly RadarEntry[], sortLocale: string) {
   const ordered: { entry: RadarEntry; number: number }[] = [];
+  const labelOf = (entry: RadarEntry) => entry.label[sortLocale] ?? '';
   for (const quadrant of NUMBERING_ORDER) {
     for (const ring of RING_INDICES) {
       const cell = entries
         .filter(entry => entry.quadrant === quadrant && entry.ring === ring)
-        .sort((a, b) =>
-          a.label[SITE_DEFAULT_LOCALE].localeCompare(
-            b.label[SITE_DEFAULT_LOCALE],
-            SITE_DEFAULT_LOCALE,
-          ),
-        );
+        .sort((a, b) => labelOf(a).localeCompare(labelOf(b), sortLocale));
       for (const entry of cell) {
         ordered.push({ entry, number: ordered.length + 1 });
       }

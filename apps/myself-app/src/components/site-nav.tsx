@@ -1,11 +1,17 @@
+import {
+  NavMenu,
+  NavMenuCheck,
+} from '@myself-app/entifix-incubator-react-controls';
+import {
+  ActiveSection,
+  KeepSection,
+} from '@myself-app/entifix-incubator-react-controls';
 import Link from 'next/link';
 
 import { siteT } from '../i18n/server';
 import { LANDING_SECTIONS, sectionPath } from '../landing-sections';
 import { localePath, SITE_LOCALES, type SiteLocale } from '../site-locales';
-import { ActiveSection } from './active-section';
-import { KeepSection } from './keep-section';
-import { NavIcon, NavMenu, NavMenuCheck } from './nav-menu';
+import { NavIcon } from './nav-icon';
 import { NavMenus } from './nav-menus';
 import { SiteThemeMenu } from './site-theme-menu';
 

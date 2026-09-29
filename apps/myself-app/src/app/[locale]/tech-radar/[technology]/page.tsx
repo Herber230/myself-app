@@ -10,13 +10,13 @@ import {
 import { Technology } from '@myself-app/domain';
 import { loadPostsForTechnology } from '@myself-app/domain/use-cases';
 import { loadTechnologyDetail } from '@myself-app/domain/use-cases';
+import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { postPath } from '../../../../components/blog/post-cards';
 import { formatPeriod, inLocale } from '../../../../components/cv/cv-format';
-import { ExternalLink } from '../../../../components/landing/external-link';
 import { projectAnchor } from '../../../../components/landing/projects-section';
 import { SiteNav } from '../../../../components/site-nav';
 import { radarEntryPath } from '../../../../components/tech-radar/radar-paths';
@@ -92,7 +92,7 @@ export default async function TechnologyPage({
               </Text>
               <Lead muted>{inLocale(technology.description, locale)}</Lead>
             </Stack>
-            <dl className="radar-ring-key m-0 grid gap-x-m gap-y-2xs">
+            <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-m gap-y-2xs">
               <Text as="dt" weight="semibold">
                 {t('radar.detail.quadrant')}
               </Text>

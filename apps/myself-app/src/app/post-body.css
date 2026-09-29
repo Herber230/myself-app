@@ -390,37 +390,6 @@
     text-transform: uppercase;
   }
 
-  /* In the sidebar each label heads its own row, and the search fills it. */
-  .blog-sidebar .filter-row {
-    gap: var(--spacing-2xs);
-  }
-
-  .blog-sidebar .filter-label {
-    flex-basis: 100%;
-    min-width: 0;
-    font-weight: 500;
-  }
-
-  .blog-sidebar .filter-search {
-    flex-wrap: wrap;
-    flex-basis: 100%;
-    gap: var(--spacing-2xs);
-    max-width: none;
-  }
-
-  .blog-sidebar .filter-search input {
-    padding: var(--spacing-3xs) var(--spacing-xs);
-    border-radius: var(--radius-md);
-  }
-
-  .blog-sidebar .filters > * + * {
-    margin-top: var(--spacing-s);
-  }
-
-  .blog-sidebar .landing-chip {
-    font-size: 0.8125rem;
-  }
-
   .blog-feed-link {
     color: var(--color-content-muted);
     text-decoration: none;
@@ -583,4 +552,42 @@
   .blog-layout {
     transition: none;
   }
+}
+
+/*
+ * The filter in the blog's sidebar (#70): each label heads its own row, and
+ * the search fills it. It restyles the incubator's controls by their parts
+ * (`data-slot`), unlayered so it wins over their utilities (#75).
+ */
+.blog-sidebar [data-slot='filter-row'] {
+  gap: var(--spacing-2xs);
+}
+
+.blog-sidebar [data-slot='filter-label'] {
+  flex-basis: 100%;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.blog-sidebar [data-slot='filter-search'] {
+  flex-wrap: wrap;
+  flex-basis: 100%;
+  gap: var(--spacing-2xs);
+  max-width: none;
+}
+
+.blog-sidebar [data-slot='filter-search'] input {
+  padding: var(--spacing-3xs) var(--spacing-xs);
+  border-radius: var(--radius-md);
+}
+
+.blog-sidebar
+  :is([data-slot='filter-fieldset'], [data-slot='filter-links'])
+  > *
+  + * {
+  margin-top: var(--spacing-s);
+}
+
+.blog-sidebar :is(.landing-chip, [data-slot='filter-chip']) {
+  font-size: 0.8125rem;
 }

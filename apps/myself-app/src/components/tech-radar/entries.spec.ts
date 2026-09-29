@@ -7,6 +7,7 @@ import {
   loadEditionDate,
   loadRadarPlacements,
 } from '@myself-app/domain/use-cases';
+import { layoutRadar } from '@myself-app/entifix-incubator-react-controls';
 import type { StaticContent } from '@myself-app/entifix-incubator-static-adapter';
 import { buildSiteContent } from '@myself-app/implementation-adapters/server';
 import { describe, expect, it } from 'vitest';
@@ -14,7 +15,6 @@ import { describe, expect, it } from 'vitest';
 import { SITE_RECORDS as CONTENT } from '../../composition';
 import { SITE_CONTENT } from '../../composition';
 import { radarEntriesOf } from './entries';
-import { layoutRadar } from './layout';
 
 const at = (iso: string) => new Date(`${iso}T00:00:00.000Z`);
 

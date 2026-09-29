@@ -1,23 +1,27 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
-import { FIXTURE_RADAR_ENTRIES } from './fixture-entries';
 import { layoutRadar } from './layout';
 import { RadarChart } from './radar-chart';
+import { FIXTURE_RADAR_ENTRIES } from './radar-chart.fixture';
 import { MOVEMENTS } from './types';
 
 const LAYOUT = layoutRadar(FIXTURE_RADAR_ENTRIES);
 const QUADRANTS = ['Techniques', 'Tools', 'Platforms', 'Languages'];
 const RINGS = ['Adopt', 'Trial', 'Assess', 'Hold'];
 
-function renderChart() {
+const hrefOf = (id: string) => `/en/tech-radar/${id}/`;
+
+function renderChart(props: Partial<Parameters<typeof RadarChart>[0]> = {}) {
   return render(
     <RadarChart
       layout={LAYOUT}
       locale="en"
+      hrefOf={hrefOf}
       quadrants={QUADRANTS}
       rings={RINGS}
       label="Tech radar"
+      {...props}
     />,
   );
 }
@@ -68,5 +72,43 @@ describe('the radar chart', () => {
     expect(link?.querySelector('title')?.textContent).toBe(
       `${blip.number}. ${blip.label.en}`,
     );
+  });
+
+  it('names a blip by its id where its label lacks the locale shown', () => {
+    const { container } = renderChart({ locale: 'fr' });
+    const [blip] = LAYOUT.blips;
+    expect(
+      container.querySelector(`a[data-blip="${blip.id}"] title`)?.textContent,
+    ).toBe(`${blip.number}. ${blip.id}`);
+  });
+
+  it('marks the blips a filter leaves out, and the one highlighted', () => {
+    const [first, second] = LAYOUT.blips;
+    const { container } = renderChart({
+      dimmed: new Set([first.id]),
+      highlighted: second.id,
+    });
+    const blip = (id: string) =>
+      container.querySelector(`a[data-blip="${id}"]`) as HTMLElement;
+    expect(blip(first.id).dataset.dimmed).toBe('true');
+    expect(blip(first.id).dataset.highlighted).toBeUndefined();
+    expect(blip(second.id).dataset.highlighted).toBe('true');
+    expect(blip(second.id).dataset.dimmed).toBeUndefined();
+  });
+
+  it('reports the blip under the pointer, and when it leaves', () => {
+    const onHighlight = vi.fn();
+    const { container } = renderChart({ onHighlight });
+    const [blip] = LAYOUT.blips;
+    const link = container.querySelector(`a[data-blip="${blip.id}"]`)!;
+    fireEvent.pointerEnter(link);
+    fireEvent.pointerLeave(link);
+    expect(onHighlight.mock.calls).toEqual([[blip.id], [undefined]]);
+  });
+
+  it('asks nobody about the pointer when no one listens', () => {
+    const { container } = renderChart();
+    const link = container.querySelector('a[data-blip]')!;
+    expect(() => fireEvent.pointerEnter(link)).not.toThrow();
   });
 });

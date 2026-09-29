@@ -1,10 +1,14 @@
 'use client';
 
 import { useTheme } from '@entifix/react-controls/primitives';
+import {
+  NavMenu,
+  NavMenuCheck,
+} from '@myself-app/entifix-incubator-react-controls';
 import { useSyncExternalStore } from 'react';
 
 import { SITE_THEMES, type SiteTheme } from '../theme';
-import { NavIcon, NavMenu, NavMenuCheck } from './nav-menu';
+import { NavIcon } from './nav-icon';
 
 const subscribe = () => () => undefined;
 

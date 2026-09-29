@@ -1,44 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { FilterFieldset, FilterSummary, ToggleGroup } from './filters';
+import { FilterSummary } from './filter-summary';
 
-describe('the filter controls', () => {
-  it('group their controls under a named fieldset', () => {
-    render(
-      <FilterFieldset label="Filter the list">
-        <p>controls</p>
-      </FilterFieldset>,
-    );
-    expect(screen.getByRole('group', { name: 'Filter the list' })).toBeTruthy();
-    expect(screen.getByText('controls')).toBeTruthy();
-  });
-
-  it('press the chips selected, and report the one toggled', () => {
-    const onToggle = vi.fn();
-    render(
-      <ToggleGroup
-        label="Tag"
-        options={[
-          { key: 'web', name: 'Web' },
-          { key: 'data', name: 'Data' },
-        ]}
-        selected={['data']}
-        onToggle={onToggle}
-      />,
-    );
-    const group = screen.getByRole('group', { name: 'Tag' });
-    expect(group).toBeTruthy();
-    expect(
-      screen.getByRole('button', { name: 'Data' }).getAttribute('aria-pressed'),
-    ).toBe('true');
-    expect(
-      screen.getByRole('button', { name: 'Web' }).getAttribute('aria-pressed'),
-    ).toBe('false');
-    fireEvent.click(screen.getByRole('button', { name: 'Web' }));
-    expect(onToggle).toHaveBeenCalledWith('web');
-  });
-
+describe('a filter summary', () => {
   it('report the search typed, show the count, and clear while filtering', () => {
     const onSearch = vi.fn();
     const onClear = vi.fn();

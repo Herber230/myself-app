@@ -6,8 +6,6 @@
  * Quadrant and ring *meanings* are content (ADR 0014), not decided here. The
  * control knows four of each, by index, and takes their names as props.
  */
-import type { SiteLocale } from '../../site-locales';
-
 /** One of the four quadrants, clockwise from the bottom right, as Zalando numbers them. */
 export type QuadrantIndex = 0 | 1 | 2 | 3;
 
@@ -23,8 +21,11 @@ export type Movement = 'none' | 'in' | 'out' | 'new';
 
 export const MOVEMENTS: readonly Movement[] = ['none', 'in', 'out', 'new'];
 
-/** A piece of copy in every site locale. Content (#26) carries text this way. */
-export type LocalizedText = Record<SiteLocale, string>;
+/**
+ * A piece of copy in every locale the page shows, keyed by locale. The chart
+ * reads the one it is given, and the layout sorts by the one it is told.
+ */
+export type LocalizedText = Readonly<Record<string, string>>;
 
 /** A technology, before it has a place on the radar. */
 export interface RadarEntry {

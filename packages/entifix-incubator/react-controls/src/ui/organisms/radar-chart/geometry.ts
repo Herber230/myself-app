@@ -24,8 +24,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import type { SeededRandom } from './random';
-import type { Point, PolarPoint, QuadrantIndex, RingIndex } from './types';
+import type { SeededRandom } from './random.js';
+import type { Point, PolarPoint, QuadrantIndex, RingIndex } from './types.js';
 
 /** Outer radius of each ring, innermost first. The radar's unit of length. */
 export const RING_RADII = [130, 220, 310, 400] as const;

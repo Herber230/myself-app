@@ -14,19 +14,24 @@
 import { Stack, Text } from '@entifix/react-controls/primitives';
 import { Technology } from '@myself-app/domain/entities/technology';
 import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
+import {
+  FilterFieldset,
+  FilterSummary,
+  RadarChart,
+  type RadarLayout,
+  ToggleGroup,
+} from '@myself-app/entifix-incubator-react-controls';
 import { browserSources } from '@myself-app/implementation-adapters/browser';
 import { type ReactNode, useMemo, useState } from 'react';
 
 import type { SiteLocale } from '../../site-locales';
-import { FilterFieldset, FilterSummary, ToggleGroup } from '../filters';
-import { RadarChart } from './radar-chart';
 import {
   type RadarParam,
   radarQuery,
   type RadarVocabulary,
 } from './radar-filter';
 import { RadarLegend } from './radar-legend';
-import type { RadarLayout } from './types';
+import { technologyPath } from './radar-paths';
 
 /** Every technology, as the export writes them (ADR 0003, 0016). */
 const TECHNOLOGIES = browserSources.technologies;
@@ -142,6 +147,7 @@ export function RadarExplorer({
         <RadarChart
           layout={layout}
           locale={locale}
+          hrefOf={id => technologyPath(locale, id)}
           quadrants={quadrants}
           rings={rings}
           label={copy.chartLabel}

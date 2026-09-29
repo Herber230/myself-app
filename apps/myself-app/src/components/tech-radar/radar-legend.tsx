@@ -10,12 +10,15 @@
  * technology's page (#42).
  */
 import { linkClassName, Stack, Text } from '@entifix/react-controls/primitives';
+import {
+  type PlacedBlip,
+  type RadarLayout,
+  RING_INDICES,
+} from '@myself-app/entifix-incubator-react-controls';
 import Link from 'next/link';
 
 import type { SiteLocale } from '../../site-locales';
-import { RING_INDICES } from './geometry';
 import { radarEntryId, technologyPath } from './radar-paths';
-import type { PlacedBlip, RadarLayout } from './types';
 
 export interface RadarLegendProps {
   readonly layout: RadarLayout;

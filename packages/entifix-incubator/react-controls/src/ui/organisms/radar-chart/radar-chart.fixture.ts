@@ -1,14 +1,14 @@
 /**
  * A fixed radar for the layout's specs, which no page imports.
  *
- * The page reads its entries from content (`src/content/radar.ts`). The specs
+ * A page reads its entries from its own content. The specs
  * do not, on purpose: they pin properties of the layout — every segment
  * covered, every movement drawn, the same export twice — and content that
  * changes with a CV edit would move what they pin. These twenty entries were
  * the placeholder the control was built against, and the content package was
  * seeded from them.
  */
-import type { RadarEntry } from './types';
+import type { RadarEntry } from './types.js';
 
 export const FIXTURE_RADAR_ENTRIES: readonly RadarEntry[] = [
   // Quadrant 0 — techniques.
