@@ -180,6 +180,11 @@ export const en = {
     readingTime: '{{minutes}} min read',
     draft: 'Draft',
     back: '← Every post',
+    /** The toggle that folds the blog's sidebar away, and back. */
+    sidebar: {
+      show: 'Show filters',
+      hide: 'Hide filters',
+    },
     tags: 'Tags',
     technologies: 'On the radar',
     related: 'Related posts',

@@ -4,6 +4,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import {
@@ -66,7 +67,12 @@ const explorer = () => (
       clear: 'Show every post',
       showing: 'Showing {{shown}} of {{total}}',
       empty: 'No post matches this filter.',
+      showSidebar: 'Show filters',
+      hideSidebar: 'Hide filters',
     }}
+    title="Blog"
+    lead="Notes on what I build."
+    feed={{ href: '/en/blog/rss.xml', label: 'RSS feed' }}
   />
 );
 
@@ -76,10 +82,32 @@ const shownPosts = () =>
   );
 
 describe('the blog’s posts and filter', () => {
-  it('are every post in the static HTML, with no controls', () => {
+  it('are every post in the static HTML, and the filter as links', () => {
     const html = renderToString(explorer());
-    expect(html).not.toContain('Filter the posts');
     for (const post of posts) expect(html).toContain(post.title);
+    expect(html).toContain('href="/en/blog/?tag=testing"');
+    expect(html).toContain('href="/en/blog/?tech=cloudfront"');
+    expect(html).toContain('href="/en/blog/?year=2025"');
+    expect(html).not.toContain('type="search"');
+    expect(html).not.toContain('aria-pressed');
+  });
+
+  it('open their sidebar, under the blog’s title, with the feed at its foot', () => {
+    render(explorer());
+    const sidebar = screen.getByRole('complementary', {
+      name: 'Filter the posts',
+    });
+    expect(sidebar.querySelector('details')?.open).toBe(true);
+    expect(within(sidebar).getByText('Hide filters')).toBeTruthy();
+    expect(
+      within(sidebar)
+        .getByRole('link', { name: 'RSS feed' })
+        .getAttribute('href'),
+    ).toBe('/en/blog/rss.xml');
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Blog' }),
+    ).toBeTruthy();
+    expect(screen.getByText('Notes on what I build.')).toBeTruthy();
   });
 
   it('read the filter from the URL, and show what the use case keeps', async () => {

@@ -14,9 +14,12 @@ test('the blog lists every post, and needs no JavaScript to', async ({
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto('/en/blog/');
-  await expect(shownPosts(page)).toHaveCount(3);
-  // No control that could not work.
-  await expect(page.getByRole('group', { name: 'Tag' })).toHaveCount(0);
+  await expect(shownPosts(page)).toHaveCount(10);
+  // No control that could not work: the filter is links, until hydrated.
+  await expect(page.getByRole('searchbox')).toHaveCount(0);
+  await expect(page.locator('[aria-pressed]')).toHaveCount(0);
+  await page.getByRole('link', { name: 'Testing' }).click();
+  await expect(page).toHaveURL(/\/en\/blog\/\?tag=testing$/);
   await context.close();
 });
 
@@ -50,7 +53,7 @@ test('the filter keeps its choices in the URL, through reload and history', asyn
 
   await page.getByRole('button', { name: 'Show every post' }).click();
   await expect(page).toHaveURL(/\/en\/blog\/$/);
-  await expect(shownPosts(page)).toHaveCount(3);
+  await expect(shownPosts(page)).toHaveCount(10);
 });
 
 test('a filtered link from another page opens filtered', async ({ page }) => {
@@ -58,7 +61,7 @@ test('a filtered link from another page opens filtered', async ({ page }) => {
   await page.getByRole('link', { name: 'Infraestructura' }).click();
   await expect(page).toHaveURL(/\/es\/blog\/\?tag=infrastructure$/);
   await expect(shownPosts(page)).toHaveCount(1);
-  await expect(page.getByText('Mostrando 1 de 3')).toBeVisible();
+  await expect(page.getByText('Mostrando 1 de 10')).toBeVisible();
 });
 
 test('a post renders its Markdown: paragraph types, a figure, links and code', async ({
@@ -98,7 +101,35 @@ test('a post renders its Markdown: paragraph types, a figure, links and code', a
     page
       .getByRole('heading', { name: 'Entradas relacionadas' })
       .locator('xpath=following-sibling::ol//article'),
-  ).toHaveCount(1);
+  ).toHaveCount(3);
+});
+
+test('the sidebar is open on the blog, folded on a post, and toggles', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/en/blog/');
+  const sidebar = page.getByRole('complementary', { name: 'Filter the posts' });
+  await expect(sidebar.getByRole('searchbox')).toBeVisible();
+
+  await page.getByRole('link', { name: 'Books', exact: true }).click();
+  await expect(page).toHaveURL(/\/en\/blog\/books\/$/);
+  const article = page.locator('.blog-article');
+  const folded = await article.boundingBox();
+  await expect(sidebar.getByRole('link', { name: 'Testing' })).toBeHidden();
+
+  // Folded, the toggle is its icon; its name is for a reader alone.
+  const toggle = sidebar.locator('summary');
+  await expect(toggle).toHaveAccessibleName('Show filters');
+  await toggle.click();
+  await expect(sidebar.getByRole('link', { name: 'Testing' })).toBeVisible();
+  await expect
+    .poll(async () => (await article.boundingBox())?.x)
+    .toBeGreaterThan(folded?.x ?? 0);
+
+  await expect(toggle).toHaveAccessibleName('Hide filters');
+  await toggle.click();
+  await expect(sidebar.getByRole('link', { name: 'Testing' })).toBeHidden();
 });
 
 test('each locale has a feed, and no draft is exported', async ({
