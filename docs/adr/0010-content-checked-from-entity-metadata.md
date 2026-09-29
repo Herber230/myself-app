@@ -5,6 +5,7 @@
 - Revised: 2026-09-24 — the app's `build` depends on `^typecheck` too, since Next 16.3 type-checks against the packages' `out-tsc/` declarations
 - Area: data
 - Read when: a record fails `next build`, a member should be translated, a filter over a list matches nothing, or a package's code reaches the app as source
+- Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — the site's rules are the domain's, applied by `implementation/adapters`
 
 ## Context
 
@@ -42,12 +43,13 @@ neither record could know:
   holds neither: it knows no entity and no locale.
 - **Rules the metadata cannot express are registered by the app**: one profile,
   one contact channel per type, no period ending before it starts
-  (`apps/myself-app/src/content/site-content.ts`).
+  (the domain's `rules.ts`, applied in
+  `packages/implementation/adapters/src/server/site-content.ts`).
 - **No localized or collection member is `filterable` or `sortable`.** A filter
   over one is built in code — `in` over `areas` matches any element, as Mongo's
   `$in` does (entifix#34) — and is never parsed from a URL.
 - **The read half of the contract is re-created** in
-  `packages/static-adapter/src/contracts/`, case for case, against entifix's own
+  `packages/entifix-incubator/static-adapter/src/contracts/`, case for case, against entifix's own
   `ContractWidget`. It is deleted when entifix splits its suite (entifix#37).
 - **Every package builds with SWC to `dist`** and the app consumes `dist`: the
   domain for its decorators, the adapter and the content because the app may

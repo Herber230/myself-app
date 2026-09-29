@@ -5,6 +5,7 @@
 - Area: data
 - Revised: 2026-09-28 by #70 — the filter sits in a sidebar that folds away (open on the home, closed on a post); the home is a timeline by year whose cards fade the body's opening, read at build; the first posts include seven imported from Medium
 - Read when: adding or editing a post, a post fails `next build`, a draft appears in the export, a post's image or link breaks, or the blog's filter shows the wrong posts
+- Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — the Markdown renderer, `post-body.css` and the post's page are the UI package's (`markdown/`, `styles/`, `templates/post-page`)
 
 Decides the blog half of #70. Builds on
 [ADR 0010](0010-content-checked-from-entity-metadata.md) (content checked from

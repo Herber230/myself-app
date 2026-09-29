@@ -21,7 +21,7 @@ The site is a static export (`output: 'export'`) served as plain files from a pr
 - **Check a route under `pnpm nx serve-out myself-app`** (http://localhost:3100). `tools/serve-static.mjs` answers the way CloudFront's viewer-request function does (`apps/infra/src/viewer-request.js`). A route that works in `next dev` but not here is a bug in the route.
 - **e2e runs against the export only**, on port 3200, and never against a Next server.
 - **Server components run once, at `next build`.** `headers()`, `cookies()`, proxies, rewrites, redirects and non-`force-static` route handlers fail the export.
-- **Internal links end in `/`** (`trailingSlash: true`). Build them with `localePath()` from `src/site-locales.ts`.
+- **Internal links end in `/`** (`trailingSlash: true`). Build them with `localePath()` from `@myself-app/implementation-ui/routing`.
 - **Two root layouts:** `app/(root)/layout.tsx` for `/`, `app/[locale]/layout.tsx` for everything else. With no single root layout, the export's `404.html` comes from `app/global-not-found.tsx` and `experimental.globalNotFound`. Remove the flag and the build still succeeds, but without `404.html`.
 
 ## Adding a page
@@ -30,21 +30,22 @@ Every page under `app/[locale]/` follows the same steps:
 
 1. `await params`.
 2. Guard with `isSiteLocale(locale)` and call `notFound()` if it fails.
-3. Get the copy with `siteT(locale)`.
-4. Build `generateMetadata` with `localeAlternates(locale, PATH)`.
+3. Load through the domain's use cases over `SITE_CONTENT` (`src/composition.ts`).
+4. Render a template from `@myself-app/implementation-ui/templates`; the route writes no markup (ADR 0019).
+5. Build `generateMetadata` with `siteT(locale)` and `localeAlternates(locale, PATH)`.
 
 Keep components server-side unless they need interactivity. `SiteNav` takes `path` as a prop for that reason: calling `usePathname` would make it a client component. When a piece of it does need the browser, it goes in as a `'use client'` leaf — `SiteThemeMenu` is the pattern, and ADR 0008 spends it on the landing page's section tracking.
 
-Every component gets a `*.spec.tsx` beside it. It runs in jsdom with Testing Library, and coverage is gated at 100% over `.tsx` as over `.ts`. Drive the component through what a visitor or a screen reader meets (roles, names, `aria-*`), not its class names. Render a page or layout with `renderPage` from `src/test/render.tsx`, and stub `IntersectionObserver` with `src/test/intersection-observer.ts`. A spec that must see JSX rendered with no `document`, as `next build` renders it, is named `*.node.spec.tsx`.
+Components live in `packages/implementation/ui` in atomic layers (atoms, molecules, organisms, templates), one folder each with its spec and an `index.ts`; a control that knows nothing of the site goes to `packages/entifix-incubator/react-controls`. Every component gets a `*.spec.tsx` beside it. It runs in jsdom with Testing Library, and coverage is gated at 100% over `.tsx` as over `.ts`. Drive the component through what a visitor or a screen reader meets (roles, names, `aria-*`), not its class names. Render a page or layout with `renderPage` from `src/test/render.tsx`, and stub `IntersectionObserver` with `src/test/intersection-observer.ts`. A spec that must see JSX rendered with no `document`, as `next build` renders it, is named `*.node.spec.tsx`.
 
 ## Copy
 
-UI copy lives in `apps/myself-app/src/i18n/catalogs/`, in the `site` namespace (ADR 0005).
+UI copy lives in `packages/implementation/ui/src/i18n/catalogs/`, in the `site` namespace (ADR 0005).
 
 - **Add a key to `en.ts` and `es.ts` together.** `es` is declared `satisfies CatalogShape<typeof en>`, so a key missing from it, or only in it, fails `next build`. `catalogs.spec.ts` also rejects empty strings.
 - **Translate in server components with `siteT(locale)`**, and never with `getServerT`, which reads a request header. Keys are typed, so `t('cvLeed')` does not compile.
 - **Never write copy in JSX.** `react/jsx-no-literals` fails lint on it. Props are exempt.
-- The default namespace is entifix's `controls`, because entifix's components call `useT()` without a namespace. The client bundle installs the catalogs through `app/[locale]/providers.tsx`, the server bundle through `i18n/server.ts`.
+- The default namespace is entifix's `controls`, because entifix's components call `useT()` without a namespace. The client bundle installs the catalogs through the UI's `providers/providers.tsx`, the server bundle through `i18n/server.ts`.
 
 ## Content
 
@@ -52,9 +53,9 @@ What the pages say about me lives in `packages/content/src/`, one JSON file per 
 
 - **Ids are readable slugs** (`next-js`, `adopt`), because they appear in URLs and in the links between files. A link is the id it names: `"ring": "adopt"`, `"areas": ["css"]`.
 - **Text that a reader sees is `{ "en": …, "es": … }`**, for the members `LOCALIZED_MEMBERS` lists. A locale missing, empty or not text stops `next build`, with the path: `rings.json › adopt › name is missing "es"`.
-- **Every problem is reported at once.** `apps/myself-app/src/content/site-content.ts` declares one `defineSource` per file, and the static adapter validates every file against its entity's metadata before any page renders — required members, dates, enum values, links that point at something — plus each source's rules. A link's target comes from the entity, so a source never declares one. A generic rule is one of the adapter's factories (`exactly(1)`, `nonEmpty('tags')`, `notBefore('end', 'start')`…); a rule only this site has is an `EntityRule` beside the sources, never in the adapter (ADR 0018).
-- **A placeholder value carries `TODO(#<issue>)`**, naming the issue that decides it. `apps/myself-app/src/content/pending-content.ts` lists what is left to write, and holds the blog's placeholder posts today: add a path there before shipping a placeholder, and remove it when the value is written, or the build stops.
-- Pages read content in server components through `SITE_CONTENT` (`src/content/repositories.ts`): `loadAll(Entity, request, { resolve: ['links'] })` runs entifix's `load` use case and resolves the links asked for, which `targetOf`/`targetsOf` then read — no id maps, no casts. The radar's and the blog's filters run the same use case in the browser, over `/data/*.json`, through `useUrlFilter` (ADR 0016, 0018).
+- **Every problem is reported at once.** `packages/implementation/adapters/src/server/site-content.ts` declares one `defineSource` per file, and the static adapter validates every file against its entity's metadata before any page renders — required members, dates, enum values, links that point at something — plus each source's rules. A link's target comes from the entity, so a source never declares one. A generic rule is one of the adapter's factories (`exactly(1)`, `nonEmpty('tags')`, `notBefore('end', 'start')`…); a rule only this site has is an `EntityRule` in the domain's `rules.ts`, never in the adapter (ADR 0018, 0019).
+- **A placeholder value carries `TODO(#<issue>)`**, naming the issue that decides it. `packages/implementation/adapters/src/server/pending-content.ts` lists what is left to write, and holds the blog's placeholder posts today: add a path there before shipping a placeholder, and remove it when the value is written, or the build stops.
+- Routes read content through the domain's use cases (`@myself-app/domain/use-cases`) over `SITE_CONTENT` (`src/composition.ts`); a use case's `loadAll(Entity, request, { resolve: ['links'] })` runs entifix's `load` use case and resolves the links asked for, which `targetOf`/`targetsOf` then read — no id maps, no casts. The radar's and the blog's filters run the same use case in the browser, over `/data/*.json`, through `useUrlFilter`, reading their source from the UI's `useSources()`, which the app mounts around those two pages only (ADR 0016, 0018, 0019).
 
 ## Writing a post
 
@@ -86,9 +87,9 @@ A post is a record in `packages/content/src/posts.json` and two Markdown files b
 Tailwind v4 over `@entifix/style` tokens (ADR 0006).
 
 - **Style with token utilities** (`bg-surface`, `text-content-muted`, `gap-s`, `text-step-1`) and primitives from `@entifix/react-controls/primitives`.
-- **Palette values live in `app/themes.css`**, under `[data-theme='light']` and `[data-theme='dark']`. The site's identity changes there, never in a component.
-- **The theme is set before first paint** by `components/theme-script.tsx`: the stored choice if there is one, otherwise `DEFAULT_THEME` (blue). Blue and dark apply on screen only, so paper is always light. The e2e journey in `theme.spec.ts` records every `data-theme` write and fails on a flash.
-- ⚠️ **Tailwind does not scan `node_modules`.** `app/global.css` has an `@source` for the primitives' `dist`. Without it their classes produce no CSS and nothing reports it.
+- **Palette values live in the UI's `styles/themes.css`**, under `[data-theme='light']` and `[data-theme='dark']`. The site's identity changes there, never in a component.
+- **The theme is set before first paint** by the UI's `atoms/theme-script`: the stored choice if there is one, otherwise `DEFAULT_THEME` (blue). Blue and dark apply on screen only, so paper is always light. The e2e journey in `theme.spec.ts` records every `data-theme` write and fails on a flash.
+- ⚠️ **Tailwind does not scan `node_modules`.** `app/global.css` has an `@source` for each package `dist` whose classes it needs (entifix's primitives, the incubator's controls, the UI). Without it their classes produce no CSS and nothing reports it.
 - ⚠️ **Never import the `@entifix/react-controls` main barrel or `./preferences`.** Lint fails on both.
 - ⚠️ **Keep `optimizePackageImports` in `next.config.js`.** entifix's packages declare no `sideEffects`, and without it one primitive ships the whole barrel and Effect to the browser.
 - ⚠️ **`max-w-2xl` and its siblings are not Tailwind's container scale here.** entifix's tokens redefine those steps as spacing, so `max-w-2xl` is about 80px. Give a width a length (`max-w-[42rem]`) when you mean one.
@@ -110,27 +111,29 @@ pnpm exec playwright install firefox webkit      # print emulation in the other 
 
 ## Third-party code
 
-`components/tech-radar/` (`random.ts`, `geometry.ts`, `layout.ts`) is a port of [zalando/tech-radar](https://github.com/zalando/tech-radar)'s maths, MIT licensed. Each file keeps Zalando's copyright notice, which the licence requires of derived work; ADR 0009 says what was ported, what was not, and why. This is unrelated to the no-AI-attribution rule, which is about tool attribution, not authorship of borrowed code.
+`packages/entifix-incubator/react-controls/src/ui/organisms/radar-chart/` (`random.ts`, `geometry.ts`, `layout.ts`) is a port of [zalando/tech-radar](https://github.com/zalando/tech-radar)'s maths, MIT licensed. Each file keeps Zalando's copyright notice, which the licence requires of derived work; ADR 0009 says what was ported, what was not, and why. This is unrelated to the no-AI-attribution rule, which is about tool attribution, not authorship of borrowed code.
 
 ## Boundaries between projects
 
 Every project has exactly one `layer:*` tag in its `package.json` `nx.tags`, and `@nx/enforce-module-boundaries` in the root `eslint.config.mjs` holds the direction of ADR 0004:
 
 ```
-app              ──►  domain, content, incubator
-incubator        ──►  incubator, @entifix/*, effect, react (never domain)
-domain           ──►  @entifix/*, effect
+app                      ──►  implementation, domain, incubator
+implementation:ui        ──►  domain, incubator (never adapters or content; specs may reach adapters)
+implementation:adapters  ──►  domain, content, incubator (never ui)
+incubator                ──►  incubator, @entifix/*, effect, react (never domain)
+domain                   ──►  the static adapter, @entifix/*, effect
 content          ──►  nothing
 infra            ──►  @pulumi/*
 ```
 
-When you add a package under `packages/`, give it its tag: `layer:domain`, `layer:incubator` or `layer:content`. `layer:incubator` is for code meant to move into entifix (ADR 0016): it knows no entity of this site, so moving it is a copy. The conventions spec (`pnpm nx test @myself-app/conventions`) fails on a project without a known `layer:*` tag.
+When you add a package under `packages/`, put it in its layer's folder (`packages/entifix-incubator/`, `packages/implementation/`) and give it its tag: `layer:domain`, `layer:incubator`, `layer:content` or `layer:implementation` with one `implementation:*` (ADR 0019). `layer:incubator` is for code meant to move into entifix (ADR 0016): it knows no entity of this site, so moving it is a copy. The conventions spec (`pnpm nx test @myself-app/conventions`) fails on a project without a known `layer:*` tag.
 
 ## Adding a package
 
-The four under `packages/` are the models; copy the one closest to what you need.
+The packages under `packages/` are the models; copy the one closest to what you need.
 
-- **`package.json`**: `@myself-app/<name>`, `private`, `type: "module"`, one `layer:*` tag in `nx.tags`, and an `exports` map with `"@myself-app/source": "./src/index.ts"` (what TypeScript reads, through `customConditions` in `tsconfig.base.json`) beside `types`/`import` pointing at `dist`. Dependencies shared with the workspace are `"catalog:"`; two copies of `effect` break `Context.Tag` identity without an error.
+- **`package.json`**: `@myself-app/<folders joined by ->`, `private`, `type: "module"`, one `layer:*` tag in `nx.tags`, and an `exports` map with `"@myself-app/source": "./src/index.ts"` (what TypeScript reads, through `customConditions` in `tsconfig.base.json`) beside `types`/`import` pointing at `dist`. Dependencies shared with the workspace are `"catalog:"`; two copies of `effect` break `Context.Tag` identity without an error.
 - **A build**: `.swcrc`, `tsconfig.lib.json` and an `@nx/js:swc` `build` target, as `packages/domain` has. The app is buildable, so the boundary rule refuses an unbuildable dependency. Relative imports name their file with `.js`.
 - **A test target**, when the package runs logic: `vitest.config.mts` with the 100% thresholds, `enabled: true`, and `unplugin-swc` if a spec touches an entity. A layer that may not import `vitest` — `content` — has no test target, and is checked by what reads it.
 - **The references**: add it to the root `tsconfig.json`, and run `pnpm nx sync` after the app depends on it.
@@ -138,7 +141,7 @@ The four under `packages/` are the models; copy the one closest to what you need
 
 ## Moving code into entifix
 
-The `layer:incubator` packages (`static-adapter`, `entifix-browser`) know no entity of this site, so moving one into entifix is a copy: take its `src/` and specs into the entifix package it belongs in, release entifix, bump the catalog here, then replace the imports and delete the package. ADR 0016 and 0018 list what each would close in entifix (entifix#38–41).
+The `layer:incubator` packages (`static-adapter`, `browser`, `react-controls`, under `packages/entifix-incubator/`) know no entity of this site, so moving one into entifix is a copy: take its `src/` and specs into the entifix package it belongs in, release entifix, bump the catalog here, then replace the imports and delete the package. ADR 0016 and 0018 list what each would close in entifix (entifix#38–41).
 
 ## Working on entifix from here
 

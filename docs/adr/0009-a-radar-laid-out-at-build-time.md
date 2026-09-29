@@ -5,6 +5,7 @@
 - Area: ui
 - Revised: 2026-09-25 by [ADR 0014](0014-a-personal-radar.md) — filtering (#41) dims blips the build placed; the layout stays out of the browser
 - Read when: the radar's blips moved between two builds, or a radar library is
+- Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — the chart and its layout are the incubator's `radar-chart` organism, which takes a link per blip and the locale to number by
   proposed
 
 ## Context
@@ -28,7 +29,8 @@ the choice of rendering at build or querying in the browser.
 **The geometry and layout are ported to TypeScript, and they run during
 `next build`.**
 
-- `apps/myself-app/src/components/tech-radar/` holds the port: the seeded
+- `packages/entifix-incubator/react-controls/src/ui/organisms/radar-chart/`
+  holds the port: the seeded
   generator, the sixteen segments, and `layoutRadar`, which places, numbers and
   separates blips. Each file carries Zalando's MIT notice, as the licence
   requires of derived work.

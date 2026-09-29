@@ -5,6 +5,7 @@
 - Area: data
 - Read when: a filter or a list in the browser needs data, a page's scripts grew past its budget, a filtered view disagrees with the page it filters, or code is about to move into entifix
 - Revised: 2026-09-27 by [ADR 0018](0018-the-incubator-owns-content-mechanics.md) — the gaps below are filed as entifix#38–41; `loadThroughUseCase` moved to the static adapter, and a filter is `useUrlFilter`
+- Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — the incubator's packages live under `packages/entifix-incubator/`, named after it, and its React controls are a package of their own
 
 Decides the browser half of #70. Supersedes the gate of
 [ADR 0003](0003-build-time-pages-and-browser-queries.md), which measured path C
@@ -52,13 +53,15 @@ pages that filter.
   an insensitive collation does.
 - **An incubator layer holds what is meant for entifix.** `layer:incubator`
   projects know no entity of the site and may depend only on each other,
-  `@entifix/*`, `effect` and `react`. Today: `@myself-app/static-adapter`
-  (entifix#37) and `@myself-app/entifix-browser`. Moving one into entifix is a
+  `@entifix/*`, `effect` and `react`. Today, under `packages/entifix-incubator/`:
+  `@myself-app/entifix-incubator-static-adapter` (entifix#37),
+  `@myself-app/entifix-incubator-browser` and
+  `@myself-app/entifix-incubator-react-controls`. Moving one into entifix is a
   copy, then a version bump here.
 - **Client code imports one entity at a time.** The domain barrel has side
   effects and brings every entity along, so a client component imports from
   `@myself-app/domain/entities/<name>`. The hooks come from
-  `@myself-app/entifix-browser/react`, apart from the barrel, because a server
+  `@myself-app/entifix-incubator-browser/react`, apart from the barrel, because a server
   component reads through the barrel at build time.
 
 ### Measured (2026-09-27, #70)
