@@ -1,7 +1,10 @@
 import { cvVariantParams } from '@myself-app/domain/use-cases';
+import {
+  cvMetadata,
+  CvPageView,
+} from '@myself-app/implementation-ui/templates';
 import type { Metadata } from 'next';
 
-import { cvMetadata, CvPageView } from '../../../../../components/cv/cv-page';
 import { SITE_CONTENT } from '../../../../../composition';
 import { loadCvPage } from '../../cv-route';
 

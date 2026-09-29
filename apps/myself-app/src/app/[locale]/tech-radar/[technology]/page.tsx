@@ -11,23 +11,26 @@ import { Technology } from '@myself-app/domain';
 import { loadPostsForTechnology } from '@myself-app/domain/use-cases';
 import { loadTechnologyDetail } from '@myself-app/domain/use-cases';
 import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-
-import { postPath } from '../../../../components/blog/post-cards';
-import { formatPeriod, inLocale } from '../../../../components/cv/cv-format';
-import { projectAnchor } from '../../../../components/landing/projects-section';
-import { SiteNav } from '../../../../components/site-nav';
-import { radarEntryPath } from '../../../../components/tech-radar/radar-paths';
-import { SITE_CONTENT } from '../../../../composition';
-import { BLOG_READS } from '../../../../content/blog-reads';
-import { siteT } from '../../../../i18n/server';
+import { siteT } from '@myself-app/implementation-ui/i18n';
+import { postPath } from '@myself-app/implementation-ui/molecules';
+import {
+  formatPeriod,
+  inLocale,
+} from '@myself-app/implementation-ui/organisms';
+import { projectAnchor } from '@myself-app/implementation-ui/organisms';
+import { SiteNav } from '@myself-app/implementation-ui/organisms';
+import { radarEntryPath } from '@myself-app/implementation-ui/routing';
 import {
   isSiteLocale,
   localeAlternates,
   localePath,
-} from '../../../../site-locales';
+} from '@myself-app/implementation-ui/routing';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+
+import { SITE_CONTENT } from '../../../../composition';
+import { BLOG_READS } from '../../../../content/blog-reads';
 
 /** One page per technology, and no other (#42, ADR 0014). */
 export const dynamicParams = false;

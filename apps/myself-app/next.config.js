@@ -28,6 +28,7 @@ const nextConfig = {
       '@entifix/react-controls',
       '@entifix/core',
       '@myself-app/entifix-incubator-react-controls',
+      '@myself-app/implementation-ui',
     ],
   },
 };

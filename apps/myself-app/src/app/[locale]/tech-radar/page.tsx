@@ -17,19 +17,20 @@ import {
   layoutRadar,
   RingKey,
 } from '@myself-app/entifix-incubator-react-controls';
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-
-import { SiteNav } from '../../../components/site-nav';
-import { radarEntriesOf } from '../../../components/tech-radar/entries';
-import { RadarExplorer } from '../../../components/tech-radar/radar-explorer';
-import { SITE_CONTENT } from '../../../composition';
-import { siteT } from '../../../i18n/server';
+import { siteT } from '@myself-app/implementation-ui/i18n';
+import { SiteNav } from '@myself-app/implementation-ui/organisms';
+import { radarEntriesOf } from '@myself-app/implementation-ui/organisms';
+import { RadarExplorer } from '@myself-app/implementation-ui/organisms';
 import {
   isSiteLocale,
   localeAlternates,
   SITE_DEFAULT_LOCALE,
-} from '../../../site-locales';
+} from '@myself-app/implementation-ui/routing';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+
+import { SITE_CONTENT } from '../../../composition';
+import { BrowserSources } from '../../../providers/browser-sources';
 
 const PATH = '/tech-radar';
 
@@ -107,47 +108,49 @@ export default async function TechRadarPage({
               </Text>
               <Lead muted>{t('techRadarLead')}</Lead>
             </Stack>
-            <RadarExplorer
-              layout={layout}
-              locale={locale}
-              quadrants={quadrants}
-              rings={rings}
-              areas={areas}
-              vocabulary={{
-                quadrants: quadrantRecords.map(each => String(each.id)),
-                rings: ringRecords.map(each => String(each.id)),
-                areas: areas.map(area => area.id),
-              }}
-              copy={{
-                chartLabel: t('radar.chartLabel'),
-                legend: t('radar.legend'),
-                filters: t('radar.filter.label'),
-                quadrant: t('radar.filter.quadrant'),
-                ring: t('radar.filter.ring'),
-                area: t('radar.filter.area'),
-                search: t('radar.filter.search'),
-                clear: t('radar.filter.clear'),
-                showing: t('radar.filter.showing', {
-                  shown: '{{shown}}',
-                  total: '{{total}}',
-                }),
-              }}
-            >
-              <Stack gap="s">
-                <Text as="h2" step={2} weight="semibold">
-                  {t('radar.ringKey')}
-                </Text>
-                <RingKey
-                  rings={ringRecords.map((ring, index) => ({
-                    name: rings[index],
-                    meaning: localize(
-                      ring.description as LocalizedText,
-                      locale,
-                    ),
-                  }))}
-                />
-              </Stack>
-            </RadarExplorer>
+            <BrowserSources>
+              <RadarExplorer
+                layout={layout}
+                locale={locale}
+                quadrants={quadrants}
+                rings={rings}
+                areas={areas}
+                vocabulary={{
+                  quadrants: quadrantRecords.map(each => String(each.id)),
+                  rings: ringRecords.map(each => String(each.id)),
+                  areas: areas.map(area => area.id),
+                }}
+                copy={{
+                  chartLabel: t('radar.chartLabel'),
+                  legend: t('radar.legend'),
+                  filters: t('radar.filter.label'),
+                  quadrant: t('radar.filter.quadrant'),
+                  ring: t('radar.filter.ring'),
+                  area: t('radar.filter.area'),
+                  search: t('radar.filter.search'),
+                  clear: t('radar.filter.clear'),
+                  showing: t('radar.filter.showing', {
+                    shown: '{{shown}}',
+                    total: '{{total}}',
+                  }),
+                }}
+              >
+                <Stack gap="s">
+                  <Text as="h2" step={2} weight="semibold">
+                    {t('radar.ringKey')}
+                  </Text>
+                  <RingKey
+                    rings={ringRecords.map((ring, index) => ({
+                      name: rings[index],
+                      meaning: localize(
+                        ring.description as LocalizedText,
+                        locale,
+                      ),
+                    }))}
+                  />
+                </Stack>
+              </RadarExplorer>
+            </BrowserSources>
           </Stack>
         </Card>
       </Center>

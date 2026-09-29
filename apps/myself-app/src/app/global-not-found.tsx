@@ -1,12 +1,15 @@
 import './global.css';
 
 import { Center, Stack, Text } from '@entifix/react-controls/primitives';
+import { ThemeScript } from '@myself-app/implementation-ui/atoms';
+import { siteT } from '@myself-app/implementation-ui/i18n';
+import {
+  localePath,
+  SITE_LOCALES,
+} from '@myself-app/implementation-ui/routing';
 import type { Metadata } from 'next';
 
-import { ThemeScript } from '../components/theme-script';
 import { fontVariables } from '../fonts';
-import { siteT } from '../i18n/server';
-import { localePath, SITE_LOCALES } from '../site-locales';
 
 export const metadata: Metadata = {
   title: `404 — ${siteT('en')('siteName')}`,

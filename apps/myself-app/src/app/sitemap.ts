@@ -1,8 +1,8 @@
+import { siteMapEntries } from '@myself-app/implementation-ui/routing';
 import type { MetadataRoute } from 'next';
 
 import { SITE_CONTENT } from '../composition';
 import { loadSitePaths } from '../content/site-paths';
-import { siteMapEntries } from '../site-map';
 import { siteUrl } from '../site-url';
 
 /** Written once into the export as `sitemap.xml`. */

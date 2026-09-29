@@ -7,8 +7,8 @@ import { Technology } from '@myself-app/domain';
 import { loadPostIds } from '@myself-app/domain/use-cases';
 import { cvVariantParams } from '@myself-app/domain/use-cases';
 import type { StaticContent as SiteContent } from '@myself-app/entifix-incubator-static-adapter';
+import { SITE_PATHS } from '@myself-app/implementation-ui/routing';
 
-import { SITE_PATHS } from '../site-map';
 import { BLOG_READS } from './blog-reads';
 
 export async function loadSitePaths(content: SiteContent): Promise<string[]> {

@@ -123,6 +123,38 @@ export default [
     },
   },
   {
+    // A UI spec may hold a component to the content the site ships, which the
+    // adapters build (#75). Specs only: the UI's own code never loads content,
+    // the app's pages do. The one edge a spec gets that its file does not, as
+    // r10c gives its specs the `type:testing` libraries.
+    files: ['**/*.spec.ts', '**/*.spec.tsx', '**/src/test/**/*.ts'],
+    rules: {
+      '@nx/enforce-module-boundaries': [
+        'error',
+        {
+          enforceBuildableLibDependency: true,
+          allow: allowEslintConfig,
+          depConstraints: layerConstraints.map(constraint => {
+            if (constraint.sourceTag === 'implementation:ui') {
+              // The adapters it reaches read the content: that edge is theirs.
+              return { ...constraint, notDependOnLibsWithTags: [] };
+            }
+            if (constraint.sourceTag === 'layer:implementation') {
+              return {
+                ...constraint,
+                onlyDependOnLibsWithTags: [
+                  ...constraint.onlyDependOnLibsWithTags,
+                  'layer:implementation',
+                ],
+              };
+            }
+            return constraint;
+          }),
+        },
+      ],
+    },
+  },
+  {
     settings: {
       react: { version: '19.0.0' },
     },

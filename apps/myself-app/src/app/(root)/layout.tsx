@@ -1,10 +1,10 @@
 import '../global.css';
 
+import { ThemeScript } from '@myself-app/implementation-ui/atoms';
+import { SITE_DEFAULT_LOCALE } from '@myself-app/implementation-ui/routing';
 import type { ReactNode } from 'react';
 
-import { ThemeScript } from '../../components/theme-script';
 import { fontVariables } from '../../fonts';
-import { SITE_DEFAULT_LOCALE } from '../../site-locales';
 
 /**
  * The root layout for `/` alone. Every other page sits under `[locale]`, whose

@@ -1,0 +1,158 @@
+{
+  "name": "@myself-app/implementation-ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The site's UI in atomic layers \u2014 atoms, molecules, organisms, templates \u2014 with its copy, its routes and its context. Renders what the app's pages load; never loads content itself.",
+  "exports": {
+    "./package.json": "./package.json",
+    "./atoms": {
+      "@myself-app/source": "./src/atoms/index.ts",
+      "types": "./dist/atoms/index.d.ts",
+      "import": "./dist/atoms/index.js",
+      "default": "./dist/atoms/index.js"
+    },
+    "./molecules": {
+      "@myself-app/source": "./src/molecules/index.ts",
+      "types": "./dist/molecules/index.d.ts",
+      "import": "./dist/molecules/index.js",
+      "default": "./dist/molecules/index.js"
+    },
+    "./organisms": {
+      "@myself-app/source": "./src/organisms/index.ts",
+      "types": "./dist/organisms/index.d.ts",
+      "import": "./dist/organisms/index.js",
+      "default": "./dist/organisms/index.js"
+    },
+    "./templates": {
+      "@myself-app/source": "./src/templates/index.ts",
+      "types": "./dist/templates/index.d.ts",
+      "import": "./dist/templates/index.js",
+      "default": "./dist/templates/index.js"
+    },
+    "./i18n": {
+      "@myself-app/source": "./src/i18n/index.ts",
+      "types": "./dist/i18n/index.d.ts",
+      "import": "./dist/i18n/index.js",
+      "default": "./dist/i18n/index.js"
+    },
+    "./i18n/catalogs": {
+      "@myself-app/source": "./src/i18n/catalogs/index.ts",
+      "types": "./dist/i18n/catalogs/index.d.ts",
+      "import": "./dist/i18n/catalogs/index.js",
+      "default": "./dist/i18n/catalogs/index.js"
+    },
+    "./routing": {
+      "@myself-app/source": "./src/routing/index.ts",
+      "types": "./dist/routing/index.d.ts",
+      "import": "./dist/routing/index.js",
+      "default": "./dist/routing/index.js"
+    },
+    "./theme": {
+      "@myself-app/source": "./src/theme/index.ts",
+      "types": "./dist/theme/index.d.ts",
+      "import": "./dist/theme/index.js",
+      "default": "./dist/theme/index.js"
+    },
+    "./providers": {
+      "@myself-app/source": "./src/providers/index.ts",
+      "types": "./dist/providers/index.d.ts",
+      "import": "./dist/providers/index.js",
+      "default": "./dist/providers/index.js"
+    },
+    "./sources": {
+      "@myself-app/source": "./src/sources/index.ts",
+      "types": "./dist/sources/index.d.ts",
+      "import": "./dist/sources/index.js",
+      "default": "./dist/sources/index.js"
+    },
+    "./markdown": {
+      "@myself-app/source": "./src/markdown/index.ts",
+      "types": "./dist/markdown/index.d.ts",
+      "import": "./dist/markdown/index.js",
+      "default": "./dist/markdown/index.js"
+    },
+    "./feed": {
+      "@myself-app/source": "./src/feed/index.ts",
+      "types": "./dist/feed/index.d.ts",
+      "import": "./dist/feed/index.js",
+      "default": "./dist/feed/index.js"
+    },
+    "./social": {
+      "@myself-app/source": "./src/social/index.ts",
+      "types": "./dist/social/index.d.ts",
+      "import": "./dist/social/index.js",
+      "default": "./dist/social/index.js"
+    },
+    "./styles/*": "./src/styles/*"
+  },
+  "sideEffects": [
+    "./src/i18n/install.ts",
+    "./dist/i18n/install.js"
+  ],
+  "nx": {
+    "tags": [
+      "layer:implementation",
+      "implementation:ui"
+    ],
+    "targets": {
+      "build": {
+        "executor": "@nx/js:swc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "packages/implementation/ui/dist",
+          "main": "packages/implementation/ui/src/atoms/index.ts",
+          "tsConfig": "packages/implementation/ui/tsconfig.lib.json",
+          "skipTypeCheck": true,
+          "stripLeadingPaths": true
+        }
+      },
+      "test": {
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "@entifix/core": "catalog:",
+    "@entifix/i18n": "catalog:",
+    "@entifix/react-controls": "catalog:",
+    "@myself-app/domain": "workspace:*",
+    "@myself-app/entifix-incubator-browser": "workspace:*",
+    "@myself-app/entifix-incubator-react-controls": "workspace:*",
+    "@shikijs/rehype": "4.4.3",
+    "@swc/helpers": "0.5.23",
+    "hast-util-to-jsx-runtime": "2.3.6",
+    "i18next": "26.4.2",
+    "image-size": "2.0.4",
+    "mdast-util-directive": "3.1.0",
+    "rehype-sanitize": "6.0.0",
+    "rehype-slug": "6.0.0",
+    "remark-directive": "4.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
+    "remark-rehype": "11.1.2",
+    "shiki": "4.4.3",
+    "unified": "11.0.5",
+    "unist-util-visit": "5.1.0"
+  },
+  "peerDependencies": {
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@myself-app/entifix-incubator-static-adapter": "workspace:*",
+    "@myself-app/implementation-adapters": "workspace:*",
+    "@types/hast": "3.0.5",
+    "@types/mdast": "4.0.4",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  }
+}

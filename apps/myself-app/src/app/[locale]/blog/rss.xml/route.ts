@@ -1,9 +1,12 @@
 import { loadPosts } from '@myself-app/domain/use-cases';
+import { renderFeed } from '@myself-app/implementation-ui/feed';
+import {
+  isSiteLocale,
+  SITE_LOCALES,
+} from '@myself-app/implementation-ui/routing';
 import { notFound } from 'next/navigation';
 
-import { renderFeed } from '../../../../blog/feed';
 import { SITE_CONTENT } from '../../../../composition';
-import { isSiteLocale, SITE_LOCALES } from '../../../../site-locales';
 import { siteUrl } from '../../../../site-url';
 
 /**

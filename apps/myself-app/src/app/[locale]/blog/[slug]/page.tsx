@@ -1,3 +1,5 @@
+import { join } from 'node:path';
+
 import {
   Cluster,
   linkClassName,
@@ -13,28 +15,28 @@ import {
   previewsOf,
   relatedPosts,
 } from '@myself-app/domain/use-cases';
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-
-import { BlogLayout } from '../../../../components/blog/blog-layout';
-import { FilterLinks } from '../../../../components/blog/filter-links';
-import { filterOptionsOf } from '../../../../components/blog/filter-options';
-import { renderPostBody } from '../../../../components/blog/post-body';
-import { PostCard } from '../../../../components/blog/post-card';
-import { formatDay, postCardOf } from '../../../../components/blog/post-cards';
-import { inLocale } from '../../../../components/cv/cv-format';
-import { SiteNav } from '../../../../components/site-nav';
-import { technologyPath } from '../../../../components/tech-radar/radar-paths';
-import { SITE_CONTENT } from '../../../../composition';
-import { BLOG_PREVIEWS, BLOG_READS } from '../../../../content/blog-reads';
-import { loadSitePaths } from '../../../../content/site-paths';
-import { siteT } from '../../../../i18n/server';
+import { siteT } from '@myself-app/implementation-ui/i18n';
+import { FilterLinks } from '@myself-app/implementation-ui/molecules';
+import { PostCard } from '@myself-app/implementation-ui/molecules';
+import { formatDay, postCardOf } from '@myself-app/implementation-ui/molecules';
+import { filterOptionsOf } from '@myself-app/implementation-ui/organisms';
+import { renderPostBody } from '@myself-app/implementation-ui/organisms';
+import { inLocale } from '@myself-app/implementation-ui/organisms';
+import { SiteNav } from '@myself-app/implementation-ui/organisms';
+import { technologyPath } from '@myself-app/implementation-ui/routing';
 import {
   isSiteLocale,
   localeAlternates,
   localePath,
-} from '../../../../site-locales';
+} from '@myself-app/implementation-ui/routing';
+import { BlogLayout } from '@myself-app/implementation-ui/templates';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+
+import { SITE_CONTENT } from '../../../../composition';
+import { BLOG_PREVIEWS, BLOG_READS } from '../../../../content/blog-reads';
+import { loadSitePaths } from '../../../../content/site-paths';
 
 /** One page per post, and no other; a draft only under `next dev`. */
 export const dynamicParams = false;
@@ -99,6 +101,8 @@ export default async function PostPage({
     markdown: inLocale(post.body as LocalizedText, locale),
     locale,
     sitePaths,
+    // The build runs from the app's folder, whose `public/` the export serves.
+    publicDirectory: join(process.cwd(), 'public'),
   });
   const blogPath = localePath(locale, '/blog');
   const sidebar = (

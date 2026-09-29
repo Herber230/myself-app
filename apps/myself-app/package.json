@@ -18,6 +18,7 @@
     "@myself-app/entifix-incubator-react-controls": "workspace:*",
     "@myself-app/entifix-incubator-static-adapter": "workspace:*",
     "@myself-app/implementation-adapters": "workspace:*",
+    "@myself-app/implementation-ui": "workspace:*",
     "@shikijs/rehype": "4.4.3",
     "effect": "catalog:",
     "hast-util-to-jsx-runtime": "2.3.6",

@@ -1,15 +1,19 @@
 import { loadPostPreviews } from '@myself-app/domain/use-cases';
+import { siteT } from '@myself-app/implementation-ui/i18n';
+import { postCardOf } from '@myself-app/implementation-ui/molecules';
+import { filterOptionsOf } from '@myself-app/implementation-ui/organisms';
+import { PostExplorer } from '@myself-app/implementation-ui/organisms';
+import { SiteNav } from '@myself-app/implementation-ui/organisms';
+import {
+  isSiteLocale,
+  localeAlternates,
+} from '@myself-app/implementation-ui/routing';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { filterOptionsOf } from '../../../components/blog/filter-options';
-import { postCardOf } from '../../../components/blog/post-cards';
-import { PostExplorer } from '../../../components/blog/post-explorer';
-import { SiteNav } from '../../../components/site-nav';
 import { SITE_CONTENT } from '../../../composition';
 import { BLOG_PREVIEWS } from '../../../content/blog-reads';
-import { siteT } from '../../../i18n/server';
-import { isSiteLocale, localeAlternates } from '../../../site-locales';
+import { BrowserSources } from '../../../providers/browser-sources';
 
 const PATH = '/blog';
 
@@ -44,31 +48,33 @@ export default async function BlogPage({
   return (
     <>
       <SiteNav locale={locale} path={PATH} />
-      <PostExplorer
-        posts={previews.map(preview => postCardOf(preview, locale, t))}
-        locale={locale}
-        tags={tags}
-        technologies={technologies}
-        years={years}
-        copy={{
-          filters: t('blogPage.filter.label'),
-          tag: t('blogPage.filter.tag'),
-          technology: t('blogPage.filter.technology'),
-          year: t('blogPage.filter.year'),
-          search: t('blogPage.filter.search'),
-          clear: t('blogPage.filter.clear'),
-          showing: t('blogPage.filter.showing', {
-            shown: '{{shown}}',
-            total: '{{total}}',
-          }),
-          empty: t('blogPage.empty'),
-          showSidebar: t('blogPage.sidebar.show'),
-          hideSidebar: t('blogPage.sidebar.hide'),
-        }}
-        title={t('blog')}
-        lead={t('blogLead')}
-        feed={{ href: `/${locale}/blog/rss.xml`, label: t('blogPage.feed') }}
-      />
+      <BrowserSources>
+        <PostExplorer
+          posts={previews.map(preview => postCardOf(preview, locale, t))}
+          locale={locale}
+          tags={tags}
+          technologies={technologies}
+          years={years}
+          copy={{
+            filters: t('blogPage.filter.label'),
+            tag: t('blogPage.filter.tag'),
+            technology: t('blogPage.filter.technology'),
+            year: t('blogPage.filter.year'),
+            search: t('blogPage.filter.search'),
+            clear: t('blogPage.filter.clear'),
+            showing: t('blogPage.filter.showing', {
+              shown: '{{shown}}',
+              total: '{{total}}',
+            }),
+            empty: t('blogPage.empty'),
+            showSidebar: t('blogPage.sidebar.show'),
+            hideSidebar: t('blogPage.sidebar.hide'),
+          }}
+          title={t('blog')}
+          lead={t('blogLead')}
+          feed={{ href: `/${locale}/blog/rss.xml`, label: t('blogPage.feed') }}
+        />
+      </BrowserSources>
     </>
   );
 }

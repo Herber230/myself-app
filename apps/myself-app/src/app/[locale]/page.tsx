@@ -1,18 +1,21 @@
 import { loadContactChannels } from '@myself-app/domain/use-cases';
 import { loadProfile } from '@myself-app/domain/use-cases';
 import { loadFeaturedProjects } from '@myself-app/domain/use-cases';
+import { siteT } from '@myself-app/implementation-ui/i18n';
+import { AboutSection } from '@myself-app/implementation-ui/organisms';
+import { ContactSection } from '@myself-app/implementation-ui/organisms';
+import { EntifixSection } from '@myself-app/implementation-ui/organisms';
+import { Hero } from '@myself-app/implementation-ui/organisms';
+import { ProjectsSection } from '@myself-app/implementation-ui/organisms';
+import { SiteNav } from '@myself-app/implementation-ui/organisms';
+import {
+  isSiteLocale,
+  localeAlternates,
+} from '@myself-app/implementation-ui/routing';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { AboutSection } from '../../components/landing/about-section';
-import { ContactSection } from '../../components/landing/contact-section';
-import { EntifixSection } from '../../components/landing/entifix-section';
-import { Hero } from '../../components/landing/hero';
-import { ProjectsSection } from '../../components/landing/projects-section';
-import { SiteNav } from '../../components/site-nav';
 import { SITE_CONTENT } from '../../composition';
-import { siteT } from '../../i18n/server';
-import { isSiteLocale, localeAlternates } from '../../site-locales';
 
 const PATH = '/';
 

@@ -3,7 +3,7 @@
  * it, and a preview's excerpt read from the body's Markdown by the site's own
  * renderer. The domain's use cases take both as options.
  */
-import { excerptOf } from '../blog/markdown/excerpt';
+import { excerptOf } from '@myself-app/implementation-ui/markdown';
 
 /** Whether drafts are read: only while `next dev` serves the site. */
 export const SHOW_DRAFTS = process.env.NODE_ENV === 'development';

@@ -7,12 +7,12 @@ import {
   loadCvSheet,
   loadCvVariants,
 } from '@myself-app/domain/use-cases';
+import type { CvMode } from '@myself-app/implementation-ui/organisms';
+import { isSiteLocale } from '@myself-app/implementation-ui/routing';
+import type { CvPageData } from '@myself-app/implementation-ui/templates';
 import { notFound } from 'next/navigation';
 
-import type { CvMode } from '../../../components/cv/cv-format';
-import type { CvPageData } from '../../../components/cv/cv-page';
 import { SITE_CONTENT } from '../../../composition';
-import { isSiteLocale } from '../../../site-locales';
 
 export interface CvRoute {
   readonly locale: string;

@@ -1,6 +1,9 @@
+import {
+  cvMetadata,
+  CvPageView,
+} from '@myself-app/implementation-ui/templates';
 import type { Metadata } from 'next';
 
-import { cvMetadata, CvPageView } from '../../../components/cv/cv-page';
 import { loadCvPage } from './cv-route';
 
 /** The default variant, for people (ADR 0012). */

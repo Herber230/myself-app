@@ -53,6 +53,9 @@
     },
     {
       "path": "../../packages/entifix-incubator/react-controls"
+    },
+    {
+      "path": "../../packages/implementation/ui"
     }
   ]
 }

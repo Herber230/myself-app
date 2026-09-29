@@ -1,13 +1,19 @@
 import { localize, type LocalizedText } from '@myself-app/domain';
 import { loadPost, loadPostIds } from '@myself-app/domain/use-cases';
 import { loadProfile } from '@myself-app/domain/use-cases';
+import { en } from '@myself-app/implementation-ui/i18n/catalogs';
+import {
+  isSiteLocale,
+  SITE_LOCALES,
+} from '@myself-app/implementation-ui/routing';
+import {
+  renderSocialImage,
+  SOCIAL_IMAGE_SIZE,
+} from '@myself-app/implementation-ui/social';
 import { notFound } from 'next/navigation';
 
 import { SITE_CONTENT } from '../../../../composition';
 import { BLOG_READS } from '../../../../content/blog-reads';
-import { en } from '../../../../i18n/catalogs/en';
-import { isSiteLocale, SITE_LOCALES } from '../../../../site-locales';
-import { renderSocialImage, SOCIAL_IMAGE_SIZE } from '../../../../social-image';
 
 /** Written once per post and locale at build (ADR 0017). */
 export const dynamic = 'force-static';

@@ -1,14 +1,17 @@
 import '../global.css';
 
+import { ThemeScript } from '@myself-app/implementation-ui/atoms';
+import { siteT } from '@myself-app/implementation-ui/i18n';
+import { Providers } from '@myself-app/implementation-ui/providers';
+import {
+  isSiteLocale,
+  SITE_LOCALES,
+} from '@myself-app/implementation-ui/routing';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { ThemeScript } from '../../components/theme-script';
 import { fontVariables } from '../../fonts';
-import { siteT } from '../../i18n/server';
-import { isSiteLocale, SITE_LOCALES } from '../../site-locales';
 import { siteUrl } from '../../site-url';
-import { Providers } from './providers';
 
 /** Every locale is known at build time; any other segment is a 404. */
 export const dynamicParams = false;
