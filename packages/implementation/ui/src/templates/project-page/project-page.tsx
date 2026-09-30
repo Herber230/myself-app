@@ -1,4 +1,5 @@
 import {
+  button,
   Center,
   Cluster,
   Lead,
@@ -12,6 +13,8 @@ import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
+import { GitHubMark } from '../../atoms/icons/icons.js';
+import { NavIcon } from '../../atoms/nav-icon/nav-icon.js';
 import { ProjectGlyph } from '../../atoms/project-glyph/project-glyph.js';
 import { siteT } from '../../i18n/server.js';
 import { FileTree } from '../../molecules/file-tree/file-tree.js';
@@ -115,22 +118,29 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
                   </li>
                 ))}
               </Cluster>
-              <Cluster gap="m">
+            </Stack>
+            {(project.url || project.repositoryUrl) && (
+              <div className="project-actions">
                 {project.url && (
-                  <ExternalLink href={project.url} className={linkClassName}>
+                  <ExternalLink
+                    href={project.url}
+                    className={`${button({ variant: 'secondary', size: 'md' })} project-action`}
+                  >
+                    <NavIcon name="globe" className="project-action-icon" />
                     {t('projectPage.site')}
                   </ExternalLink>
                 )}
                 {project.repositoryUrl && (
                   <ExternalLink
                     href={project.repositoryUrl}
-                    className={linkClassName}
+                    className={`${button({ variant: 'primary', size: 'md' })} project-action project-action-source`}
                   >
+                    <GitHubMark className="project-action-icon" />
                     {t('projectPage.repository')}
                   </ExternalLink>
                 )}
-              </Cluster>
-            </Stack>
+              </div>
+            )}
           </header>
           <Part id="overview" heading={t('projectPage.overview')}>
             {overview}

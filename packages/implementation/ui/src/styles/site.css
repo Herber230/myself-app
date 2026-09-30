@@ -1232,6 +1232,73 @@
     align-items: center;
   }
 
+  /* The header's calls to action: centred under it, the source first to the
+     eye. On hover a button rises, the source's glows, a sheen crosses it and
+     its mark turns, as a cat looks up. */
+  .project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-s);
+    margin-top: var(--spacing-xl);
+  }
+
+  .project-action {
+    position: relative;
+    overflow: hidden;
+    gap: var(--spacing-2xs);
+    transition:
+      translate 180ms ease-out,
+      box-shadow 180ms ease-out,
+      background-color 150ms ease-out;
+  }
+
+  .project-action-icon {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: rotate 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .project-action:hover,
+  .project-action:focus-visible {
+    translate: 0 -2px;
+    box-shadow: 0 8px 20px -10px
+      color-mix(in srgb, var(--color-content) 45%, transparent);
+  }
+
+  .project-action-source:hover,
+  .project-action-source:focus-visible {
+    box-shadow:
+      0 10px 28px -10px var(--color-primary),
+      0 0 0 4px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  }
+
+  .project-action:hover .project-action-icon,
+  .project-action:focus-visible .project-action-icon {
+    rotate: -12deg;
+  }
+
+  .project-action-source::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 30%,
+      rgb(255 255 255 / 0.35) 50%,
+      transparent 70%
+    );
+    translate: -120% 0;
+    pointer-events: none;
+  }
+
+  .project-action-source:hover::after,
+  .project-action-source:focus-visible::after {
+    translate: 120% 0;
+    transition: translate 600ms ease-out;
+  }
+
   .project-page-part {
     scroll-margin-top: 5rem;
   }
@@ -1480,5 +1547,26 @@
   .project-card:hover .project-glyph path,
   .project-card:focus-within .project-glyph path {
     animation: none;
+  }
+
+  .project-action,
+  .project-action-icon,
+  .project-action-source:hover::after,
+  .project-action-source:focus-visible::after {
+    transition: none;
+  }
+
+  .project-action:hover,
+  .project-action:focus-visible {
+    translate: none;
+  }
+
+  .project-action:hover .project-action-icon,
+  .project-action:focus-visible .project-action-icon {
+    rotate: none;
+  }
+
+  .project-action-source::after {
+    display: none;
   }
 }
