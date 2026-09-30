@@ -209,6 +209,17 @@
     "supersedes": []
   },
   {
+    "id": "myself-app-0020",
+    "number": 20,
+    "title": "Project pages, and decision records as content",
+    "status": "accepted",
+    "date": "2026-09-30",
+    "area": "data",
+    "readWhen": "a record in `docs/adr` changed and the site still shows the old one, the conventions spec says the ADR copies drift, a project's page is about to show something its repository does not have, a record fails `next build`, or a Spanish reader asks why the records are in English",
+    "project": "myself-app",
+    "supersedes": []
+  },
+  {
     "id": "entifix-0001",
     "number": 1,
     "title": "The tier contract, and the seam a host configures across",

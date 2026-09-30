@@ -51,16 +51,16 @@ for (const [locale, copy] of Object.entries(HERO)) {
   });
 }
 
-test("a project's technology opens its entry on the radar", async ({
+test('the projects are stacked cards, each one link to its page', async ({
   page,
 }) => {
   await page.goto('/en/');
   const projects = page.getByRole('region', { name: 'Projects' });
-  const link = projects.getByRole('link', { name: 'TypeScript' }).first();
-  await expect(link).toHaveAttribute('href', '/en/tech-radar/#tech-typescript');
-  await link.click();
-  await page.waitForURL('/en/tech-radar/#tech-typescript');
-  await expect(page.locator('#tech-typescript')).toBeInViewport();
+  const links = projects.getByRole('link');
+  await expect(links).toHaveText(['entifix', 'myself-app']);
+  // The link is stretched over its card: a click on the card follows it.
+  await projects.getByRole('article').first().click();
+  await page.waitForURL('/en/projects/entifix/');
 });
 
 test('the bar is hidden over the hero and revealed by scrolling', async ({
@@ -171,7 +171,7 @@ test.describe('with scripting off', () => {
       page
         .getByRole('region', { name: 'Projects' })
         .getByRole('heading', { level: 3 }),
-    ).toHaveText(['myself-app', 'entifix']);
+    ).toHaveText(['entifix', 'myself-app']);
   });
 
   test('the language menu is a menu of plain links', async ({ page }) => {

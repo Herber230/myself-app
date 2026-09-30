@@ -90,8 +90,10 @@ test("a technology's page links back to the radar and on to its projects", async
   ).toBeVisible();
 
   await page.getByRole('link', { name: 'myself-app' }).click();
-  await page.waitForURL('/en/#project-myself-app');
-  await expect(page.locator('#project-myself-app')).toBeInViewport();
+  await page.waitForURL('/en/projects/myself-app/');
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'myself-app' }),
+  ).toBeVisible();
 
   await page.goto('/es/tech-radar/typescript/');
   await page.getByRole('link', { name: '← Volver al radar' }).click();

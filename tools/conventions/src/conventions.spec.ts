@@ -447,7 +447,7 @@ describe('the decision records the site shows', () => {
       /^\d{4}-.*\.md$/.test(file),
     );
     // Pinned: a walk that found nothing would check nothing.
-    expect(records.length).toBeGreaterThanOrEqual(19);
+    expect(records.length).toBeGreaterThanOrEqual(20);
     expect(() =>
       execFileSync('node', ['tools/sync-adrs.mjs', '--check'], {
         cwd: REPO_ROOT,
