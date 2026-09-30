@@ -18,6 +18,17 @@ const query = defineUrlQuery({
   },
 });
 
+const sortable = defineUrlQuery({
+  params: {
+    tag: { condition: anyOf('tags') },
+    sort: {
+      sorting: {
+        oldest: [{ 0: { property: 'writtenAt', type: 'asc' } }],
+      },
+    },
+  },
+});
+
 const notes = staticJsonSource(
   Note,
   '/data/note.json',
@@ -91,5 +102,26 @@ describe('useUrlFilter', () => {
     seen?.toggle('tag', 'web');
     seen?.set('q', ['x']);
     expect(window.location.search).toBe('');
+    // Clearing with no filter read yet writes the empty query.
+    window.history.replaceState(null, '', '/en/notes/?tag=web');
+    seen?.clear();
+    expect(window.location.search).toBe('');
+  });
+
+  it('orders every record by a chosen sort alone, which clearing keeps', async () => {
+    window.history.replaceState(null, '', '/en/notes/?sort=oldest');
+    const { result } = renderHook(() =>
+      useUrlFilter<'tag' | 'sort', undefined, Note>(notes, sortable, undefined),
+    );
+    expect(result.current.filtering).toBe(false);
+    await waitFor(() => expect(result.current.load.status).toBe('done'));
+    expect(result.current.order).toEqual(['static', 'queries', 'effects']);
+
+    act(() => result.current.toggle('tag', 'data'));
+    await waitFor(() =>
+      expect(result.current.order).toEqual(['queries', 'effects']),
+    );
+    act(() => result.current.clear());
+    expect(window.location.search).toBe('?sort=oldest');
   });
 });

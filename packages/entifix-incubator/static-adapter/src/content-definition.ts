@@ -66,6 +66,13 @@ export interface PublishedView<TEntity extends Entity> {
  */
 export type ReadSidecar = (id: string, locale: string) => string | undefined;
 
+/**
+ * The text of one member that is not localized, kept in a file beside the
+ * records (a record written in one language only), or `undefined` when the
+ * record has no file.
+ */
+export type ReadPlainSidecar = (id: string) => string | undefined;
+
 /** One entity, the file it is read from, and what else holds of it. */
 export interface ContentSource<TEntity extends Entity = Entity> {
   readonly entity: EntityConstructor<TEntity>;
@@ -77,6 +84,10 @@ export interface ContentSource<TEntity extends Entity = Entity> {
    * validation, so a missing locale fails with its path.
    */
   readonly sidecars?: Readonly<Partial<Record<MemberOf<TEntity>, ReadSidecar>>>;
+  /** Members read whole from a file beside each record, in no locale. */
+  readonly plainSidecars?: Readonly<
+    Partial<Record<MemberOf<TEntity>, ReadPlainSidecar>>
+  >;
 }
 
 /**
@@ -203,8 +214,9 @@ function linkedSources(
 
 /**
  * The content with every source's sidecars attached: per record, an object of
- * the locales whose file exists, or nothing when none does. A record with no
- * id is left for validation to report.
+ * the locales whose file exists (nothing when none does), and a plain member's
+ * text when its file exists. A record with no id is left for validation to
+ * report.
  */
 function withSidecars(
   content: Readonly<Record<string, readonly unknown[]>>,
@@ -212,14 +224,15 @@ function withSidecars(
   locales: readonly string[],
 ): Readonly<Record<string, readonly unknown[]>> {
   const attached: Record<string, readonly unknown[]> = { ...content };
-  for (const { file, sidecars = {} } of sources) {
-    const members = Object.entries(sidecars) as [string, ReadSidecar][];
-    if (members.length === 0) continue;
+  for (const { file, sidecars = {}, plainSidecars = {} } of sources) {
+    const localized = Object.entries(sidecars) as [string, ReadSidecar][];
+    const plain = Object.entries(plainSidecars) as [string, ReadPlainSidecar][];
+    if (localized.length === 0 && plain.length === 0) continue;
     attached[file] = (content[file] ?? []).map(record => {
       if (record === null || typeof record !== 'object') return record;
       const { id } = record as { id?: unknown };
       if (typeof id !== 'string' && typeof id !== 'number') return record;
-      const texts = members.flatMap(([member, read]) => {
+      const texts = localized.flatMap(([member, read]) => {
         const text = Object.fromEntries(
           locales.flatMap(locale => {
             const found = read(String(id), locale);
@@ -228,7 +241,15 @@ function withSidecars(
         );
         return Object.keys(text).length === 0 ? [] : [[member, text]];
       });
-      return { ...record, ...Object.fromEntries(texts) };
+      const whole = plain.flatMap(([member, read]) => {
+        const found = read(String(id));
+        return found === undefined ? [] : [[member, found]];
+      });
+      return {
+        ...record,
+        ...Object.fromEntries(texts),
+        ...Object.fromEntries(whole),
+      };
     });
   }
   return attached;
