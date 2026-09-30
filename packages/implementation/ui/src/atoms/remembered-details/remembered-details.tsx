@@ -22,18 +22,25 @@ export function RememberedDetails({
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDetailsElement>(null);
+  // A browser fires `toggle` for a disclosure parsed open, which may arrive
+  // before the stored state is read: no toggle counts until it has been.
+  const restored = useRef(false);
 
   useEffect(() => {
+    restored.current = true;
+    const details = ref.current as HTMLDetailsElement;
     try {
-      if (localStorage.getItem(storageKey) === CLOSED && ref.current) {
-        ref.current.open = false;
-      }
+      // Closed before the page was ready: remember that too.
+      if (!details.open) localStorage.setItem(storageKey, CLOSED);
+      else if (localStorage.getItem(storageKey) === CLOSED)
+        details.open = false;
     } catch {
       // Storage refused (a private window, blocked site data): stay open.
     }
   }, [storageKey]);
 
   const remember = () => {
+    if (!restored.current) return;
     try {
       if (ref.current?.open) localStorage.removeItem(storageKey);
       else localStorage.setItem(storageKey, CLOSED);

@@ -54,4 +54,52 @@ describe('a remembered disclosure', () => {
     details.open = false;
     expect(() => fireEvent(details, new Event('toggle'))).not.toThrow();
   });
+
+  it('ignores a toggle that arrives before the stored state is read', () => {
+    localStorage.setItem(KEY, 'closed');
+    const { container } = render(
+      <RememberedDetails storageKey={KEY} summary="How">
+        <p>{'Inside'}</p>
+      </RememberedDetails>,
+      {
+        // Fire the load's toggle during the first render's commit, before
+        // any effect runs.
+        wrapper: ({ children }) => (
+          <div
+            ref={node => {
+              node
+                ?.querySelector('details')
+                ?.dispatchEvent(new Event('toggle'));
+            }}
+          >
+            {children}
+          </div>
+        ),
+      },
+    );
+    expect(localStorage.getItem(KEY)).toBe('closed');
+    expect(container.querySelector('details')?.open).toBe(false);
+  });
+
+  it('remembers being closed before the page was ready', () => {
+    const { container } = render(
+      <RememberedDetails storageKey={KEY} summary="How">
+        <p>{'Inside'}</p>
+      </RememberedDetails>,
+      {
+        wrapper: ({ children }) => (
+          <div
+            ref={node => {
+              const details = node?.querySelector('details');
+              if (details) details.open = false;
+            }}
+          >
+            {children}
+          </div>
+        ),
+      },
+    );
+    expect(container.querySelector('details')?.open).toBe(false);
+    expect(localStorage.getItem(KEY)).toBe('closed');
+  });
 });
