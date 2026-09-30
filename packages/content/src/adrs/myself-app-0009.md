@@ -24,20 +24,21 @@ the choice of rendering at build or querying in the browser.
 **The geometry and layout are ported to TypeScript, and they run during
 `next build`.**
 
-- `packages/entifix-incubator/react-controls/src/ui/organisms/radar-chart/`
-  holds the port: the seeded
+- **The port lives in the incubator's radar control.**
+  `packages/entifix-incubator/react-controls/src/ui/organisms/radar-chart/`
+  holds it: the seeded
   generator, the sixteen segments, and `layoutRadar`, which places, numbers and
   separates blips. Each file carries Zalando's MIT notice, as the licence
   requires of derived work.
-- The page renders the resulting coordinates as SVG in a server component. The
-  radar therefore ships **no JavaScript**, and an e2e journey loads the page
+- **The radar ships no JavaScript.** The page renders the resulting
+  coordinates as SVG in a server component, and an e2e journey loads the page
   with JavaScript disabled to keep it that way.
 - **The force simulation is not ported.** d3's `forceCollide` separates
   coincident nodes with `Math.random`, so its output differs between runs; the
   export would then differ on every build and a screenshot diff would be noise.
   A relaxation pass driven by the same seeded generator settles to the same
   24px separation and is deterministic.
-- The control knows no semantics. Quadrant and ring names arrive as props from
+- **The control knows no semantics.** Quadrant and ring names arrive as props from
   the catalogs, and blips arrive as data. What the four rings _mean_ for one
   person is still open in #39, and answering it must not touch the SVG.
 - Blips are numbered by the **default locale's** label, so a technology keeps

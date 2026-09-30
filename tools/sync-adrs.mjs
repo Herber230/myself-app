@@ -113,15 +113,19 @@ function clipped(text, limit) {
   return `${text.slice(0, text.lastIndexOf(' ', limit - 1))}…`;
 }
 
+/** A warning's sign, which leads some bullets: `⚠️ **Never …**`. */
+const WARNING = /^⚠️\s*/u;
+
 /**
- * One bullet as a point: its bold lead, with the sentence after it when the
- * lead alone is only a name (`Tailwind v4, CSS-first`), else its first
- * sentence.
+ * One bullet or paragraph as a point: its bold lead, with the sentence after
+ * it when the lead alone is only a name (`Tailwind v4, CSS-first`), else its
+ * first sentence.
  */
-function pointOf(bullet) {
-  const lead = /^\*\*(.+?)\*\*/.exec(bullet)?.[1];
-  if (lead === undefined) return clipped(sentences(plainText(bullet), 1), 160);
-  const rest = plainText(bullet.slice(lead.length + 4));
+function pointOf(block) {
+  const text = block.replace(WARNING, '');
+  const lead = /^\*\*(.+?)\*\*/.exec(text)?.[1];
+  if (lead === undefined) return clipped(sentences(plainText(text), 1), 160);
+  const rest = plainText(text.slice(lead.length + 4));
   const name = plainText(lead);
   if (name.split(' ').length >= 4 || rest === '') return name;
   // `**Routes carry the locale**: …` reads on without a space.
@@ -130,10 +134,10 @@ function pointOf(bullet) {
 }
 
 /**
- * A record's decision in a few lines, from its `Decision` section: the first
- * two sentences of its first paragraph, or, when the section opens with a
- * list or a paragraph that introduces one, a point per top-level bullet, at
- * most five.
+ * A record's decision in a few lines, from its `Decision` section: a point
+ * per paragraph that opens in bold and per top-level bullet, at most five,
+ * when there are two or more; else the first two sentences of its first
+ * paragraph. A paragraph that opens in plain text is context, not a point.
  */
 function summaryOf(markdown) {
   const section = /^## Decision\s*$([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(
@@ -145,16 +149,23 @@ function summaryOf(markdown) {
     .split(/\n\s*\n/)
     .map(block => block.trim())
     .filter(block => block !== '' && !/^(#|\||>)/.test(block));
-  const first = blocks[0];
-  if (first === undefined) return undefined;
-  if (!first.startsWith('- ') && !first.endsWith(':')) {
-    return clipped(sentences(plainText(first), 2), 280);
-  }
-  const bullets = blocks
-    .filter(block => block.startsWith('- '))
-    .flatMap(block => block.split(/^- /m).filter(Boolean))
-    .map(bullet => bullet.trim());
-  return bullets.slice(0, 5).map(pointOf).join('\n');
+  const points = blocks.flatMap(block => {
+    if (block.startsWith('- ')) {
+      return block
+        .split(/^- /m)
+        .filter(Boolean)
+        .map(bullet => pointOf(bullet.trim()));
+    }
+    return block.replace(WARNING, '').startsWith('**') ? [pointOf(block)] : [];
+  });
+  // Each a sentence, as a lead written as a heading (`Content is its own
+  // package`) is not.
+  const ended = points.map(point =>
+    /[.!?…:]$/.test(point) ? point : `${point}.`,
+  );
+  if (ended.length >= 2) return ended.slice(0, 5).join('\n');
+  const first = blocks.find(block => !block.startsWith('- '));
+  return first && clipped(sentences(plainText(first), 2), 280);
 }
 
 /** One record file, read into its fields and its body. */
