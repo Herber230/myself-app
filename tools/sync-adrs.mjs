@@ -90,6 +90,73 @@ function rewriteLinks(markdown, project) {
   });
 }
 
+/** Markdown as plain text: a link's words, without its target. */
+function plainText(markdown) {
+  return markdown
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/\*\*/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** The first `count` sentences of a text. */
+function sentences(text, count) {
+  return text
+    .split(/(?<=[.!?]) (?=[A-Z`§])/)
+    .slice(0, count)
+    .join(' ');
+}
+
+/** A text cut at a word to `limit` characters, marked when it is. */
+function clipped(text, limit) {
+  if (text.length <= limit) return text;
+  return `${text.slice(0, text.lastIndexOf(' ', limit - 1))}…`;
+}
+
+/**
+ * One bullet as a point: its bold lead, with the sentence after it when the
+ * lead alone is only a name (`Tailwind v4, CSS-first`), else its first
+ * sentence.
+ */
+function pointOf(bullet) {
+  const lead = /^\*\*(.+?)\*\*/.exec(bullet)?.[1];
+  if (lead === undefined) return clipped(sentences(plainText(bullet), 1), 160);
+  const rest = plainText(bullet.slice(lead.length + 4));
+  const name = plainText(lead);
+  if (name.split(' ').length >= 4 || rest === '') return name;
+  // `**Routes carry the locale**: …` reads on without a space.
+  const joint = /^[,:;.]/.test(rest) ? '' : ' ';
+  return clipped(`${name}${joint}${sentences(rest, 1)}`, 160);
+}
+
+/**
+ * A record's decision in a few lines, from its `Decision` section: the first
+ * two sentences of its first paragraph, or, when the section opens with a
+ * list or a paragraph that introduces one, a point per top-level bullet, at
+ * most five.
+ */
+function summaryOf(markdown) {
+  const section = /^## Decision\s*$([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(
+    markdown,
+  )?.[1];
+  if (section === undefined) return undefined;
+  const blocks = section
+    .replace(/^```[\s\S]*?^```/gm, '')
+    .split(/\n\s*\n/)
+    .map(block => block.trim())
+    .filter(block => block !== '' && !/^(#|\||>)/.test(block));
+  const first = blocks[0];
+  if (first === undefined) return undefined;
+  if (!first.startsWith('- ') && !first.endsWith(':')) {
+    return clipped(sentences(plainText(first), 2), 280);
+  }
+  const bullets = blocks
+    .filter(block => block.startsWith('- '))
+    .flatMap(block => block.split(/^- /m).filter(Boolean))
+    .map(bullet => bullet.trim());
+  return bullets.slice(0, 5).map(pointOf).join('\n');
+}
+
 /** One record file, read into its fields and its body. */
 function readRecord(project, file) {
   const source = `${project.id}/${file}`;
@@ -114,6 +181,7 @@ function readRecord(project, file) {
   const { status, by } = statusOf(fields.Status, source);
   const rest = lines.slice(index).join('\n').trim();
   const body = [revisions.join('\n'), rest].filter(Boolean).join('\n\n');
+  const summary = summaryOf(rest);
   return {
     record: {
       id: `${project.id}-${String(number).padStart(4, '0')}`,
@@ -123,6 +191,7 @@ function readRecord(project, file) {
       date: fields.Date,
       area: fields.Area,
       ...(fields['Read when'] && { readWhen: fields['Read when'] }),
+      ...(summary && { summary }),
       project: project.id,
       supersedes: [],
     },

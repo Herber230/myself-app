@@ -103,6 +103,8 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
     plainSidecars: { body: readDecisionBodyFile },
     rules: [
       present('body'),
+      // The sync script reads it from the record's Decision section.
+      present('summary'),
       supersedesWithinProject,
       statusMatchesSupersession,
     ],

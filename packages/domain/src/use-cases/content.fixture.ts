@@ -337,6 +337,7 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
       date: '2025-02-01',
       area: 'platform',
       readWhen: 'adding an adapter',
+      summary: 'Every edge is a port.\nAdapters sit outside.',
       project: 'engine',
       supersedes: ['engine-0001'],
     },

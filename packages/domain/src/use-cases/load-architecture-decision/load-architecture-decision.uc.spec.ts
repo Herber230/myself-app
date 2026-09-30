@@ -21,6 +21,9 @@ describe('the decision records', () => {
     });
     expect(page?.decision.title).toBe('Ports everywhere');
     expect(page?.decision.body).toBe('## Context\n\nA second one.');
+    expect(page?.decision.summary).toBe(
+      'Every edge is a port.\nAdapters sit outside.',
+    );
     expect(page?.project.id).toBe('engine');
     expect(page?.supersedes.map(each => each.id)).toEqual(['engine-0001']);
     expect(page?.supersededBy).toEqual([]);

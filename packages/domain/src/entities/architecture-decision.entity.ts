@@ -45,6 +45,7 @@ export class ArchitectureDecision implements Entity {
   #date?: Date;
   #area?: string;
   #readWhen?: string;
+  #summary?: string;
   #body?: string;
   #project = new EntityLink(Project);
   #supersedes = new EntityCollectionLink(ArchitectureDecision);
@@ -126,6 +127,18 @@ export class ArchitectureDecision implements Entity {
   }
   set readWhen(value: string | undefined) {
     this.#readWhen = value;
+  }
+
+  /**
+   * Its decision in a few lines, one point per line: the lead of each bullet
+   * of its `Decision` section, as the sync script reads it.
+   */
+  @accessor({ type: 'string' })
+  get summary(): string | undefined {
+    return this.#summary;
+  }
+  set summary(value: string | undefined) {
+    this.#summary = value;
   }
 
   @accessor({ type: 'string' })

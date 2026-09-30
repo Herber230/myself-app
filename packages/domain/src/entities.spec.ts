@@ -201,6 +201,7 @@ describe('the links between entities', () => {
     // Records are English, translated around rather than within (ADR 0020).
     expect(localizedMembersOf(ArchitectureDecision)).toEqual([]);
     expect(columnsOf(ArchitectureDecision).get('body')?.required).toBeFalsy();
+    expect(columnsOf(ArchitectureDecision).get('summary')?.type).toBe('string');
     expect(columnsOf(Project).get('overview')?.required).toBeFalsy();
   });
 
