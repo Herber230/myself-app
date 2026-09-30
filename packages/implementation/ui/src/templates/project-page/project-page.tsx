@@ -25,6 +25,7 @@ import {
   decisionOptionsOf,
   decisionRowsOf,
 } from '../../organisms/decision-explorer/decision-rows.js';
+import { DecisionPractice } from '../../organisms/decision-practice/decision-practice.js';
 import { SiteNav } from '../../organisms/site-nav/site-nav.js';
 import { sectionPath } from '../../routing/landing-sections.js';
 import { DECISIONS_ANCHOR } from '../../routing/project-paths.js';
@@ -167,6 +168,7 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
           <Part id={DECISIONS_ANCHOR} heading={t('projectPage.decisions')}>
             <Lead muted>{t('projectPage.decisionsLead')}</Lead>
             <p className="adr-language-note">{t('projectPage.englishOnly')}</p>
+            <DecisionPractice locale={locale} decisions={decisions} />
             <DecisionExplorer
               decisions={decisionRowsOf(decisions, locale, t)}
               statuses={options.statuses}

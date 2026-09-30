@@ -114,6 +114,51 @@ export const en = {
       'Every significant decision is recorded, with the symptom that should send a reader — or an agent — to it before the rule is broken.',
     englishOnly: 'The records are written in English.',
     readWhen: 'Read when',
+    /** How the records are written, found and kept: the practice, told. */
+    practice: {
+      summary: 'How the records steer the work',
+      lead: 'People and agents read the same records. Each one names the symptom that should send a reader to it, so a rule is found before it is broken, not after.',
+      steps: {
+        decide: {
+          name: 'Decide',
+          text: 'A choice that would be costly to undo, or easy to break by accident, gets a numbered record.',
+        },
+        record: {
+          name: 'Record',
+          text: 'Its header holds a status, a date, an area and a Read when line: the symptom that should bring a reader back.',
+        },
+        point: {
+          name: 'Point',
+          text: 'The repository’s CLAUDE.md sends every agent session to docs/adr, whose README indexes the records.',
+        },
+        match: {
+          name: 'Match',
+          text: 'When a task meets a symptom — a failing check, a strange build — the agent finds the record whose Read when names it, and follows its rule.',
+        },
+        evolve: {
+          name: 'Evolve',
+          text: 'A fact that changes is corrected in place, on a Revised line. A decision that no longer holds gets a new record that supersedes it. Nothing is deleted.',
+        },
+      },
+      synced:
+        'The records below are copied from each repository by a script, and this repository’s CI fails when a copy drifts from its record.',
+      /** `{{number}}` is the record's, four digits. */
+      anatomy:
+        'Anatomy of a record: the header of ADR {{number}}, the newest with a Read when line.',
+      callouts: {
+        title:
+          'A number that never changes, and the decision in one line. The README lists them.',
+        status:
+          'Where it stands. A superseded record stays, and names the record that replaced it.',
+        date: 'When it was decided. A later correction adds a Revised line below, with its own date.',
+        area: 'The part of the system it governs.',
+        readWhen:
+          'What an agent matches against: the symptom it would meet, not the topic.',
+      },
+    },
+    timeline: 'The records in the order they were decided',
+    points: 'The decision',
+    open: 'Read the record →',
     filter: {
       label: 'Filter the records',
       status: 'Status',

@@ -3,6 +3,7 @@ export * from './contact-section/index.js';
 export * from './cv-customizer/index.js';
 export * from './cv-sheet/index.js';
 export * from './decision-explorer/index.js';
+export * from './decision-practice/index.js';
 export * from './hero/index.js';
 export * from './post-body/index.js';
 export * from './post-explorer/index.js';

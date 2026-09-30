@@ -5,7 +5,7 @@
  *
  * `?status=accepted&area=data&q=bundle&sort=date-desc` asks for the accepted
  * records about data whose title or read-when line holds "bundle", newest
- * first.
+ * first. `&adr=0016` chooses the record the pane shows, and asks nothing.
  */
 import {
   anyOf,
@@ -15,7 +15,7 @@ import {
 } from '@myself-app/entifix-incubator-browser';
 import type { SortChoice } from '@myself-app/entifix-incubator-react-controls';
 
-export type DecisionParam = 'status' | 'area' | 'q' | 'sort';
+export type DecisionParam = 'status' | 'area' | 'q' | 'sort' | 'adr';
 
 /** The fields a list of records may be ordered by, as the URL names them. */
 export const SORT_FIELDS = ['number', 'date', 'title', 'status'] as const;
@@ -66,6 +66,8 @@ function inTitleOrSymptom([value]: readonly string[]): Condition {
 export function decisionQuery(vocabulary: {
   readonly statuses: readonly string[];
   readonly areas: readonly string[];
+  /** The project's record numbers: `0016`. */
+  readonly numbers: readonly string[];
 }): UrlQuery<DecisionParam, undefined> {
   return defineUrlQuery<DecisionParam>({
     params: {
@@ -73,6 +75,7 @@ export function decisionQuery(vocabulary: {
       area: { allowed: vocabulary.areas, condition: anyOf('area') },
       q: { single: true, condition: inTitleOrSymptom },
       sort: { sorting: SORTINGS },
+      adr: { select: true, allowed: vocabulary.numbers },
     },
     sorting: sortingBy('number', 'asc'),
   });

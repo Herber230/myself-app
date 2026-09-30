@@ -1,4 +1,5 @@
 export * from './decision-lineage/index.js';
+export * from './decision-timeline/index.js';
 export * from './file-tree/index.js';
 export * from './filter-links/index.js';
 export * from './landing-section/index.js';

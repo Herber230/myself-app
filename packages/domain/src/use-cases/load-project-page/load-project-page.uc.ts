@@ -28,7 +28,8 @@ export async function loadProjectIds(
 
 /**
  * A featured project's page (#77): the project and its technologies, its
- * patterns and file tree in their order, and its decision records by number.
+ * patterns and file tree in their order, and its decision records by number,
+ * each with what it supersedes resolved.
  * Nothing for an id that names no featured project.
  */
 export async function loadProjectPage(
@@ -53,10 +54,15 @@ export async function loadProjectPage(
       filtering: [ofProject],
       sorting: [...byOrder],
     }),
-    content.loadAll(ArchitectureDecision, {
-      filtering: [ofProject],
-      sorting: [{ 0: { property: 'number', type: 'asc' } }],
-    }),
+    content.loadAll(
+      ArchitectureDecision,
+      {
+        filtering: [ofProject],
+        sorting: [{ 0: { property: 'number', type: 'asc' } }],
+      },
+      // Each row names what it supersedes, and what supersedes it.
+      { resolve: ['supersedes'] },
+    ),
   ]);
   if (project === undefined) return undefined;
   return {

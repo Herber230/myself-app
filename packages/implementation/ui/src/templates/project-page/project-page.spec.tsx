@@ -79,7 +79,7 @@ describe("a project's page", () => {
       screen.getByText('Los registros están escritos en inglés.'),
     ).toBeTruthy();
     expect(screen.getByText('packages/')).toBeTruthy();
-    expect(document.querySelectorAll('li[data-adr]')).toHaveLength(
+    expect(document.querySelectorAll('[data-slot="split-row"]')).toHaveLength(
       page.decisions.length,
     );
     expect(document.getElementById('decisions')).not.toBeNull();

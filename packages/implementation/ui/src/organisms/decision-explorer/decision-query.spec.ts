@@ -5,6 +5,7 @@ import { decisionQuery, sortChoiceOf, sortValueOf } from './decision-query.js';
 const query = decisionQuery({
   statuses: ['accepted', 'superseded-in-part'],
   areas: ['data', 'ui'],
+  numbers: ['0001', '0016'],
 });
 
 describe('the decision records’ query', () => {
@@ -16,6 +17,7 @@ describe('the decision records’ query', () => {
       area: ['ui'],
       q: [],
       sort: ['date-desc'],
+      adr: [],
     });
     expect(query.parse('?sort=colour-asc').sort).toEqual([]);
   });
@@ -52,5 +54,12 @@ describe('a sort in the URL', () => {
       'number-asc',
     );
     expect(sortChoiceOf(undefined)).toBeUndefined();
+  });
+
+  it('chooses one record it has, and asks the load nothing for it', () => {
+    const state = query.parse('?adr=0016&adr=0001');
+    expect(state.adr).toEqual(['0016']);
+    expect(query.parse('?adr=0099').adr).toEqual([]);
+    expect(query.isAsking(state)).toBe(false);
   });
 });

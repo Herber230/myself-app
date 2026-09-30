@@ -1385,26 +1385,276 @@
     gap: var(--spacing-l);
   }
 
-  .adr-list {
+  /* How the records steer the work: a disclosure, open until closed. */
+  .adr-practice {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: color-mix(
+      in srgb,
+      var(--color-surface-elevated) 85%,
+      transparent
+    );
+  }
+
+  .adr-practice > summary {
+    padding: var(--spacing-s) var(--spacing-m);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .adr-practice[open] > summary {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .adr-practice > :not(summary) {
+    margin-inline: var(--spacing-m);
+  }
+
+  .adr-practice-lead {
+    margin-block: var(--spacing-m) 0;
+    max-width: 65ch;
+  }
+
+  .adr-practice-synced {
+    margin-block: 0 var(--spacing-m);
+    color: var(--color-content-muted);
+    font-size: 0.875em;
+  }
+
+  /* The life of a record: a row of five on a wide screen, joined by a line;
+     a column on a narrow one. */
+  .adr-steps {
     display: grid;
-    gap: var(--spacing-s);
+    gap: var(--spacing-m);
+    margin-block: var(--spacing-l);
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .adr-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'icon name'
+      'icon text';
+    column-gap: var(--spacing-s);
+    row-gap: 0.125rem;
+    align-items: start;
+    align-content: start;
+  }
+
+  .adr-step-icon {
+    grid-area: icon;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    border: 1px solid var(--color-primary);
+    border-radius: 999px;
+    background-color: var(--color-surface-elevated);
+    color: var(--color-primary);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .adr-step-number {
+    position: absolute;
+    top: -0.25rem;
+    left: 1.875rem;
+    min-width: 1.125rem;
+    padding: 0 0.25rem;
+    border-radius: 999px;
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1.125rem;
+    text-align: center;
+  }
+
+  .adr-step-name {
+    grid-area: name;
+  }
+
+  .adr-step-text {
+    grid-area: text;
+    color: var(--color-content-muted);
+    font-size: 0.875em;
+  }
+
+  @media (min-width: 64rem) {
+    .adr-steps {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .adr-step {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'icon' 'name' 'text';
+      row-gap: var(--spacing-2xs);
+    }
+
+    /* The line from one step to the next, behind the icons. */
+    .adr-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 1.25rem;
+      left: 2.75rem;
+      right: calc(-1 * var(--spacing-m) + 0.25rem);
+      border-top: 1px dashed var(--color-primary);
+      opacity: 0.6;
+    }
+  }
+
+  /* A record's header, line by line: the code, and what the line is for. */
+  .adr-anatomy {
+    margin-block: 0 var(--spacing-m);
+  }
+
+  .adr-anatomy figcaption {
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+  }
+
+  .adr-anatomy-lines {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .adr-anatomy-line {
+    display: grid;
+    gap: var(--spacing-3xs);
+    padding: var(--spacing-xs) var(--spacing-s);
+  }
+
+  .adr-anatomy-line + .adr-anatomy-line {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .adr-anatomy-line[data-line='readWhen'] {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  .adr-anatomy-code {
+    font-family: var(--font-mono);
+    font-size: 0.8125em;
+    overflow-wrap: anywhere;
+  }
+
+  .adr-anatomy-note {
+    color: var(--color-content-muted);
+    font-size: 0.875em;
+  }
+
+  @media (min-width: 48rem) {
+    .adr-anatomy-line {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: var(--spacing-m);
+    }
+  }
+
+  /* The timeline: dots along a line, arcs above it, a tick below. */
+  .adr-timeline {
+    overflow-x: auto;
+    padding-block: var(--spacing-2xs);
+  }
+
+  .adr-timeline-track {
+    position: relative;
+    margin-inline: auto;
+    height: 4.5rem;
+  }
+
+  .adr-timeline-arcs {
+    position: absolute;
+    inset: 0 auto auto 0;
+    overflow: visible;
+    fill: none;
+    stroke: var(--color-content-muted);
+    stroke-width: 1;
+  }
+
+  .adr-timeline-arcs path {
+    stroke: var(--color-primary);
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
+  }
+
+  .adr-timeline-dots {
+    position: absolute;
+    inset: 0;
+    display: flex;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .adr-row {
-    display: grid;
-    gap: var(--spacing-2xs);
-    padding: var(--spacing-m);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background-color: var(--color-surface-elevated);
-    transition: border-color 200ms var(--ease-smooth, ease-out);
+  .adr-timeline-dots li {
+    position: relative;
+    flex: 0 0 28px;
   }
 
-  .adr-row:hover {
-    border-color: var(--color-primary);
+  .adr-timeline-dot {
+    position: absolute;
+    top: calc(44px - 0.4375rem);
+    left: calc(50% - 0.4375rem);
+    width: 0.875rem;
+    height: 0.875rem;
+    padding: 0;
+    border: 2px solid var(--color-surface);
+    border-radius: 999px;
+    background-color: var(--color-primary);
+    cursor: pointer;
+    transition:
+      scale 150ms ease-out,
+      opacity 150ms ease-out;
+  }
+
+  .adr-timeline-dot[data-status='proposed'] {
+    background-color: var(--color-content);
+  }
+
+  .adr-timeline-dot[data-status='superseded-in-part'],
+  .adr-timeline-dot[data-status='superseded'] {
+    background-color: var(--color-content-muted);
+  }
+
+  .adr-timeline-dot:hover,
+  .adr-timeline-dot:focus-visible {
+    scale: 1.35;
+  }
+
+  .adr-timeline-dot[aria-pressed='true'] {
+    scale: 1.35;
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--color-primary) 45%, transparent);
+  }
+
+  .adr-timeline-dot[data-dimmed] {
+    opacity: 0.25;
+  }
+
+  .adr-timeline-tick {
+    position: absolute;
+    top: 3.5rem;
+    left: 50%;
+    translate: -50% 0;
+    color: var(--color-content-muted);
+    font-size: 0.6875rem;
+    white-space: nowrap;
+  }
+
+  /* The list beside the pane (the split view's parts, by data-slot). */
+  .adr-split [data-slot='split-row'] + [data-slot='split-row'] {
+    margin-top: 0.125rem;
   }
 
   .adr-row-head {
@@ -1422,14 +1672,60 @@
   }
 
   .adr-row-title {
-    flex: 1 1 16rem;
+    flex: 1 1 12rem;
+    font-weight: 500;
+  }
+
+  .adr-row-head .adr-status {
+    font-size: 0.75em;
+  }
+
+  .adr-detail {
+    display: grid;
+    gap: var(--spacing-s);
+    align-content: start;
+    padding: var(--spacing-m);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-elevated);
+  }
+
+  .adr-detail-title {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: baseline;
     margin: 0;
     font-size: var(--text-step-1);
     font-weight: 600;
   }
 
-  .adr-row-title a {
-    color: inherit;
+  .adr-detail-heading {
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: 0.8125em;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .adr-detail-points {
+    display: grid;
+    gap: var(--spacing-2xs);
+    margin: 0;
+    padding-inline-start: 1.25rem;
+    list-style: disc;
+  }
+
+  .adr-detail-open {
+    justify-self: start;
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .adr-detail code,
+  .adr-row-read-when code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
   }
 
   /* The symptom first: it is what sends a reader, or an agent, here. */
@@ -1535,7 +1831,7 @@
 @media (prefers-reduced-motion: reduce) {
   .project-card,
   .pattern-card,
-  .adr-row {
+  .adr-timeline-dot {
     transition: none;
   }
 

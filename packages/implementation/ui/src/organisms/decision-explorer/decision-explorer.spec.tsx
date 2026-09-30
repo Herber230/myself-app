@@ -60,8 +60,8 @@ afterEach(() => {
 });
 
 const shownRecords = () =>
-  [...document.querySelectorAll('li[data-adr]')].map(row =>
-    row.getAttribute('data-adr'),
+  [...document.querySelectorAll('[data-slot="split-row"] [data-adr]')].map(
+    row => row.getAttribute('data-adr'),
   );
 
 describe('a project’s decision records', () => {
@@ -126,5 +126,52 @@ describe('a project’s decision records', () => {
     expect(window.location.search).toBe('?status=accepted');
     fireEvent.click(screen.getByRole('button', { name: 'Accepted' }));
     expect(window.location.search).toBe('');
+  });
+
+  it('show the first record in the pane, and another once chosen', async () => {
+    render(explorer());
+    const pane = () =>
+      document.querySelector('[data-slot="split-detail"]') as HTMLElement;
+    expect(pane().textContent).toContain(`${numbers[0]}`);
+    fireEvent.click(screen.getByRole('link', { name: /^0011/ }));
+    expect(window.location.search).toBe('?adr=0011');
+    expect(pane().querySelector('h3')?.textContent).toContain('0011');
+    // 0011 supersedes 0008 in part, and the pane links to it.
+    expect(
+      screen.getByRole('link', { name: /^ADR 0008 · / }).getAttribute('href'),
+    ).toBe('/en/projects/myself-app/adr/0008/');
+    expect(
+      pane().querySelectorAll('.adr-detail-points li').length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen
+        .getByRole('link', { name: 'Read the record →' })
+        .getAttribute('href'),
+    ).toBe('/en/projects/myself-app/adr/0011/');
+  });
+
+  it('choose a record from the timeline, and fall back when a filter hides it', async () => {
+    window.history.replaceState(null, '', '/en/projects/myself-app/?adr=0016');
+    render(explorer());
+    const timeline = screen.getByRole('group', {
+      name: 'The records in the order they were decided',
+    });
+    const dot = (number: string) =>
+      [...timeline.querySelectorAll('button')].find(button =>
+        button.getAttribute('aria-label')?.startsWith(`${number} ·`),
+      ) as HTMLButtonElement;
+    expect(dot('0016').getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(dot('0008'));
+    expect(window.location.search).toBe('?adr=0008');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Accepted' }));
+    await waitFor(() =>
+      expect(dot('0008').hasAttribute('data-dimmed')).toBe(true),
+    );
+    // 0008 is filtered out: the pane shows the first record still shown.
+    const first = shownRecords()[0] as string;
+    expect(
+      document.querySelector('[data-slot="split-detail"] h3')?.textContent,
+    ).toContain(first.slice(-4));
   });
 });

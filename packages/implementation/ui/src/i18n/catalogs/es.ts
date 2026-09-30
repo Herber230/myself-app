@@ -102,6 +102,49 @@ export const es = {
       'Cada decisión importante queda registrada, con el síntoma que debe llevar a un lector —o a un agente— a leerla antes de romper la regla.',
     englishOnly: 'Los registros están escritos en inglés.',
     readWhen: 'Leer cuando',
+    practice: {
+      summary: 'Cómo guían el trabajo los registros',
+      lead: 'Personas y agentes leen los mismos registros. Cada uno nombra el síntoma que debería llevar a alguien hasta él, para que una regla se encuentre antes de romperla, no después.',
+      steps: {
+        decide: {
+          name: 'Decidir',
+          text: 'Una decisión costosa de deshacer, o fácil de romper sin querer, recibe un registro numerado.',
+        },
+        record: {
+          name: 'Registrar',
+          text: 'Su encabezado tiene un estado, una fecha, un área y una línea Read when: el síntoma que debería traer de vuelta a quien lee.',
+        },
+        point: {
+          name: 'Señalar',
+          text: 'El CLAUDE.md del repositorio envía cada sesión de un agente a docs/adr, cuyo README indexa los registros.',
+        },
+        match: {
+          name: 'Reconocer',
+          text: 'Cuando una tarea se topa con un síntoma — una verificación que falla, un build extraño — el agente encuentra el registro cuyo Read when lo nombra, y sigue su regla.',
+        },
+        evolve: {
+          name: 'Evolucionar',
+          text: 'Un dato que cambia se corrige en su lugar, en una línea Revised. Una decisión que ya no vale recibe un registro nuevo que la reemplaza. Nada se borra.',
+        },
+      },
+      synced:
+        'Los registros de abajo se copian de cada repositorio con un script, y la CI de este repositorio falla cuando una copia se aparta de su registro.',
+      anatomy:
+        'Anatomía de un registro: el encabezado del ADR {{number}}, el más reciente con una línea Read when.',
+      callouts: {
+        title:
+          'Un número que nunca cambia, y la decisión en una línea. El README los lista.',
+        status:
+          'En qué estado está. Un registro reemplazado se queda, y nombra el que lo reemplazó.',
+        date: 'Cuándo se decidió. Una corrección posterior agrega abajo una línea Revised, con su propia fecha.',
+        area: 'La parte del sistema que gobierna.',
+        readWhen:
+          'Contra lo que un agente compara: el síntoma que encontraría, no el tema.',
+      },
+    },
+    timeline: 'Los registros en el orden en que se decidieron',
+    points: 'La decisión',
+    open: 'Leer el registro →',
     filter: {
       label: 'Filtrar los registros',
       status: 'Estado',

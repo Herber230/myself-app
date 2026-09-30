@@ -1,3 +1,4 @@
+import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
 import { fixtureContent } from '../content.fixture.js';
@@ -30,6 +31,12 @@ describe('the project pages', () => {
       'engine-0001',
       'engine-0002',
     ]);
+    const [, second] = page?.decisions ?? [];
+    expect(
+      targetsOf(
+        second?.supersedes as NonNullable<typeof second>['supersedes'],
+      ).map(each => each.id),
+    ).toEqual(['engine-0001']);
   });
 
   it('keep each project to its own records', async () => {

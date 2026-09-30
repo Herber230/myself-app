@@ -30,9 +30,9 @@ describe("a project's page", () => {
     expect(
       screen.getByText(/Este sitio es un perfil de desarrollador/),
     ).toBeTruthy();
-    expect(document.querySelectorAll('li[data-adr]').length).toBeGreaterThan(
-      10,
-    );
+    expect(
+      document.querySelectorAll('[data-slot="split-row"]').length,
+    ).toBeGreaterThan(10);
   }, 30_000);
 
   it('names itself, and its other language', async () => {
