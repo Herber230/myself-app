@@ -438,3 +438,21 @@ describe('every dependency is pinned', () => {
     expect(entries.filter(({ spec }) => !EXACT.test(spec))).toEqual([]);
   });
 });
+
+describe('the decision records the site shows', () => {
+  // Copied into the content by `tools/sync-adrs.mjs` (#77, ADR 0020). A record
+  // changed in docs/adr without a re-sync would show the old one.
+  it('are this repository’s docs/adr as they are now', () => {
+    const records = readdirSync(join(REPO_ROOT, 'docs/adr')).filter(file =>
+      /^\d{4}-.*\.md$/.test(file),
+    );
+    // Pinned: a walk that found nothing would check nothing.
+    expect(records.length).toBeGreaterThanOrEqual(19);
+    expect(() =>
+      execFileSync('node', ['tools/sync-adrs.mjs', '--check'], {
+        cwd: REPO_ROOT,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+});

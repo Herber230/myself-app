@@ -38,8 +38,8 @@ describe("a technology's detail", () => {
   it('lists every project that uses it, in their order', async () => {
     const detail = await detailOf('typescript');
     expect(detail?.projects.map(project => project.id)).toEqual([
-      'myself-app',
       'entifix',
+      'myself-app',
     ]);
   });
 

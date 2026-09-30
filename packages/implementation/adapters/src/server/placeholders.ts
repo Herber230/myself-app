@@ -20,6 +20,14 @@ import { PENDING_CONTENT } from './pending-content.js';
  */
 export const PLACEHOLDER = /TODO(?:\(#|-)\d+/;
 
+/**
+ * Files copied from elsewhere rather than written here: the decision records,
+ * which `tools/sync-adrs.mjs` copies from each repository's `docs/adr` (#77).
+ * A record quotes the convention when it describes it, and is never written
+ * in this package, so it has no placeholder to finish.
+ */
+export const COPIED_FILES: ReadonlySet<string> = new Set(['adrs.json']);
+
 /** Whether any text inside a value, however nested, is placeholder. */
 function holdsPlaceholder(value: unknown): boolean {
   if (typeof value === 'string') return PLACEHOLDER.test(value);
@@ -40,14 +48,16 @@ export function placeholderPaths(
   content: Readonly<Record<string, readonly unknown[]>>,
 ): string[] {
   return Object.entries(content).flatMap(([file, records]) =>
-    records.flatMap(record => {
-      if (record === null || typeof record !== 'object') return [];
-      const { id, ...members } = record as Record<string, unknown>;
-      if (id === undefined) return [];
-      return Object.entries(members)
-        .filter(([, value]) => holdsPlaceholder(value))
-        .map(([member]) => `${file} › ${String(id)} › ${member}`);
-    }),
+    COPIED_FILES.has(file)
+      ? []
+      : records.flatMap(record => {
+          if (record === null || typeof record !== 'object') return [];
+          const { id, ...members } = record as Record<string, unknown>;
+          if (id === undefined) return [];
+          return Object.entries(members)
+            .filter(([, value]) => holdsPlaceholder(value))
+            .map(([member]) => `${file} › ${String(id)} › ${member}`);
+        }),
   );
 }
 

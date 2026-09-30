@@ -1,0 +1,192 @@
+[
+  {
+    "id": "entifix-packages-ts",
+    "project": "entifix",
+    "path": "packages/ts/",
+    "note": {
+      "en": "Framework-agnostic packages: core, business, the adapters and the testing kits.",
+      "es": "Paquetes independientes del framework: core, business, los adaptadores y los kits de pruebas."
+    },
+    "order": 0
+  },
+  {
+    "id": "entifix-packages-ts-core",
+    "project": "entifix",
+    "path": "packages/ts/core/",
+    "note": {
+      "en": "Entities, metadata, links and the load use case: tier 1.",
+      "es": "Entidades, metadatos, vínculos y el caso de uso de carga: nivel 1."
+    },
+    "order": 1
+  },
+  {
+    "id": "entifix-packages-react",
+    "project": "entifix",
+    "path": "packages/react/",
+    "note": {
+      "en": "React controls and the integration that wires them to entities.",
+      "es": "Controles de React y la integración que los conecta con las entidades."
+    },
+    "order": 2
+  },
+  {
+    "id": "entifix-packages-next",
+    "project": "entifix",
+    "path": "packages/next/",
+    "note": {
+      "en": "The Next.js shell and its i18n.",
+      "es": "El shell de Next.js y su i18n."
+    },
+    "order": 3
+  },
+  {
+    "id": "entifix-packages-effect-service-shell",
+    "project": "entifix",
+    "path": "packages/effect/service-shell/",
+    "note": {
+      "en": "The Effect service shell that serves entities over HTTP.",
+      "es": "El shell de servicio de Effect que sirve entidades por HTTP."
+    },
+    "order": 4
+  },
+  {
+    "id": "entifix-packages-style",
+    "project": "entifix",
+    "path": "packages/style/",
+    "note": {
+      "en": "Design tokens: tier 0, depends on nothing.",
+      "es": "Tokens de diseño: nivel 0, no depende de nada."
+    },
+    "order": 5
+  },
+  {
+    "id": "entifix-examples",
+    "project": "entifix",
+    "path": "examples/",
+    "note": {
+      "en": "Minimal, service and workspace examples, each with its own e2e.",
+      "es": "Ejemplos mínimo, de servicio y de workspace, cada uno con su e2e."
+    },
+    "order": 6
+  },
+  {
+    "id": "entifix-tools-tiers",
+    "project": "entifix",
+    "path": "tools/tiers/",
+    "note": {
+      "en": "The tier contract, checked against the tree.",
+      "es": "El contrato de niveles, verificado contra el árbol."
+    },
+    "order": 7
+  },
+  {
+    "id": "entifix-docs-adr",
+    "project": "entifix",
+    "path": "docs/adr/",
+    "note": {
+      "en": "The decision records.",
+      "es": "Los registros de decisiones."
+    },
+    "order": 8
+  },
+  {
+    "id": "myself-app-apps-myself-app",
+    "project": "myself-app",
+    "path": "apps/myself-app/",
+    "note": {
+      "en": "The Next.js app: routes, the composition root and browser sources.",
+      "es": "La app de Next.js: rutas, la raíz de composición y las fuentes del navegador."
+    },
+    "order": 0
+  },
+  {
+    "id": "myself-app-apps-myself-app-e2e",
+    "project": "myself-app",
+    "path": "apps/myself-app-e2e/",
+    "note": {
+      "en": "Playwright journeys against the static export, never a Next server.",
+      "es": "Recorridos de Playwright contra la exportación estática, nunca contra un servidor de Next."
+    },
+    "order": 1
+  },
+  {
+    "id": "myself-app-apps-infra",
+    "project": "myself-app",
+    "path": "apps/infra/",
+    "note": {
+      "en": "The Pulumi program: bucket, CloudFront, DNS and the deploy role.",
+      "es": "El programa de Pulumi: bucket, CloudFront, DNS y el rol de despliegue."
+    },
+    "order": 2
+  },
+  {
+    "id": "myself-app-packages-domain",
+    "project": "myself-app",
+    "path": "packages/domain/",
+    "note": {
+      "en": "Entities, use cases and the rules only this site knows.",
+      "es": "Entidades, casos de uso y las reglas que solo conoce este sitio."
+    },
+    "order": 3
+  },
+  {
+    "id": "myself-app-packages-content",
+    "project": "myself-app",
+    "path": "packages/content/",
+    "note": {
+      "en": "One JSON file per entity, the posts' Markdown and the ADR copies. Imports nothing.",
+      "es": "Un archivo JSON por entidad, el Markdown de los artículos y las copias de los ADR. No importa nada."
+    },
+    "order": 4
+  },
+  {
+    "id": "myself-app-packages-entifix-incubator",
+    "project": "myself-app",
+    "path": "packages/entifix-incubator/",
+    "note": {
+      "en": "Code meant for entifix, knowing nothing of this site.",
+      "es": "Código destinado a entifix, que no sabe nada de este sitio."
+    },
+    "order": 5
+  },
+  {
+    "id": "myself-app-packages-implementation-adapters",
+    "project": "myself-app",
+    "path": "packages/implementation/adapters/",
+    "note": {
+      "en": "Where content is read from: the build's files and the browser's.",
+      "es": "De dónde se lee el contenido: los archivos del build y los del navegador."
+    },
+    "order": 6
+  },
+  {
+    "id": "myself-app-packages-implementation-ui",
+    "project": "myself-app",
+    "path": "packages/implementation/ui/",
+    "note": {
+      "en": "The site's UI, from atoms to templates, with its i18n and styles.",
+      "es": "La UI del sitio, de átomos a plantillas, con su i18n y estilos."
+    },
+    "order": 7
+  },
+  {
+    "id": "myself-app-tools-conventions",
+    "project": "myself-app",
+    "path": "tools/conventions/",
+    "note": {
+      "en": "The repository's conventions, asserted: attribution, CI wiring, layers.",
+      "es": "Las convenciones del repositorio, verificadas: atribución, CI, capas."
+    },
+    "order": 8
+  },
+  {
+    "id": "myself-app-docs-adr",
+    "project": "myself-app",
+    "path": "docs/adr/",
+    "note": {
+      "en": "The decision records, copied into the content by tools/sync-adrs.mjs.",
+      "es": "Los registros de decisiones, copiados al contenido por tools/sync-adrs.mjs."
+    },
+    "order": 9
+  }
+]
