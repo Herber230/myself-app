@@ -19,6 +19,7 @@ import {
 } from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
+import { ArchitectureDecision } from './entities/architecture-decision.entity.js';
 import { Certificate } from './entities/certificate.entity.js';
 import { ContactChannel } from './entities/contact-channel.entity.js';
 import { CvFocus } from './entities/cv-focus.entity.js';
@@ -30,6 +31,8 @@ import { EmploymentPeriod } from './entities/employment-period.entity.js';
 import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
+import { ProjectPath } from './entities/project-path.entity.js';
+import { ProjectPattern } from './entities/project-pattern.entity.js';
 import { Quadrant } from './entities/quadrant.entity.js';
 import { RadarEdition } from './entities/radar-edition.entity.js';
 import { Ring } from './entities/ring.entity.js';
@@ -58,6 +61,9 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['Certificate', Certificate],
   ['Tag', Tag],
   ['Post', Post],
+  ['ProjectPattern', ProjectPattern],
+  ['ProjectPath', ProjectPath],
+  ['ArchitectureDecision', ArchitectureDecision],
 ];
 
 /** The members `describeEntityColumns` reports, by name. */
@@ -70,9 +76,9 @@ const columnsOf = (entityConstructor: EntityConstructor<Entity>) =>
   );
 
 describe('every entity the pages read', () => {
-  it('is one of eighteen, and each carries its metadata', () => {
+  it('is one of twenty-one, and each carries its metadata', () => {
     // Pinned: a table that stopped matching would assert nothing below.
-    expect(ENTITIES).toHaveLength(18);
+    expect(ENTITIES).toHaveLength(21);
     for (const [name, entityConstructor] of ENTITIES) {
       expect(() => extractMetaEntity(entityConstructor), name).not.toThrow();
     }
@@ -183,6 +189,19 @@ describe('the links between entities', () => {
     );
     expect(columnsOf(Post).get('tags')?.type).toBe('linkCollection');
     expect(columnsOf(Post).get('technologies')?.type).toBe('linkCollection');
+    expect(columnsOf(ProjectPattern).get('project')?.type).toBe('link');
+    expect(columnsOf(ProjectPath).get('project')?.type).toBe('link');
+    expect(columnsOf(ArchitectureDecision).get('project')?.type).toBe('link');
+    expect(columnsOf(ArchitectureDecision).get('supersedes')?.type).toBe(
+      'linkCollection',
+    );
+  });
+
+  it('write an architecture decision in one language only', () => {
+    // Records are English, translated around rather than within (ADR 0020).
+    expect(localizedMembersOf(ArchitectureDecision)).toEqual([]);
+    expect(columnsOf(ArchitectureDecision).get('body')?.required).toBeFalsy();
+    expect(columnsOf(Project).get('overview')?.required).toBeFalsy();
   });
 
   it("leave a post's body out of what a record must hold", () => {

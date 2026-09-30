@@ -4,6 +4,7 @@ import {
   type StaticContent,
 } from '@myself-app/entifix-incubator-static-adapter';
 
+import { ArchitectureDecision } from '../entities/architecture-decision.entity.js';
 import { Certificate } from '../entities/certificate.entity.js';
 import { ContactChannel } from '../entities/contact-channel.entity.js';
 import { CvFocus } from '../entities/cv-focus.entity.js';
@@ -15,6 +16,8 @@ import { EmploymentPeriod } from '../entities/employment-period.entity.js';
 import { Post } from '../entities/post.entity.js';
 import { Profile } from '../entities/profile.entity.js';
 import { Project } from '../entities/project.entity.js';
+import { ProjectPath } from '../entities/project-path.entity.js';
+import { ProjectPattern } from '../entities/project-pattern.entity.js';
 import { Quadrant } from '../entities/quadrant.entity.js';
 import { RadarEdition } from '../entities/radar-edition.entity.js';
 import { Ring } from '../entities/ring.entity.js';
@@ -24,6 +27,10 @@ import { TechnologyArea } from '../entities/technology-area.entity.js';
 import { TechnologyUsePeriod } from '../entities/technology-use-period.entity.js';
 import { SITE_LOCALES } from '../locales.js';
 import { localizedMembersOf } from '../localized-members.js';
+import {
+  statusMatchesSupersession,
+  supersedesWithinProject,
+} from '../rules.js';
 
 /**
  * A small site for the use cases' specs: every entity, a few records each,
@@ -45,6 +52,12 @@ const BODIES: Record<string, { en: string; es: string }> = {
   },
   'on-testing': { en: 'word '.repeat(401), es: 'palabra' },
   'a-draft': { en: 'Not yet.', es: 'Aún no.' },
+};
+
+/** Every decision record's body, as its Markdown file would hold it. */
+const DECISION_BODIES: Record<string, string> = {
+  'engine-0001': '## Context\n\nA first decision.',
+  'engine-0002': '## Context\n\nA second one.',
 };
 
 export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
@@ -276,6 +289,78 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
       order: 2,
     },
   ],
+  'project-patterns.json': [
+    {
+      id: 'engine-ports',
+      project: 'engine',
+      name: text('Ports'),
+      summary: text('Adapters behind ports.'),
+      order: 1,
+    },
+    {
+      id: 'engine-entities',
+      project: 'engine',
+      name: text('Entities'),
+      summary: text('Metadata first.'),
+      order: 0,
+    },
+    {
+      id: 'library-books',
+      project: 'library',
+      name: text('Books'),
+      summary: text('On shelves.'),
+      order: 0,
+    },
+  ],
+  'project-paths.json': [
+    {
+      id: 'engine-src',
+      project: 'engine',
+      path: 'src/',
+      note: text('The code.'),
+      order: 0,
+    },
+    {
+      id: 'engine-docs',
+      project: 'engine',
+      path: 'docs/adr/',
+      note: text('The decisions.'),
+      order: 1,
+    },
+  ],
+  'adrs.json': [
+    {
+      id: 'engine-0002',
+      number: 2,
+      title: 'Ports everywhere',
+      status: 'accepted',
+      date: '2025-02-01',
+      area: 'platform',
+      readWhen: 'adding an adapter',
+      project: 'engine',
+      supersedes: ['engine-0001'],
+    },
+    {
+      id: 'engine-0001',
+      number: 1,
+      title: 'A single adapter',
+      status: 'superseded-in-part',
+      date: '2025-01-01',
+      area: 'platform',
+      project: 'engine',
+      supersedes: [],
+    },
+    {
+      id: 'library-0001',
+      number: 1,
+      title: 'Shelves by subject',
+      status: 'proposed',
+      date: '2025-03-01',
+      area: 'data',
+      project: 'library',
+      supersedes: [],
+    },
+  ],
   'tags.json': [
     { id: 'architecture', label: text('architecture') },
     { id: 'testing', label: text('testing') },
@@ -334,7 +419,22 @@ const SOURCES = [
     file: 'technology-use-periods.json',
   }),
   defineSource({ entity: RadarEdition, file: 'radar-editions.json' }),
-  defineSource({ entity: Project, file: 'projects.json' }),
+  defineSource({
+    entity: Project,
+    file: 'projects.json',
+    sidecars: {
+      overview: (id, locale) =>
+        id === 'engine' ? `The engine, in ${locale}.` : undefined,
+    },
+  }),
+  defineSource({ entity: ProjectPattern, file: 'project-patterns.json' }),
+  defineSource({ entity: ProjectPath, file: 'project-paths.json' }),
+  defineSource({
+    entity: ArchitectureDecision,
+    file: 'adrs.json',
+    plainSidecars: { body: id => DECISION_BODIES[id] },
+    rules: [supersedesWithinProject, statusMatchesSupersession],
+  }),
   defineSource({ entity: Tag, file: 'tags.json' }),
   defineSource({
     entity: Post,
