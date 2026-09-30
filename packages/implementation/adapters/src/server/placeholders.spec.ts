@@ -71,6 +71,16 @@ describe('a placeholder', () => {
     expect(placeholderPaths(content)).toEqual([]);
   });
 
+  it('is not looked for in a file copied from elsewhere', () => {
+    expect(
+      placeholderPaths({
+        'adrs.json': [
+          { id: 'app-0017', body: 'Marked TODO(#70) until written.' },
+        ],
+      }),
+    ).toEqual([]);
+  });
+
   it('is skipped in a record with no id, or in no record at all', () => {
     const content = {
       'things.json': [{ note: 'TODO(#26)' }, 'TODO(#26)', null],

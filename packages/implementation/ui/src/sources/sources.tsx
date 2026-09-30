@@ -12,6 +12,8 @@ export interface BrowserSources {
   /** Every published post, without its body (ADR 0017). */
   readonly posts: EntitySource;
   readonly technologies: EntitySource;
+  /** Every project's decision records, without their bodies (#77). */
+  readonly decisions: EntitySource;
 }
 
 const SourcesContext = createContext<BrowserSources | undefined>(undefined);

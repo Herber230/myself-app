@@ -1,3 +1,4 @@
+export * from './entities/architecture-decision.entity.js';
 export * from './entities/certificate.entity.js';
 export * from './entities/contact-channel.entity.js';
 export * from './entities/cv-focus.entity.js';
@@ -9,6 +10,8 @@ export * from './entities/employment-period.entity.js';
 export * from './entities/post.entity.js';
 export * from './entities/profile.entity.js';
 export * from './entities/project.entity.js';
+export * from './entities/project-path.entity.js';
+export * from './entities/project-pattern.entity.js';
 export * from './entities/quadrant.entity.js';
 export * from './entities/radar-edition.entity.js';
 export * from './entities/ring.entity.js';

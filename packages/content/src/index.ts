@@ -11,8 +11,12 @@
  *
  * A post's body is Markdown, one file per locale in `posts/<id>.<locale>.md`
  * (ADR 0017). This package imports nothing, so it does not read them: the
- * app's composition root does, and attaches each to its post.
+ * app's composition root does, and attaches each to its post. So are a
+ * project's overview (`projects/<id>.<locale>.md`) and a decision record's body
+ * (`adrs/<id>.md`, English only), copied from `docs/adr` by
+ * `tools/sync-adrs.mjs` (#77).
  */
+import adrs from './adrs.json';
 import certificates from './certificates.json';
 import contactChannels from './contact-channels.json';
 import cvFocuses from './cv-focuses.json';
@@ -23,6 +27,8 @@ import employmentHighlights from './employment-highlights.json';
 import employmentPeriods from './employment-periods.json';
 import posts from './posts.json';
 import profile from './profile.json';
+import projectPaths from './project-paths.json';
+import projectPatterns from './project-patterns.json';
 import projects from './projects.json';
 import quadrants from './quadrants.json';
 import radarEditions from './radar-editions.json';
@@ -34,6 +40,7 @@ import technologyUsePeriods from './technology-use-periods.json';
 
 /** Every record, by the file it came from — which is also the path in an error. */
 export const CONTENT: Readonly<Record<string, readonly unknown[]>> = {
+  'adrs.json': adrs,
   'certificates.json': certificates,
   'contact-channels.json': contactChannels,
   'cv-focuses.json': cvFocuses,
@@ -44,6 +51,8 @@ export const CONTENT: Readonly<Record<string, readonly unknown[]>> = {
   'employment-periods.json': employmentPeriods,
   'posts.json': posts,
   'profile.json': profile,
+  'project-paths.json': projectPaths,
+  'project-patterns.json': projectPatterns,
   'projects.json': projects,
   'quadrants.json': quadrants,
   'radar-editions.json': radarEditions,

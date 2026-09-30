@@ -19,15 +19,15 @@ tailoring a CV before printing.
 
 Two paths, chosen per component:
 
-- **A — build time.** Static content runs entifix use cases in server
-  components during `next build`. The HTML carries the data; no entifix, Effect
+- **A — static content is loaded at build time.** It runs entifix use cases
+  in server components during `next build`. The HTML carries the data; no entifix, Effect
   or adapter code reaches the browser.
-- **C — in the browser.** Interactive parts run the same static adapter in the
-  browser, over JSON files the build writes into the export (`/data/<entity>.json`,
+- **C — interactive parts load in the browser.** They run the same static
+  adapter there, over JSON files the build writes into the export (`/data/<entity>.json`,
   produced by `force-static` route handlers from the same repositories the pages
   read, so the two cannot disagree).
 
-C is where a backend slots in later: its adapter becomes a REST adapter pointed
+**C is where a backend slots in later**: its adapter becomes a REST adapter pointed
 at the backend, a URL change at the composition root.
 
 ## Gate

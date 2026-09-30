@@ -36,6 +36,13 @@ describe('the locale layout', () => {
     expect(document.body.textContent).toContain('page');
   });
 
+  it('lays every page over the backdrop', async () => {
+    const document = await renderDocument('en');
+    const host = document.body.querySelector('.site-backdrop-host');
+    expect(host?.querySelector('.site-backdrop')).toBeTruthy();
+    expect(host?.textContent).toContain('page');
+  });
+
   it('is not found for an unknown locale', async () => {
     await expect(renderDocument('fr')).rejects.toThrow();
   });

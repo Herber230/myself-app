@@ -16,7 +16,12 @@ describe('the browser sources', () => {
     });
     await browserSources.posts();
     await browserSources.technologies();
-    expect(fetched).toEqual(['/data/post.json', '/data/technology.json']);
+    await browserSources.decisions();
+    expect(fetched).toEqual([
+      '/data/post.json',
+      '/data/technology.json',
+      '/data/adr.json',
+    ]);
   });
 
   it('read no file themselves: the half the browser bundles', () => {

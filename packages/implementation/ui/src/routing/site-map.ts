@@ -22,6 +22,12 @@ export const TECHNOLOGY_ROUTE = '/tech-radar/[technology]';
 /** Each post (ADR 0017): listed from the content, drafts left out. */
 export const POST_ROUTE = '/blog/[slug]';
 
+/** Each featured project's page (#77): listed from the content. */
+export const PROJECT_ROUTE = '/projects/[project]';
+
+/** Each decision record's page (#77): listed from the content. */
+export const DECISION_ROUTE = '/projects/[project]/adr/[number]';
+
 /**
  * The CV's ATS pages, left out: each is `noindex`, with its human page as
  * canonical (ADR 0012).

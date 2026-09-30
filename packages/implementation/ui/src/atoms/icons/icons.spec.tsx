@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { ChannelIcon, LocationIcon } from './icons.js';
+import { ChannelIcon, GitHubMark, LocationIcon } from './icons.js';
 
 const shapeOf = (container: HTMLElement) =>
   container.querySelector('svg')?.innerHTML;
@@ -42,5 +42,15 @@ describe('a contact icon', () => {
   it('marks the location with a pin', () => {
     const { container } = render(<LocationIcon className="cv-icon" />);
     expect(container.querySelector('circle')).not.toBeNull();
+  });
+});
+
+describe('the GitHub mark', () => {
+  it('is filled, hidden from a screen reader, and takes its class', () => {
+    const { container } = render(<GitHubMark className="source-icon" />);
+    const svg = container.querySelector('svg');
+    expect(svg?.getAttribute('class')).toBe('source-icon');
+    expect(svg?.getAttribute('fill')).toBe('currentColor');
+    expect(svg?.getAttribute('aria-hidden')).toBe('true');
   });
 });

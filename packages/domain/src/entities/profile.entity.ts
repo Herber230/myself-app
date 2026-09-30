@@ -61,10 +61,10 @@ export class Profile implements Entity {
     this.#title = value;
   }
 
-  /** One line under the name in the hero (ADR 0008). */
+  /** One line under the name in the hero (ADR 0008), when there is one. */
   @accessor({
     type: 'string',
-    required: true,
+    required: false,
     filterable: false,
     sortable: false,
   })

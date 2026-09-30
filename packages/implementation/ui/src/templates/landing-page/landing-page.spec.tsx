@@ -41,6 +41,6 @@ describe('the landing page', () => {
       [...document.querySelectorAll('main > section[id]')].map(
         section => section.id,
       ),
-    ).toEqual(['about', 'projects', 'entifix', 'contact']);
+    ).toEqual(['about', 'projects', 'contact']);
   });
 });

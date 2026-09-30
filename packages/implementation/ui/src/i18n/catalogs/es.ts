@@ -69,35 +69,114 @@ export const es = {
     hero: {
       cv: 'Ver mi CV',
       techRadar: 'Explorar mi radar tecnológico',
+      blog: 'Leer mi blog',
       scroll: 'Desliza para ver más',
     },
     nav: {
       label: 'Secciones',
       about: 'Sobre mí',
       projects: 'Proyectos',
-      entifix: 'entifix',
+      allProjects: 'Todos los proyectos',
       contact: 'Contacto',
     },
     headings: {
       about: 'Sobre mí',
       projects: 'Proyectos',
-      entifix: 'Construido sobre entifix',
       contact: 'Contacto',
-    },
-    projects: {
-      technologies: 'Tecnologías de {{project}}',
-      site: 'Visitar el sitio',
-      repository: 'Ver el código',
-    },
-    entifix: {
-      what: 'entifix es un framework de TypeScript para aplicaciones guiadas por entidades, construido sobre Effect. Una entidad se describe una sola vez, y sus metadatos guían la validación, los repositorios, los casos de uso y los controles de React.',
-      here: 'Esta página funciona sobre él. El perfil, los proyectos y los canales de contacto son entidades guardadas como JSON en inglés y español, validadas con sus metadatos por un repositorio estático y leídas al compilar mediante el caso de uso load, el mismo que serviría un backend.',
-      repository: 'Código en GitHub',
-      npm: 'Paquetes en npm',
     },
     contact: {
       link: '{{channel}}: {{handle}}',
     },
+  },
+  projectPage: {
+    explore: 'Cómo funciona',
+    back: '← Volver a los proyectos',
+    technologies: 'Tecnologías de {{project}}',
+    site: 'Visitar el sitio',
+    repository: 'Ver el código',
+    overview: 'Resumen',
+    patterns: 'Patrones',
+    structure: 'Estructura de archivos',
+    decisions: 'Decisiones de arquitectura',
+    decisionsLead:
+      'Cada decisión importante queda registrada, con el síntoma que debe llevar a un lector —o a un agente— a leerla antes de romper la regla.',
+    englishOnly: 'Los registros están escritos en inglés.',
+    readWhen: 'Leer cuando',
+    practice: {
+      summary: 'Cómo guían el trabajo los registros',
+      lead: 'Personas y agentes leen los mismos registros. Cada uno nombra el síntoma que debería llevar a alguien hasta él, para que una regla se encuentre antes de romperla, no después.',
+      steps: {
+        decide: {
+          name: 'Decidir',
+          text: 'Una decisión costosa de deshacer, o fácil de romper sin querer, recibe un registro numerado.',
+        },
+        record: {
+          name: 'Registrar',
+          text: 'Su encabezado tiene un estado, una fecha, un área y una línea Read when: el síntoma que debería traer de vuelta a quien lee.',
+        },
+        point: {
+          name: 'Señalar',
+          text: 'El CLAUDE.md del repositorio envía cada sesión de un agente a docs/adr, cuyo README indexa los registros.',
+        },
+        match: {
+          name: 'Reconocer',
+          text: 'Cuando una tarea se topa con un síntoma — una verificación que falla, un build extraño — el agente encuentra el registro cuyo Read when lo nombra, y sigue su regla.',
+        },
+        evolve: {
+          name: 'Evolucionar',
+          text: 'Un dato que cambia se corrige en su lugar, en una línea Revised. Una decisión que ya no vale recibe un registro nuevo que la reemplaza. Nada se borra.',
+        },
+      },
+      synced:
+        'Los registros de abajo se copian de cada repositorio con un script, y la CI de este repositorio falla cuando una copia se aparta de su registro.',
+      anatomy:
+        'Anatomía de un registro: el encabezado del ADR {{number}}, el más reciente con una línea Read when.',
+      callouts: {
+        title:
+          'Un número que nunca cambia, y la decisión en una línea. El README los lista.',
+        status:
+          'En qué estado está. Un registro reemplazado se queda, y nombra el que lo reemplazó.',
+        date: 'Cuándo se decidió. Una corrección posterior agrega abajo una línea Revised, con su propia fecha.',
+        area: 'La parte del sistema que gobierna.',
+        readWhen:
+          'Contra lo que un agente compara: el síntoma que encontraría, no el tema.',
+      },
+    },
+    timeline: 'Los registros en el orden en que se decidieron',
+    points: 'La decisión',
+    open: 'Leer el registro →',
+    filter: {
+      label: 'Filtrar los registros',
+      status: 'Estado',
+      area: 'Área',
+      search: 'Buscar en títulos y síntomas',
+      clear: 'Quitar filtros',
+      showing: 'Mostrando {{shown}} de {{total}}',
+      empty: 'Ningún registro coincide con el filtro.',
+      sort: 'Ordenar por',
+      ascending: 'ascendente',
+      descending: 'descendente',
+    },
+    sort: {
+      number: 'Número',
+      date: 'Fecha',
+      title: 'Título',
+      status: 'Estado',
+    },
+    status: {
+      proposed: 'Propuesta',
+      accepted: 'Aceptada',
+      'superseded-in-part': 'Reemplazada en parte',
+      superseded: 'Reemplazada',
+    },
+  },
+  decisionPage: {
+    back: 'Todas las decisiones de {{project}}',
+    number: 'ADR {{number}}',
+    date: 'Decidida',
+    area: 'Área',
+    supersedes: 'Reemplaza a',
+    supersededBy: 'Reemplazada por',
   },
   theme: {
     label: 'Tema',

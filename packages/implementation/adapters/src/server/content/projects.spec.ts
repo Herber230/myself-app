@@ -14,8 +14,8 @@ const ids = (featured: FeaturedProject[]) =>
 describe('the featured projects', () => {
   it('are the shipped ones, in their order', async () => {
     expect(ids(await loadFeaturedProjects(SITE_CONTENT))).toEqual([
-      'myself-app',
       'entifix',
+      'myself-app',
     ]);
   });
 
@@ -33,8 +33,8 @@ describe('the featured projects', () => {
       ],
     });
     expect(ids(await loadFeaturedProjects(content))).toEqual([
-      'entifix',
       'myself-app',
+      'entifix',
     ]);
   });
 });

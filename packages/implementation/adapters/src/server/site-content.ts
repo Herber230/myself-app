@@ -11,6 +11,7 @@
  * rules only the site knows are the domain's).
  */
 import {
+  ArchitectureDecision,
   Certificate,
   ContactChannel,
   CvFocus,
@@ -24,10 +25,14 @@ import {
   Post,
   Profile,
   Project,
+  ProjectPath,
+  ProjectPattern,
   Quadrant,
   RadarEdition,
   Ring,
   SITE_LOCALES,
+  statusMatchesSupersession,
+  supersedesWithinProject,
   Tag,
   Technology,
   TechnologyArea,
@@ -46,7 +51,11 @@ import {
   type StaticContent,
 } from '@myself-app/entifix-incubator-static-adapter';
 
-import { readPostBodyFile } from './post-bodies.js';
+import {
+  readDecisionBodyFile,
+  readPostBodyFile,
+  readProjectOverviewFile,
+} from './post-bodies.js';
 
 export const CONTENT_SOURCES: readonly ContentSource[] = [
   // One profile: the site is about one person.
@@ -77,7 +86,31 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
     file: 'technology-use-periods.json',
     rules: [notBefore('end', 'start')],
   }),
-  defineSource({ entity: Project, file: 'projects.json' }),
+  defineSource({
+    entity: Project,
+    file: 'projects.json',
+    // Its page's overview is Markdown beside the record (#77).
+    sidecars: { overview: readProjectOverviewFile },
+    rules: [present('overview')],
+    published: { omit: ['overview'] },
+  }),
+  defineSource({ entity: ProjectPattern, file: 'project-patterns.json' }),
+  defineSource({ entity: ProjectPath, file: 'project-paths.json' }),
+  defineSource({
+    entity: ArchitectureDecision,
+    file: 'adrs.json',
+    // Copied from each repository's docs/adr, in English only (ADR 0020).
+    plainSidecars: { body: readDecisionBodyFile },
+    rules: [
+      present('body'),
+      // The sync script reads it from the record's Decision section.
+      present('summary'),
+      supersedesWithinProject,
+      statusMatchesSupersession,
+    ],
+    // The explorer filters and sorts; it reads no body.
+    published: { omit: ['body'] },
+  }),
   defineSource({ entity: CvFocus, file: 'cv-focuses.json' }),
   defineSource({
     entity: EmploymentHighlight,

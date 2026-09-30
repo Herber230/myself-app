@@ -22,13 +22,46 @@ export type Condition = EntityFilter<AnyEntity> | FilterGroup<AnyEntity>;
  * stale link filters on what still exists; `single` keeps the first value
  * only, as a search box has one.
  */
-export interface UrlParam<TContext> {
+export interface FilterParam<TContext> {
   readonly allowed?: readonly string[];
   readonly single?: boolean;
   readonly condition: (
     values: readonly string[],
     context: TContext,
   ) => Condition;
+}
+
+/**
+ * A parameter that orders rather than filters: each value it accepts names a
+ * sorting (`?sort=date-desc`). It holds one value, and any other is dropped.
+ */
+export interface SortParam {
+  readonly sorting: Readonly<Record<string, EntitySorting<AnyEntity>[]>>;
+}
+
+/**
+ * A parameter that picks one record to show rather than filters or orders
+ * the answer: `?adr=0016`. It holds one value, `allowed` when given, and never
+ * reaches the request.
+ */
+export interface SelectParam {
+  readonly select: true;
+  readonly allowed?: readonly string[];
+}
+
+export type UrlParam<TContext> =
+  FilterParam<TContext> | SortParam | SelectParam;
+
+/** Whether a parameter orders the answer rather than filters it. */
+function isSortParam<TContext>(param: UrlParam<TContext>): param is SortParam {
+  return 'sorting' in param;
+}
+
+/** Whether a parameter picks a record rather than asks the load anything. */
+function isSelectParam<TContext>(
+  param: UrlParam<TContext>,
+): param is SelectParam {
+  return 'select' in param;
 }
 
 /** The values of every parameter, in the order the URL gave them. */
@@ -43,6 +76,15 @@ export interface UrlQuery<TKey extends string, TContext> {
   /** `''` for an empty state, else `?` and the parameters in declared order. */
   serialize(state: UrlState<TKey>): string;
   isEmpty(state: UrlState<TKey>): boolean;
+  /** Whether any parameter that filters has a value; a sort alone does not. */
+  isFiltering(state: UrlState<TKey>): boolean;
+  /**
+   * Whether the state asks the load anything: a filter or a sort. A
+   * selection alone does not.
+   */
+  isAsking(state: UrlState<TKey>): boolean;
+  /** The state with every filter emptied, and its sort and selection kept. */
+  withoutFilters(state: UrlState<TKey>): UrlState<TKey>;
   /** The load request the state stands for: one condition per parameter set. */
   request<TEntity extends Entity>(
     state: UrlState<TKey>,
@@ -52,7 +94,7 @@ export interface UrlQuery<TKey extends string, TContext> {
 
 export interface UrlQueryOptions<TKey extends string, TContext> {
   readonly params: Readonly<Record<TKey, UrlParam<TContext>>>;
-  /** Applied to every request, filtered or not. */
+  /** Applied to every request, filtered or not, unless a sort is chosen. */
   readonly sorting?: EntitySorting<AnyEntity>[];
 }
 
@@ -67,9 +109,13 @@ export interface UrlQueryOptions<TKey extends string, TContext> {
  */
 export function defineUrlQuery<TKey extends string, TContext = undefined>({
   params,
-  sorting,
+  sorting: defaultSorting,
 }: UrlQueryOptions<TKey, TContext>): UrlQuery<TKey, TContext> {
   const keys = Object.keys(params) as TKey[];
+  const filterKeys = keys.filter(
+    key => !isSortParam(params[key]) && !isSelectParam(params[key]),
+  );
+  const askingKeys = keys.filter(key => !isSelectParam(params[key]));
   const stateOf = (values: (key: TKey) => readonly string[]) =>
     Object.fromEntries(
       keys.map(key => [key, values(key)]),
@@ -77,7 +123,12 @@ export function defineUrlQuery<TKey extends string, TContext = undefined>({
   const empty = stateOf(() => []);
 
   const accepted = (key: TKey, values: string[]) => {
-    const { allowed, single } = params[key];
+    const param = params[key];
+    const { allowed, single } = isSortParam(param)
+      ? { allowed: Object.keys(param.sorting), single: true }
+      : isSelectParam(param)
+        ? { allowed: param.allowed, single: true }
+        : param;
     // Kept as written: a search box being typed into holds its spaces.
     const kept = values
       .filter(value => value.trim() !== '')
@@ -103,10 +154,30 @@ export function defineUrlQuery<TKey extends string, TContext = undefined>({
     isEmpty(state) {
       return keys.every(key => state[key].length === 0);
     },
+    isFiltering(state) {
+      return filterKeys.some(key => state[key].length > 0);
+    },
+    isAsking(state) {
+      return askingKeys.some(key => state[key].length > 0);
+    },
+    withoutFilters(state) {
+      return stateOf(key => (filterKeys.includes(key) ? [] : state[key]));
+    },
     request<TEntity extends Entity>(state: UrlState<TKey>, context: TContext) {
-      const filtering = keys
-        .filter(key => state[key].length > 0)
-        .map(key => params[key].condition(state[key], context));
+      const filtering = filterKeys.flatMap(key => {
+        const param = params[key] as FilterParam<TContext>;
+        return state[key].length === 0
+          ? []
+          : [param.condition(state[key], context)];
+      });
+      const chosen = keys.flatMap(key => {
+        const param = params[key];
+        const [value] = state[key];
+        return isSortParam(param) && value !== undefined
+          ? [param.sorting[value] as EntitySorting<AnyEntity>[]]
+          : [];
+      });
+      const sorting = chosen[0] ?? defaultSorting;
       return {
         ...(filtering.length > 0 && {
           filtering: filtering as unknown as EntityFiltering<TEntity>[],
@@ -135,7 +206,7 @@ export function anyOf(property: string) {
  */
 export function containing<TContext>(
   property: (context: TContext) => string,
-): UrlParam<TContext>['condition'] {
+): FilterParam<TContext>['condition'] {
   return ([value], context) => ({
     property: property(context),
     operator: 'like',

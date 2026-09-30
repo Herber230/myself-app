@@ -9,16 +9,15 @@ import { expect, type Page, test } from '@playwright/test';
 const HERO = {
   en: {
     title: 'Software Engineer',
-    tagline: 'Software engineer focused on architecture, not tools.',
     cv: 'Read my CV',
     radar: 'Explore my tech radar',
+    blog: 'Read my blog',
   },
   es: {
     title: 'Ingeniero de software',
-    tagline:
-      'Ingeniero de software enfocado en la arquitectura, no en las herramientas.',
     cv: 'Ver mi CV',
     radar: 'Explorar mi radar tecnológico',
+    blog: 'Leer mi blog',
   },
 };
 
@@ -35,7 +34,6 @@ for (const [locale, copy] of Object.entries(HERO)) {
       page.getByRole('heading', { level: 1, name: 'Herber Colop' }),
     ).toBeVisible();
     await expect(page.getByText(copy.title, { exact: true })).toBeVisible();
-    await expect(page.getByText(copy.tagline, { exact: true })).toBeVisible();
 
     const main = page.getByRole('main');
     await expect(main.getByRole('link', { name: copy.cv })).toHaveAttribute(
@@ -46,19 +44,23 @@ for (const [locale, copy] of Object.entries(HERO)) {
       'href',
       `/${locale}/tech-radar/`,
     );
+    await expect(main.getByRole('link', { name: copy.blog })).toHaveAttribute(
+      'href',
+      `/${locale}/blog/`,
+    );
   });
 }
 
-test("a project's technology opens its entry on the radar", async ({
+test('the projects are stacked cards, each one link to its page', async ({
   page,
 }) => {
   await page.goto('/en/');
   const projects = page.getByRole('region', { name: 'Projects' });
-  const link = projects.getByRole('link', { name: 'TypeScript' }).first();
-  await expect(link).toHaveAttribute('href', '/en/tech-radar/#tech-typescript');
-  await link.click();
-  await page.waitForURL('/en/tech-radar/#tech-typescript');
-  await expect(page.locator('#tech-typescript')).toBeInViewport();
+  const links = projects.getByRole('link');
+  await expect(links).toHaveText(['entifix', 'myself-app']);
+  // The link is stretched over its card: a click on the card follows it.
+  await projects.getByRole('article').first().click();
+  await page.waitForURL('/en/projects/entifix/');
 });
 
 test('the bar is hidden over the hero and revealed by scrolling', async ({
@@ -102,10 +104,10 @@ test('the section in view is marked, and the language switch keeps it', async ({
   const nav = page.getByRole('navigation', { name: 'Sections' });
   await page.locator('#projects').scrollIntoViewIfNeeded();
   await page.mouse.wheel(0, 1);
-  await expect(nav.getByRole('link', { name: 'Projects' })).toHaveAttribute(
-    'aria-current',
-    'location',
-  );
+  // Its anchor is in the projects menu, closed.
+  await expect(
+    nav.getByRole('link', { name: 'All projects', includeHidden: true }),
+  ).toHaveAttribute('aria-current', 'location');
   await expect(nav.getByRole('link', { name: 'About' })).not.toHaveAttribute(
     'aria-current',
   );
@@ -114,6 +116,21 @@ test('the section in view is marked, and the language switch keeps it', async ({
   await banner.getByLabel('Language', { exact: true }).click();
   await banner.getByRole('link', { name: 'Español' }).click();
   await page.waitForURL('/es/#projects');
+});
+
+test('the projects menu leads to each project’s page', async ({ page }) => {
+  await page.goto('/en/cv/');
+  const nav = page.getByRole('navigation', { name: 'Sections' });
+  await nav.getByLabel('Projects', { exact: true }).click();
+  await nav.getByRole('link', { name: 'entifix' }).click();
+  await page.waitForURL('/en/projects/entifix/');
+  await nav.getByLabel('Projects', { exact: true }).click();
+  await expect(nav.getByRole('link', { name: 'entifix' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  await nav.getByRole('link', { name: 'myself-app' }).click();
+  await page.waitForURL('/en/projects/myself-app/');
 });
 
 test.describe('on a phone', () => {
@@ -133,7 +150,7 @@ test.describe('on a phone', () => {
     const trigger = banner.getByLabel('Menu', { exact: true });
     await trigger.click();
     const menu = banner.getByRole('navigation', { name: 'Sections' });
-    await expect(menu.getByRole('link')).toHaveCount(7);
+    await expect(menu.getByRole('link')).toHaveCount(8);
 
     await menu.getByRole('link', { name: 'Contact' }).click();
     await page.waitForURL('/en/#contact');
@@ -169,7 +186,7 @@ test.describe('with scripting off', () => {
       page
         .getByRole('region', { name: 'Projects' })
         .getByRole('heading', { level: 3 }),
-    ).toHaveText(['myself-app', 'entifix']);
+    ).toHaveText(['entifix', 'myself-app']);
   });
 
   test('the language menu is a menu of plain links', async ({ page }) => {

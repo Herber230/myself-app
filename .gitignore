@@ -48,3 +48,6 @@ vitest.config.*.timestamp*
 
 # Playwright
 .playwright-mcp
+
+# Original photos: only their resized copies under public/ are committed
+/apps/myself-app/public/images/

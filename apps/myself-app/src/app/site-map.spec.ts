@@ -3,7 +3,9 @@ import { dirname, join, relative } from 'node:path';
 
 import {
   CV_VARIANT_ROUTE,
+  DECISION_ROUTE,
   POST_ROUTE,
+  PROJECT_ROUTE,
   SITE_PATHS,
   TECHNOLOGY_ROUTE,
   UNLISTED_ROUTES,
@@ -24,6 +26,8 @@ describe('the sitemap', () => {
         CV_VARIANT_ROUTE,
         TECHNOLOGY_ROUTE,
         POST_ROUTE,
+        PROJECT_ROUTE,
+        DECISION_ROUTE,
         ...UNLISTED_ROUTES,
       ].sort(),
     ).toEqual(pages.sort());

@@ -76,6 +76,7 @@ export const en = {
     hero: {
       cv: 'Read my CV',
       techRadar: 'Explore my tech radar',
+      blog: 'Read my blog',
       scroll: 'Scroll to read more',
     },
     /** The section nav's anchors. */
@@ -83,33 +84,115 @@ export const en = {
       label: 'Sections',
       about: 'About',
       projects: 'Projects',
-      entifix: 'entifix',
+      allProjects: 'All projects',
       contact: 'Contact',
     },
     /** Each section's heading. */
     headings: {
       about: 'About me',
       projects: 'Projects',
-      entifix: 'Built on entifix',
       contact: 'Contact',
-    },
-    projects: {
-      /** Names the list of a project's technologies. */
-      technologies: 'Technologies in {{project}}',
-      site: 'Visit the site',
-      repository: 'Read the source',
-    },
-    /** Copy, not content (ADR 0008): each claim is one `content/` makes true. */
-    entifix: {
-      what: 'entifix is a TypeScript framework for entity-driven applications, built on Effect. An entity is described once, and its metadata drives validation, repositories, use cases and React controls.',
-      here: 'This page runs on it. The profile, the projects and the contact channels are entities, stored as JSON in English and Spanish, checked against their metadata by a static repository, and read at build time through the load use case, the same one a backend would serve.',
-      repository: 'Source on GitHub',
-      npm: 'Packages on npm',
     },
     contact: {
       /** A link's name: the channel, then the handle it shows. */
       link: '{{channel}}: {{handle}}',
     },
+  },
+  /** A project's page (#77): how its repository works, and its decisions. */
+  projectPage: {
+    /** The landing card's cue, beside the project's name. */
+    explore: 'How it works',
+    back: '← Back to the projects',
+    technologies: 'Technologies in {{project}}',
+    site: 'Visit the site',
+    repository: 'Read the source',
+    overview: 'Overview',
+    patterns: 'Patterns',
+    structure: 'File structure',
+    decisions: 'Architecture decisions',
+    decisionsLead:
+      'Every significant decision is recorded, with the symptom that should send a reader — or an agent — to it before the rule is broken.',
+    englishOnly: 'The records are written in English.',
+    readWhen: 'Read when',
+    /** How the records are written, found and kept: the practice, told. */
+    practice: {
+      summary: 'How the records steer the work',
+      lead: 'People and agents read the same records. Each one names the symptom that should send a reader to it, so a rule is found before it is broken, not after.',
+      steps: {
+        decide: {
+          name: 'Decide',
+          text: 'A choice that would be costly to undo, or easy to break by accident, gets a numbered record.',
+        },
+        record: {
+          name: 'Record',
+          text: 'Its header holds a status, a date, an area and a Read when line: the symptom that should bring a reader back.',
+        },
+        point: {
+          name: 'Point',
+          text: 'The repository’s CLAUDE.md sends every agent session to docs/adr, whose README indexes the records.',
+        },
+        match: {
+          name: 'Match',
+          text: 'When a task meets a symptom — a failing check, a strange build — the agent finds the record whose Read when names it, and follows its rule.',
+        },
+        evolve: {
+          name: 'Evolve',
+          text: 'A fact that changes is corrected in place, on a Revised line. A decision that no longer holds gets a new record that supersedes it. Nothing is deleted.',
+        },
+      },
+      synced:
+        'The records below are copied from each repository by a script, and this repository’s CI fails when a copy drifts from its record.',
+      /** `{{number}}` is the record's, four digits. */
+      anatomy:
+        'Anatomy of a record: the header of ADR {{number}}, the newest with a Read when line.',
+      callouts: {
+        title:
+          'A number that never changes, and the decision in one line. The README lists them.',
+        status:
+          'Where it stands. A superseded record stays, and names the record that replaced it.',
+        date: 'When it was decided. A later correction adds a Revised line below, with its own date.',
+        area: 'The part of the system it governs.',
+        readWhen:
+          'What an agent matches against: the symptom it would meet, not the topic.',
+      },
+    },
+    timeline: 'The records in the order they were decided',
+    points: 'The decision',
+    open: 'Read the record →',
+    filter: {
+      label: 'Filter the records',
+      status: 'Status',
+      area: 'Area',
+      search: 'Search titles and symptoms',
+      clear: 'Clear filters',
+      /** `{{shown}}` and `{{total}}` are replaced in the browser. */
+      showing: 'Showing {{shown}} of {{total}}',
+      empty: 'No record matches the filter.',
+      sort: 'Sort by',
+      ascending: 'ascending',
+      descending: 'descending',
+    },
+    sort: {
+      number: 'Number',
+      date: 'Date',
+      title: 'Title',
+      status: 'Status',
+    },
+    status: {
+      proposed: 'Proposed',
+      accepted: 'Accepted',
+      'superseded-in-part': 'Superseded in part',
+      superseded: 'Superseded',
+    },
+  },
+  /** One decision record's page (#77). */
+  decisionPage: {
+    back: 'All the decisions of {{project}}',
+    number: 'ADR {{number}}',
+    date: 'Decided',
+    area: 'Area',
+    supersedes: 'Supersedes',
+    supersededBy: 'Superseded by',
   },
   theme: {
     label: 'Theme',

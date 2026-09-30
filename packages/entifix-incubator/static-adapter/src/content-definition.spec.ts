@@ -370,3 +370,35 @@ describe('a sidecar member', () => {
     expect(withBodies(noBooks).records['books.json']).toEqual([]);
   });
 });
+
+describe('a plain sidecar member', () => {
+  /** Names kept beside the authors, in no locale: only `ada` has a file. */
+  const readName = (id: string) =>
+    id === 'ada' ? `${id} from a file` : undefined;
+
+  const withNames = (content = LIBRARY) =>
+    define(content, [
+      defineSource({
+        entity: Author,
+        file: 'authors.json',
+        plainSidecars: { name: readName },
+      }),
+      ...SOURCES.slice(1),
+    ]);
+
+  it('is attached whole, in no locale, where its file exists', () => {
+    const records = withNames().records['authors.json'] as {
+      id: string;
+      name: string;
+    }[];
+    expect(records.find(author => author.id === 'ada')?.name).toBe(
+      'ada from a file',
+    );
+    // Without a file, the record keeps what it was written with.
+    expect(records.filter(author => author.id !== 'ada')).toEqual(
+      (LIBRARY['authors.json'] as { id: string }[]).filter(
+        author => author.id !== 'ada',
+      ),
+    );
+  });
+});

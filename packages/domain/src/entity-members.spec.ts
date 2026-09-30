@@ -20,6 +20,7 @@ import {
 } from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
+import { ArchitectureDecision } from './entities/architecture-decision.entity.js';
 import { Certificate } from './entities/certificate.entity.js';
 import { ContactChannel } from './entities/contact-channel.entity.js';
 import { CvFocus } from './entities/cv-focus.entity.js';
@@ -31,6 +32,8 @@ import { EmploymentPeriod } from './entities/employment-period.entity.js';
 import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
+import { ProjectPath } from './entities/project-path.entity.js';
+import { ProjectPattern } from './entities/project-pattern.entity.js';
 import { Quadrant } from './entities/quadrant.entity.js';
 import { RadarEdition } from './entities/radar-edition.entity.js';
 import { Ring } from './entities/ring.entity.js';
@@ -61,6 +64,9 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['Certificate', Certificate],
   ['Tag', Tag],
   ['Post', Post],
+  ['ProjectPattern', ProjectPattern],
+  ['ProjectPath', ProjectPath],
+  ['ArchitectureDecision', ArchitectureDecision],
 ];
 
 const SAMPLE_DATE = new Date('2024-03-01T00:00:00.000Z');

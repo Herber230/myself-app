@@ -28,3 +28,51 @@ export const variantIdNotReserved: EntityRule = (records, report) => {
     }
   });
 };
+
+/**
+ * A decision's `supersedes` stays inside its project, whose records its id
+ * starts with (`myself-app-0016`): a record of one repository cannot replace
+ * another's.
+ */
+export const supersedesWithinProject: EntityRule = (records, report) => {
+  records.forEach((record, index) => {
+    const prefix = `${String(record.project)}-`;
+    const outside = ((record.supersedes ?? []) as unknown[]).filter(
+      id => !String(id).startsWith(prefix),
+    );
+    if (outside.length > 0) {
+      report(
+        index,
+        'supersedes',
+        `names ${outside.join(', ')}, outside project ${String(record.project)}`,
+      );
+    }
+  });
+};
+
+/**
+ * A decision is `superseded` or `superseded-in-part` exactly when another
+ * names it in `supersedes`, so the status and the links never disagree.
+ */
+export const statusMatchesSupersession: EntityRule = (records, report) => {
+  const replaced = new Set(
+    records.flatMap(record => (record.supersedes ?? []) as unknown[]),
+  );
+  records.forEach((record, index) => {
+    const superseded = String(record.status).startsWith('superseded');
+    if (superseded && !replaced.has(record.id)) {
+      report(
+        index,
+        'status',
+        `is ${String(record.status)}, but nothing supersedes it`,
+      );
+    }
+    if (!superseded && replaced.has(record.id)) {
+      report(
+        index,
+        'status',
+        `is ${String(record.status)}, but a later record supersedes it`,
+      );
+    }
+  });
+};

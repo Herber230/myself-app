@@ -1,5 +1,6 @@
 import type { Entity, EntityConstructor } from '@entifix/core';
 
+import { ArchitectureDecision } from './entities/architecture-decision.entity.js';
 import { Certificate } from './entities/certificate.entity.js';
 import { ContactChannel } from './entities/contact-channel.entity.js';
 import { CvFocus } from './entities/cv-focus.entity.js';
@@ -11,6 +12,8 @@ import { EmploymentPeriod } from './entities/employment-period.entity.js';
 import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
+import { ProjectPath } from './entities/project-path.entity.js';
+import { ProjectPattern } from './entities/project-pattern.entity.js';
 import { Quadrant } from './entities/quadrant.entity.js';
 import { RadarEdition } from './entities/radar-edition.entity.js';
 import { Ring } from './entities/ring.entity.js';
@@ -45,7 +48,11 @@ export const LOCALIZED_MEMBERS = new Map<
   [RadarEdition, []],
   [Technology, ['name', 'description']],
   [TechnologyUsePeriod, []],
-  [Project, ['summary']],
+  [Project, ['summary', 'overview']],
+  [ProjectPattern, ['name', 'summary']],
+  [ProjectPath, ['note']],
+  // Written in English only (ADR 0020).
+  [ArchitectureDecision, []],
   [CvVariant, ['title', 'summary']],
   [CvFocus, ['name']],
   [EmploymentHighlight, ['text']],

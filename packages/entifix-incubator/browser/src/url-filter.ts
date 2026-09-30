@@ -13,20 +13,25 @@ export interface UrlFilter<TKey extends string, TEntity extends Entity> {
    * hydration, which show every record and no controls.
    */
   readonly filter: UrlState<TKey> | null;
-  /** Whether any parameter is set. */
+  /** Whether any parameter that filters is set; a chosen sort alone is not. */
   readonly filtering: boolean;
   /**
    * The ids the latest answer keeps, or `undefined` while every record is
    * shown. While a new answer loads, the last one stays.
    */
   readonly kept: ReadonlySet<string> | undefined;
+  /**
+   * The same ids in the answer's order, for a page whose sort the URL
+   * chooses, or `undefined` while every record is shown as built.
+   */
+  readonly order: readonly string[] | undefined;
   /** The load itself, for a page that shows its status. */
   readonly load: EntityLoad<TEntity>;
   /** Adds a value to a parameter, or takes it out when it is there. */
   toggle(key: TKey, value: string): void;
   /** Replaces a parameter's values: a search box's text. */
   set(key: TKey, values: readonly string[]): void;
-  /** Every parameter emptied: no filter at all. */
+  /** Every filter emptied: no filter at all. A chosen sort and selection stay. */
   clear(): void;
 }
 
@@ -62,18 +67,21 @@ export function useUrlFilter<
   context: TContext,
 ): UrlFilter<TKey, TEntity> {
   const [filter, write] = useUrlState(query);
-  const filtering = filter !== null && !query.isEmpty(filter);
+  const filtering = filter !== null && query.isFiltering(filter);
+  // A selection alone picks a record the page already has: nothing to ask.
+  const asking = filter !== null && query.isAsking(filter);
   const load = useEntityLoad<TEntity>(
     source,
-    filtering ? query.request<TEntity>(filter, context) : null,
+    asking ? query.request<TEntity>(filter, context) : null,
   );
   const page = shownPage(load);
-  const kept = useMemo(
-    () =>
-      page === undefined
-        ? undefined
-        : new Set(page.items.map(record => String(record.id))),
+  const order = useMemo(
+    () => page?.items.map(record => String(record.id)),
     [page],
+  );
+  const kept = useMemo(
+    () => (order === undefined ? undefined : new Set(order)),
+    [order],
   );
 
   const set = useCallback(
@@ -88,7 +96,10 @@ export function useUrlFilter<
     },
     [filter, set],
   );
-  const clear = useCallback(() => write(query.empty), [query, write]);
+  const clear = useCallback(
+    () => write(filter === null ? query.empty : query.withoutFilters(filter)),
+    [filter, query, write],
+  );
 
-  return { filter, filtering, kept, load, toggle, set, clear };
+  return { filter, filtering, kept, order, load, toggle, set, clear };
 }

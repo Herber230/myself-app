@@ -354,6 +354,92 @@
     animation: cue-bob 1.8s ease-in-out 3.8s infinite;
   }
 
+  /* ── The backdrop behind the sections ─────────────────────────────────── */
+
+  /* Behind everything in <main>: the hero paints its own opaque backdrop over
+     it, so it shows from the first section on. */
+  /* The layout's wrapper around every page: at least a screen tall, so a
+     short page is covered to the bottom. */
+  .site-backdrop-host {
+    position: relative;
+    min-height: 100dvh;
+  }
+
+  /* The CV is a sheet of paper on a desk: nothing behind it. */
+  body:has(.cv-sheet) .site-backdrop {
+    display: none;
+  }
+
+  .site-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    color: var(--color-primary);
+    view-timeline: --site-backdrop;
+    /* Quieter under the reading column, fuller in the margins. */
+    mask-image: linear-gradient(
+      90deg,
+      #000 0%,
+      rgb(0 0 0 / 0.35) 28%,
+      rgb(0 0 0 / 0.35) 72%,
+      #000 100%
+    );
+    /* How much slower the backdrop scrolls than the page: 0 moves with it,
+       1 stands still. */
+    --backdrop-lag: 0.4;
+  }
+
+  /* The track moves; the drawing hangs above it by as far as the track
+     travels, so the page is covered at every point of the scroll. */
+  .site-backdrop-track {
+    position: absolute;
+    inset: 0;
+  }
+
+  .site-backdrop-layer {
+    position: absolute;
+    /* The pattern starts at the layer's left edge: starting it half a tile
+       left of the centre, less a whole tile, centres a tile on the page. */
+    left: calc(50% - 1800px);
+    top: calc(-1 * var(--backdrop-lag) * (100% + 100dvh));
+    width: calc(100% + 3600px);
+    height: calc(100% + var(--backdrop-lag) * (100% + 100dvh));
+    opacity: 0.12;
+  }
+
+  .site-backdrop-grid {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 0.5;
+    opacity: 0.35;
+  }
+
+  .site-backdrop-code {
+    fill: currentColor;
+    font-family: var(--font-mono);
+    font-size: 15px;
+  }
+
+  .site-backdrop-diagram {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.25;
+  }
+
+  .site-backdrop-label {
+    fill: currentColor;
+    stroke: none;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    text-anchor: middle;
+  }
+
+  .site-backdrop-dashed {
+    stroke-dasharray: 6 6;
+  }
+
   /* ── The sections ─────────────────────────────────────────────────────── */
 
   .landing-section {
@@ -368,6 +454,41 @@
 
   .landing-prose {
     max-width: 65ch;
+  }
+
+  /* The portrait beside the bio, and above it on a narrow screen. Its box is
+     known before the file arrives (4:5), so nothing shifts when it does. */
+  .about-body {
+    display: grid;
+    gap: var(--spacing-l);
+    align-items: start;
+  }
+
+  .about-portrait {
+    width: min(16rem, 70%);
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Justified, and hyphenated in the page's language (<html lang>) so the
+     narrow column does not open gaps between words. */
+  .about-bio {
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  @media (min-width: 48rem) {
+    .about-body {
+      grid-template-columns: 16rem 1fr;
+    }
+
+    .about-portrait {
+      width: 100%;
+    }
   }
 
   .landing-list {
@@ -413,14 +534,12 @@
     border-radius: 2px;
   }
 
-  /* A technology or a project reached from a link (#30, #42): clear of the
-     fixed nav, and marked. */
-  .landing-project,
+  /* A technology reached from a link (#42): clear of the fixed nav, and
+     marked. */
   .radar-legend-entry {
     scroll-margin-top: 5rem;
   }
 
-  .landing-project:target,
   .radar-legend-entry:target {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
@@ -453,6 +572,14 @@
     animation: cue-leave linear both;
     animation-timeline: scroll(root);
     animation-range: 0 25vh;
+  }
+
+  /* The backdrop falls behind: over the whole time <main> crosses the
+     viewport, the track moves down by the lag's share of that distance. */
+  .site-backdrop-track {
+    animation: backdrop-lag linear both;
+    animation-timeline: --site-backdrop;
+    animation-range: cover;
   }
 }
 
@@ -488,6 +615,12 @@
   }
 }
 
+@keyframes backdrop-lag {
+  to {
+    translate: 0 calc(var(--backdrop-lag) * (100% + 100dvh));
+  }
+}
+
 @keyframes nav-reveal {
   to {
     opacity: 1;
@@ -498,6 +631,7 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-beat,
   .hero-glyph,
+  .site-backdrop-track,
   .scroll-cue-link,
   .scroll-cue-chevron {
     animation: none;
@@ -883,6 +1017,10 @@
     display: none;
   }
 
+  .site-backdrop {
+    display: none;
+  }
+
   .cv-desk {
     display: block;
     padding: 0;
@@ -934,9 +1072,797 @@
   margin-inline: auto;
 }
 
+/* The wide bar's projects menu (#77): its trigger reads as one of the links
+   beside it, and marks itself while a project, or its section, is current. */
+.site-nav-projects > [data-slot='nav-menu-trigger'] {
+  height: auto;
+  gap: 0.375rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: inherit;
+  line-height: 1.25rem;
+}
+
+.site-nav-projects > [data-slot='nav-menu-trigger']:hover,
+.site-nav-projects[open] > [data-slot='nav-menu-trigger'],
+.site-nav-projects:has([aria-current]) > [data-slot='nav-menu-trigger'] {
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+}
+
+.site-nav-projects > [data-slot='nav-menu-trigger'] .nav-icon {
+  color: var(--color-content-muted);
+}
+
+.site-nav-projects > [data-slot='nav-menu-trigger']:hover .nav-icon,
+.site-nav-projects:has([aria-current])
+  > [data-slot='nav-menu-trigger']
+  .nav-icon {
+  color: currentColor;
+}
+
+.site-nav-projects > [data-slot='nav-menu-panel'] {
+  left: 0;
+  right: auto;
+  min-width: 12rem;
+}
+
+.site-nav-links .site-nav-projects ul {
+  flex-direction: column;
+  gap: 0;
+}
+
+/* The narrow screen's menu: the projects nested under their section. */
+.nav-menu-sheet [data-slot='nav-menu-panel'] ul.site-nav-sublist {
+  margin: 0 0 var(--spacing-3xs);
+  padding-inline-start: 1.75rem;
+}
+
 /* The smallest phones: the chevrons go, or the bar is wider than 320px. */
 @media (max-width: 24rem) {
   .site-nav-tools [data-slot='nav-menu-chevron'] {
+    display: none;
+  }
+}
+
+/*
+ * The projects (#77): the landing page's cards, each project's page, and its
+ * decision records. Motion is CSS only, and off under reduced motion.
+ */
+@layer components {
+  /* ── The landing cards ────────────────────────────────────────────────── */
+
+  .project-card-list {
+    display: grid;
+    gap: var(--spacing-l);
+  }
+
+  .project-card {
+    position: relative;
+    display: flex;
+    gap: var(--spacing-m);
+    align-items: flex-start;
+    padding: var(--spacing-l);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-elevated);
+    box-shadow: var(--shadow-card);
+    transition:
+      translate 200ms var(--ease-smooth, ease-out),
+      border-color 200ms var(--ease-smooth, ease-out);
+  }
+
+  .project-card:hover,
+  .project-card:focus-within {
+    translate: 0 -0.25rem;
+    border-color: var(--color-primary);
+  }
+
+  .project-card-body {
+    display: grid;
+    gap: var(--spacing-2xs);
+  }
+
+  .project-card-name {
+    margin: 0;
+    font-size: var(--text-step-2);
+    font-weight: 600;
+  }
+
+  /* The name is the card's one link, stretched over the whole card. */
+  .project-card-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .project-card-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .project-card-link:focus-visible {
+    outline: none;
+  }
+
+  .project-card:has(.project-card-link:focus-visible) {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .project-card-summary {
+    margin: 0;
+    color: var(--color-content-muted);
+  }
+
+  .project-card-cue {
+    color: var(--color-primary);
+    font-size: 0.875em;
+    font-weight: 500;
+  }
+
+  /* ── A project's glyph, redrawn stroke by stroke on hover ──────────────── */
+
+  .project-glyph {
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    color: var(--color-primary);
+  }
+
+  .project-glyph path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  .project-card:hover .project-glyph path,
+  .project-card:focus-within .project-glyph path {
+    animation: glyph-draw 700ms var(--ease-enter, ease-out) both;
+    animation-delay: calc(var(--stroke-order, 0) * 90ms);
+  }
+
+  /* ── A project's page ─────────────────────────────────────────────────── */
+
+  .project-page-title {
+    display: flex;
+    gap: var(--spacing-s);
+    align-items: center;
+  }
+
+  /* The header's calls to action: centred under it, the source first to the
+     eye. On hover a button rises, the source's glows, a sheen crosses it and
+     its mark turns, as a cat looks up. */
+  .project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-s);
+    margin-top: var(--spacing-xl);
+  }
+
+  .project-action {
+    position: relative;
+    overflow: hidden;
+    gap: var(--spacing-2xs);
+    transition:
+      translate 180ms ease-out,
+      box-shadow 180ms ease-out,
+      background-color 150ms ease-out;
+  }
+
+  .project-action-icon {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: rotate 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .project-action:hover,
+  .project-action:focus-visible {
+    translate: 0 -2px;
+    box-shadow: 0 8px 20px -10px
+      color-mix(in srgb, var(--color-content) 45%, transparent);
+  }
+
+  .project-action-source:hover,
+  .project-action-source:focus-visible {
+    box-shadow:
+      0 10px 28px -10px var(--color-primary),
+      0 0 0 4px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  }
+
+  .project-action:hover .project-action-icon,
+  .project-action:focus-visible .project-action-icon {
+    rotate: -12deg;
+  }
+
+  .project-action-source::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 30%,
+      rgb(255 255 255 / 0.35) 50%,
+      transparent 70%
+    );
+    translate: -120% 0;
+    pointer-events: none;
+  }
+
+  .project-action-source:hover::after,
+  .project-action-source:focus-visible::after {
+    translate: 120% 0;
+    transition: translate 600ms ease-out;
+  }
+
+  .project-page-part {
+    scroll-margin-top: 5rem;
+  }
+
+  .pattern-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--spacing-m);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pattern-card {
+    padding: var(--spacing-m);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-elevated);
+    transition: border-color 200ms var(--ease-smooth, ease-out);
+  }
+
+  .pattern-card:hover {
+    border-color: var(--color-primary);
+  }
+
+  .pattern-card-name {
+    margin: 0 0 var(--spacing-2xs);
+    font-size: var(--text-step-1);
+    font-weight: 600;
+  }
+
+  .pattern-card-summary {
+    margin: 0;
+    color: var(--color-content-muted);
+  }
+
+  /* The file tree: a monospace name, and its note beside it. */
+  .file-tree-list {
+    margin: 0;
+    padding-left: var(--spacing-m);
+    list-style: none;
+  }
+
+  .file-tree {
+    padding: var(--spacing-m);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-elevated);
+  }
+
+  .file-tree-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    align-items: baseline;
+    padding-block: 0.125rem;
+  }
+
+  summary.file-tree-row {
+    cursor: pointer;
+  }
+
+  .file-tree-name {
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+  }
+
+  .file-tree-note {
+    color: var(--color-content-muted);
+    font-size: 0.875em;
+  }
+
+  /* ── The decision records ─────────────────────────────────────────────── */
+
+  .adr-language-note {
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: 0.875em;
+    font-style: italic;
+  }
+
+  .adr-explorer {
+    display: grid;
+    gap: var(--spacing-l);
+  }
+
+  /* How the records steer the work: a disclosure, open until closed. */
+  .adr-practice {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: color-mix(
+      in srgb,
+      var(--color-surface-elevated) 85%,
+      transparent
+    );
+  }
+
+  .adr-practice > summary {
+    padding: var(--spacing-s) var(--spacing-m);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .adr-practice[open] > summary {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .adr-practice > :not(summary) {
+    margin-inline: var(--spacing-m);
+  }
+
+  .adr-practice-lead {
+    margin-block: var(--spacing-m) 0;
+    max-width: 65ch;
+  }
+
+  .adr-practice-synced {
+    margin-block: 0 var(--spacing-m);
+    color: var(--color-content-muted);
+    font-size: 0.875em;
+  }
+
+  /* The life of a record: a row of five on a wide screen, joined by a line;
+     a column on a narrow one. */
+  .adr-steps {
+    display: grid;
+    gap: var(--spacing-m);
+    margin-block: var(--spacing-l);
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .adr-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'icon name'
+      'icon text';
+    column-gap: var(--spacing-s);
+    row-gap: 0.125rem;
+    align-items: start;
+    align-content: start;
+  }
+
+  .adr-step-icon {
+    grid-area: icon;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    border: 1px solid var(--color-primary);
+    border-radius: 999px;
+    background-color: var(--color-surface-elevated);
+    color: var(--color-primary);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .adr-step-number {
+    position: absolute;
+    top: -0.25rem;
+    left: 1.875rem;
+    min-width: 1.125rem;
+    padding: 0 0.25rem;
+    border-radius: 999px;
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1.125rem;
+    text-align: center;
+  }
+
+  .adr-step-name {
+    grid-area: name;
+  }
+
+  .adr-step-text {
+    grid-area: text;
+    color: var(--color-content-muted);
+    font-size: 0.875em;
+  }
+
+  @media (min-width: 64rem) {
+    .adr-steps {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .adr-step {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'icon' 'name' 'text';
+      row-gap: var(--spacing-2xs);
+    }
+
+    /* The line from one step to the next, behind the icons. */
+    .adr-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 1.25rem;
+      left: 2.75rem;
+      right: calc(-1 * var(--spacing-m) + 0.25rem);
+      border-top: 1px dashed var(--color-primary);
+      opacity: 0.6;
+    }
+  }
+
+  /* A record's header, line by line: the code, and what the line is for. */
+  .adr-anatomy {
+    margin-block: 0 var(--spacing-m);
+  }
+
+  .adr-anatomy figcaption {
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+  }
+
+  .adr-anatomy-lines {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .adr-anatomy-line {
+    display: grid;
+    gap: var(--spacing-3xs);
+    padding: var(--spacing-xs) var(--spacing-s);
+  }
+
+  .adr-anatomy-line + .adr-anatomy-line {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .adr-anatomy-line[data-line='readWhen'] {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  .adr-anatomy-code {
+    font-family: var(--font-mono);
+    font-size: 0.8125em;
+    overflow-wrap: anywhere;
+  }
+
+  .adr-anatomy-note {
+    color: var(--color-content-muted);
+    font-size: 0.875em;
+  }
+
+  @media (min-width: 48rem) {
+    .adr-anatomy-line {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: var(--spacing-m);
+    }
+  }
+
+  /* The timeline: dots along a line, arcs above it, a tick below. */
+  .adr-timeline {
+    overflow-x: auto;
+    padding-block: var(--spacing-2xs);
+  }
+
+  .adr-timeline-track {
+    position: relative;
+    margin-inline: auto;
+    height: 4.5rem;
+  }
+
+  .adr-timeline-arcs {
+    position: absolute;
+    inset: 0 auto auto 0;
+    overflow: visible;
+    fill: none;
+    stroke: var(--color-content-muted);
+    stroke-width: 1;
+  }
+
+  .adr-timeline-arcs path {
+    stroke: var(--color-primary);
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
+  }
+
+  .adr-timeline-dots {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .adr-timeline-dots li {
+    position: relative;
+    flex: 0 0 28px;
+  }
+
+  .adr-timeline-dot {
+    position: absolute;
+    top: calc(44px - 0.4375rem);
+    left: calc(50% - 0.4375rem);
+    width: 0.875rem;
+    height: 0.875rem;
+    padding: 0;
+    border: 2px solid var(--color-surface);
+    border-radius: 999px;
+    background-color: var(--color-primary);
+    cursor: pointer;
+    transition:
+      scale 150ms ease-out,
+      opacity 150ms ease-out;
+  }
+
+  .adr-timeline-dot[data-status='proposed'] {
+    background-color: var(--color-content);
+  }
+
+  .adr-timeline-dot[data-status='superseded-in-part'],
+  .adr-timeline-dot[data-status='superseded'] {
+    background-color: var(--color-content-muted);
+  }
+
+  .adr-timeline-dot:hover,
+  .adr-timeline-dot:focus-visible {
+    scale: 1.35;
+  }
+
+  .adr-timeline-dot[aria-pressed='true'] {
+    scale: 1.35;
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--color-primary) 45%, transparent);
+  }
+
+  .adr-timeline-dot[data-dimmed] {
+    opacity: 0.25;
+  }
+
+  .adr-timeline-tick {
+    position: absolute;
+    top: 3.5rem;
+    left: 50%;
+    translate: -50% 0;
+    color: var(--color-content-muted);
+    font-size: 0.6875rem;
+    white-space: nowrap;
+  }
+
+  /* The list beside the pane (the split view's parts, by data-slot). */
+  .adr-split [data-slot='split-row'] + [data-slot='split-row'] {
+    margin-top: 0.125rem;
+  }
+
+  .adr-row-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    align-items: baseline;
+  }
+
+  .adr-row-number,
+  .decision-page-number {
+    margin: 0;
+    font-family: var(--font-mono);
+    color: var(--color-content-muted);
+  }
+
+  .adr-row-title {
+    flex: 1 1 12rem;
+    font-weight: 500;
+  }
+
+  .adr-row-head .adr-status {
+    font-size: 0.75em;
+  }
+
+  .adr-detail {
+    display: grid;
+    gap: var(--spacing-s);
+    align-content: start;
+    padding: var(--spacing-m);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-elevated);
+  }
+
+  .adr-detail-title {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: baseline;
+    margin: 0;
+    font-size: var(--text-step-1);
+    font-weight: 600;
+  }
+
+  .adr-detail-heading {
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: 0.8125em;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .adr-detail-points {
+    display: grid;
+    gap: var(--spacing-2xs);
+    margin: 0;
+    padding-inline-start: 1.25rem;
+    list-style: disc;
+  }
+
+  .adr-detail-open {
+    justify-self: start;
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .adr-detail code,
+  .adr-row-read-when code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+
+  /* The symptom first: it is what sends a reader, or an agent, here. */
+  .adr-row-read-when {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2xs);
+    margin: 0;
+    padding: var(--spacing-2xs) var(--spacing-xs);
+    border-left: 3px solid var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  .adr-row-read-when-label {
+    font-weight: 600;
+  }
+
+  .adr-row-meta {
+    display: flex;
+    gap: var(--spacing-s);
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: 0.875em;
+  }
+
+  .adr-empty {
+    margin: 0;
+    color: var(--color-content-muted);
+  }
+
+  .adr-status {
+    display: inline-block;
+    padding: 0.0625rem var(--spacing-xs);
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-size: 0.8125em;
+    white-space: nowrap;
+  }
+
+  .adr-status[data-status='accepted'] {
+    color: var(--color-primary);
+  }
+
+  .adr-status[data-status='proposed'] {
+    color: var(--color-content);
+    border-style: dashed;
+  }
+
+  .adr-status[data-status='superseded-in-part'],
+  .adr-status[data-status='superseded'] {
+    color: var(--color-content-muted);
+  }
+
+  .adr-status[data-status='superseded'] {
+    text-decoration: line-through;
+  }
+
+  /* ── One decision record's page ───────────────────────────────────────── */
+
+  .decision-page-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-m);
+    margin: 0;
+  }
+
+  .decision-page-facts div {
+    display: grid;
+    gap: 0.125rem;
+  }
+
+  .decision-page-facts dt {
+    color: var(--color-content-muted);
+    font-size: 0.8125em;
+  }
+
+  .decision-page-facts dd {
+    margin: 0;
+  }
+
+  .adr-lineage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-l);
+    margin: 0;
+  }
+
+  .adr-lineage dt {
+    font-weight: 600;
+  }
+
+  .adr-lineage dd {
+    margin: 0;
+  }
+}
+
+@keyframes glyph-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card,
+  .pattern-card,
+  .adr-timeline-dot {
+    transition: none;
+  }
+
+  .project-card:hover,
+  .project-card:focus-within {
+    translate: none;
+  }
+
+  .project-card:hover .project-glyph path,
+  .project-card:focus-within .project-glyph path {
+    animation: none;
+  }
+
+  .project-action,
+  .project-action-icon,
+  .project-action-source:hover::after,
+  .project-action-source:focus-visible::after {
+    transition: none;
+  }
+
+  .project-action:hover,
+  .project-action:focus-visible {
+    translate: none;
+  }
+
+  .project-action:hover .project-action-icon,
+  .project-action:focus-visible .project-action-icon {
+    rotate: none;
+  }
+
+  .project-action-source::after {
     display: none;
   }
 }

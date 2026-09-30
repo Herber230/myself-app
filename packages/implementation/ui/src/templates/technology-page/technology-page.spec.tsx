@@ -36,8 +36,10 @@ describe("a technology's page", () => {
     expect(within(history).getAllByRole('listitem').length).toBeGreaterThan(0);
 
     expect(
-      screen.getByRole('link', { name: 'myself-app' }).getAttribute('href'),
-    ).toBe('/en/#project-myself-app');
+      within(screen.getByRole('main'))
+        .getByRole('link', { name: 'myself-app' })
+        .getAttribute('href'),
+    ).toBe('/en/projects/myself-app/');
     expect(
       screen.getByRole('link', { name: 'Website' }).getAttribute('href'),
     ).toBe('https://www.typescriptlang.org');

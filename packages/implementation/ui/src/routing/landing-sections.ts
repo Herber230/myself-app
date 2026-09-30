@@ -4,12 +4,7 @@
  */
 import { localePath, type SiteLocale } from './site-locales.js';
 
-export const LANDING_SECTIONS = [
-  'about',
-  'projects',
-  'entifix',
-  'contact',
-] as const;
+export const LANDING_SECTIONS = ['about', 'projects', 'contact'] as const;
 
 export type LandingSection = (typeof LANDING_SECTIONS)[number];
 

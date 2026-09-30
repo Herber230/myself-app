@@ -110,3 +110,91 @@ describe('request', () => {
     });
   });
 });
+
+describe('a sort parameter', () => {
+  const sortable = defineUrlQuery({
+    params: {
+      tag: { condition: anyOf('tags') },
+      sort: {
+        sorting: {
+          oldest: [{ 0: { property: 'writtenAt', type: 'asc' } }],
+          newest: [{ 0: { property: 'writtenAt', type: 'desc' } }],
+        },
+      },
+    },
+    sorting: [{ 0: { property: 'writtenAt', type: 'desc' } }],
+  });
+
+  const sortedIds = async (search: string) => {
+    const page = await loadThroughUseCase<Note>(
+      makeStaticRepository(Note, NOTES),
+      {
+        ...sortable.request<Note>(sortable.parse(search), undefined),
+        pageSize: 100,
+      },
+    );
+    return page.items.map(note => note.id);
+  };
+
+  it('keeps one sorting it names, and drops any other', () => {
+    expect(sortable.parse('?sort=oldest&sort=newest')).toEqual({
+      tag: [],
+      sort: ['oldest'],
+    });
+    expect(sortable.parse('?sort=title')).toEqual({ tag: [], sort: [] });
+  });
+
+  it('orders the answer as chosen, or as declared when nothing is', async () => {
+    expect(await sortedIds('?sort=oldest')).toEqual([
+      'static',
+      'queries',
+      'effects',
+    ]);
+    expect(await sortedIds('')).toEqual(['effects', 'queries', 'static']);
+    expect(await sortedIds('?tag=data&sort=oldest')).toEqual([
+      'queries',
+      'effects',
+    ]);
+  });
+
+  it('is no filter, and outlives clearing the filters', () => {
+    const state = sortable.parse('?tag=web&sort=oldest');
+    expect(sortable.isFiltering(state)).toBe(true);
+    const cleared = sortable.withoutFilters(state);
+    expect(cleared).toEqual({ tag: [], sort: ['oldest'] });
+    expect(sortable.isFiltering(cleared)).toBe(false);
+    expect(sortable.isEmpty(cleared)).toBe(false);
+  });
+});
+
+describe('a selection parameter', () => {
+  const selecting = defineUrlQuery({
+    params: {
+      tag: { condition: anyOf('tags') },
+      note: { select: true, allowed: ['static', 'queries'] },
+      any: { select: true },
+    },
+  });
+
+  it('keeps one value it allows, and drops any other', () => {
+    expect(selecting.parse('?note=queries&note=static&any=x&any=y')).toEqual({
+      tag: [],
+      note: ['queries'],
+      any: ['x'],
+    });
+    expect(selecting.parse('?note=effects').note).toEqual([]);
+  });
+
+  it('asks the load nothing, and outlives clearing the filters', () => {
+    const state = selecting.parse('?tag=web&note=static');
+    expect(selecting.isAsking(state)).toBe(true);
+    const cleared = selecting.withoutFilters(state);
+    expect(cleared).toEqual({ tag: [], note: ['static'], any: [] });
+    expect(selecting.isFiltering(cleared)).toBe(false);
+    expect(selecting.isAsking(cleared)).toBe(false);
+    expect(selecting.isEmpty(cleared)).toBe(false);
+    expect(selecting.request(state, undefined)).toEqual({
+      filtering: [{ property: 'tags', operator: 'in', values: ['web'] }],
+    });
+  });
+});

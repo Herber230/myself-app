@@ -14,13 +14,15 @@ import { Technology } from './technology.entity.js';
  * profile: the landing page is a page, not a business area (#75).
  *
  * No `imageUrl`: ADR 0008 settled the section as text and links, so a record
- * carrying a picture nothing renders would only rot.
+ * carrying a picture nothing renders would only rot. Its card's glyph is the
+ * UI's, keyed by its id.
  */
 @entity({ key: 'project', domain: 'profile' })
 export class Project implements Entity {
   #id?: EntityId;
   #name = '';
   #summary?: LocalizedText;
+  #overview?: LocalizedText;
   #url?: string;
   #repositoryUrl?: string;
   #technologies = new EntityCollectionLink(Technology);
@@ -59,6 +61,19 @@ export class Project implements Entity {
   }
   set summary(value: LocalizedText | undefined) {
     this.#summary = value;
+  }
+
+  /**
+   * What its page says first (#77): Markdown per locale, read from
+   * `projects/<id>.<locale>.md` like a post's body, and optional for the same
+   * reason — the browser's copy of the projects leaves it out.
+   */
+  @accessor({ type: 'string', filterable: false, sortable: false })
+  get overview(): LocalizedText | undefined {
+    return this.#overview;
+  }
+  set overview(value: LocalizedText | undefined) {
+    this.#overview = value;
   }
 
   @accessor({ type: 'string' })

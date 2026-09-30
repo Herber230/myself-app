@@ -20,14 +20,14 @@ design system built for Tailwind v4.
 - **Tailwind v4, CSS-first**, with `@entifix/style/tokens.css` and its palette
   presets, each scoped to `[data-theme]` on `<html>`. The site's identity lives
   in the token values, never in a component.
-- **`@entifix/react-controls/primitives`** for layout primitives (Box, Center,
-  Cluster, Cover, Grid, Sidebar, Switcher, Stack), atoms, Card, ThemeProvider and
-  ThemeSwitcher.
-- ⚠️ **Never the main barrel** of `@entifix/react-controls` — it pulls in the
-  entity table and query machinery, about 541 KB — **and never `./preferences`**,
-  which brings Effect into the browser.
-- ⚠️ **`./primitives` is a barrel too**, and entifix's packages declare no
-  `sideEffects`. Imported as-is, one `Stack` puts every `'use client'` module of
+- **Layout and atoms come from `@entifix/react-controls/primitives`**: Box,
+  Center, Cluster, Cover, Grid, Sidebar, Switcher, Stack, atoms, Card,
+  ThemeProvider and ThemeSwitcher.
+- ⚠️ **The main barrel of `@entifix/react-controls` is never imported**, nor
+  `./preferences`: the barrel pulls in the entity table and query machinery,
+  about 541 KB, and `./preferences` brings Effect into the browser.
+- ⚠️ **`./primitives` goes through `optimizePackageImports`**, because it
+  is a barrel too and entifix's packages declare no `sideEffects`. Imported as-is, one `Stack` puts every `'use client'` module of
   the barrel on the page, `ThemeSwitcher`'s `@entifix/core` import with them,
   and Effect reaches the browser (measured: ~300 KB of gzipped JavaScript on a
   placeholder page instead of ~200 KB). `experimental.optimizePackageImports`

@@ -22,13 +22,7 @@ describe('the landing page', () => {
     const headings = screen
       .getAllByRole('heading', { level: 2 })
       .map(heading => heading.textContent);
-    expect(headings).toEqual([
-      'About me',
-      'Projects',
-      'Built on entifix',
-      'Contact',
-    ]);
-    expect(document.getElementById('entifix')?.tagName).toBe('SECTION');
+    expect(headings).toEqual(['About me', 'Projects', 'Contact']);
   });
 
   it('fills its sections from content', async () => {
@@ -37,7 +31,7 @@ describe('the landing page', () => {
     expect(about.textContent).toContain('Profesional con más de 10 años');
     const projects = screen.getByRole('region', { name: 'Proyectos' });
     expect(
-      projects.querySelector('a[href="/es/tech-radar/#tech-typescript"]'),
+      projects.querySelector('a[href="/es/projects/entifix/"]'),
     ).not.toBeNull();
     const contact = screen.getByRole('region', { name: 'Contacto' });
     expect(

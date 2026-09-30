@@ -3,13 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { LANDING_SECTIONS, sectionPath } from './landing-sections.js';
 
 describe('the landing sections', () => {
-  it('are the four below the hero, in page order', () => {
-    expect(LANDING_SECTIONS).toEqual([
-      'about',
-      'projects',
-      'entifix',
-      'contact',
-    ]);
+  it('are the three below the hero, in page order', () => {
+    expect(LANDING_SECTIONS).toEqual(['about', 'projects', 'contact']);
   });
 
   it('are anchored from the landing page of each locale', () => {
