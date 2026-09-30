@@ -448,6 +448,34 @@
     max-width: 65ch;
   }
 
+  /* The portrait beside the bio, and above it on a narrow screen. Its box is
+     known before the file arrives (4:5), so nothing shifts when it does. */
+  .about-body {
+    display: grid;
+    gap: var(--spacing-l);
+    align-items: start;
+  }
+
+  .about-portrait {
+    width: min(16rem, 70%);
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+
+  @media (min-width: 48rem) {
+    .about-body {
+      grid-template-columns: 16rem 1fr;
+    }
+
+    .about-portrait {
+      width: 100%;
+    }
+  }
+
   .landing-list {
     margin: 0;
     padding: 0;
