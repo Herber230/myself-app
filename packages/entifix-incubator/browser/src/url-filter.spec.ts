@@ -124,4 +124,26 @@ describe('useUrlFilter', () => {
     act(() => result.current.clear());
     expect(window.location.search).toBe('?sort=oldest');
   });
+
+  it('asks nothing for a selection alone, and keeps it through clearing', () => {
+    window.history.replaceState(null, '', '/en/notes/?note=static');
+    const selecting = defineUrlQuery({
+      params: {
+        tag: { condition: anyOf('tags') },
+        note: { select: true },
+      },
+    });
+    const { result } = renderHook(() =>
+      useUrlFilter<'tag' | 'note', undefined, Note>(
+        notes,
+        selecting,
+        undefined,
+      ),
+    );
+    expect(result.current.filter).toEqual({ tag: [], note: ['static'] });
+    expect(result.current.load).toEqual({ status: 'idle' });
+    act(() => result.current.set('note', ['queries']));
+    act(() => result.current.clear());
+    expect(window.location.search).toBe('?note=queries');
+  });
 });

@@ -31,7 +31,7 @@ export interface UrlFilter<TKey extends string, TEntity extends Entity> {
   toggle(key: TKey, value: string): void;
   /** Replaces a parameter's values: a search box's text. */
   set(key: TKey, values: readonly string[]): void;
-  /** Every filter emptied: no filter at all. A chosen sort stays. */
+  /** Every filter emptied: no filter at all. A chosen sort and selection stay. */
   clear(): void;
 }
 
@@ -68,7 +68,8 @@ export function useUrlFilter<
 ): UrlFilter<TKey, TEntity> {
   const [filter, write] = useUrlState(query);
   const filtering = filter !== null && query.isFiltering(filter);
-  const asking = filter !== null && !query.isEmpty(filter);
+  // A selection alone picks a record the page already has: nothing to ask.
+  const asking = filter !== null && query.isAsking(filter);
   const load = useEntityLoad<TEntity>(
     source,
     asking ? query.request<TEntity>(filter, context) : null,

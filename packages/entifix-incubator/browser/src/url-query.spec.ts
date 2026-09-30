@@ -166,3 +166,35 @@ describe('a sort parameter', () => {
     expect(sortable.isEmpty(cleared)).toBe(false);
   });
 });
+
+describe('a selection parameter', () => {
+  const selecting = defineUrlQuery({
+    params: {
+      tag: { condition: anyOf('tags') },
+      note: { select: true, allowed: ['static', 'queries'] },
+      any: { select: true },
+    },
+  });
+
+  it('keeps one value it allows, and drops any other', () => {
+    expect(selecting.parse('?note=queries&note=static&any=x&any=y')).toEqual({
+      tag: [],
+      note: ['queries'],
+      any: ['x'],
+    });
+    expect(selecting.parse('?note=effects').note).toEqual([]);
+  });
+
+  it('asks the load nothing, and outlives clearing the filters', () => {
+    const state = selecting.parse('?tag=web&note=static');
+    expect(selecting.isAsking(state)).toBe(true);
+    const cleared = selecting.withoutFilters(state);
+    expect(cleared).toEqual({ tag: [], note: ['static'], any: [] });
+    expect(selecting.isFiltering(cleared)).toBe(false);
+    expect(selecting.isAsking(cleared)).toBe(false);
+    expect(selecting.isEmpty(cleared)).toBe(false);
+    expect(selecting.request(state, undefined)).toEqual({
+      filtering: [{ property: 'tags', operator: 'in', values: ['web'] }],
+    });
+  });
+});
