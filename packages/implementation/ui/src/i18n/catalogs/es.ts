@@ -69,6 +69,7 @@ export const es = {
     hero: {
       cv: 'Ver mi CV',
       techRadar: 'Explorar mi radar tecnológico',
+      blog: 'Leer mi blog',
       scroll: 'Desliza para ver más',
     },
     nav: {

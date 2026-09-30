@@ -76,6 +76,7 @@ export const en = {
     hero: {
       cv: 'Read my CV',
       techRadar: 'Explore my tech radar',
+      blog: 'Read my blog',
       scroll: 'Scroll to read more',
     },
     /** The section nav's anchors. */

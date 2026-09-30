@@ -7,18 +7,15 @@ import { SITE_CONTENT } from '../../test/shipped-content.js';
 import { Hero } from './hero.js';
 
 describe('the hero', () => {
-  it('shows the name, the title, the tagline and the two calls to action', async () => {
+  it('shows the name, the title and the three calls to action', async () => {
     const profile = await loadProfile(SITE_CONTENT);
-    render(<Hero locale="es" profile={profile} />);
+    const { container } = render(<Hero locale="es" profile={profile} />);
     expect(
       screen.getByRole('heading', { level: 1, name: 'Herber Colop' }),
     ).toBeTruthy();
     expect(screen.getByText('Ingeniero de software')).toBeTruthy();
-    expect(
-      screen.getByText(
-        'Ingeniero de software enfocado en la arquitectura, no en las herramientas.',
-      ),
-    ).toBeTruthy();
+    // The shipped profile carries no tagline.
+    expect(container.querySelector('.hero-tagline')).toBeNull();
     expect(
       screen.getByRole('link', { name: 'Ver mi CV' }).getAttribute('href'),
     ).toBe('/es/cv/');
@@ -28,10 +25,23 @@ describe('the hero', () => {
         .getAttribute('href'),
     ).toBe('/es/tech-radar/');
     expect(
+      screen.getByRole('link', { name: 'Leer mi blog' }).getAttribute('href'),
+    ).toBe('/es/blog/');
+    expect(
       screen
         .getByRole('link', { name: 'Desliza para ver más' })
         .getAttribute('href'),
     ).toBe('/es/#about');
+  });
+
+  it('shows a tagline when the profile has one', () => {
+    const profile = {
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+      tagline: { en: 'The first programmer.', es: 'La primera programadora.' },
+    } as unknown as Profile;
+    render(<Hero locale="en" profile={profile} />);
+    expect(screen.getByText('The first programmer.')).toBeTruthy();
   });
 
   it('shows no title or tagline line for a profile without them', () => {

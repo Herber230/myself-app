@@ -9,16 +9,15 @@ import { expect, type Page, test } from '@playwright/test';
 const HERO = {
   en: {
     title: 'Software Engineer',
-    tagline: 'Software engineer focused on architecture, not tools.',
     cv: 'Read my CV',
     radar: 'Explore my tech radar',
+    blog: 'Read my blog',
   },
   es: {
     title: 'Ingeniero de software',
-    tagline:
-      'Ingeniero de software enfocado en la arquitectura, no en las herramientas.',
     cv: 'Ver mi CV',
     radar: 'Explorar mi radar tecnológico',
+    blog: 'Leer mi blog',
   },
 };
 
@@ -35,7 +34,6 @@ for (const [locale, copy] of Object.entries(HERO)) {
       page.getByRole('heading', { level: 1, name: 'Herber Colop' }),
     ).toBeVisible();
     await expect(page.getByText(copy.title, { exact: true })).toBeVisible();
-    await expect(page.getByText(copy.tagline, { exact: true })).toBeVisible();
 
     const main = page.getByRole('main');
     await expect(main.getByRole('link', { name: copy.cv })).toHaveAttribute(
@@ -45,6 +43,10 @@ for (const [locale, copy] of Object.entries(HERO)) {
     await expect(main.getByRole('link', { name: copy.radar })).toHaveAttribute(
       'href',
       `/${locale}/tech-radar/`,
+    );
+    await expect(main.getByRole('link', { name: copy.blog })).toHaveAttribute(
+      'href',
+      `/${locale}/blog/`,
     );
   });
 }

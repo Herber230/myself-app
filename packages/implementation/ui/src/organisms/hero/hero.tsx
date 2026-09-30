@@ -10,7 +10,7 @@ import { localePath, type SiteLocale } from '../../routing/site-locales.js';
 
 /**
  * The landing page's first screen (#29): the name, the title and tagline
- * (#68), and the two calls to action, entering one after another (ADR 0011).
+ * (#68), and the three calls to action, entering one after another (ADR 0011).
  * Facts come from `Profile`; the calls to action are copy.
  */
 export function Hero({
@@ -41,7 +41,7 @@ export function Hero({
         <ul className="hero-beat hero-beat-3 hero-actions">
           <li>
             <Link
-              className={button({ variant: 'primary', size: 'lg' })}
+              className={button({ variant: 'primary', size: 'md' })}
               href={localePath(locale, '/cv')}
             >
               {t('landing.hero.cv')}
@@ -49,10 +49,18 @@ export function Hero({
           </li>
           <li>
             <Link
-              className={button({ variant: 'secondary', size: 'lg' })}
+              className={button({ variant: 'secondary', size: 'md' })}
               href={localePath(locale, '/tech-radar')}
             >
               {t('landing.hero.techRadar')}
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={button({ variant: 'secondary', size: 'md' })}
+              href={localePath(locale, '/blog')}
+            >
+              {t('landing.hero.blog')}
             </Link>
           </li>
         </ul>
