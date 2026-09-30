@@ -466,6 +466,13 @@
     box-shadow: var(--shadow-card);
   }
 
+  /* Justified, and hyphenated in the page's language (<html lang>) so the
+     narrow column does not open gaps between words. */
+  .about-bio {
+    text-align: justify;
+    hyphens: auto;
+  }
+
   @media (min-width: 48rem) {
     .about-body {
       grid-template-columns: 16rem 1fr;

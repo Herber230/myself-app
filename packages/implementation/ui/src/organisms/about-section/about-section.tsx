@@ -30,7 +30,9 @@ export function AboutSection({
           />
         )}
         {profile.bio && (
-          <Lead className="landing-prose">{localize(profile.bio, locale)}</Lead>
+          <Lead className="landing-prose about-bio">
+            {localize(profile.bio, locale)}
+          </Lead>
         )}
       </div>
     </LandingSection>
