@@ -1,6 +1,6 @@
 import '../global.css';
 
-import { ThemeScript } from '@myself-app/implementation-ui/atoms';
+import { SiteBackdrop, ThemeScript } from '@myself-app/implementation-ui/atoms';
 import { siteT } from '@myself-app/implementation-ui/i18n';
 import { Providers } from '@myself-app/implementation-ui/providers';
 import {
@@ -50,7 +50,12 @@ export default async function LocaleLayout({
             dark: t('theme.dark'),
           }}
         >
-          {children}
+          {/* The backdrop behind every page (the hero covers it on the
+              landing page; the CV hides it, `site.css`). */}
+          <div className="site-backdrop-host">
+            <SiteBackdrop />
+            {children}
+          </div>
         </Providers>
       </body>
     </html>

@@ -1,7 +1,6 @@
 import type { ContactChannel, Profile } from '@myself-app/domain';
 import type { FeaturedProject } from '@myself-app/domain/use-cases';
 
-import { SiteBackdrop } from '../../atoms/site-backdrop/site-backdrop.js';
 import { AboutSection } from '../../organisms/about-section/about-section.js';
 import { ContactSection } from '../../organisms/contact-section/contact-section.js';
 import { Hero } from '../../organisms/hero/hero.js';
@@ -18,8 +17,8 @@ export interface LandingPageData {
 
 /**
  * The landing page (ADR 0008): the hero, then its sections in
- * `LANDING_SECTIONS` order, which the nav's anchors follow, over the
- * backdrop the hero hides.
+ * `LANDING_SECTIONS` order, which the nav's anchors follow. The layout lays
+ * it over the site's backdrop, which the hero hides.
  */
 export function LandingPageView({
   locale,
@@ -30,8 +29,7 @@ export function LandingPageView({
   return (
     <>
       <SiteNav locale={locale} path="/" reveal />
-      <main className="site-backdrop-host">
-        <SiteBackdrop />
+      <main>
         <Hero locale={locale} profile={profile} />
         <AboutSection locale={locale} profile={profile} />
         <ProjectsSection locale={locale} projects={projects} />

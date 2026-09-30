@@ -358,8 +358,16 @@
 
   /* Behind everything in <main>: the hero paints its own opaque backdrop over
      it, so it shows from the first section on. */
+  /* The layout's wrapper around every page: at least a screen tall, so a
+     short page is covered to the bottom. */
   .site-backdrop-host {
     position: relative;
+    min-height: 100dvh;
+  }
+
+  /* The CV is a sheet of paper on a desk: nothing behind it. */
+  body:has(.cv-sheet) .site-backdrop {
+    display: none;
   }
 
   .site-backdrop {
@@ -1006,6 +1014,10 @@
   }
 
   body:has(.cv-sheet) .site-nav {
+    display: none;
+  }
+
+  .site-backdrop {
     display: none;
   }
 
