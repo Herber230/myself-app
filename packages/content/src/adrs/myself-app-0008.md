@@ -1,6 +1,7 @@
 - Revised: 2026-09-18 — the script budget is measured and held by an e2e journey
 - Revised: 2026-09-23 by [ADR 0011](/projects/myself-app/adr/0011/) — the theme control is a menu, not entifix's switcher; the landing page's scripts measured again with #29
 - Revised: 2026-09-25 — a project's technology links to its radar legend entry, `/<locale>/tech-radar/#tech-<id>` (#30); #39 adopts the shape rather than choosing it
+- Revised: 2026-09-30 by [ADR 0020](/projects/myself-app/adr/0020/) — the entifix section is gone: entifix has its own page, reached from the projects cards and the nav's projects menu (#77)
 
 ## Context
 
