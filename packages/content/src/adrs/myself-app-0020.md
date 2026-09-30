@@ -1,3 +1,5 @@
+- Revised: 2026-09-30 — the explorer shows a timeline, then a list beside a reading pane (an accordion on a phone), the chosen record kept in the URL (`?adr=0016`) by a selection parameter that filters nothing; each record carries its key points (`summary`), read by the sync script from its `Decision` section; the page tells how the records are written, found and kept
+
 ## Context
 
 The landing page's projects section (#30) showed two cards of chips and

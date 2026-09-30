@@ -4,6 +4,7 @@
 - Date: 2026-09-30
 - Area: data
 - Read when: a record in `docs/adr` changed and the site still shows the old one, the conventions spec says the ADR copies drift, a project's page is about to show something its repository does not have, a record fails `next build`, or a Spanish reader asks why the records are in English
+- Revised: 2026-09-30 — the explorer shows a timeline, then a list beside a reading pane (an accordion on a phone), the chosen record kept in the URL (`?adr=0016`) by a selection parameter that filters nothing; each record carries its key points (`summary`), read by the sync script from its `Decision` section; the page tells how the records are written, found and kept
 
 ## Context
 
