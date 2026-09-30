@@ -1060,6 +1060,54 @@
   margin-inline: auto;
 }
 
+/* The wide bar's projects menu (#77): its trigger reads as one of the links
+   beside it, and marks itself while a project, or its section, is current. */
+.site-nav-projects > [data-slot='nav-menu-trigger'] {
+  height: auto;
+  gap: 0.375rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: inherit;
+  line-height: 1.25rem;
+}
+
+.site-nav-projects > [data-slot='nav-menu-trigger']:hover,
+.site-nav-projects[open] > [data-slot='nav-menu-trigger'],
+.site-nav-projects:has([aria-current]) > [data-slot='nav-menu-trigger'] {
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+}
+
+.site-nav-projects > [data-slot='nav-menu-trigger'] .nav-icon {
+  color: var(--color-content-muted);
+}
+
+.site-nav-projects > [data-slot='nav-menu-trigger']:hover .nav-icon,
+.site-nav-projects:has([aria-current])
+  > [data-slot='nav-menu-trigger']
+  .nav-icon {
+  color: currentColor;
+}
+
+.site-nav-projects > [data-slot='nav-menu-panel'] {
+  left: 0;
+  right: auto;
+  min-width: 12rem;
+}
+
+.site-nav-links .site-nav-projects ul {
+  flex-direction: column;
+  gap: 0;
+}
+
+/* The narrow screen's menu: the projects nested under their section. */
+.nav-menu-sheet [data-slot='nav-menu-panel'] ul.site-nav-sublist {
+  margin: 0 0 var(--spacing-3xs);
+  padding-inline-start: 1.75rem;
+}
+
 /* The smallest phones: the chevrons go, or the bar is wider than 320px. */
 @media (max-width: 24rem) {
   .site-nav-tools [data-slot='nav-menu-chevron'] {

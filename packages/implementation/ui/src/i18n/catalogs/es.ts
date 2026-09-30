@@ -76,20 +76,13 @@ export const es = {
       label: 'Secciones',
       about: 'Sobre mí',
       projects: 'Proyectos',
-      entifix: 'entifix',
+      allProjects: 'Todos los proyectos',
       contact: 'Contacto',
     },
     headings: {
       about: 'Sobre mí',
       projects: 'Proyectos',
-      entifix: 'Construido sobre entifix',
       contact: 'Contacto',
-    },
-    entifix: {
-      what: 'entifix es un framework de TypeScript para aplicaciones guiadas por entidades, construido sobre Effect. Una entidad se describe una sola vez, y sus metadatos guían la validación, los repositorios, los casos de uso y los controles de React.',
-      here: 'Esta página funciona sobre él. El perfil, los proyectos y los canales de contacto son entidades guardadas como JSON en inglés y español, validadas con sus metadatos por un repositorio estático y leídas al compilar mediante el caso de uso load, el mismo que serviría un backend.',
-      repository: 'Código en GitHub',
-      npm: 'Paquetes en npm',
     },
     contact: {
       link: '{{channel}}: {{handle}}',

@@ -104,10 +104,10 @@ test('the section in view is marked, and the language switch keeps it', async ({
   const nav = page.getByRole('navigation', { name: 'Sections' });
   await page.locator('#projects').scrollIntoViewIfNeeded();
   await page.mouse.wheel(0, 1);
-  await expect(nav.getByRole('link', { name: 'Projects' })).toHaveAttribute(
-    'aria-current',
-    'location',
-  );
+  // Its anchor is in the projects menu, closed.
+  await expect(
+    nav.getByRole('link', { name: 'All projects', includeHidden: true }),
+  ).toHaveAttribute('aria-current', 'location');
   await expect(nav.getByRole('link', { name: 'About' })).not.toHaveAttribute(
     'aria-current',
   );
@@ -116,6 +116,21 @@ test('the section in view is marked, and the language switch keeps it', async ({
   await banner.getByLabel('Language', { exact: true }).click();
   await banner.getByRole('link', { name: 'Español' }).click();
   await page.waitForURL('/es/#projects');
+});
+
+test('the projects menu leads to each project’s page', async ({ page }) => {
+  await page.goto('/en/cv/');
+  const nav = page.getByRole('navigation', { name: 'Sections' });
+  await nav.getByLabel('Projects', { exact: true }).click();
+  await nav.getByRole('link', { name: 'entifix' }).click();
+  await page.waitForURL('/en/projects/entifix/');
+  await nav.getByLabel('Projects', { exact: true }).click();
+  await expect(nav.getByRole('link', { name: 'entifix' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  await nav.getByRole('link', { name: 'myself-app' }).click();
+  await page.waitForURL('/en/projects/myself-app/');
 });
 
 test.describe('on a phone', () => {
@@ -135,7 +150,7 @@ test.describe('on a phone', () => {
     const trigger = banner.getByLabel('Menu', { exact: true });
     await trigger.click();
     const menu = banner.getByRole('navigation', { name: 'Sections' });
-    await expect(menu.getByRole('link')).toHaveCount(7);
+    await expect(menu.getByRole('link')).toHaveCount(8);
 
     await menu.getByRole('link', { name: 'Contact' }).click();
     await page.waitForURL('/en/#contact');

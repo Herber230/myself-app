@@ -4,7 +4,6 @@ import type { FeaturedProject } from '@myself-app/domain/use-cases';
 import { SiteBackdrop } from '../../atoms/site-backdrop/site-backdrop.js';
 import { AboutSection } from '../../organisms/about-section/about-section.js';
 import { ContactSection } from '../../organisms/contact-section/contact-section.js';
-import { EntifixSection } from '../../organisms/entifix-section/entifix-section.js';
 import { Hero } from '../../organisms/hero/hero.js';
 import { ProjectsSection } from '../../organisms/projects-section/projects-section.js';
 import { SiteNav } from '../../organisms/site-nav/site-nav.js';
@@ -36,7 +35,6 @@ export function LandingPageView({
         <Hero locale={locale} profile={profile} />
         <AboutSection locale={locale} profile={profile} />
         <ProjectsSection locale={locale} projects={projects} />
-        <EntifixSection locale={locale} />
         <ContactSection locale={locale} channels={channels} />
       </main>
     </>

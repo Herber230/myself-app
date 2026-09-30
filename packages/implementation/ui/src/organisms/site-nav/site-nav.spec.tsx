@@ -20,7 +20,7 @@ function renderNav(props: Parameters<typeof SiteNav>[0]) {
 }
 
 describe('the site nav', () => {
-  it('lists the sections, the CV, the radar and the blog, inline and in the menu', () => {
+  it('lists the sections, the projects, the CV, the radar and the blog, inline and in the menu', () => {
     renderNav({ locale: 'en', path: '/cv' });
     const lists = screen.getAllByRole('navigation', {
       name: 'Sections',
@@ -32,7 +32,8 @@ describe('the site nav', () => {
       expect(links.map(link => link.getAttribute('href'))).toEqual([
         '/en/#about',
         '/en/#projects',
-        '/en/#entifix',
+        '/en/projects/entifix/',
+        '/en/projects/myself-app/',
         '/en/#contact',
         '/en/cv/',
         '/en/tech-radar/',
@@ -42,6 +43,39 @@ describe('the site nav', () => {
     expect(
       screen.getByRole('link', { name: 'Herber Colop' }).getAttribute('href'),
     ).toBe('/en/');
+  });
+
+  it('opens the projects from a menu inline, and a nested list in the panel', () => {
+    renderNav({ locale: 'es', path: '/projects/myself-app/adr/0016' });
+    const [inline, panel] = screen.getAllByRole('navigation', {
+      name: 'Secciones',
+      hidden: true,
+    }) as [HTMLElement, HTMLElement];
+    const menu = within(inline).getByLabelText('Proyectos');
+    expect(menu.closest('details')?.className).toContain('site-nav-projects');
+    expect(
+      within(inline)
+        .getByRole('link', { name: 'Todos los proyectos', hidden: true })
+        .getAttribute('href'),
+    ).toBe('/es/#projects');
+    expect(
+      within(panel).queryByRole('link', {
+        name: 'Todos los proyectos',
+        hidden: true,
+      }),
+    ).toBeNull();
+    for (const list of [inline, panel]) {
+      const current = within(list).getByRole('link', {
+        name: 'myself-app',
+        hidden: true,
+      });
+      expect(current.getAttribute('aria-current')).toBe('page');
+      expect(
+        within(list)
+          .getByRole('link', { name: 'entifix', hidden: true })
+          .hasAttribute('aria-current'),
+      ).toBe(false);
+    }
   });
 
   it('offers the other language for the same page, and marks its own', () => {

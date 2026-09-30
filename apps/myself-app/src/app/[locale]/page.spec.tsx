@@ -22,13 +22,7 @@ describe('the landing page', () => {
     const headings = screen
       .getAllByRole('heading', { level: 2 })
       .map(heading => heading.textContent);
-    expect(headings).toEqual([
-      'About me',
-      'Projects',
-      'Built on entifix',
-      'Contact',
-    ]);
-    expect(document.getElementById('entifix')?.tagName).toBe('SECTION');
+    expect(headings).toEqual(['About me', 'Projects', 'Contact']);
   });
 
   it('fills its sections from content', async () => {
