@@ -37,7 +37,7 @@ describe('the landing page', () => {
     expect(about.textContent).toContain('Profesional con más de 10 años');
     const projects = screen.getByRole('region', { name: 'Proyectos' });
     expect(
-      projects.querySelector('a[href="/es/tech-radar/#tech-typescript"]'),
+      projects.querySelector('a[href="/es/projects/entifix/"]'),
     ).not.toBeNull();
     const contact = screen.getByRole('region', { name: 'Contacto' });
     expect(

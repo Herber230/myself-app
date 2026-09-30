@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 
-import { renderPostBody } from './post-body.js';
+import { renderMarkdownBody, renderPostBody } from './post-body.js';
 
 const PUBLIC = join(
   import.meta.dirname,
@@ -26,5 +26,31 @@ describe("a post's body", () => {
     expect(html).toContain('href="/es/tech-radar"');
     expect(html).toContain('Read this.');
     // Shiki loads its grammars and themes on the first render: seconds.
+  }, 30_000);
+});
+
+describe('other Markdown beside the records', () => {
+  it('is rendered as a post is, and named by its own file in a problem', async () => {
+    const input = {
+      id: 'myself-app-0001',
+      locale: 'en' as const,
+      sitePaths: ['/projects/myself-app/adr/0002'],
+      publicDirectory: PUBLIC,
+    };
+    const body = await renderMarkdownBody({
+      ...input,
+      source: 'adrs/myself-app-0001.md',
+      markdown: 'See [ADR 0002](/projects/myself-app/adr/0002/).',
+    });
+    expect(renderToStaticMarkup(<>{body}</>)).toContain(
+      'href="/en/projects/myself-app/adr/0002"',
+    );
+    await expect(
+      renderMarkdownBody({
+        ...input,
+        source: 'adrs/myself-app-0001.md',
+        markdown: 'See [nothing](/nowhere/).',
+      }),
+    ).rejects.toThrow('adrs/myself-app-0001.md');
   }, 30_000);
 });

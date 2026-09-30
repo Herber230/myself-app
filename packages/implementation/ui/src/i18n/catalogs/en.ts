@@ -94,12 +94,6 @@ export const en = {
       entifix: 'Built on entifix',
       contact: 'Contact',
     },
-    projects: {
-      /** Names the list of a project's technologies. */
-      technologies: 'Technologies in {{project}}',
-      site: 'Visit the site',
-      repository: 'Read the source',
-    },
     /** Copy, not content (ADR 0008): each claim is one `content/` makes true. */
     entifix: {
       what: 'entifix is a TypeScript framework for entity-driven applications, built on Effect. An entity is described once, and its metadata drives validation, repositories, use cases and React controls.',
@@ -111,6 +105,57 @@ export const en = {
       /** A link's name: the channel, then the handle it shows. */
       link: '{{channel}}: {{handle}}',
     },
+  },
+  /** A project's page (#77): how its repository works, and its decisions. */
+  projectPage: {
+    /** The landing card's cue, beside the project's name. */
+    explore: 'How it works',
+    back: '← Back to the projects',
+    technologies: 'Technologies in {{project}}',
+    site: 'Visit the site',
+    repository: 'Read the source',
+    overview: 'Overview',
+    patterns: 'Patterns',
+    structure: 'File structure',
+    decisions: 'Architecture decisions',
+    decisionsLead:
+      'Every significant decision is recorded, with the symptom that should send a reader — or an agent — to it before the rule is broken.',
+    englishOnly: 'The records are written in English.',
+    readWhen: 'Read when',
+    filter: {
+      label: 'Filter the records',
+      status: 'Status',
+      area: 'Area',
+      search: 'Search titles and symptoms',
+      clear: 'Clear filters',
+      /** `{{shown}}` and `{{total}}` are replaced in the browser. */
+      showing: 'Showing {{shown}} of {{total}}',
+      empty: 'No record matches the filter.',
+      sort: 'Sort by',
+      ascending: 'ascending',
+      descending: 'descending',
+    },
+    sort: {
+      number: 'Number',
+      date: 'Date',
+      title: 'Title',
+      status: 'Status',
+    },
+    status: {
+      proposed: 'Proposed',
+      accepted: 'Accepted',
+      'superseded-in-part': 'Superseded in part',
+      superseded: 'Superseded',
+    },
+  },
+  /** One decision record's page (#77). */
+  decisionPage: {
+    back: 'All the decisions of {{project}}',
+    number: 'ADR {{number}}',
+    date: 'Decided',
+    area: 'Area',
+    supersedes: 'Supersedes',
+    supersededBy: 'Superseded by',
   },
   theme: {
     label: 'Theme',

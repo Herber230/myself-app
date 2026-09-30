@@ -37,7 +37,7 @@ describe("a technology's page", () => {
 
     expect(
       screen.getByRole('link', { name: 'myself-app' }).getAttribute('href'),
-    ).toBe('/en/#project-myself-app');
+    ).toBe('/en/projects/myself-app/');
     expect(
       screen.getByRole('link', { name: 'Website' }).getAttribute('href'),
     ).toBe('https://www.typescriptlang.org');

@@ -10,6 +10,9 @@ const SOURCES: BrowserSources = {
   technologies: async () => {
     throw new Error('not read');
   },
+  decisions: async () => {
+    throw new Error('not read');
+  },
 };
 
 function Probe() {

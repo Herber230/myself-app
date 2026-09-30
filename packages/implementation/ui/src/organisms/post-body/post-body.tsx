@@ -3,7 +3,7 @@
  * The callouts' names come from the catalogs, as CSS variables their
  * stylesheet reads, so a Spanish post says "Nota" above a note.
  *
- * A function the page awaits, not an async component: the page's element tree
+ * Functions the page awaits, not async components: the page's element tree
  * stays synchronous below the page itself.
  */
 import type { CSSProperties, ReactNode } from 'react';
@@ -12,13 +12,7 @@ import { siteT } from '../../i18n/server.js';
 import { renderMarkdown } from '../../markdown/render.js';
 import type { SiteLocale } from '../../routing/site-locales.js';
 
-export async function renderPostBody({
-  id,
-  markdown,
-  locale,
-  sitePaths,
-  publicDirectory,
-}: {
+export interface MarkdownBodyInput {
   id: string;
   markdown: string;
   locale: SiteLocale;
@@ -26,10 +20,31 @@ export async function renderPostBody({
   sitePaths: readonly string[];
   /** The app's `public/` folder, where a post's images are (#75). */
   publicDirectory: string;
-}): Promise<ReactNode> {
+}
+
+/**
+ * Any Markdown the content holds beside its records — a project's overview,
+ * a decision record's body (#77) — rendered as a post's is, held to the same
+ * checks, and named by `source` in a problem's message.
+ */
+export function renderMarkdownBody({
+  source,
+  ...input
+}: MarkdownBodyInput & { source: string }): Promise<ReactNode> {
+  return renderBody(source, input);
+}
+
+export function renderPostBody(input: MarkdownBodyInput): Promise<ReactNode> {
+  return renderBody(`posts/${input.id}.${input.locale}.md`, input);
+}
+
+async function renderBody(
+  source: string,
+  { id, markdown, locale, sitePaths, publicDirectory }: MarkdownBodyInput,
+): Promise<ReactNode> {
   const t = siteT(locale);
   const content = await renderMarkdown(markdown, {
-    source: `posts/${id}.${locale}.md`,
+    source,
     post: id,
     locale,
     sitePaths: new Set(sitePaths),

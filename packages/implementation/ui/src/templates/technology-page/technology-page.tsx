@@ -15,9 +15,8 @@ import Link from 'next/link';
 import { siteT } from '../../i18n/server.js';
 import { postPath } from '../../molecules/post-card/post-cards.js';
 import { formatPeriod, inLocale } from '../../organisms/cv-sheet/cv-format.js';
-import { projectAnchor } from '../../organisms/projects-section/projects-section.js';
 import { SiteNav } from '../../organisms/site-nav/site-nav.js';
-import { localePath } from '../../routing/locale-path.js';
+import { projectPath } from '../../routing/project-paths.js';
 import { radarEntryPath } from '../../routing/radar-paths.js';
 import type { SiteLocale } from '../../routing/site-locales.js';
 
@@ -39,7 +38,7 @@ export function TechnologyPageView({
 }: TechnologyPageData) {
   const t = siteT(locale);
   const { technology, quadrant, ring, areas, history } = detail;
-  // The landing page shows only the featured ones, and each links to its card.
+  // Only a featured project is on the landing page, with a page of its own (#77).
   const projects = detail.projects.filter(project => project.featured);
   const id = String(technology.id);
   return (
@@ -137,7 +136,7 @@ export function TechnologyPageView({
                   {projects.map(project => (
                     <li key={String(project.id)}>
                       <Link
-                        href={`${localePath(locale, '/')}#${projectAnchor(String(project.id))}`}
+                        href={projectPath(locale, String(project.id))}
                         className={linkClassName}
                       >
                         {project.name}
