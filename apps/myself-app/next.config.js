@@ -12,6 +12,9 @@ const nextConfig = {
   trailingSlash: true,
   // Image optimization needs a server.
   images: { unoptimized: true },
+  // `next dev` would otherwise write an AGENTS.md and a CLAUDE.md into the app
+  // on every start; the repository keeps its own at the root.
+  agentRules: false,
   experimental: {
     // Two root layouts — `(root)` for `/` and `[locale]` for everything else —
     // leave no single layout to compose a 404 from, so the export's `404.html`
