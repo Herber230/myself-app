@@ -25,7 +25,7 @@ test('a project’s page shows its patterns, file tree and every record', async 
   await expect(
     page.getByRole('list', { name: 'File structure' }),
   ).toBeVisible();
-  await expect(records(page)).toHaveCount(20);
+  await expect(records(page)).toHaveCount(21);
   // A technology leads to its page on the radar.
   await page.getByRole('link', { name: 'Pulumi', exact: true }).click();
   await page.waitForURL('/en/tech-radar/pulumi/');
