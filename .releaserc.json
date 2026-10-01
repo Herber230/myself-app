@@ -1,5 +1,5 @@
 {
-  "$comment": "Continuous deployment (ADR 0013): each green merge to main whose squash commit is a feat, fix or perf becomes a tag and a GitHub Release, then deploy.yml ships it. Nothing is published to npm and nothing is committed back: the Releases page is the changelog.",
+  "$comment": "Continuous deployment (ADR 0013, 0021): each green merge to main whose squash commit is a feat, fix or perf becomes a release. One run writes its notes into CHANGELOG.md, commits that to main as `chore: release X.Y.Z [skip ci]`, tags that commit and publishes the GitHub Release, all with the same notes; deploy.yml then ships the tagged commit. Nothing is published to npm, and package.json keeps 0.0.0.",
   "branches": ["main"],
   "tagFormat": "v${version}",
   "plugins": [
@@ -28,6 +28,17 @@
             { "type": "test", "hidden": true }
           ]
         }
+      }
+    ],
+    [
+      "@semantic-release/changelog",
+      { "changelogFile": "CHANGELOG.md", "changelogTitle": "# Changelog" }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["CHANGELOG.md"],
+        "message": "chore: release ${nextRelease.version} [skip ci]"
       }
     ],
     [
