@@ -18,6 +18,17 @@ describe('the root page', () => {
     expect(link?.textContent).toBe('Continue to the English site');
   });
 
+  it('shows a spinner while it moves, hidden from assistive technology', () => {
+    const page = new DOMParser().parseFromString(
+      renderToStaticMarkup(<RootRedirectPage />),
+      'text/html',
+    );
+    expect(page.querySelector('main')?.getAttribute('aria-busy')).toBe('true');
+    expect(
+      page.querySelector('.root-redirect-spinner')?.getAttribute('aria-hidden'),
+    ).toBe('true');
+  });
+
   it('is not indexed, and points search at the locale', () => {
     expect(metadata.robots).toEqual({ index: false });
     expect(metadata.alternates?.canonical).toBe('/en/');

@@ -11,7 +11,13 @@ import type { MetadataRoute } from 'next';
 import { localeAlternates, localePath, SITE_LOCALES } from './site-locales.js';
 
 /** Every page under `app/[locale]/` whose path is fixed, locale-free. */
-export const SITE_PATHS = ['/', '/cv', '/tech-radar', '/blog'] as const;
+export const SITE_PATHS = [
+  '/',
+  '/cv',
+  '/tech-radar',
+  '/blog',
+  '/beyond-code',
+] as const;
 
 /** The CV page of each variant but the default: listed from the content. */
 export const CV_VARIANT_ROUTE = '/cv/[variant]';

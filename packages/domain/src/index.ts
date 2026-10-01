@@ -7,6 +7,8 @@ export * from './entities/education.entity.js';
 export * from './entities/employer.entity.js';
 export * from './entities/employment-highlight.entity.js';
 export * from './entities/employment-period.entity.js';
+export * from './entities/interest.entity.js';
+export * from './entities/interest-media.entity.js';
 export * from './entities/post.entity.js';
 export * from './entities/profile.entity.js';
 export * from './entities/project.entity.js';

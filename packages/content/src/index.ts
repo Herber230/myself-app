@@ -25,6 +25,8 @@ import education from './education.json';
 import employers from './employers.json';
 import employmentHighlights from './employment-highlights.json';
 import employmentPeriods from './employment-periods.json';
+import interestMedia from './interest-media.json';
+import interests from './interests.json';
 import posts from './posts.json';
 import profile from './profile.json';
 import projectPaths from './project-paths.json';
@@ -49,6 +51,8 @@ export const CONTENT: Readonly<Record<string, readonly unknown[]>> = {
   'employers.json': employers,
   'employment-highlights.json': employmentHighlights,
   'employment-periods.json': employmentPeriods,
+  'interest-media.json': interestMedia,
+  'interests.json': interests,
   'posts.json': posts,
   'profile.json': profile,
   'project-paths.json': projectPaths,

@@ -1,7 +1,11 @@
 import type { ContactChannel, Profile } from '@myself-app/domain';
-import type { FeaturedProject } from '@myself-app/domain/use-cases';
+import type {
+  BeyondCodeTeaser as BeyondCodeTeaserData,
+  FeaturedProject,
+} from '@myself-app/domain/use-cases';
 
 import { AboutSection } from '../../organisms/about-section/about-section.js';
+import { BeyondCodeTeaser } from '../../organisms/beyond-code-teaser/beyond-code-teaser.js';
 import { ContactSection } from '../../organisms/contact-section/contact-section.js';
 import { Hero } from '../../organisms/hero/hero.js';
 import { ProjectsSection } from '../../organisms/projects-section/projects-section.js';
@@ -13,11 +17,15 @@ export interface LandingPageData {
   readonly profile: Profile;
   readonly projects: readonly FeaturedProject[];
   readonly channels: readonly ContactChannel[];
+  readonly beyondCode: BeyondCodeTeaserData;
+  /** The personal channels, for the "Beyond the code" teaser. */
+  readonly personalChannels: readonly ContactChannel[];
 }
 
 /**
  * The landing page (ADR 0008): the hero, then its sections in
- * `LANDING_SECTIONS` order, which the nav's anchors follow. The layout lays
+ * `LANDING_SECTIONS` order, which the nav's anchors follow, and last the
+ * door to "Beyond the code", which is a page rather than an anchor. The layout lays
  * it over the site's backdrop, which the hero hides.
  */
 export function LandingPageView({
@@ -25,6 +33,8 @@ export function LandingPageView({
   profile,
   projects,
   channels,
+  beyondCode,
+  personalChannels,
 }: LandingPageData) {
   return (
     <>
@@ -34,6 +44,11 @@ export function LandingPageView({
         <AboutSection locale={locale} profile={profile} />
         <ProjectsSection locale={locale} projects={projects} />
         <ContactSection locale={locale} channels={channels} />
+        <BeyondCodeTeaser
+          locale={locale}
+          teaser={beyondCode}
+          channels={personalChannels}
+        />
       </main>
     </>
   );

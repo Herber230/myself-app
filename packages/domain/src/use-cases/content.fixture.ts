@@ -13,6 +13,8 @@ import { Education } from '../entities/education.entity.js';
 import { Employer } from '../entities/employer.entity.js';
 import { EmploymentHighlight } from '../entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from '../entities/employment-period.entity.js';
+import { Interest } from '../entities/interest.entity.js';
+import { InterestMedia } from '../entities/interest-media.entity.js';
 import { Post } from '../entities/post.entity.js';
 import { Profile } from '../entities/profile.entity.js';
 import { Project } from '../entities/project.entity.js';
@@ -89,6 +91,22 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
       displayName: 'ada',
       url: 'https://github.com/ada',
       order: 0,
+    },
+    {
+      id: 'goodreads',
+      type: 'goodreads',
+      displayName: 'Ada reads',
+      url: 'https://www.goodreads.com/ada',
+      personal: true,
+      order: 3,
+    },
+    {
+      id: 'instagram',
+      type: 'instagram',
+      displayName: 'ada.photos',
+      url: 'https://www.instagram.com/ada/',
+      personal: true,
+      order: 2,
     },
   ],
   'employers.json': [
@@ -396,6 +414,53 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
       technologies: [],
     },
   ],
+  'interests.json': [
+    {
+      id: 'chess',
+      name: text('Chess'),
+      summary: text('Sixty-four squares.'),
+      posts: [],
+      order: 1,
+    },
+    {
+      id: 'reading',
+      name: text('Reading'),
+      summary: text('Books.'),
+      posts: ['on-typescript', 'on-testing'],
+      order: 0,
+    },
+  ],
+  'interest-media.json': [
+    {
+      id: 'board',
+      interest: 'chess',
+      kind: 'photo',
+      src: '/beyond-code/board.webp',
+      alt: text('A board'),
+      featured: false,
+      order: 0,
+    },
+    {
+      id: 'shelf',
+      interest: 'reading',
+      kind: 'photo',
+      src: '/beyond-code/shelf.webp',
+      thumbnail: '/beyond-code/shelf-thumb.webp',
+      alt: text('A shelf'),
+      featured: true,
+      order: 1,
+    },
+    {
+      id: 'library',
+      interest: 'reading',
+      kind: 'video',
+      src: '/beyond-code/library.mp4',
+      poster: '/beyond-code/library.webp',
+      alt: text('A library'),
+      featured: true,
+      order: 0,
+    },
+  ],
 };
 
 const SOURCES = [
@@ -444,6 +509,12 @@ const SOURCES = [
       body: (id, locale) => BODIES[id]?.[locale as 'en' | 'es'],
     },
   }),
+  defineSource({
+    entity: Interest,
+    file: 'interests.json',
+    sidecars: { body: (id, locale) => `About ${id}, in ${locale}.` },
+  }),
+  defineSource({ entity: InterestMedia, file: 'interest-media.json' }),
 ];
 
 /** The fixture site, with any file replaced by `overrides`. */

@@ -17,15 +17,20 @@ export const metadata: Metadata = {
 /**
  * `/` sends the visitor to the default locale. A static export has no server
  * to answer with a redirect (ADR 0007), so the page does it with a refresh —
- * which needs no JavaScript — and a link for anyone it does not move.
+ * which needs no JavaScript — and a link for anyone it does not move. The
+ * refresh usually lands within a frame, so the page shows a spinner and holds
+ * the link back until the move has plainly not happened.
  */
 export default function RootRedirectPage() {
   return (
     <>
       <meta httpEquiv="refresh" content={`0; url=${target}`} />
-      <p>
-        <a href={target}>{t('redirecting')}</a>
-      </p>
+      <main className="root-redirect" aria-busy="true">
+        <span className="root-redirect-spinner" aria-hidden="true" />
+        <a className="root-redirect-link" href={target}>
+          {t('redirecting')}
+        </a>
+      </main>
     </>
   );
 }

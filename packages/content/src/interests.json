@@ -1,0 +1,41 @@
+[
+  {
+    "id": "motorcycles",
+    "name": {
+      "en": "Motorcycles",
+      "es": "Motocicletas"
+    },
+    "summary": {
+      "en": "Two wheels, mountain roads and the focus a good curve demands. Cars too, but motorcycles first.",
+      "es": "Dos ruedas, carreteras de montaña y la concentración que exige una buena curva. Los carros también, pero primero las motos."
+    },
+    "posts": [],
+    "order": 0
+  },
+  {
+    "id": "reading",
+    "name": {
+      "en": "Reading",
+      "es": "Lectura"
+    },
+    "summary": {
+      "en": "I read philosophy and theoretical physics: books that ask what we are, how we should live and how the universe works.",
+      "es": "Leo filosofía y física teórica: libros que preguntan qué somos, cómo deberíamos vivir y cómo funciona el universo."
+    },
+    "posts": ["books", "an-analogy-for-life-plans"],
+    "order": 1
+  },
+  {
+    "id": "salsa",
+    "name": {
+      "en": "Salsa",
+      "es": "Salsa"
+    },
+    "summary": {
+      "en": "Rhythm, connection with a partner and hours of practice, set to Caribbean music.",
+      "es": "Ritmo, conexión con la pareja y horas de práctica, al son de la música caribeña."
+    },
+    "posts": ["then-i-saw-you-dance"],
+    "order": 2
+  }
+]

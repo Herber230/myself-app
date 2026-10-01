@@ -19,5 +19,29 @@
     "displayName": "herbercolop",
     "url": "https://www.linkedin.com/in/herbercolop/",
     "order": 2
+  },
+  {
+    "id": "instagram",
+    "type": "instagram",
+    "displayName": "herbercolop",
+    "url": "https://www.instagram.com/herbercolop/",
+    "personal": true,
+    "order": 3
+  },
+  {
+    "id": "facebook",
+    "type": "facebook",
+    "displayName": "HerberColop",
+    "url": "https://www.facebook.com/HerberColop/",
+    "personal": true,
+    "order": 4
+  },
+  {
+    "id": "goodreads",
+    "type": "goodreads",
+    "displayName": "Herber Colop",
+    "url": "https://www.goodreads.com/user/show/104266945-herber-colop",
+    "personal": true,
+    "order": 5
   }
 ]

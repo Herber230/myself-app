@@ -20,6 +20,8 @@ import {
   Employer,
   EmploymentHighlight,
   EmploymentPeriod,
+  Interest,
+  InterestMedia,
   localizedMembersOf,
   oneChannelPerType,
   Post,
@@ -53,6 +55,7 @@ import {
 
 import {
   readDecisionBodyFile,
+  readInterestBodyFile,
   readPostBodyFile,
   readProjectOverviewFile,
 } from './post-bodies.js';
@@ -111,6 +114,15 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
     // The explorer filters and sorts; it reads no body.
     published: { omit: ['body'] },
   }),
+  defineSource({
+    entity: Interest,
+    file: 'interests.json',
+    // Its section is Markdown beside the record, like a project's overview.
+    sidecars: { body: readInterestBodyFile },
+    rules: [present('body')],
+    published: { omit: ['body'] },
+  }),
+  defineSource({ entity: InterestMedia, file: 'interest-media.json' }),
   defineSource({ entity: CvFocus, file: 'cv-focuses.json' }),
   defineSource({
     entity: EmploymentHighlight,

@@ -1,19 +1,17 @@
-import { Cluster, linkClassName } from '@entifix/react-controls/primitives';
+import { Text } from '@entifix/react-controls/primitives';
 import type { ContactChannel } from '@myself-app/domain';
-import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 
-import { ChannelIcon } from '../../atoms/icons/icons.js';
 import { siteT } from '../../i18n/server.js';
+import { ContactCard } from '../../molecules/contact-card/contact-card.js';
 import { LandingSection } from '../../molecules/landing-section/landing-section.js';
 import type { SiteLocale } from '../../routing/site-locales.js';
 
-const LINK = `${linkClassName} landing-link`;
-
 /**
  * Where to reach me, from `ContactChannel` (#32), in the order the content
- * gives. A handle alone says little to a screen reader, so each link's name
- * leads with the channel's — "GitHub: Herber230" — and still contains the
- * words on screen, for voice control.
+ * gives: one card per channel. A handle alone says little to a screen reader,
+ * so each link's name leads with the channel's — "GitHub: Herber230" — and
+ * still contains the words on screen, for voice control. The email card also
+ * offers its address for copying.
  */
 export function ContactSection({
   locale,
@@ -25,26 +23,39 @@ export function ContactSection({
   const t = siteT(locale);
   return (
     <LandingSection id="contact" locale={locale}>
-      <Cluster as="ul" gap="l" className="landing-list">
+      <Text muted className="landing-prose">
+        {t('landing.contact.lead')}
+      </Text>
+      <ul className="contact-card-list">
         {channels.map(channel => {
-          const Anchor = /^https?:/.test(channel.url) ? ExternalLink : 'a';
+          const name = t(`channels.${channel.type}`);
           return (
             <li key={String(channel.id)}>
-              <Anchor
-                href={channel.url}
-                className={LINK}
-                aria-label={t('landing.contact.link', {
-                  channel: t(`channels.${channel.type}`),
+              <ContactCard
+                type={channel.type}
+                url={channel.url}
+                channel={name}
+                handle={channel.displayName}
+                name={t('landing.contact.link', {
+                  channel: name,
                   handle: channel.displayName,
                 })}
-              >
-                <ChannelIcon type={channel.type} className="landing-icon" />
-                {channel.displayName}
-              </Anchor>
+                action={t(`landing.contact.actions.${channel.type}`)}
+                copy={
+                  channel.type === 'email'
+                    ? {
+                        value: channel.displayName,
+                        label: t('landing.contact.copy'),
+                        name: t('landing.contact.copyName'),
+                        copiedLabel: t('landing.contact.copied'),
+                      }
+                    : undefined
+                }
+              />
             </li>
           );
         })}
-      </Cluster>
+      </ul>
     </LandingSection>
   );
 }

@@ -29,6 +29,8 @@ import { Education } from './entities/education.entity.js';
 import { Employer } from './entities/employer.entity.js';
 import { EmploymentHighlight } from './entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from './entities/employment-period.entity.js';
+import { Interest } from './entities/interest.entity.js';
+import { InterestMedia } from './entities/interest-media.entity.js';
 import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
@@ -67,6 +69,8 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['ProjectPattern', ProjectPattern],
   ['ProjectPath', ProjectPath],
   ['ArchitectureDecision', ArchitectureDecision],
+  ['Interest', Interest],
+  ['InterestMedia', InterestMedia],
 ];
 
 const SAMPLE_DATE = new Date('2024-03-01T00:00:00.000Z');

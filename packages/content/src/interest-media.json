@@ -1,0 +1,158 @@
+[
+  {
+    "id": "moto-corner-2",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-corner-2.webp",
+    "thumbnail": "/beyond-code/moto-corner-2-thumb.webp",
+    "alt": {
+      "en": "Riding a blue Yamaha sport bike through a mountain curve, leaning into the turn",
+      "es": "Inclinado en una curva de montaña sobre una moto deportiva Yamaha azul"
+    },
+    "featured": true,
+    "order": 0
+  },
+  {
+    "id": "moto-corner-1",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-corner-1.webp",
+    "thumbnail": "/beyond-code/moto-corner-1-thumb.webp",
+    "alt": {
+      "en": "Leaning a blue sport bike into a right-hand curve on a mountain road",
+      "es": "Inclinando una moto deportiva azul en una curva a la derecha en una carretera de montaña"
+    },
+    "featured": false,
+    "order": 1
+  },
+  {
+    "id": "moto-corner-3",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-corner-3.webp",
+    "thumbnail": "/beyond-code/moto-corner-3-thumb.webp",
+    "alt": {
+      "en": "Taking a curve close to the hillside, knee towards the asphalt",
+      "es": "Tomando una curva junto a la ladera, con la rodilla hacia el asfalto"
+    },
+    "featured": false,
+    "order": 2
+  },
+  {
+    "id": "moto-sky",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-sky.webp",
+    "thumbnail": "/beyond-code/moto-sky-thumb.webp",
+    "alt": {
+      "en": "Sitting on the blue Yamaha in riding gear under a sky full of clouds",
+      "es": "Sentado en la Yamaha azul con equipo de motociclista bajo un cielo lleno de nubes"
+    },
+    "featured": true,
+    "order": 3
+  },
+  {
+    "id": "moto-roadside",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-roadside.webp",
+    "thumbnail": "/beyond-code/moto-roadside-thumb.webp",
+    "alt": {
+      "en": "Standing beside the bike in a helmet and leather jacket on a sunny road",
+      "es": "De pie junto a la moto con casco y chaqueta de cuero en una carretera soleada"
+    },
+    "featured": false,
+    "order": 4
+  },
+  {
+    "id": "moto-stop",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-stop.webp",
+    "thumbnail": "/beyond-code/moto-stop-thumb.webp",
+    "alt": {
+      "en": "Standing beside the bike by the roadside, helmet on, with trees behind",
+      "es": "De pie junto a la moto a la orilla de la carretera, con el casco puesto y árboles detrás"
+    },
+    "featured": false,
+    "order": 5
+  },
+  {
+    "id": "moto-night-1",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-night-1.webp",
+    "thumbnail": "/beyond-code/moto-night-1-thumb.webp",
+    "alt": {
+      "en": "On the blue Yamaha at a petrol station at night, in a racing jacket",
+      "es": "Sobre la Yamaha azul en una gasolinera de noche, con chaqueta de carreras"
+    },
+    "featured": true,
+    "order": 6
+  },
+  {
+    "id": "moto-night-2",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-night-2.webp",
+    "thumbnail": "/beyond-code/moto-night-2-thumb.webp",
+    "alt": {
+      "en": "On the bike at a petrol station at night, seen from the side",
+      "es": "Sobre la moto en una gasolinera de noche, vista de lado"
+    },
+    "featured": false,
+    "order": 7
+  },
+  {
+    "id": "moto-night-3",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-night-3.webp",
+    "thumbnail": "/beyond-code/moto-night-3-thumb.webp",
+    "alt": {
+      "en": "Facing the camera on the bike at night, its headlights on",
+      "es": "De frente a la cámara sobre la moto de noche, con las luces encendidas"
+    },
+    "featured": false,
+    "order": 8
+  },
+  {
+    "id": "moto-night-4",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-night-4.webp",
+    "thumbnail": "/beyond-code/moto-night-4-thumb.webp",
+    "alt": {
+      "en": "On the bike beside the fuel pumps at night",
+      "es": "Sobre la moto junto a los surtidores de noche"
+    },
+    "featured": false,
+    "order": 9
+  },
+  {
+    "id": "moto-night-5",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-night-5.webp",
+    "thumbnail": "/beyond-code/moto-night-5-thumb.webp",
+    "alt": {
+      "en": "Crouching beside the bike outside a lit shop at night",
+      "es": "Agachado junto a la moto frente a una tienda iluminada de noche"
+    },
+    "featured": false,
+    "order": 10
+  },
+  {
+    "id": "moto-night-6",
+    "interest": "motorcycles",
+    "kind": "photo",
+    "src": "/beyond-code/moto-night-6.webp",
+    "thumbnail": "/beyond-code/moto-night-6-thumb.webp",
+    "alt": {
+      "en": "The bike head-on at night, rider in a helmet behind the handlebars",
+      "es": "La moto de frente de noche, con el piloto con casco tras el manillar"
+    },
+    "featured": false,
+    "order": 11
+  }
+]

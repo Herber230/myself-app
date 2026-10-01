@@ -15,6 +15,8 @@ describe('the sitemap', () => {
       'https://herber.example/es/tech-radar/',
       'https://herber.example/en/blog/',
       'https://herber.example/es/blog/',
+      'https://herber.example/en/beyond-code/',
+      'https://herber.example/es/beyond-code/',
     ]);
   });
 

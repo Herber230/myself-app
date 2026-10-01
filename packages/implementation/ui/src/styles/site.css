@@ -1139,71 +1139,6 @@
     gap: var(--spacing-l);
   }
 
-  .project-card {
-    position: relative;
-    display: flex;
-    gap: var(--spacing-m);
-    align-items: flex-start;
-    padding: var(--spacing-l);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background-color: var(--color-surface-elevated);
-    box-shadow: var(--shadow-card);
-    transition:
-      translate 200ms var(--ease-smooth, ease-out),
-      border-color 200ms var(--ease-smooth, ease-out);
-  }
-
-  .project-card:hover,
-  .project-card:focus-within {
-    translate: 0 -0.25rem;
-    border-color: var(--color-primary);
-  }
-
-  .project-card-body {
-    display: grid;
-    gap: var(--spacing-2xs);
-  }
-
-  .project-card-name {
-    margin: 0;
-    font-size: var(--text-step-2);
-    font-weight: 600;
-  }
-
-  /* The name is the card's one link, stretched over the whole card. */
-  .project-card-link {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .project-card-link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-  }
-
-  .project-card-link:focus-visible {
-    outline: none;
-  }
-
-  .project-card:has(.project-card-link:focus-visible) {
-    outline: 2px solid var(--color-focus-ring);
-    outline-offset: 2px;
-  }
-
-  .project-card-summary {
-    margin: 0;
-    color: var(--color-content-muted);
-  }
-
-  .project-card-cue {
-    color: var(--color-primary);
-    font-size: 0.875em;
-    font-weight: 500;
-  }
-
   /* ── A project's glyph, redrawn stroke by stroke on hover ──────────────── */
 
   .project-glyph {
@@ -1216,12 +1151,6 @@
   .project-glyph path {
     stroke-dasharray: 1;
     stroke-dashoffset: 0;
-  }
-
-  .project-card:hover .project-glyph path,
-  .project-card:focus-within .project-glyph path {
-    animation: glyph-draw 700ms var(--ease-enter, ease-out) both;
-    animation-delay: calc(var(--stroke-order, 0) * 90ms);
   }
 
   /* ── A project's page ─────────────────────────────────────────────────── */
@@ -1829,20 +1758,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .project-card,
   .pattern-card,
   .adr-timeline-dot {
     transition: none;
-  }
-
-  .project-card:hover,
-  .project-card:focus-within {
-    translate: none;
-  }
-
-  .project-card:hover .project-glyph path,
-  .project-card:focus-within .project-glyph path {
-    animation: none;
   }
 
   .project-action,
@@ -1864,5 +1782,975 @@
 
   .project-action-source::after {
     display: none;
+  }
+}
+
+/*
+ * `LinkCard`: the site's one clickable card — projects, contact channels,
+ * interests, related posts. One motion for all: it lifts, its border and a
+ * glow from its far side take the primary colour, its mark redraws (a line glyph)
+ * or tilts (a filled logo), and its cue's arrow slides. Under reduced motion
+ * only the colours change.
+ */
+@layer components {
+  .link-card {
+    --link-card-motion: 250ms var(--ease-smooth, ease-out);
+
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex: 1;
+    gap: var(--spacing-m);
+    align-items: flex-start;
+    overflow: hidden;
+    padding: var(--spacing-l);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-elevated);
+    box-shadow: var(--shadow-card);
+    transition:
+      translate var(--link-card-motion),
+      border-color var(--link-card-motion),
+      box-shadow var(--link-card-motion);
+  }
+
+  /* A glow from the card's far corner, faded in on hover: the mark's own
+     motion plays on a clear ground. */
+  .link-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      circle at 100% 0%,
+      color-mix(in oklab, var(--color-primary) 20%, transparent),
+      transparent 60%
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--link-card-motion);
+  }
+
+  .link-card:hover,
+  .link-card:focus-within {
+    translate: 0 -0.25rem;
+    border-color: var(--color-primary);
+    box-shadow:
+      var(--shadow-card),
+      0 0.75rem 2rem -1rem
+        color-mix(in oklab, var(--color-primary) 60%, transparent);
+  }
+
+  .link-card:hover::before,
+  .link-card:focus-within::before {
+    opacity: 1;
+  }
+
+  /* ── The mark ───────────────────────────────────────────────────────── */
+
+  .link-card-mark {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 1px solid color-mix(in oklab, var(--color-primary) 35%, transparent);
+    border-radius: var(--radius-md);
+    background-color: color-mix(
+      in oklab,
+      var(--color-primary) 12%,
+      transparent
+    );
+    color: var(--color-primary);
+    transition:
+      background-color var(--link-card-motion),
+      scale var(--link-card-motion),
+      rotate var(--link-card-motion);
+  }
+
+  .link-card-mark > svg {
+    width: 64%;
+    height: 64%;
+  }
+
+  .link-card[data-mark='logo'] .link-card-mark > svg {
+    width: 46%;
+    height: 46%;
+  }
+
+  .link-card:hover .link-card-mark,
+  .link-card:focus-within .link-card-mark {
+    background-color: color-mix(
+      in oklab,
+      var(--color-primary) 22%,
+      transparent
+    );
+  }
+
+  .link-card[data-mark='logo']:hover .link-card-mark,
+  .link-card[data-mark='logo']:focus-within .link-card-mark {
+    scale: 1.08;
+    rotate: -6deg;
+  }
+
+  .link-card[data-mark='glyph'] .link-card-mark path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  .link-card[data-mark='glyph']:hover .link-card-mark path,
+  .link-card[data-mark='glyph']:focus-within .link-card-mark path {
+    animation: glyph-draw 700ms var(--ease-enter, ease-out) both;
+    animation-delay: calc(var(--stroke-order, 0) * 90ms);
+  }
+
+  /* ── The words ──────────────────────────────────────────────────────── */
+
+  .link-card-body {
+    display: grid;
+    flex: 1;
+    gap: var(--spacing-3xs);
+    min-width: 0;
+  }
+
+  .link-card-eyebrow {
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .link-card-title {
+    margin: 0;
+    font-size: var(--text-step-1);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  /* The title is the card's one link, stretched over the whole card. */
+  .link-card-link {
+    color: var(--color-content);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .link-card-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .link-card-link:focus-visible {
+    outline: none;
+  }
+
+  .link-card:has(.link-card-link:focus-visible) {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .link-card-text {
+    margin: 0;
+    color: var(--color-content-muted);
+  }
+
+  .link-card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-s);
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--spacing-2xs);
+  }
+
+  .link-card-cue {
+    display: inline-flex;
+    gap: 0.375em;
+    align-items: center;
+    color: var(--color-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .link-card-cue::after {
+    content: '→';
+    transition: translate var(--link-card-motion);
+  }
+
+  .link-card:hover .link-card-cue::after,
+  .link-card:focus-within .link-card-cue::after {
+    translate: 0.3rem 0;
+  }
+
+  /* ── Compact: a list of many, the arrow alone at the row's end ─────── */
+
+  .link-card-compact {
+    gap: var(--spacing-s);
+    align-items: center;
+    padding: var(--spacing-s) var(--spacing-m);
+  }
+
+  .link-card-compact::before {
+    background: radial-gradient(
+      circle at 100% 50%,
+      color-mix(in oklab, var(--color-primary) 18%, transparent),
+      transparent 55%
+    );
+  }
+
+  .link-card-compact .link-card-mark {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .link-card-compact .link-card-body {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--spacing-s);
+  }
+
+  .link-card-compact .link-card-body > * {
+    grid-column: 1;
+  }
+
+  .link-card-compact .link-card-title {
+    font-size: 1rem;
+  }
+
+  .link-card-compact .link-card-text {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .link-card-compact .link-card-body > .link-card-footer {
+    grid-row: 1 / span 3;
+    grid-column: 2;
+    align-self: center;
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-card,
+  .link-card-mark,
+  .link-card-cue::after {
+    transition:
+      border-color var(--link-card-motion),
+      box-shadow var(--link-card-motion),
+      background-color var(--link-card-motion);
+  }
+
+  .link-card:hover,
+  .link-card:focus-within,
+  .link-card:hover .link-card-cue::after,
+  .link-card:focus-within .link-card-cue::after {
+    translate: none;
+  }
+
+  .link-card[data-mark='logo']:hover .link-card-mark,
+  .link-card[data-mark='logo']:focus-within .link-card-mark {
+    scale: none;
+    rotate: none;
+  }
+
+  .link-card[data-mark='glyph']:hover .link-card-mark path,
+  .link-card[data-mark='glyph']:focus-within .link-card-mark path {
+    animation: none;
+  }
+}
+
+/*
+ * The landing's contact cards (`LinkCard`s): how they are laid out, and the
+ * email's copy button.
+ */
+@layer components {
+  /* One column on a narrow screen; on a wide one, the first channel (the
+     email) spans the row with its mark beside its words, and the others pair
+     up below it. */
+  .contact-card-list {
+    display: grid;
+    gap: var(--spacing-m);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contact-card-list > li {
+    display: flex;
+  }
+
+  @media (min-width: 40rem) {
+    .contact-card-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .contact-card-list > li:first-child {
+      grid-column: 1 / -1;
+    }
+
+    /* The email, larger. */
+    .contact-card-list > li:first-child .link-card-mark {
+      width: 4rem;
+      height: 4rem;
+    }
+
+    .contact-card-list > li:first-child .link-card-title {
+      font-size: var(--text-step-2);
+    }
+  }
+
+  /* Beside the cue, above the stretched link, so it takes its own clicks. */
+  .contact-card-copy {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    gap: 0.375em;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background-color: var(--color-surface);
+    color: var(--color-content-muted);
+    font-size: 0.8125em;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      color 200ms var(--ease-smooth, ease-out),
+      border-color 200ms var(--ease-smooth, ease-out);
+  }
+
+  .contact-card-copy:hover,
+  .contact-card-copy[data-copied] {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .contact-card-copy:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+/*
+ * "Beyond the code": the landing page's teaser, the page, its galleries and
+ * the lightbox. Motion is CSS only, and off under reduced motion.
+ */
+@layer components {
+  /* ── The teaser ───────────────────────────────────────────────────────── */
+
+  /* The fanned photos may reach past the column, never past the page. */
+  .beyond-teaser {
+    overflow-x: clip;
+  }
+
+  .beyond-teaser-body {
+    display: grid;
+    gap: var(--spacing-xl);
+    align-items: center;
+  }
+
+  @media (min-width: 48rem) {
+    .beyond-teaser-body {
+      grid-template-columns: minmax(0, 1fr) 15rem;
+    }
+  }
+
+  .beyond-teaser-list {
+    display: grid;
+    gap: var(--spacing-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .beyond-teaser-cta {
+    align-self: flex-start;
+  }
+
+  /* The photos, and the personal channels stacked under them. */
+  .beyond-teaser-aside {
+    display: grid;
+    gap: var(--spacing-xl);
+    justify-items: center;
+  }
+
+  .beyond-teaser-aside .channel-links {
+    width: min(100%, 15rem);
+  }
+
+  .beyond-teaser-aside .channel-links-heading {
+    text-align: center;
+  }
+
+  .beyond-teaser-aside .channel-links-list {
+    flex-direction: column;
+  }
+
+  .beyond-teaser-aside .channel-link {
+    width: 100%;
+  }
+
+  .interest-glyph {
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    color: var(--color-primary);
+  }
+
+  .interest-glyph path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  /* Three photos stacked like prints on a table; they fan out on hover. */
+  .beyond-teaser-photos {
+    position: relative;
+    justify-self: center;
+    width: min(14rem, 60vw);
+    aspect-ratio: 4 / 5;
+  }
+
+  .beyond-teaser-photos img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0.375rem solid var(--color-surface-elevated);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    transition:
+      rotate 450ms var(--ease-smooth, ease-out),
+      translate 450ms var(--ease-smooth, ease-out);
+  }
+
+  .beyond-teaser-photos img:nth-child(1) {
+    rotate: -8deg;
+    translate: -0.75rem 0.5rem;
+  }
+
+  .beyond-teaser-photos img:nth-child(2) {
+    rotate: 6deg;
+    translate: 0.75rem 0;
+  }
+
+  .beyond-teaser-photos img:nth-child(3) {
+    rotate: -1deg;
+  }
+
+  /* Still under reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    /* Weighted to the right, where the column has room: the left photo
+       barely moves, so it never reaches the words beside it. */
+    .beyond-teaser:hover .beyond-teaser-photos img:nth-child(1) {
+      rotate: -11deg;
+      translate: -1.25rem 0.75rem;
+    }
+
+    .beyond-teaser:hover .beyond-teaser-photos img:nth-child(2) {
+      rotate: 13deg;
+      translate: 3.5rem 0.5rem;
+    }
+
+    .beyond-teaser:hover .beyond-teaser-photos img:nth-child(3) {
+      rotate: 0deg;
+      translate: 0 -0.75rem;
+    }
+  }
+
+  /* ── The page ─────────────────────────────────────────────────────────── */
+
+  .beyond-section {
+    padding-top: var(--spacing-xl);
+    border-top: 1px solid var(--color-border);
+    scroll-margin-top: 4rem;
+  }
+
+  .beyond-section-title {
+    display: flex;
+    gap: var(--spacing-m);
+    align-items: center;
+  }
+
+  .beyond-section-title .interest-glyph {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .beyond-section-body {
+    max-width: 65ch;
+  }
+
+  .beyond-posts {
+    display: grid;
+    gap: var(--spacing-s);
+  }
+
+  .beyond-post-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--spacing-s);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* ── The gallery ──────────────────────────────────────────────────────── */
+
+  /* One tile shape; the first photo takes four of them. */
+  .media-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    grid-auto-flow: dense;
+    gap: var(--spacing-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .media-tile {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-elevated);
+  }
+
+  .media-tile:first-child {
+    grid-row: span 2;
+    grid-column: span 2;
+  }
+
+  .media-open {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .media-open img,
+  .media-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+      scale 400ms var(--ease-smooth, ease-out),
+      filter 400ms var(--ease-smooth, ease-out);
+  }
+
+  /* A wash of the primary colour and a magnifier on hover. */
+  .media-open::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      center / 2rem no-repeat
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.75' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='m16 16 4.5 4.5M11 8.5v5M8.5 11h5'/%3E%3C/svg%3E"),
+      linear-gradient(
+        to top,
+        color-mix(in oklab, var(--color-primary) 45%, transparent),
+        transparent 70%
+      );
+    opacity: 0;
+    transition: opacity 300ms var(--ease-smooth, ease-out);
+  }
+
+  .media-open:hover img,
+  .media-open:focus-visible img {
+    scale: 1.06;
+    filter: saturate(1.15);
+  }
+
+  .media-open:hover::after,
+  .media-open:focus-visible::after {
+    opacity: 1;
+  }
+
+  .media-open:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: -2px;
+  }
+
+  /* ── The lightbox ─────────────────────────────────────────────────────── */
+
+  .media-lightbox {
+    width: min(96vw, 80rem);
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: auto;
+    padding: var(--spacing-xl) var(--spacing-3xl);
+    border: none;
+    background: transparent;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .media-lightbox::backdrop {
+    background-color: rgb(4 8 20 / 0.92);
+    backdrop-filter: blur(6px);
+  }
+
+  .media-lightbox[open] {
+    display: grid;
+    place-items: center;
+    animation: lightbox-in 250ms var(--ease-smooth, ease-out);
+  }
+
+  .media-lightbox-figure {
+    display: grid;
+    gap: var(--spacing-s);
+    justify-items: center;
+    max-height: 100%;
+    margin: 0;
+  }
+
+  .media-lightbox-figure img {
+    max-width: 100%;
+    max-height: calc(100dvh - 8rem);
+    border-radius: var(--radius-md);
+    object-fit: contain;
+    animation: lightbox-in 300ms var(--ease-smooth, ease-out);
+  }
+
+  .media-lightbox-figure figcaption {
+    display: flex;
+    gap: var(--spacing-m);
+    justify-content: space-between;
+    width: 100%;
+    color: rgb(255 255 255 / 0.8);
+    font-size: 0.875rem;
+  }
+
+  .media-lightbox-position {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .media-lightbox-step,
+  .media-lightbox-close {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    border-radius: 999px;
+    background-color: rgb(255 255 255 / 0.08);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 200ms var(--ease-smooth, ease-out);
+  }
+
+  .media-lightbox-step:hover,
+  .media-lightbox-close:hover {
+    background-color: rgb(255 255 255 / 0.2);
+  }
+
+  .media-lightbox-step:focus-visible,
+  .media-lightbox-close:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .media-lightbox-step::before,
+  .media-lightbox-close::before {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .media-lightbox-previous {
+    top: 50%;
+    left: var(--spacing-s);
+    translate: 0 -50%;
+  }
+
+  .media-lightbox-previous::before {
+    content: '←';
+  }
+
+  .media-lightbox-next {
+    top: 50%;
+    right: var(--spacing-s);
+    translate: 0 -50%;
+  }
+
+  .media-lightbox-next::before {
+    content: '→';
+  }
+
+  .media-lightbox-close {
+    top: var(--spacing-s);
+    right: var(--spacing-s);
+  }
+
+  .media-lightbox-close::before {
+    content: '✕';
+  }
+}
+
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beyond-teaser-photos img,
+  .media-open img,
+  .media-open::after {
+    transition: none;
+  }
+
+  .media-lightbox[open],
+  .media-lightbox-figure img {
+    animation: none;
+  }
+
+  .media-open:hover img,
+  .media-open:focus-visible img {
+    scale: none;
+  }
+}
+
+/*
+ * The root page (`/`), on screen for the frame its refresh takes: a spinner in
+ * the middle, and the link to the locale only once the refresh is overdue.
+ */
+@layer components {
+  .root-redirect {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: var(--spacing-m);
+    min-height: 100dvh;
+  }
+
+  .root-redirect-spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: root-redirect-spin 0.8s linear infinite;
+  }
+
+  .root-redirect-link {
+    color: var(--color-content-muted);
+    opacity: 0;
+    animation: root-redirect-reveal 0.3s ease-out 3s forwards;
+  }
+
+  .root-redirect-link:focus-visible {
+    opacity: 1;
+  }
+}
+
+@keyframes root-redirect-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@keyframes root-redirect-reveal {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root-redirect-spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+/*
+ * The personal channels on "Beyond the code": buttons that lift and take the
+ * network's own colour on hover and focus, the badge turning white on it.
+ */
+@layer components {
+  .channel-links {
+    display: grid;
+    gap: var(--spacing-xs);
+  }
+
+  .channel-links-heading {
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .channel-links-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-s);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .channel-link {
+    --channel-color: var(--color-primary);
+    --channel-fill: var(--channel-color);
+
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    gap: 0.625rem;
+    align-items: center;
+    overflow: hidden;
+    padding: 0.375rem 2rem 0.375rem 0.375rem;
+    font-size: 0.9375rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background-color: var(--color-surface-elevated);
+    box-shadow: var(--shadow-card);
+    color: var(--color-content);
+    text-decoration: none;
+    transition:
+      translate 250ms var(--ease-smooth, ease-out),
+      border-color 250ms var(--ease-smooth, ease-out),
+      box-shadow 250ms var(--ease-smooth, ease-out),
+      color 250ms var(--ease-smooth, ease-out);
+  }
+
+  .channel-link[data-channel='instagram'] {
+    --channel-color: #e1306c;
+    --channel-fill: linear-gradient(45deg, #f9a33a, #e1306c 45%, #833ab4);
+  }
+
+  .channel-link[data-channel='facebook'] {
+    --channel-color: #1877f2;
+  }
+
+  .channel-link[data-channel='goodreads'] {
+    --channel-color: #8a6a43;
+  }
+
+  /* The fill, faded in behind the content. */
+  .channel-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--channel-fill);
+    opacity: 0;
+    transition: opacity 250ms var(--ease-smooth, ease-out);
+  }
+
+  /* The arrow out, at the end. */
+  .channel-link::after {
+    content: '↗';
+    position: absolute;
+    right: 0.75rem;
+    color: var(--color-content-muted);
+    font-size: 0.875rem;
+    transition:
+      translate 250ms var(--ease-smooth, ease-out),
+      color 250ms var(--ease-smooth, ease-out);
+  }
+
+  .channel-link-badge {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    background-color: color-mix(
+      in oklab,
+      var(--channel-color) 18%,
+      transparent
+    );
+    color: var(--channel-color);
+    transition:
+      background-color 250ms var(--ease-smooth, ease-out),
+      color 250ms var(--ease-smooth, ease-out),
+      rotate 250ms var(--ease-smooth, ease-out);
+  }
+
+  .channel-link-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .channel-link-text {
+    display: grid;
+    line-height: 1.25;
+  }
+
+  .channel-link-name {
+    font-weight: 600;
+  }
+
+  .channel-link-handle {
+    color: var(--color-content-muted);
+    font-size: 0.75rem;
+    transition: color 250ms var(--ease-smooth, ease-out);
+  }
+
+  .channel-link:hover,
+  .channel-link:focus-visible {
+    translate: 0 -0.2rem;
+    border-color: transparent;
+    box-shadow:
+      var(--shadow-card),
+      0 0.75rem 1.75rem -0.75rem var(--channel-color);
+    color: #fff;
+  }
+
+  .channel-link:hover::before,
+  .channel-link:focus-visible::before {
+    opacity: 1;
+  }
+
+  .channel-link:hover::after,
+  .channel-link:focus-visible::after {
+    translate: 0.125rem -0.125rem;
+    color: #fff;
+  }
+
+  .channel-link:hover .channel-link-badge,
+  .channel-link:focus-visible .channel-link-badge {
+    rotate: -8deg;
+    background-color: #fff;
+    color: var(--channel-color);
+  }
+
+  .channel-link:hover .channel-link-handle,
+  .channel-link:focus-visible .channel-link-handle {
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  .channel-link:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .channel-link,
+  .channel-link::before,
+  .channel-link::after,
+  .channel-link-badge {
+    transition: none;
+  }
+
+  .channel-link:hover,
+  .channel-link:focus-visible,
+  .channel-link:hover::after,
+  .channel-link:focus-visible::after {
+    translate: none;
+  }
+
+  .channel-link:hover .channel-link-badge,
+  .channel-link:focus-visible .channel-link-badge {
+    rotate: none;
   }
 }
