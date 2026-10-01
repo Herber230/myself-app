@@ -173,7 +173,7 @@ When entifix releases, bump its version in the `catalog:` and add the new versio
 
 - **Normally you do nothing.** Merging to `main` runs Pull Request Check, and when it passes `deploy.yml` releases, runs `pulumi up` and deploys the site. The pull request's `Infrastructure preview` job showed the plan beforehand.
 - **Which merges ship** is decided by the pull request title, which becomes the squash commit: `feat:` → a minor release, `fix:` or `perf:` → a patch, `feat!:` or a `BREAKING CHANGE:` footer → a major. `chore`, `docs`, `ci`, `build`, `test` and `refactor` release and deploy nothing. Run the Deploy workflow by hand (`gh workflow run deploy.yml`) when one of those still needs to go out.
-- **Releases** are `vX.Y.Z` tags with generated notes on the GitHub Releases page. That page is the changelog: nothing is committed back to `main`.
+- **Releases** are `vX.Y.Z` tags with generated notes, written in one run to the GitHub Releases page and to `CHANGELOG.md` (ADR 0021). The release commits the file to `main` as `chore: release X.Y.Z [skip ci]`, through the release App, and tags that commit, which is the one deployed. Pull before branching after a merge that released. Never edit `CHANGELOG.md` by hand.
 - **From your machine**, with AWS credentials for the account (`aws login`) and the Pulumi CLI (`brew install pulumi`):
 
   ```sh

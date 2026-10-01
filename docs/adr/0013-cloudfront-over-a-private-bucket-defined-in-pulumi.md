@@ -4,6 +4,7 @@
 - Date: 2026-09-24
 - Area: hosting
 - Read when: a URL answers differently on `herbercolop.dev` than under `serve-out`, a deploy shipped stale HTML, a merge to `main` did not deploy, or an infrastructure change is being made by hand in the console
+- Revised: 2026-09-30 by [ADR 0021](0021-a-changelog-committed-by-the-release.md) — the release commits a `CHANGELOG.md` and tags that commit; the consequence below that there is none no longer holds
 
 Decides #43, which [ADR 0007](0007-hosting-deferred-build-host-neutral.md)
 deferred. Builds on [ADR 0001](0001-next-static-export-on-s3.md) (the export is
