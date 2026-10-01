@@ -240,6 +240,18 @@
     "supersedes": []
   },
   {
+    "id": "myself-app-0021",
+    "number": 21,
+    "title": "A changelog committed by the release",
+    "status": "accepted",
+    "date": "2026-09-30",
+    "area": "hosting",
+    "readWhen": "`CHANGELOG.md` is missing a release or disagrees with its GitHub Release, the release job cannot push to `main`, a deploy shipped a commit that is not the squash commit, or `main` gained a `chore: release` commit nobody wrote",
+    "summary": "The release writes `CHANGELOG.md`.\nA GitHub App pushes it.\nThe deploy ships the release commit.\n`[skip ci]` keeps the commit from deploying twice.",
+    "project": "myself-app",
+    "supersedes": []
+  },
+  {
     "id": "entifix-0001",
     "number": 1,
     "title": "The tier contract, and the seam a host configures across",

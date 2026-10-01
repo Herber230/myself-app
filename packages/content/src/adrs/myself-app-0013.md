@@ -1,3 +1,5 @@
+- Revised: 2026-09-30 by [ADR 0021](/projects/myself-app/adr/0021/) — the release commits a `CHANGELOG.md` and tags that commit; the consequence below that there is none no longer holds
+
 Decides #43, which [ADR 0007](/projects/myself-app/adr/0007/)
 deferred. Builds on [ADR 0001](/projects/myself-app/adr/0001/) (the export is
 the whole deployment).

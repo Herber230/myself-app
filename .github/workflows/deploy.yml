@@ -1,12 +1,14 @@
 name: Deploy
 
-# Continuous deployment (ADR 0013). Every merge to `main` runs Pull Request
-# Check on the push; when that run succeeds, this one releases and ships the
-# same commit:
+# Continuous deployment (ADR 0013, 0021). Every merge to `main` runs Pull
+# Request Check on the push; when that run succeeds, this one releases and
+# ships it:
 #
 #   release  semantic-release reads the squash commit: feat → minor, fix or
-#            perf → patch, `!` → major. A release is a `vX.Y.Z` tag and a
-#            GitHub Release. Anything else releases, and deploys, nothing.
+#            perf → patch, `!` → major. A release writes its notes into
+#            CHANGELOG.md, commits that to `main` as `chore: release X.Y.Z
+#            [skip ci]`, tags that commit `vX.Y.Z` and publishes the GitHub
+#            Release. Anything else releases, and deploys, nothing.
 #   infra    `pulumi up` under the deploy role.
 #   site     build with the production origin, render the CV PDFs, sync to
 #            the bucket, invalidate CloudFront.
@@ -40,32 +42,52 @@ jobs:
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
+    # Holds the release App's key, and only `main` may use it. The App is the
+    # one bypass actor on `main`'s ruleset, so the changelog commit can land
+    # without a pull request (ADR 0021).
+    environment: release
     permissions:
-      contents: write
+      contents: read
     outputs:
       deploy: ${{ steps.release.outputs.deploy }}
       version: ${{ steps.release.outputs.version }}
-      sha: ${{ steps.head.outputs.sha }}
+      sha: ${{ steps.release.outputs.sha }}
     steps:
+      - name: Release App token
+        id: app
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          permission-contents: write
       # semantic-release needs the branch, not the detached commit the check
-      # ran on, and the whole history to find the last tag.
+      # ran on, and the whole history to find the last tag. The App's token
+      # stays in the checkout, so the changelog commit and the tag push as the
+      # App.
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
+          token: ${{ steps.app.outputs.token }}
       # If `main` moved on while the check ran, the newer commit's own run
       # releases both; releasing here would tag a commit this run never saw.
+      # One commit past it is still this run's: the changelog commit a
+      # previous attempt of this run made, which a re-run ships as it is.
       - name: Main is still the commit that was checked
         id: head
         env:
           CHECKED_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           sha=$(git rev-parse HEAD)
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          if [[ "$GITHUB_EVENT_NAME" == "workflow_run" && "$sha" != "$CHECKED_SHA" ]]; then
-            echo "main is at $sha, past the checked $CHECKED_SHA; its own run will release."
-            echo "stale=true" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_EVENT_NAME" != "workflow_run" || "$sha" == "$CHECKED_SHA" ]]; then
+            exit 0
           fi
+          if [[ "$(git rev-parse HEAD^)" == "$CHECKED_SHA" && "$(git log -1 --format=%s HEAD)" == "chore: release "* ]]; then
+            echo "main is at $sha, the release commit on top of the checked $CHECKED_SHA."
+            exit 0
+          fi
+          echo "main is at $sha, past the checked $CHECKED_SHA; its own run will release."
+          echo "stale=true" >> "$GITHUB_OUTPUT"
       - uses: pnpm/action-setup@v4
         if: steps.head.outputs.stale != 'true'
         with:
@@ -95,13 +117,29 @@ jobs:
         id: release
         if: steps.head.outputs.stale != 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app.outputs.token }}
+          CHECKED_SHA: ${{ github.event.workflow_run.head_sha }}
+          APP_SLUG: ${{ steps.app.outputs.app-slug }}
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "workflow_run" ]]; then
+            bot="${APP_SLUG}[bot]"
+            id=$(gh api "/users/${bot}" --jq .id)
+            export GIT_AUTHOR_NAME="$bot" GIT_COMMITTER_NAME="$bot"
+            export GIT_AUTHOR_EMAIL="${id}+${bot}@users.noreply.github.com"
+            export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
             pnpm exec semantic-release
+            # The release commit was never checked, so it may differ from
+            # the checked one by its changelog and nothing else.
+            changed=$(git diff --name-only "$CHECKED_SHA" HEAD)
+            if [[ -n "$changed" && "$changed" != "CHANGELOG.md" ]]; then
+              echo "::error::HEAD differs from the checked $CHECKED_SHA beyond CHANGELOG.md:"
+              echo "$changed"
+              exit 1
+            fi
           fi
-          # A tag on the checked commit is a release to ship: the one just
-          # made, or one a re-run of this workflow made before.
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          # A tag on HEAD is a release to ship: the one just made, or one a
+          # re-run of this workflow made before. It names the changelog commit.
           version=$(git tag --points-at HEAD --list 'v*' | head -n1)
           if [[ -n "$version" || "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
             echo "deploy=true" >> "$GITHUB_OUTPUT"
