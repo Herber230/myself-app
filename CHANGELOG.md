@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.8.0](https://github.com/Herber230/myself-app/compare/v1.7.0...v1.8.0) (2026-10-01)
+
+### Features
+
+* a stronger contact section, a "Beyond the code" page and one card for every link ([#80](https://github.com/Herber230/myself-app/issues/80)) ([29c9d88](https://github.com/Herber230/myself-app/commit/29c9d88964f18a7058e3d56986b97de364d6fcb0))
+
 ## [1.7.0](https://github.com/Herber230/myself-app/compare/v1.6.0...v1.7.0) (2026-09-30)
 
 ### Features
