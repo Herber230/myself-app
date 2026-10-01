@@ -11,3 +11,6 @@
 
 # Written by Next on every build, in its own style.
 next-env.d.ts
+
+# Written by semantic-release on every release, in its own style.
+/CHANGELOG.md
