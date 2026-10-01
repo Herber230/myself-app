@@ -26,7 +26,9 @@ describe('the "Beyond the code" page', () => {
     expect(
       screen.getByRole('link', { name: 'Instagram: herbercolop' }),
     ).toBeTruthy();
-  });
+    // Rendering Markdown loads the highlighter, slow on a CI runner with
+    // coverage on: as long as a project's page is given.
+  }, 30_000);
 
   it('is titled, described and alternated per locale', async () => {
     const metadata = await generateMetadata(
