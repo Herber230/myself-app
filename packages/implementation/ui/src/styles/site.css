@@ -1866,3 +1866,54 @@
     display: none;
   }
 }
+
+/*
+ * The root page (`/`), on screen for the frame its refresh takes: a spinner in
+ * the middle, and the link to the locale only once the refresh is overdue.
+ */
+@layer components {
+  .root-redirect {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: var(--spacing-m);
+    min-height: 100dvh;
+  }
+
+  .root-redirect-spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: root-redirect-spin 0.8s linear infinite;
+  }
+
+  .root-redirect-link {
+    color: var(--color-content-muted);
+    opacity: 0;
+    animation: root-redirect-reveal 0.3s ease-out 3s forwards;
+  }
+
+  .root-redirect-link:focus-visible {
+    opacity: 1;
+  }
+}
+
+@keyframes root-redirect-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@keyframes root-redirect-reveal {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root-redirect-spinner {
+    animation-duration: 2.4s;
+  }
+}
