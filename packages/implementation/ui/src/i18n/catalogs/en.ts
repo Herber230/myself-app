@@ -65,6 +65,8 @@ export const en = {
     medium: 'Medium',
     goodreads: 'Goodreads',
     x: 'X',
+    facebook: 'Facebook',
+    instagram: 'Instagram',
   },
   techRadarLead:
     'The technologies and techniques I use, and how far I trust each one.',
@@ -91,12 +93,50 @@ export const en = {
     headings: {
       about: 'About me',
       projects: 'Projects',
-      contact: 'Contact',
+      contact: 'Professional contact',
     },
     contact: {
       /** A link's name: the channel, then the handle it shows. */
       link: '{{channel}}: {{handle}}',
+      lead: 'Open to new roles, collaborations and a good conversation about software. Pick whichever way suits you best.',
+      /** Each card's cue: what following the channel does. */
+      actions: {
+        email: 'Send me an email',
+        linkedin: 'Connect on LinkedIn',
+        github: 'See my code',
+        stackoverflow: 'See my answers',
+        medium: 'Read my articles',
+        goodreads: 'See what I read',
+        x: 'Follow me',
+        facebook: 'Follow me on Facebook',
+        instagram: 'See my photos',
+      },
+      /** The email card's copy button: its text, its name, its confirmation. */
+      copy: 'Copy',
+      copyName: 'Copy email address',
+      copied: 'Copied',
     },
+  },
+  /** The "Beyond the code" page, and its teaser on the landing page. */
+  beyondCode: {
+    title: 'Beyond the code',
+    lead: 'Who I am away from the keyboard: the roads, the books and the music that keep me curious, and that shape how I work more than it might seem.',
+    teaserLead:
+      'Away from the keyboard there are mountain roads, books about the mind and the universe, and salsa.',
+    cta: 'Get to know me better',
+    back: '← Back to the home page',
+    /** The chips that jump to each interest. */
+    jump: 'Interests on this page',
+    /** A gallery's name. */
+    gallery: 'Photos and videos: {{interest}}',
+    previous: 'Previous photo',
+    next: 'Next photo',
+    close: 'Close',
+    /** Where a photo sits among the rest: `{at}` and `{of}` are filled in by the browser. */
+    position: '{at} of {of}',
+    fromTheBlog: 'From the blog',
+    /** The personal channels' list: its name. */
+    elsewhere: 'Find me elsewhere',
   },
   /** A project's page (#77): how its repository works, and its decisions. */
   projectPage: {

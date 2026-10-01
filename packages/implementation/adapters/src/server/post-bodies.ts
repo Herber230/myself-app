@@ -63,4 +63,8 @@ export const readProjectOverviewFile: ReadSidecar =
   localizedMarkdownIn('projects');
 
 /** A decision record's body, in English only (#77): `adrs/<id>.md`. */
+/** An interest's section on the "Beyond the code" page. */
+export const readInterestBodyFile: ReadSidecar =
+  localizedMarkdownIn('interests');
+
 export const readDecisionBodyFile: ReadPlainSidecar = markdownIn('adrs');

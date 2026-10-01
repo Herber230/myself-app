@@ -1,3 +1,4 @@
+export * from './beyond-code-page/index.js';
 export * from './blog-layout/index.js';
 export * from './blog-page/index.js';
 export * from './cv-page/index.js';

@@ -9,6 +9,8 @@ import { Education } from './entities/education.entity.js';
 import { Employer } from './entities/employer.entity.js';
 import { EmploymentHighlight } from './entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from './entities/employment-period.entity.js';
+import { Interest } from './entities/interest.entity.js';
+import { InterestMedia } from './entities/interest-media.entity.js';
 import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
@@ -59,6 +61,8 @@ export const LOCALIZED_MEMBERS = new Map<
   [Education, ['degree', 'field']],
   [Certificate, []],
   [Tag, ['label']],
+  [Interest, ['name', 'summary', 'body']],
+  [InterestMedia, ['alt']],
   [Post, ['title', 'summary', 'body']],
 ]);
 

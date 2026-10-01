@@ -28,6 +28,8 @@ import { Education } from './entities/education.entity.js';
 import { Employer } from './entities/employer.entity.js';
 import { EmploymentHighlight } from './entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from './entities/employment-period.entity.js';
+import { Interest } from './entities/interest.entity.js';
+import { InterestMedia } from './entities/interest-media.entity.js';
 import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
@@ -64,6 +66,8 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['ProjectPattern', ProjectPattern],
   ['ProjectPath', ProjectPath],
   ['ArchitectureDecision', ArchitectureDecision],
+  ['Interest', Interest],
+  ['InterestMedia', InterestMedia],
 ];
 
 /** The members `describeEntityColumns` reports, by name. */
@@ -76,9 +80,9 @@ const columnsOf = (entityConstructor: EntityConstructor<Entity>) =>
   );
 
 describe('every entity the pages read', () => {
-  it('is one of twenty-one, and each carries its metadata', () => {
+  it('is one of twenty-three, and each carries its metadata', () => {
     // Pinned: a table that stopped matching would assert nothing below.
-    expect(ENTITIES).toHaveLength(21);
+    expect(ENTITIES).toHaveLength(23);
     for (const [name, entityConstructor] of ENTITIES) {
       expect(() => extractMetaEntity(entityConstructor), name).not.toThrow();
     }

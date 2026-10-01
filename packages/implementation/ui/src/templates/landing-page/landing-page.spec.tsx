@@ -1,6 +1,8 @@
 import {
+  loadBeyondCodeTeaser,
   loadContactChannels,
   loadFeaturedProjects,
+  loadPersonalChannels,
   loadProfile,
 } from '@myself-app/domain/use-cases';
 import { screen } from '@testing-library/react';
@@ -17,12 +19,15 @@ beforeEach(() => {
 });
 
 describe('the landing page', () => {
-  it('runs the hero, then each section the nav anchors to, in order', async () => {
-    const [profile, projects, channels] = await Promise.all([
-      loadProfile(SITE_CONTENT),
-      loadFeaturedProjects(SITE_CONTENT),
-      loadContactChannels(SITE_CONTENT),
-    ]);
+  it('runs the hero, then each section the nav anchors to, then the door to "Beyond the code"', async () => {
+    const [profile, projects, channels, beyondCode, personalChannels] =
+      await Promise.all([
+        loadProfile(SITE_CONTENT),
+        loadFeaturedProjects(SITE_CONTENT),
+        loadContactChannels(SITE_CONTENT),
+        loadBeyondCodeTeaser(SITE_CONTENT),
+        loadPersonalChannels(SITE_CONTENT),
+      ]);
     await renderPage(
       Promise.resolve(
         <LandingPageView
@@ -30,6 +35,8 @@ describe('the landing page', () => {
           profile={profile}
           projects={projects}
           channels={channels}
+          beyondCode={beyondCode}
+          personalChannels={personalChannels}
         />,
       ),
       'en',
@@ -41,6 +48,6 @@ describe('the landing page', () => {
       [...document.querySelectorAll('main > section[id]')].map(
         section => section.id,
       ),
-    ).toEqual(['about', 'projects', 'contact']);
+    ).toEqual(['about', 'projects', 'contact', 'beyond-code']);
   });
 });

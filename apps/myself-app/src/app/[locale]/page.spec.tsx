@@ -22,7 +22,12 @@ describe('the landing page', () => {
     const headings = screen
       .getAllByRole('heading', { level: 2 })
       .map(heading => heading.textContent);
-    expect(headings).toEqual(['About me', 'Projects', 'Contact']);
+    expect(headings).toEqual([
+      'About me',
+      'Projects',
+      'Professional contact',
+      'Beyond the code',
+    ]);
   });
 
   it('fills its sections from content', async () => {
@@ -33,10 +38,17 @@ describe('the landing page', () => {
     expect(
       projects.querySelector('a[href="/es/projects/entifix/"]'),
     ).not.toBeNull();
-    const contact = screen.getByRole('region', { name: 'Contacto' });
+    const contact = screen.getByRole('region', {
+      name: 'Contacto profesional',
+    });
     expect(
       contact.querySelector('a[href="https://github.com/Herber230"]'),
     ).not.toBeNull();
+    // A personal channel is never a professional contact.
+    expect(contact.querySelector('a[href*="instagram.com"]')).toBeNull();
+    const beyond = screen.getByRole('region', { name: 'Más allá del código' });
+    expect(beyond.querySelector('a[href="/es/beyond-code/"]')).not.toBeNull();
+    expect(beyond.querySelector('a[href*="instagram.com"]')).not.toBeNull();
   });
 
   it('is titled and alternated per locale', async () => {

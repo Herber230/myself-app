@@ -13,6 +13,8 @@ export const CONTACT_CHANNEL_TYPES = [
   'medium',
   'goodreads',
   'x',
+  'facebook',
+  'instagram',
 ] as const;
 
 export type ContactChannelType = (typeof CONTACT_CHANNEL_TYPES)[number];
@@ -23,6 +25,7 @@ export class ContactChannel implements Entity {
   #type: ContactChannelType = 'email';
   #displayName = '';
   #url = '';
+  #personal = false;
   #order = 0;
 
   @accessor({ type: 'id' })
@@ -61,6 +64,18 @@ export class ContactChannel implements Entity {
   }
   set url(value: string) {
     this.#url = value;
+  }
+
+  /**
+   * Whether it is a personal channel rather than a professional one: shown on
+   * "Beyond the code", never on the CV or in the landing's contact section.
+   */
+  @accessor({ type: 'boolean', filterable: true })
+  get personal(): boolean {
+    return this.#personal;
+  }
+  set personal(value: boolean) {
+    this.#personal = value;
   }
 
   @accessor({ type: 'number', required: true, sortable: true })
