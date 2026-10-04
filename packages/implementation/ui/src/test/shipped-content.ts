@@ -5,12 +5,10 @@
  */
 import { siteContent } from '@myself-app/implementation-adapters/server';
 
-import { excerptOf } from '../markdown/excerpt.js';
-
 export const SITE_CONTENT = siteContent();
 
 /** The content package's records, with each post's body read from its files. */
 export const SITE_RECORDS = SITE_CONTENT.records;
 
-/** A preview as the site reads it outside `next dev`: no drafts. */
-export const BLOG_PREVIEWS = { includeDrafts: false, excerptOf } as const;
+/** The blog as the site reads it outside `next dev`: no drafts. */
+export const BLOG_READS = { includeDrafts: false } as const;

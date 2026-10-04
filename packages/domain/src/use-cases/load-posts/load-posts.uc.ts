@@ -9,11 +9,7 @@ import { Post } from '../../entities/post.entity.js';
 import { Tag } from '../../entities/tag.entity.js';
 import { SITE_LOCALES, type SiteLocale } from '../../locales.js';
 import type { LocalizedText } from '../../localized-text.js';
-import type {
-  BlogReadOptions,
-  PostPreview,
-  PreviewOptions,
-} from './load-posts.types.js';
+import type { BlogReadOptions, PostPreview } from './load-posts.types.js';
 
 /*
  * The blog's reads (ADR 0017), through the `load` use case like every other
@@ -104,7 +100,6 @@ function perLocale<T>(
 export async function previewsOf(
   content: StaticContent,
   posts: readonly Post[],
-  { excerptOf }: PreviewOptions,
 ): Promise<PostPreview[]> {
   const resolved = await content.resolve(posts, ['tags', 'technologies']);
   // Validation has made every localized text and date present.
@@ -116,7 +111,6 @@ export async function previewsOf(
     ...(post.updatedAt && { updatedAt: post.updatedAt.toISOString() }),
     draft: post.draft,
     readingMinutes: perLocale(post.body as LocalizedText, readingMinutes),
-    excerpt: perLocale(post.body as LocalizedText, excerptOf),
     tags: targetsOf(post.tags).map(tag => ({
       id: String(tag.id),
       label: tag.label as LocalizedText,
@@ -131,7 +125,7 @@ export async function previewsOf(
 /** Every post's preview, newest first. */
 export async function loadPostPreviews(
   content: StaticContent,
-  options: BlogReadOptions & PreviewOptions,
+  options: BlogReadOptions = {},
 ): Promise<PostPreview[]> {
-  return previewsOf(content, await loadPosts(content, options), options);
+  return previewsOf(content, await loadPosts(content, options));
 }

@@ -83,6 +83,27 @@ describe("a project's page", () => {
       page.decisions.length,
     );
     expect(document.getElementById('decisions')).not.toBeNull();
+    // Its four parts, each a link of the outline.
+    const outline = screen.getByRole('navigation', { name: 'En esta página' });
+    expect(
+      within(outline)
+        .getAllByRole('link')
+        .map(link => link.getAttribute('href')),
+    ).toEqual(['#overview', '#patterns', '#structure', '#decisions']);
+  });
+
+  it('offers no actions where a project links nothing', async () => {
+    const records = SITE_RECORDS['projects.json'] as Record<string, unknown>[];
+    const content = buildSiteContent({
+      ...SITE_RECORDS,
+      'projects.json': records.map(record => {
+        if (record.id !== 'entifix') return record;
+        const { url: _url, repositoryUrl: _source, ...rest } = record;
+        return rest;
+      }),
+    });
+    await pageOf((await loadProjectPage(content, 'entifix')) as ProjectPage);
+    expect(document.querySelector('.page-header-actions')).toBeNull();
   });
 
   it('links a site where a project has one', async () => {

@@ -107,6 +107,42 @@ export function LocationIcon({ className }: IconProps) {
   return <Icon className={className}>{PIN}</Icon>;
 }
 
+/** An arrow down onto a tray: the CV's prebuilt PDF. */
+const DOWNLOAD = (
+  <path d="M8 2v8m-3.5-3.5L8 10l3.5-3.5M2.5 11v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V11" />
+);
+
+/** A printer: its paper in, its body, its sheet out. */
+const PRINTER = (
+  <>
+    <path d="M4.5 6V2h7v4" />
+    <rect x="1.5" y="6" width="13" height="5.5" rx="1" />
+    <path d="M4.5 9.5h7V14h-7z" />
+  </>
+);
+
+/** The CV's actions (#36): downloading, printing, sharing this version. */
+export function DownloadIcon({ className }: IconProps) {
+  return <Icon className={className}>{DOWNLOAD}</Icon>;
+}
+
+export function PrintIcon({ className }: IconProps) {
+  return <Icon className={className}>{PRINTER}</Icon>;
+}
+
+/** Three sliders: tailoring the sheet. */
+const SLIDERS = (
+  <path d="M2 4h6m3 0h3M2 8h2m3 0h7M2 12h8m3 0h1M9.5 2.5v3M5.5 6.5v3M11.5 10.5v3" />
+);
+
+export function SlidersIcon({ className }: IconProps) {
+  return <Icon className={className}>{SLIDERS}</Icon>;
+}
+
+export function LinkIcon({ className }: IconProps) {
+  return <Icon className={className}>{LINK}</Icon>;
+}
+
 /**
  * GitHub's own mark (Octicons' `mark-github`, MIT), filled rather than
  * stroked: a button that leads to a repository wears the logo a reader looks

@@ -23,14 +23,15 @@ import { siteT } from '../../i18n/server.js';
 import type { PostCardData } from '../../molecules/post-card/post-card.js';
 import { postCardOf } from '../../molecules/post-card/post-cards.js';
 import { SourcesProvider } from '../../sources/sources.js';
+import { setViewportWidth } from '../../test/match-media.js';
 import { SITE_CONTENT } from '../../test/shipped-content.js';
-import { BLOG_PREVIEWS } from '../../test/shipped-content.js';
+import { BLOG_READS } from '../../test/shipped-content.js';
 import { PostExplorer } from './post-explorer.js';
 
 let posts: PostCardData[];
 
 beforeAll(async () => {
-  posts = (await loadPostPreviews(SITE_CONTENT, BLOG_PREVIEWS)).map(preview =>
+  posts = (await loadPostPreviews(SITE_CONTENT, BLOG_READS)).map(preview =>
     postCardOf(preview, 'en', siteT('en')),
   );
   // The file the export writes, served where the explorer asks for it.
@@ -72,6 +73,9 @@ const explorer = () => (
         showing: 'Showing {{shown}} of {{total}}',
         empty: 'No post matches this filter.',
         showSidebar: 'Show filters',
+        placeholder: 'TypeScript…',
+        active: '{{n}} active',
+        remove: 'Remove {{name}}',
         hideSidebar: 'Hide filters',
       }}
       title="Blog"
@@ -161,5 +165,26 @@ describe('the blog’s posts and filter', () => {
     await waitFor(() =>
       expect(shownPosts()).toEqual(['coverage-at-one-hundred']),
     );
+  });
+
+  it('count and remove what is in force, the card closed on a phone', async () => {
+    window.history.replaceState(null, '', '/en/blog/?tag=testing&q=coverage');
+    const { container } = render(explorer());
+    expect(await screen.findByText('2 active')).toBeTruthy();
+    expect(
+      container.querySelector<HTMLDetailsElement>(
+        '[data-slot="filter-panel-details"]',
+      )?.open,
+    ).toBe(true);
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Remove Search titles: “coverage”' }),
+    );
+    expect(window.location.search).toBe('?tag=testing');
+    act(() => setViewportWidth(390));
+    expect(
+      container.querySelector<HTMLDetailsElement>(
+        '[data-slot="filter-panel-details"]',
+      )?.open,
+    ).toBe(false);
   });
 });

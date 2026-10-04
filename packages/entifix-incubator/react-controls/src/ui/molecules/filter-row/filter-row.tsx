@@ -2,11 +2,29 @@ import { cn } from '@entifix/react-controls/primitives';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 /**
- * One row of a filter: an optional label, then whatever it filters by, wrapping
- * as the width runs out. On a phone the label heads its own line.
+ * A row: label, then options. On its own it is a sidebar layout — the options
+ * share the label's line while they keep 18rem, and drop under it when they
+ * cannot, whatever the screen. Inside a `FilterFieldset` it is a subgrid of
+ * the fieldset's columns instead, so every row's options start where the
+ * longest label ends.
+ */
+export const FILTER_ROW =
+  'flex flex-wrap items-center gap-x-m gap-y-3xs [[data-slot=filter-rows]_&]:col-span-full [[data-slot=filter-rows]_&]:grid [[data-slot=filter-rows]_&]:grid-cols-subgrid';
+
+/** The label's part of the sidebar layout: it grows little, up to 10rem. */
+export const FILTER_ROW_LABEL = 'max-w-[10rem] grow basis-[6rem]';
+
+/** The options' part: they take the rest, and wrap below under 18rem. */
+export const FILTER_ROW_OPTIONS = 'min-w-[min(100%,18rem)] grow-[999] basis-0';
+
+/**
+ * One row of a filter: an optional label in its own column, then whatever it
+ * filters by, wrapping under itself as the width runs out. Where the row is
+ * narrow, the label heads its own line.
  *
- * Its parts carry `data-slot` (`filter-row`, `filter-label`), so a page can
- * restyle them without knowing the classes underneath.
+ * Its parts carry `data-slot` (`filter-row`, `filter-label`,
+ * `filter-options`), so a page can restyle them without knowing the classes
+ * underneath.
  */
 export function FilterRow({
   label,
@@ -20,16 +38,24 @@ export function FilterRow({
   return (
     <div
       data-slot="filter-row"
-      className={cn('flex flex-wrap items-center gap-xs', className)}
+      className={cn(FILTER_ROW, className)}
       {...props}
     >
       {label !== undefined && <FilterLabel aria-hidden>{label}</FilterLabel>}
-      {children}
+      <div
+        data-slot="filter-options"
+        className={cn(
+          'flex min-w-0 flex-wrap items-center gap-xs',
+          label === undefined ? 'col-span-full basis-full' : FILTER_ROW_OPTIONS,
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 }
 
-/** A filter row's label: muted, and a line of its own on a phone. */
+/** A filter row's label: muted, in the row's first column. */
 export function FilterLabel({
   className,
   ...props
@@ -38,7 +64,8 @@ export function FilterLabel({
     <span
       data-slot="filter-label"
       className={cn(
-        'min-w-[6rem] text-content-muted max-[40rem]:basis-full',
+        FILTER_ROW_LABEL,
+        'self-start pt-[0.2rem] text-content-muted',
         className,
       )}
       {...props}

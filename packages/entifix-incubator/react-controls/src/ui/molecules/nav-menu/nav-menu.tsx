@@ -1,6 +1,10 @@
 import { cn } from '@entifix/react-controls/primitives';
 import type { ReactNode } from 'react';
 
+/** A bar's trigger: quiet until hovered or open. */
+const TRIGGER =
+  'focus-ring flex h-[2rem] cursor-pointer list-none items-center gap-3xs rounded-md border border-transparent px-2xs text-step-sm font-medium text-content select-none transition-[background-color,border-color] duration-(--duration-fast,150ms) hover:border-border hover:bg-[color-mix(in_srgb,var(--color-content)_6%,transparent)] [&::-webkit-details-marker]:hidden [[open]>&]:border-border [[open]>&]:bg-[color-mix(in_srgb,var(--color-content)_6%,transparent)]';
+
 /**
  * A dropdown in a navigation bar: a native `<details>` disclosure, so it opens
  * and its links work with scripting off. What a dropdown is expected to do on
@@ -18,6 +22,7 @@ export function NavMenu({
   summary,
   chevron = true,
   className,
+  triggerClassName = TRIGGER,
   children,
 }: {
   /** The accessible name of the trigger. */
@@ -28,6 +33,8 @@ export function NavMenu({
   /** A chevron after the trigger's content: a menu of choices has one. */
   chevron?: boolean;
   className?: string;
+  /** Replaces the trigger's look: a split button draws it as its own segment. */
+  triggerClassName?: string;
   children: ReactNode;
 }) {
   return (
@@ -36,7 +43,7 @@ export function NavMenu({
         aria-label={label}
         title={label}
         data-slot="nav-menu-trigger"
-        className="focus-ring flex h-[2rem] cursor-pointer list-none items-center gap-3xs rounded-md border border-transparent px-2xs text-[0.875rem] font-medium text-content select-none transition-[background-color,border-color] duration-(--duration-fast,150ms) hover:border-border hover:bg-[color-mix(in_srgb,var(--color-content)_6%,transparent)] [&::-webkit-details-marker]:hidden [[open]>&]:border-border [[open]>&]:bg-[color-mix(in_srgb,var(--color-content)_6%,transparent)]"
+        className={triggerClassName}
       >
         {icon}
         {summary}

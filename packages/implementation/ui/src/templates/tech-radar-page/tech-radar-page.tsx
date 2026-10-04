@@ -1,10 +1,4 @@
-import {
-  Card,
-  Center,
-  Lead,
-  Stack,
-  Text,
-} from '@entifix/react-controls/primitives';
+import { Card, Center, Stack } from '@entifix/react-controls/primitives';
 import {
   localize,
   type LocalizedText,
@@ -13,14 +7,16 @@ import {
   type TechnologyArea,
 } from '@myself-app/domain';
 import {
+  FoldScript,
   type RadarLayout,
-  RingKey,
 } from '@myself-app/entifix-incubator-react-controls';
 
 import { siteT } from '../../i18n/server.js';
+import { PageHeader } from '../../molecules/page-header/page-header.js';
 import { RadarExplorer } from '../../organisms/radar-explorer/radar-explorer.js';
 import { SiteNav } from '../../organisms/site-nav/site-nav.js';
 import type { SiteLocale } from '../../routing/site-locales.js';
+import { NOT_WIDE, WIDE } from '../../theme/breakpoints.js';
 
 export interface TechRadarPageData {
   readonly locale: SiteLocale;
@@ -66,20 +62,18 @@ export function TechRadarPageView({
   return (
     <>
       <SiteNav locale={locale} path="/tech-radar" />
-      <Center as="main" gutters className="py-2xl">
-        <Card>
+      <Center as="main" gutters className="radar-main py-2xl">
+        <Card className="radar-card">
           <Stack gap="l">
-            <Stack gap="s">
-              <Text as="h1" step={3} weight="semibold">
-                {t('techRadar')}
-              </Text>
-              <Lead muted>{t('techRadarLead')}</Lead>
-            </Stack>
+            <PageHeader title={t('techRadar')} lead={t('techRadarLead')} />
             <RadarExplorer
               layout={layout}
               locale={locale}
               quadrants={quadrants}
               rings={rings}
+              ringMeanings={ringRecords.map(ring =>
+                localize(ring.description as LocalizedText, locale),
+              )}
               areas={areas}
               vocabulary={{
                 quadrants: quadrantRecords.map(each => String(each.id)),
@@ -89,33 +83,38 @@ export function TechRadarPageView({
               copy={{
                 chartLabel: t('radar.chartLabel'),
                 legend: t('radar.legend'),
+                hideLegend: t('radar.legendHide'),
+                showLegend: t('radar.legendShow'),
+                legendCount: t('radar.legendCount', { n: '{{n}}' }),
+                view: t('radar.view.label'),
+                viewList: t('radar.view.list'),
+                viewChart: t('radar.view.chart'),
+                zoomOut: t('radar.zoomOut'),
                 filters: t('radar.filter.label'),
                 quadrant: t('radar.filter.quadrant'),
                 ring: t('radar.filter.ring'),
                 area: t('radar.filter.area'),
                 search: t('radar.filter.search'),
+                placeholder: t('radar.filter.placeholder'),
+                title: t('radar.filter.title'),
+                active: t('radar.filter.active', { n: '{{n}}' }),
+                remove: t('radar.filter.remove', { name: '{{name}}' }),
                 clear: t('radar.filter.clear'),
                 showing: t('radar.filter.showing', {
                   shown: '{{shown}}',
                   total: '{{total}}',
                 }),
               }}
-            >
-              <Stack gap="s">
-                <Text as="h2" step={2} weight="semibold">
-                  {t('radar.ringKey')}
-                </Text>
-                <RingKey
-                  rings={ringRecords.map((ring, index) => ({
-                    name: rings[index],
-                    meaning: localize(
-                      ring.description as LocalizedText,
-                      locale,
-                    ),
-                  }))}
-                />
-              </Stack>
-            </RadarExplorer>
+            />
+            {/* On a wide screen the picture is the view and the list a tab
+                beside it, folded; below that the list is the primary view
+                (#40), its quadrants folded to four rows. */}
+            <FoldScript
+              folds={[
+                { query: WIDE, selector: '.radar-legend-panel' },
+                { query: NOT_WIDE, selector: '.radar-legend-quadrant' },
+              ]}
+            />
           </Stack>
         </Card>
       </Center>

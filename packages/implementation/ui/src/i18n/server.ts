@@ -16,7 +16,7 @@ import type {} from './typed-keys.js';
  * ⚠️ The return type is load-bearing. `getServerTFor` declares
  * `TFunction<'translation' | N>`, and a union with the undeclared `translation`
  * namespace accepts any string, so a mistyped key compiled. Narrowed to `site`,
- * `t('cvLeed')` is a type error again ("Did you mean 'cvLead'?").
+ * `t('siteNam')` is a type error again ("Did you mean 'siteName'?").
  */
 export function siteT(locale: SiteLocale): TFunction<'site'> {
   // Sound at runtime: the function is fixed to the `site` namespace.

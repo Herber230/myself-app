@@ -2,6 +2,7 @@ export * from './about-section/index.js';
 export * from './beyond-code-teaser/index.js';
 export * from './contact-section/index.js';
 export * from './cv-customizer/index.js';
+export * from './cv-download-menu/index.js';
 export * from './cv-sheet/index.js';
 export * from './decision-explorer/index.js';
 export * from './decision-practice/index.js';

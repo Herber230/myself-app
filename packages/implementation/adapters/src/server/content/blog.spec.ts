@@ -9,9 +9,6 @@ import { describe, expect, it } from 'vitest';
 
 import { SITE_CONTENT } from '../shipped-content.fixture.js';
 
-/** The excerpt is the UI's to read; here the body stands in for it. */
-const PREVIEWS = { excerptOf: (markdown: string) => markdown };
-
 const ids = (posts: readonly { id: unknown }[]) =>
   posts.map(post => String(post.id));
 
@@ -64,7 +61,7 @@ describe('the blog’s posts', () => {
 
 describe('a post’s preview', () => {
   it('names its tags and technologies, and dates it', async () => {
-    const [preview] = await loadPostPreviews(SITE_CONTENT, PREVIEWS);
+    const [preview] = await loadPostPreviews(SITE_CONTENT);
     expect(preview?.id).toBe('entifix-in-the-browser');
     expect(preview?.publishedAt).toBe('2026-09-27T00:00:00.000Z');
     expect(preview?.updatedAt).toBeUndefined();
@@ -77,7 +74,7 @@ describe('a post’s preview', () => {
   });
 
   it('carries the date it was last updated, when it was', async () => {
-    const previews = await loadPostPreviews(SITE_CONTENT, PREVIEWS);
+    const previews = await loadPostPreviews(SITE_CONTENT);
     expect(
       previews.find(each => each.id === 'a-static-site-on-s3')?.updatedAt,
     ).toBe('2026-09-20T00:00:00.000Z');

@@ -14,9 +14,6 @@ import {
 const ids = (records: readonly { id: unknown }[] = []) =>
   records.map(each => String(each.id));
 
-/** An excerpt that shows which body it was taken from. */
-const excerptOf = (markdown: string) => markdown.slice(0, 5);
-
 describe('the posts', () => {
   it('are newest first, and leave drafts out unless asked', async () => {
     const content = fixtureContent();
@@ -58,15 +55,12 @@ describe('the posts', () => {
 });
 
 describe('a preview', () => {
-  it('names its tags and technologies, dates it and opens its body', async () => {
-    const [latest, older] = await loadPostPreviews(fixtureContent(), {
-      excerptOf,
-    });
+  it('names its tags and technologies and dates it', async () => {
+    const [latest, older] = await loadPostPreviews(fixtureContent());
     expect(latest).toMatchObject({
       id: 'on-typescript',
       publishedAt: '2026-03-01T00:00:00.000Z',
       draft: false,
-      excerpt: { en: 'Types', es: 'Tipos' },
       readingMinutes: { en: 1, es: 1 },
       tags: [{ id: 'architecture', label: { en: 'architecture' } }],
       technologies: [{ id: 'typescript' }],

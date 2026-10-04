@@ -88,4 +88,36 @@ describe('the decision timeline', () => {
     const { container } = renderLine(new Set(['p-0001']));
     expect(container.querySelectorAll('[data-dimmed]')).toHaveLength(4);
   });
+
+  it('brings the chosen dot to the middle of a line wider than its room', () => {
+    vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockReturnValue(1000);
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(300);
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function (this: HTMLElement) {
+        return (
+          this.getAttribute('aria-pressed') === 'true'
+            ? { left: 700, width: 14 }
+            : { left: 0, width: 300 }
+        ) as DOMRect;
+      },
+    );
+    renderLine();
+    const line = screen.getByRole('group', { name: 'Timeline' });
+    // The dot's middle, 707, to the line's, 150.
+    expect(line.scrollLeft).toBe(557);
+    vi.restoreAllMocks();
+  });
+
+  it('moves nothing with no record chosen', () => {
+    render(
+      <DecisionTimeline
+        label="Timeline"
+        decisions={DECISIONS}
+        kept={undefined}
+        selected={undefined}
+        onSelect={vi.fn()}
+      />,
+    );
+    expect(screen.getByRole('group', { name: 'Timeline' }).scrollLeft).toBe(0);
+  });
 });

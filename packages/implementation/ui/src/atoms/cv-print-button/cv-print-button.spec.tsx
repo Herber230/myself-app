@@ -4,7 +4,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { CvPrintButton } from './cv-print-button.js';
 
-const button = <CvPrintButton label="Print" fileName="Herber Colop — CV" />;
+const button = (
+  <CvPrintButton fileName="Herber Colop — CV">Print</CvPrintButton>
+);
 
 afterEach(() => {
   vi.restoreAllMocks();

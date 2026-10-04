@@ -47,8 +47,21 @@ describe('the tech radar page', () => {
       .getAllByRole('button')
       .map(button => button.textContent ?? '');
     expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b, 'en')));
+    // What each ring means is its chip's description.
+    const adopt = within(screen.getByRole('group', { name: 'Ring' })).getByRole(
+      'button',
+      { name: rings[0]?.name?.en },
+    );
     expect(
-      screen.getByRole('heading', { name: 'What the rings mean' }),
-    ).toBeTruthy();
+      document.getElementById(adopt.getAttribute('aria-describedby') as string)
+        ?.textContent,
+    ).toBe(rings[0]?.description?.en);
+    // The legend folds before paint on a wide screen, its quadrants on a
+    // narrow one.
+    const scripts = [...document.querySelectorAll('script')]
+      .map(script => script.innerHTML)
+      .join('\n');
+    expect(scripts).toContain('.radar-legend-panel');
+    expect(scripts).toContain('.radar-legend-quadrant');
   });
 });

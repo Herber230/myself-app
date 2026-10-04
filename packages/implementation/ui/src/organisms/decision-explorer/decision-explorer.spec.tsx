@@ -1,6 +1,12 @@
 import { loadProjectPage } from '@myself-app/domain/use-cases';
 import { browserSources } from '@myself-app/implementation-adapters/browser';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import {
   afterAll,
@@ -14,6 +20,7 @@ import {
 
 import { siteT } from '../../i18n/server.js';
 import { SourcesProvider } from '../../sources/sources.js';
+import { setViewportWidth } from '../../test/match-media.js';
 import { SITE_CONTENT } from '../../test/shipped-content.js';
 import { DecisionExplorer } from './decision-explorer.js';
 import {
@@ -173,5 +180,45 @@ describe('a project’s decision records', () => {
     expect(
       document.querySelector('[data-slot="split-detail"] h3')?.textContent,
     ).toContain(first.slice(-4));
+  });
+
+  it('count and remove what is in force, from the card that holds them', async () => {
+    window.history.replaceState(
+      null,
+      '',
+      '/en/projects/myself-app/?status=accepted&q=budget',
+    );
+    render(explorer());
+    expect(await screen.findByText('2 active')).toBeTruthy();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Remove Search: “budget”' }),
+    );
+    expect(window.location.search).toBe('?status=accepted');
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Remove Status: Accepted' }),
+    );
+    expect(window.location.search).toBe('');
+  });
+
+  it('bring a chosen record to the top on a narrow screen, where it opens under its row', () => {
+    const frames: FrameRequestCallback[] = [];
+    const animate = window.requestAnimationFrame;
+    window.requestAnimationFrame = frame => frames.push(frame);
+    const scrolled = vi.fn();
+    Element.prototype.scrollIntoView = scrolled;
+    setViewportWidth(390);
+    render(explorer());
+    fireEvent.click(screen.getByRole('link', { name: /^0011/ }));
+    expect(window.location.search).toBe('?adr=0011');
+    act(() => frames.forEach(frame => frame(0)));
+    expect(scrolled).toHaveBeenCalledWith({ block: 'start' });
+    expect(
+      (scrolled.mock.contexts[0] as Element)
+        .querySelector('[data-adr]')
+        ?.getAttribute('data-adr'),
+    ).toBe('myself-app-0011');
+    window.requestAnimationFrame = animate;
+    // jsdom has none: take the stand-in away again.
+    delete (Element.prototype as Partial<Element>).scrollIntoView;
   });
 });

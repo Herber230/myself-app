@@ -44,9 +44,12 @@ describe('a post’s page', () => {
         name: 'Un sitio estático detrás de CloudFront, definido en Pulumi',
       }),
     ).toBeTruthy();
+    // Over the article, and again at the sidebar's foot.
     expect(
-      screen.getByRole('link', { name: '← Todas las entradas' }),
-    ).toHaveProperty('pathname', '/es/blog/');
+      screen
+        .getAllByRole('link', { name: '← Todas las entradas' })
+        .map(link => (link as HTMLAnchorElement).pathname),
+    ).toEqual(['/es/blog/', '/es/blog/']);
     expect(screen.getByText('Actualizada el 20 sept 2026')).toBeTruthy();
     expect(
       within(document.querySelector('.blog-article-header') as HTMLElement)
@@ -84,21 +87,21 @@ describe('a post’s page', () => {
     ]);
   });
 
-  it('folds its sidebar away, with the filter as links to the blog', async () => {
+  it('opens its table of contents beside it, read from the body', async () => {
     await renderPage(PostPage(propsOf('es', 'a-static-site-on-s3')), 'es');
     const sidebar = screen.getByRole('complementary', {
-      name: 'Filtrar las entradas',
+      name: 'En esta página',
     });
-    expect(sidebar.querySelector('details')?.open).toBe(false);
-    expect(within(sidebar).getByText('Mostrar filtros')).toBeTruthy();
-    expect(
-      within(sidebar)
-        .getByRole('link', { name: 'Pruebas' })
-        .getAttribute('href'),
-    ).toBe('/es/blog/?tag=testing');
-    expect(
-      within(sidebar).getByRole('link', { name: '2019' }).getAttribute('href'),
-    ).toBe('/es/blog/?year=2019');
+    expect(sidebar.querySelector('details')?.open).toBe(true);
+    const outline = within(sidebar).getByRole('navigation', {
+      name: 'En esta página',
+    });
+    const links = within(outline).getAllByRole('link');
+    expect(links.length).toBeGreaterThanOrEqual(2);
+    for (const link of links)
+      expect(
+        document.getElementById((link.getAttribute('href') as string).slice(1)),
+      ).not.toBeNull();
     expect(
       within(sidebar)
         .getByRole('link', { name: 'Feed RSS' })

@@ -8,6 +8,8 @@ export const es = {
   cv: 'CV',
   menu: 'Menú',
   techRadar: 'Radar tecnológico',
+  // La tabla de contenidos de una página.
+  outline: 'En esta página',
   blog: 'Blog',
   /** The language menu. Each language is named in itself, in every locale. */
   language: {
@@ -15,7 +17,6 @@ export const es = {
     en: 'English',
     es: 'Español',
   },
-  cvLead: 'Una página, en cuatro lecturas. Imprímela, o descárgala en PDF.',
   cvPage: {
     variants: 'Lectura',
     mode: 'Escrita para',
@@ -28,9 +29,13 @@ export const es = {
     pdfSubject: 'Currículum vítae',
     print: 'Imprimir o guardar en PDF',
     printHint:
-      'Para una hoja limpia: A4, sin márgenes, sin encabezados ni pies de página, con gráficos de fondo.',
+      'Conserva lo que ocultaste. A4, sin márgenes, sin encabezados ni pies de página, con gráficos de fondo.',
+    downloadMore: 'Más formas de guardar',
+    copyLink: 'Copiar enlace a esta versión',
+    linkCopied: 'Enlace copiado',
     customize: {
       label: 'Personalizar',
+      hidden: 'Ocultos: {{n}}',
       sections: 'Secciones',
       positions: 'Puestos',
       technologies: 'Tecnologías',
@@ -182,7 +187,10 @@ export const es = {
       label: 'Filtrar los registros',
       status: 'Estado',
       area: 'Área',
-      search: 'Buscar en títulos y síntomas',
+      search: 'Buscar',
+      placeholder: 'Un síntoma, un título…',
+      active: '{{n}} activos',
+      remove: 'Quitar {{name}}',
       clear: 'Quitar filtros',
       showing: 'Mostrando {{shown}} de {{total}}',
       empty: 'Ningún registro coincide con el filtro.',
@@ -221,7 +229,15 @@ export const es = {
     chartLabel:
       'Radar tecnológico: cuatro cuadrantes de tecnologías, en anillos según cuánto confío en ellas',
     legend: 'Cada punto, por cuadrante y anillo',
-    ringKey: 'Qué significa cada anillo',
+    legendHide: 'Ocultar la lista',
+    legendShow: 'Mostrar la lista',
+    legendCount: '{{n}} tecnologías',
+    zoomOut: 'Ver el radar completo',
+    view: {
+      label: 'Ver como',
+      list: 'Lista',
+      chart: 'Gráfico',
+    },
     quadrants: {
       techniques: 'Técnicas',
       tools: 'Herramientas',
@@ -234,6 +250,10 @@ export const es = {
       ring: 'Anillo',
       area: 'Área',
       search: 'Buscar',
+      placeholder: 'Kubernetes, Effect, Nx…',
+      title: 'Filtros',
+      active: '{{n}} activos',
+      remove: 'Quitar {{name}}',
       clear: 'Mostrar todo',
       showing: 'Mostrando {{shown}} de {{total}}',
     },
@@ -267,6 +287,9 @@ export const es = {
       search: 'Buscar en los títulos',
       clear: 'Mostrar todas las entradas',
       showing: 'Mostrando {{shown}} de {{total}}',
+      placeholder: 'TypeScript, arquitectura…',
+      active: '{{n}} activos',
+      remove: 'Quitar {{name}}',
     },
     empty: 'Ninguna entrada coincide con este filtro.',
     published: 'Publicada',
@@ -278,6 +301,8 @@ export const es = {
     sidebar: {
       show: 'Mostrar filtros',
       hide: 'Ocultar filtros',
+      showContents: 'Mostrar el índice',
+      hideContents: 'Ocultar el índice',
     },
     tags: 'Etiquetas',
     technologies: 'En el radar',

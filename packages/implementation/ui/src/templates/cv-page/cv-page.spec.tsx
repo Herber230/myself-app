@@ -75,15 +75,16 @@ describe('a CV page', () => {
     ).toBe('/en/cv/backend/');
   });
 
-  it('offers to print, with the settings that print it cleanly', async () => {
+  it('offers to print behind the download, with the settings that print it cleanly', async () => {
     await renderPage(
       pageOf({ locale: 'en', mode: 'ats' }).then(CvPageView),
       'en',
     );
+    const menu = document.querySelector('.cv-download-menu') as HTMLElement;
     expect(
-      screen.getByRole('button', { name: 'Print or save as PDF' }),
+      within(menu).getByRole('button', { name: /^Print or save as PDF/ }),
     ).toBeTruthy();
-    expect(screen.getByText(/^For a clean sheet: A4/)).toBeTruthy();
+    expect(within(menu).getByText(/^Keeps what you hid. A4/)).toBeTruthy();
   });
 
   it('keeps the page in the language switch', async () => {
@@ -126,7 +127,7 @@ describe('a CV page', () => {
     ).toEqual(['Sections', 'Positions', 'Technologies']);
     expect(
       within(groups[0])
-        .getAllByRole('checkbox')
+        .getAllByRole('switch')
         .map(box => box.closest('label')?.textContent),
     ).toEqual([
       'Summary',
@@ -136,7 +137,7 @@ describe('a CV page', () => {
       'Certificates',
     ]);
     expect(
-      within(groups[1]).getByRole('checkbox', {
+      within(groups[1]).getByRole('switch', {
         name: 'Software Architect · Tigo Guatemala',
       }),
     ).toBeTruthy();

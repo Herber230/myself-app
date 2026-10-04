@@ -3,7 +3,6 @@ import { join } from 'node:path';
 import type { LocalizedText, Post } from '@myself-app/domain';
 import {
   loadPost,
-  loadPostPreviews,
   loadPosts,
   previewsOf,
   relatedPosts,
@@ -11,9 +10,10 @@ import {
 import { screen, within } from '@testing-library/react';
 import { beforeAll, describe, expect, it } from 'vitest';
 
+import { outlineOf } from '../../markdown/outline.js';
 import { renderPostBody } from '../../organisms/post-body/post-body.js';
 import { renderPage } from '../../test/render.js';
-import { BLOG_PREVIEWS, SITE_CONTENT } from '../../test/shipped-content.js';
+import { BLOG_READS, SITE_CONTENT } from '../../test/shipped-content.js';
 import { PostPageView } from './post-page.js';
 
 /** The app's `public/`, where the posts' images are. */
@@ -26,31 +26,32 @@ const PUBLIC = join(
 async function pageOf(
   locale: 'en' | 'es',
   id: string,
-  { includeDrafts = false } = {},
+  { includeDrafts = false, outlined = true } = {},
 ) {
-  const reads = { ...BLOG_PREVIEWS, includeDrafts };
+  const reads = { ...BLOG_READS, includeDrafts };
   const post = (await loadPost(SITE_CONTENT, id, reads)) as Post;
-  const [[preview], posts, previews] = await Promise.all([
-    previewsOf(SITE_CONTENT, [post], reads),
+  const [[preview], posts] = await Promise.all([
+    previewsOf(SITE_CONTENT, [post]),
     loadPosts(SITE_CONTENT, reads),
-    loadPostPreviews(SITE_CONTENT, reads),
   ]);
-  const [related, body] = await Promise.all([
-    previewsOf(SITE_CONTENT, relatedPosts(post, posts), reads),
+  const markdown = (post.body as LocalizedText)[locale];
+  const [related, body, outline] = await Promise.all([
+    previewsOf(SITE_CONTENT, relatedPosts(post, posts)),
     renderPostBody({
       id,
-      markdown: (post.body as LocalizedText)[locale],
+      markdown,
       locale,
       sitePaths: ['/', '/tech-radar', '/blog'],
       publicDirectory: PUBLIC,
     }),
+    outlined ? outlineOf(markdown, `posts/${id}.${locale}.md`) : [],
   ]);
   return (
     <PostPageView
       locale={locale}
       post={post}
       preview={preview!}
-      previews={previews}
+      outline={outline}
       related={related}
       body={body}
     />
@@ -71,9 +72,12 @@ describe('a post’s page', () => {
         name: 'Un sitio estático detrás de CloudFront, definido en Pulumi',
       }),
     ).toBeTruthy();
+    // Over the article, and again at the sidebar's foot.
     expect(
-      screen.getByRole('link', { name: '← Todas las entradas' }),
-    ).toHaveProperty('pathname', '/es/blog/');
+      screen
+        .getAllByRole('link', { name: '← Todas las entradas' })
+        .map(link => (link as HTMLAnchorElement).pathname),
+    ).toEqual(['/es/blog/', '/es/blog/']);
     expect(screen.getByText('Actualizada el 20 sept 2026')).toBeTruthy();
     expect(
       within(document.querySelector('.blog-article-header') as HTMLElement)
@@ -111,26 +115,43 @@ describe('a post’s page', () => {
     ]);
   });
 
-  it('folds its sidebar away, with the filter as links to the blog', async () => {
+  it('opens its table of contents beside it, folded on a phone before paint', async () => {
     await renderPage(pageOf('es', 'a-static-site-on-s3'), 'es');
     const sidebar = screen.getByRole('complementary', {
-      name: 'Filtrar las entradas',
+      name: 'En esta página',
     });
-    expect(sidebar.querySelector('details')?.open).toBe(false);
-    expect(within(sidebar).getByText('Mostrar filtros')).toBeTruthy();
-    expect(
-      within(sidebar)
-        .getByRole('link', { name: 'Pruebas' })
-        .getAttribute('href'),
-    ).toBe('/es/blog/?tag=testing');
-    expect(
-      within(sidebar).getByRole('link', { name: '2019' }).getAttribute('href'),
-    ).toBe('/es/blog/?year=2019');
+    expect(sidebar.querySelector('details')?.open).toBe(true);
+    expect(within(sidebar).getByText('Ocultar el índice')).toBeTruthy();
+    const outline = within(sidebar).getByRole('navigation', {
+      name: 'En esta página',
+    });
+    const links = within(outline).getAllByRole('link');
+    expect(links.length).toBeGreaterThanOrEqual(2);
+    // Each a heading of the body.
+    for (const link of links)
+      expect(
+        document.getElementById((link.getAttribute('href') as string).slice(1)),
+      ).not.toBeNull();
     expect(
       within(sidebar)
         .getByRole('link', { name: 'Feed RSS' })
         .getAttribute('href'),
     ).toBe('/es/blog/rss.xml');
+    const scripts = [...document.querySelectorAll('script')]
+      .map(script => script.innerHTML)
+      .join('\n');
+    expect(scripts).toContain('.blog-sidebar-panel');
+    expect(scripts).toContain('(width \\u003c 64rem)');
+  });
+
+  it('leaves the outline out with fewer than two sections', async () => {
+    await renderPage(
+      pageOf('en', 'coverage-at-one-hundred', { outlined: false }),
+      'en',
+    );
+    expect(
+      screen.queryByRole('navigation', { name: 'On this page' }),
+    ).toBeNull();
   });
 
   it('shows no related posts or technologies where there are none', async () => {

@@ -7,6 +7,8 @@ export * from './filter-links/index.js';
 export * from './landing-section/index.js';
 export * from './link-card/index.js';
 export * from './media-gallery/index.js';
+export * from './page-header/index.js';
+export * from './page-outline/index.js';
 export * from './pattern-list/index.js';
 export * from './post-card/index.js';
 export * from './project-card/index.js';

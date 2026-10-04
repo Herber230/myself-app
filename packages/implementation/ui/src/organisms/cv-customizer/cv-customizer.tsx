@@ -1,8 +1,11 @@
 'use client';
 
 import { button } from '@entifix/react-controls/primitives';
+import { Switch } from '@myself-app/entifix-incubator-react-controls';
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 
+import { SlidersIcon } from '../../atoms/icons/icons.js';
+import { fill } from '../../i18n/fill.js';
 import { applyHidden, parseHidden, withHidden } from './cv-hidden.js';
 
 /** Tells the customizer the query string changed under it. */
@@ -25,18 +28,23 @@ export interface CvCustomizerOption {
 
 export interface CvCustomizerGroup {
   readonly legend: string;
+  /** Long labels: fewer, wider columns. */
+  readonly wide?: boolean;
   readonly options: readonly CvCustomizerOption[];
 }
 
 export interface CvCustomizerCopy {
   readonly label: string;
+  /** Beside the count of hidden parts: "Hidden: 2". */
+  /** The header's count of hidden parts: `{{n}}` is replaced. */
+  readonly hidden: string;
   readonly reset: string;
   readonly downloadNote: string;
 }
 
 /**
- * Tailors the sheet before printing (#38, ADR 0015): a checkbox per section,
- * position and technology, checked while it is shown.
+ * Tailors the sheet before printing (#38, ADR 0015): a switch per section,
+ * position and technology, on while it is shown.
  *
  * It only chooses what is shown of a sheet rendered whole at build time: its
  * options are plain props, so no entifix code reaches the page (ADR 0003).
@@ -92,21 +100,40 @@ export function CvCustomizer({
 
   return (
     <details className="cv-customize">
-      <summary>{copy.label}</summary>
+      <summary>
+        <SlidersIcon className="cv-customize-icon" />
+        <span className="cv-customize-title">{copy.label}</span>
+        {hidden.length > 0 && (
+          <span className="cv-customize-count">
+            {fill(copy.hidden, { n: hidden.length })}
+          </span>
+        )}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          className="cv-customize-chevron"
+        >
+          <path d="m7 10 5 5 5-5" />
+        </svg>
+      </summary>
       <div className="cv-customize-body">
         {groups.map(group => (
           <fieldset key={group.legend}>
             <legend>{group.legend}</legend>
-            {group.options.map(option => (
-              <label key={option.part}>
-                <input
-                  type="checkbox"
+            <div
+              className="cv-customize-options"
+              data-wide={group.wide || undefined}
+            >
+              {group.options.map(option => (
+                <Switch
+                  key={option.part}
                   checked={!hidden.includes(option.part)}
                   onChange={event => toggle(option.part, event.target.checked)}
-                />
-                {option.label}
-              </label>
-            ))}
+                >
+                  {option.label}
+                </Switch>
+              ))}
+            </div>
           </fieldset>
         ))}
         <div className="cv-customize-footer">

@@ -36,6 +36,9 @@ export function BlogPageView({ locale, previews }: BlogPageData) {
           technology: t('blogPage.filter.technology'),
           year: t('blogPage.filter.year'),
           search: t('blogPage.filter.search'),
+          placeholder: t('blogPage.filter.placeholder'),
+          active: t('blogPage.filter.active', { n: '{{n}}' }),
+          remove: t('blogPage.filter.remove', { name: '{{name}}' }),
           clear: t('blogPage.filter.clear'),
           showing: t('blogPage.filter.showing', {
             shown: '{{shown}}',

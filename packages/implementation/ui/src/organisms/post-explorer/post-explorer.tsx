@@ -9,22 +9,30 @@
  * shown or not by the answer's ids, as a timeline beside the filter. The static
  * HTML lists every post, which is also what a visitor without scripting gets.
  */
-import { Lead, Stack, Text } from '@entifix/react-controls/primitives';
+import { Stack, Text } from '@entifix/react-controls/primitives';
 import { Post } from '@myself-app/domain/entities/post';
 import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
 import {
+  ActiveFilters,
+  activeFiltersOf,
   FilterFieldset,
+  FilterPanel,
   FilterSummary,
   ToggleGroup,
+  useMediaQuery,
 } from '@myself-app/entifix-incubator-react-controls';
 import { useMemo } from 'react';
 
+import { SlidersIcon } from '../../atoms/icons/icons.js';
+import { fill } from '../../i18n/fill.js';
 import { FilterLinks } from '../../molecules/filter-links/filter-links.js';
+import { PageHeader } from '../../molecules/page-header/page-header.js';
 import type { PostCardData } from '../../molecules/post-card/post-card.js';
 import { localePath } from '../../routing/locale-path.js';
 import type { SiteLocale } from '../../routing/site-locales.js';
 import { useSources } from '../../sources/sources.js';
 import { BlogLayout } from '../../templates/blog-layout/blog-layout.js';
+import { WIDE } from '../../theme/breakpoints.js';
 import { PostTimeline } from '../post-timeline/post-timeline.js';
 import { type BlogParam, blogQuery } from './blog-query.js';
 
@@ -39,6 +47,12 @@ export interface PostExplorerCopy {
   /** `{{shown}}` and `{{total}}` are replaced. */
   readonly showing: string;
   readonly empty: string;
+  /** What to type, while the search is empty. */
+  readonly placeholder: string;
+  /** `{{n}}` is replaced: the card's count of what is in force. */
+  readonly active: string;
+  /** `{{name}}` is replaced: an active filter's remove button. */
+  readonly remove: string;
   /** The sidebar toggle's names, closed and open. */
   readonly showSidebar: string;
   readonly hideSidebar: string;
@@ -98,12 +112,36 @@ export function PostExplorer({
   const options = (list: readonly Option[]) =>
     list.map(each => ({ key: each.id, name: each.name }));
   const yearOptions = years.map(year => ({ key: year, name: year }));
+  // Open beside the timeline; closed on a phone, where the rows would push
+  // the posts a screen down. The search and the active chips stay in view.
+  const wide = useMediaQuery(WIDE, true);
+
+  // What is in force, in the rows' order, each chip removing its value.
+  const active =
+    filter === null
+      ? []
+      : activeFiltersOf({
+          groups: [
+            { param: 'tag', label: copy.tag, options: options(tags) },
+            {
+              param: 'tech',
+              label: copy.technology,
+              options: options(technologies),
+            },
+            { param: 'year', label: copy.year, options: yearOptions },
+          ],
+          selected: param => filter[param],
+          search: { label: copy.search, text: filter.q[0] ?? '' },
+          removeLabel: name => fill(copy.remove, { name }),
+          onToggle: toggle,
+          onClearSearch: () => set('q', []),
+        });
 
   const sidebar = (
     <Stack gap="l">
-      <Stack gap="s">
-        <h2 className="blog-sidebar-heading">{copy.filters}</h2>
-        {filter === null ? (
+      {filter === null ? (
+        <Stack gap="s">
+          <h2 className="blog-sidebar-heading">{copy.filters}</h2>
           <FilterLinks
             blogPath={localePath(locale, '/blog')}
             groups={[
@@ -116,18 +154,35 @@ export function PostExplorer({
               { param: 'year', label: copy.year, options: yearOptions },
             ]}
           />
-        ) : (
-          <FilterFieldset label={copy.filters}>
+        </Stack>
+      ) : (
+        <FilterPanel
+          title={copy.filters}
+          icon={<SlidersIcon className="size-[1.1em]" />}
+          activeLabel={
+            active.length > 0
+              ? fill(copy.active, { n: active.length })
+              : undefined
+          }
+          open={wide}
+          footer={
             <FilterSummary
               searchLabel={copy.search}
               search={filter.q[0] ?? ''}
               onSearch={text => set('q', [text])}
-              showing={copy.showing
-                .replace('{{shown}}', String(shown.length))
-                .replace('{{total}}', String(posts.length))}
+              placeholder={copy.placeholder}
+              showing={fill(copy.showing, {
+                shown: shown.length,
+                total: posts.length,
+              })}
               clearLabel={copy.clear}
               onClear={filtering ? clear : undefined}
-            />
+            >
+              {active.length > 0 && <ActiveFilters active={active} />}
+            </FilterSummary>
+          }
+        >
+          <FilterFieldset label={copy.filters}>
             <ToggleGroup
               label={copy.tag}
               options={options(tags)}
@@ -147,8 +202,8 @@ export function PostExplorer({
               onToggle={year => toggle('year', year)}
             />
           </FilterFieldset>
-        )}
-      </Stack>
+        </FilterPanel>
+      )}
       <a href={feed.href} className="blog-feed-link">
         {feed.label}
       </a>
@@ -157,6 +212,7 @@ export function PostExplorer({
 
   return (
     <BlogLayout
+      header={<PageHeader title={title} lead={lead} className="blog-header" />}
       sidebar={sidebar}
       sidebarOpen
       copy={{
@@ -166,12 +222,6 @@ export function PostExplorer({
       }}
     >
       <Stack gap="xl">
-        <header className="blog-header">
-          <Text as="h1" step={3} weight="semibold">
-            {title}
-          </Text>
-          <Lead muted>{lead}</Lead>
-        </header>
         {shown.length === 0 ? (
           <Text muted>{copy.empty}</Text>
         ) : (

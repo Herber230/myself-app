@@ -2,22 +2,26 @@
 
 import { type ReactNode, useEffect, useRef } from 'react';
 
-/** What a closed disclosure leaves in storage. */
+/** What a disclosure leaves in storage, once a reader has toggled it. */
+const OPEN = 'open';
 const CLOSED = 'closed';
 
 /**
- * A disclosure that starts open and stays closed once a reader closes it, on
- * this browser (`localStorage`, under `storageKey`). The static HTML is open,
- * which is also what a reader without scripting, or without storage, gets.
+ * A disclosure that starts open, or closed (`defaultOpen`), and stays the way
+ * a reader last left it, on this browser (`localStorage`, under
+ * `storageKey`). The static HTML is as `defaultOpen` says, which is also what
+ * a reader without scripting, or without storage, gets.
  */
 export function RememberedDetails({
   storageKey,
   summary,
+  defaultOpen = true,
   className,
   children,
 }: {
   storageKey: string;
   summary: ReactNode;
+  defaultOpen?: boolean;
   className?: string;
   children: ReactNode;
 }) {
@@ -30,27 +34,33 @@ export function RememberedDetails({
     restored.current = true;
     const details = ref.current as HTMLDetailsElement;
     try {
-      // Closed before the page was ready: remember that too.
-      if (!details.open) localStorage.setItem(storageKey, CLOSED);
-      else if (localStorage.getItem(storageKey) === CLOSED)
-        details.open = false;
+      const stored = localStorage.getItem(storageKey);
+      // Toggled before the page was ready: remember that instead.
+      if (details.open !== defaultOpen)
+        localStorage.setItem(storageKey, details.open ? OPEN : CLOSED);
+      else if (stored === OPEN || stored === CLOSED)
+        details.open = stored === OPEN;
     } catch {
-      // Storage refused (a private window, blocked site data): stay open.
+      // Storage refused (a private window, blocked site data): as the HTML is.
     }
-  }, [storageKey]);
+  }, [storageKey, defaultOpen]);
 
   const remember = () => {
     if (!restored.current) return;
     try {
-      if (ref.current?.open) localStorage.removeItem(storageKey);
-      else localStorage.setItem(storageKey, CLOSED);
+      localStorage.setItem(storageKey, ref.current?.open ? OPEN : CLOSED);
     } catch {
       // Nothing to remember it in.
     }
   };
 
   return (
-    <details ref={ref} open className={className} onToggle={remember}>
+    <details
+      ref={ref}
+      open={defaultOpen}
+      className={className}
+      onToggle={remember}
+    >
       <summary>{summary}</summary>
       {children}
     </details>

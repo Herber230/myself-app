@@ -1,5 +1,6 @@
 - Revised: 2026-09-28 by #70 — the filter sits in a sidebar that folds away (open on the home, closed on a post); the home is a timeline by year whose cards fade the body's opening, read at build; the first posts include seven imported from Medium
 - Revised: 2026-09-28 by [ADR 0019](/projects/myself-app/adr/0019/) — the Markdown renderer, `post-body.css` and the post's page are the UI package's (`markdown/`, `styles/`, `templates/post-page`)
+- Revised: 2026-10-03 — a post's sidebar is its table of contents, not the filter; the timeline's cards no longer show the body's opening, and previews no longer carry it (`excerptOf` removed)
 
 Decides the blog half of #70. Builds on
 [ADR 0010](/projects/myself-app/adr/0010/) (content checked from
@@ -49,10 +50,10 @@ beside entifix's, and tie posts to the file system.
 - **The blog home filters in the browser**, by tag, technology, year and
   title (`?tag=&tech=&year=&q=`), through the use case (ADR 0016). There are
   no tag pages: the query string is the only filter. The filter is a sidebar,
-  a `<details>` open on the home and closed on a post, where it is links to
-  the home; before hydration the home's sidebar is those links too. The home
-  lists posts as a timeline by year, each card fading the opening of its body
-  (`excerptOf`, plain text read at build, never in `/data/post.json`).
+  a `<details>` open on the home; before hydration it is links to the home
+  filtered. On a post the sidebar is the post's table of contents instead,
+  read from its Markdown at build (`outlineOf`). The home lists posts as a
+  timeline by year, each card its title, date, summary and tags.
 - **Each post has an Open Graph image, and each locale an RSS feed**
   (`/<locale>/blog/rss.xml`).
 
