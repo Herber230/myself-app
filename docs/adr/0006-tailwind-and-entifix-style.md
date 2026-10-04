@@ -6,6 +6,7 @@
 - Read when: styling anything, or when a primitive renders unstyled
 - Revised: 2026-09-17 by #16 — the primitives barrel ships Effect without `optimizePackageImports`; the theme is applied before first paint by a script
 - Revised: 2026-09-23 by [ADR 0011](0011-a-moving-hero-a-revealing-nav-and-a-blue-theme.md) — a first visit paints the default theme, not `prefers-color-scheme`; the theme control is the site's own menu
+- Revised: 2026-10-04 — the responsive rules below, after an audit found literal sizes, hand-written grids behind media queries and ten breakpoint widths
 
 ## Context
 
@@ -43,6 +44,27 @@ design system built for Tailwind v4.
 - Fonts self-hosted with `next/font`, so they are present when a page prints.
 - d3 visualizations are client components coloured from the theme's CSS
   variables.
+
+### Responsive rules
+
+entifix's tokens are [Utopia](https://utopia.fyi)'s fluid scales (viewport
+360–1240), and its primitives are [Every Layout](https://every-layout.dev)'s
+intrinsic ones. The site keeps to both:
+
+- **Sizes come from the scale.** Type is a `--text-step-*`, space a
+  `--spacing-*`. A card or a panel pads with one of Utopia's one-up pairs
+  (`--spacing-xs-s` … `--spacing-xl-2xl`, the site's `@theme` in `site.css`):
+  tight on a phone, roomy on a desk, with no media query.
+- **Layout is intrinsic first.** `Sidebar`, `Switcher`, `Grid` (auto-fill with
+  `min(…, 100%)`) and `Cluster` wrap from their content. A component that must
+  rearrange itself asks its own width with a container query — the filter
+  rows stack below 28rem of fieldset, a page's head stacks its actions below
+  30rem — not the screen's.
+- **The screen is asked only for what is tied to it**: a sticky part, a phone's
+  view switch, and a disclosure a before-paint script folds (`FoldScript`:
+  nothing is laid out yet, so the window is the one width there is). Two
+  widths, written in range syntax: narrow `(width < 40rem)` and wide
+  `(width >= 64rem)`, declared in the UI's `theme/breakpoints.ts`.
 
 ## Alternatives
 

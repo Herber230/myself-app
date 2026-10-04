@@ -87,6 +87,7 @@ A post is a record in `packages/content/src/posts.json` and two Markdown files b
 Tailwind v4 over `@entifix/style` tokens (ADR 0006).
 
 - **Style with token utilities** (`bg-surface`, `text-content-muted`, `gap-s`, `text-step-1`) and primitives from `@entifix/react-controls/primitives`.
+- **Responsive, without breakpoints first** (ADR 0006): sizes from the fluid scale (`text-step-*`, `--spacing-*`, and the one-up pairs `p-s-m` for a card's padding), layout from the intrinsic primitives or a container query. A media query only for what the screen alone decides, at the two widths in the UI's `theme/breakpoints.ts`.
 - **Palette values live in the UI's `styles/themes.css`**, under `[data-theme='light']` and `[data-theme='dark']`. The site's identity changes there, never in a component.
 - **The theme is set before first paint** by the UI's `atoms/theme-script`: the stored choice if there is one, otherwise `DEFAULT_THEME` (blue). Blue and dark apply on screen only, so paper is always light. The e2e journey in `theme.spec.ts` records every `data-theme` write and fails on a flash.
 - ⚠️ **Tailwind does not scan `node_modules`.** `app/global.css` has an `@source` for each package `dist` whose classes it needs (entifix's primitives, the incubator's controls, the UI). Without it their classes produce no CSS and nothing reports it.
