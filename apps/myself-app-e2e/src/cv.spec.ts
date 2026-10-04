@@ -80,11 +80,14 @@ test.describe('a customized sheet', () => {
     await page.goto('/en/cv/');
     await page.getByText('Customize', { exact: true }).click();
     const customize = page.locator('details.cv-customize');
-    await customize.getByRole('checkbox', { name: 'Education' }).uncheck();
-    await customize
-      .getByRole('checkbox', { name: 'Frontend Software Engineer · Vana' })
-      .uncheck();
-    await customize.getByRole('checkbox', { name: 'React' }).uncheck();
+    // A switch's box is for assistive technology; a reader presses its label.
+    const switchOff = async (name: string) => {
+      await customize.getByText(name, { exact: true }).click();
+      await expect(customize.getByRole('switch', { name })).not.toBeChecked();
+    };
+    await switchOff('Education');
+    await switchOff('Frontend Software Engineer · Vana');
+    await switchOff('React');
 
     for (const name of HIDDEN) await expect(part(page, name)).toBeHidden();
     await expect(part(page, 'section:experience')).toBeVisible();
@@ -110,9 +113,7 @@ test.describe('a customized sheet', () => {
     for (const name of HIDDEN) await expect(part(page, name)).toBeHidden();
 
     await page.getByText('Customize', { exact: true }).click();
-    await expect(
-      page.getByRole('checkbox', { name: 'React' }),
-    ).not.toBeChecked();
+    await expect(page.getByRole('switch', { name: 'React' })).not.toBeChecked();
 
     await page.emulateMedia({ media: 'print' });
     for (const name of HIDDEN) await expect(part(page, name)).toBeHidden();

@@ -93,23 +93,53 @@ test('the pane shows a record, chosen by the keys, the timeline or the URL', asy
   await expect(dot(page, '0016')).toHaveAttribute('data-dimmed', '');
 });
 
-test('the practice is told once, and stays closed once closed', async ({
+test('the practice is told on request, and stays open once opened', async ({
   page,
 }) => {
   await page.goto('/en/projects/entifix/');
   const practice = page.locator('details.adr-practice');
-  await expect(practice).toHaveAttribute('open', '');
-  await expect(page.locator('.adr-step')).toHaveCount(5);
+  await expect(practice).not.toHaveAttribute('open');
   // Hydrated: the explorer's controls render only then.
   await expect(page.getByRole('searchbox')).toBeVisible();
   await page.getByText('How the records steer the work').click();
-  await expect(practice).not.toHaveAttribute('open');
+  await expect(practice).toHaveAttribute('open', '');
+  await expect(page.locator('.adr-step')).toHaveCount(5);
   // `toggle` is dispatched after the change, in a task of its own.
   await expect
     .poll(() => page.evaluate(() => localStorage.getItem('decision-practice')))
-    .toBe('closed');
+    .toBe('open');
   await page.reload();
-  await expect(practice).not.toHaveAttribute('open');
+  await expect(practice).toHaveAttribute('open', '');
+});
+
+test('the filter card counts what is in force, and a chip removes it', async ({
+  page,
+}) => {
+  await page.goto('/en/projects/myself-app/?status=accepted&area=ui');
+  await expect(page.getByText('2 active')).toBeVisible();
+  await page.getByRole('button', { name: 'Remove Area: ui' }).click();
+  await expect(page).toHaveURL(/\?status=accepted$/);
+  await expect(page.getByText('1 active')).toBeVisible();
+});
+
+test('the outline beside the page follows the section being read', async ({
+  page,
+}) => {
+  await page.goto('/en/projects/myself-app/');
+  const outline = page.getByRole('navigation', { name: 'On this page' });
+  await outline.getByRole('link', { name: 'File structure' }).click();
+  await expect(page).toHaveURL(/#structure$/);
+  await expect(
+    outline.getByRole('link', { name: 'File structure' }),
+  ).toHaveAttribute('aria-current', 'location');
+});
+
+test('a record’s outline jumps to its own headings', async ({ page }) => {
+  await page.goto('/en/projects/myself-app/adr/0016/');
+  const outline = page.getByRole('navigation', { name: 'On this page' });
+  await outline.getByRole('link', { name: 'Consequences' }).click();
+  await expect(page).toHaveURL(/#consequences$/);
+  await expect(page.locator('#consequences')).toBeInViewport();
 });
 
 test.describe('on a phone', () => {
@@ -123,6 +153,27 @@ test.describe('on a phone', () => {
       has: page.locator('[data-adr="myself-app-0003"]'),
     });
     await expect(row.locator('[data-slot="split-detail"]')).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(390);
+  });
+
+  test('the outline is a strip held at the top, its current link in sight', async ({
+    page,
+  }) => {
+    await page.goto('/en/projects/myself-app/');
+    const strip = page.locator('.outline-layout-aside');
+    await page.locator('#decisions').scrollIntoViewIfNeeded();
+    await expect(strip).toBeInViewport();
+    expect(
+      await strip.evaluate(element => element.getBoundingClientRect().top),
+    ).toBe(0);
+    const current = page
+      .getByRole('navigation', { name: 'On this page' })
+      .getByRole('link', { name: 'Architecture decisions' });
+    await expect(current).toHaveAttribute('aria-current', 'location');
+    await expect(current).toBeInViewport();
+    expect((await current.boundingBox())?.height).toBeGreaterThanOrEqual(44);
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(390);

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 /**
  * The radar as the export writes it. The geometry is covered by unit tests;
@@ -15,6 +15,14 @@ const LOCALES = [
   },
 ];
 
+/** On a wide screen the list is a tab beside the picture, folded: unfold it. */
+async function openList(page: Page) {
+  const panel = page.locator('details.radar-legend-panel');
+  await expect(panel).not.toHaveAttribute('open');
+  await panel.locator('summary.radar-legend-toggle').click();
+  await expect(panel).toHaveAttribute('open', '');
+}
+
 for (const { locale, legend, ring } of LOCALES) {
   test(`/${locale}/tech-radar/ draws the radar and lists it`, async ({
     page,
@@ -25,6 +33,7 @@ for (const { locale, legend, ring } of LOCALES) {
     await expect(radar).toBeVisible();
     await expect(radar).toHaveAttribute('aria-label', /radar/i);
 
+    await openList(page);
     await expect(
       page.getByRole('heading', { level: 2, name: legend }),
     ).toBeVisible();
@@ -129,6 +138,7 @@ test('the legend reaches every technology with a keyboard', async ({
   page,
 }) => {
   await page.goto('/en/tech-radar/');
+  await openList(page);
   const legend = page.locator('section[aria-labelledby] li');
   // One link per entry, and no blip in the tab order to duplicate it.
   await expect(legend.getByRole('link')).toHaveCount(await legend.count());
@@ -144,23 +154,34 @@ test('the legend reaches every technology with a keyboard', async ({
 test.describe('on a phone', () => {
   test.use({ viewport: { width: 375, height: 667 } });
 
-  test('the legend comes before the picture, and nothing scrolls sideways', async ({
+  test('the list is the view, the picture a switch away, and nothing scrolls sideways', async ({
     page,
   }) => {
     await page.goto('/en/tech-radar/');
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(375);
-    const legendTop = await page
-      .getByRole('heading', {
+    await expect(
+      page.getByRole('heading', {
         level: 2,
         name: 'Every blip, by quadrant and ring',
-      })
-      .evaluate(element => element.getBoundingClientRect().top);
-    const chartTop = await page
-      .getByRole('img')
-      .evaluate(element => element.getBoundingClientRect().top);
-    expect(legendTop).toBeLessThan(chartTop);
+      }),
+    ).toBeVisible();
+    // The quadrants fold to four rows, each opening onto its rings.
+    const quadrants = page.locator('details.radar-legend-quadrant');
+    await expect(quadrants).toHaveCount(4);
+    for (const quadrant of await quadrants.all())
+      await expect(quadrant).not.toHaveAttribute('open');
+    await expect(page.getByRole('img')).toBeHidden();
+
+    await page.getByRole('radio', { name: 'Chart' }).click();
+    await expect(page.getByRole('img')).toBeVisible();
+    await expect(
+      page.getByRole('heading', {
+        level: 2,
+        name: 'Every blip, by quadrant and ring',
+      }),
+    ).toBeHidden();
   });
 });
 
@@ -187,6 +208,24 @@ test.describe('the filter', () => {
     await expect(page.getByText(`Showing 3 of ${total}`)).toBeVisible();
   });
 
+  test('by a quadrant pressed on the picture, which then fills it', async ({
+    page,
+  }) => {
+    await page.goto('/en/tech-radar/');
+    await page
+      .locator('[data-slot="radar-quadrant-toggle"]', { hasText: 'Tools' })
+      .click();
+    await expect(page).toHaveURL('/en/tech-radar/?quadrant=tools');
+    await expect(page.locator('[data-slot="radar-zoom"]')).toHaveCSS(
+      'transform',
+      'matrix(2, 0, 0, 2, 0, 0)',
+    );
+    // Its own name, pressed again, shows the whole radar.
+    await page.getByTitle('Show the whole radar').click();
+    await expect(page).toHaveURL('/en/tech-radar/');
+    await expect(page.getByText('1 active')).toBeHidden();
+  });
+
   test('is read from the URL, and survives a reload', async ({ page }) => {
     await page.goto('/es/tech-radar/?ring=adopt&q=type');
     await expect(page.locator('a[data-blip]:not([data-dimmed])')).toHaveCount(
@@ -210,6 +249,7 @@ test.describe('the filter', () => {
 
   test('hovering a legend entry marks its blip', async ({ page }) => {
     await page.goto('/en/tech-radar/');
+    await openList(page);
     await page.getByRole('link', { name: 'TypeScript' }).hover();
     await expect(page.locator('a[data-blip="typescript"]')).toHaveAttribute(
       'data-highlighted',

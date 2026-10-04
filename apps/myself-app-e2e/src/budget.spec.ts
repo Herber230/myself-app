@@ -24,23 +24,26 @@ const KB = 1024;
 /** Measured 178.6 KB on 2026-09-18, rounded up, plus 15 KB for the leaves. */
 const LANDING_SCRIPT_BUDGET = (179 + 15) * KB;
 /**
- * Measured 237.4 KB on 2026-09-27, rounded up, plus 10 KB of room. Since ADR
+ * Measured 249.1 KB on 2026-10-04, rounded up, plus 10 KB of room. Since ADR
  * 0016 the filter runs entifix's `load` use case in the browser: +76 KB over
- * the 161.2 KB of filtering props (ADR 0014).
+ * the 161.2 KB of filtering props (ADR 0014). The filter card, its active
+ * chips, the List | Chart switch and the quadrant zoom added 11.7 KB to the
+ * 237.4 KB of 2026-09-27.
  */
-const RADAR_SCRIPT_BUDGET = (238 + 10) * KB;
+const RADAR_SCRIPT_BUDGET = (250 + 10) * KB;
 /**
  * After the first filter: the same scripts, and `/data/technology.json`.
- * Measured 241.4 KB on 2026-09-27, rounded up, plus 10 KB of room.
+ * Measured 253.2 KB on 2026-10-04, rounded up, plus 10 KB of room.
  */
-const RADAR_FILTERED_BUDGET = (242 + 10) * KB;
+const RADAR_FILTERED_BUDGET = (254 + 10) * KB;
 /**
  * The blog's home, filtering as the radar does (ADR 0016, 0017). Measured
- * 238.0 KB on 2026-09-27, and 238.8 KB after the first filter with
- * `/data/post.json`, each rounded up, plus 10 KB of room.
+ * 247.6 KB on 2026-10-04, and 249.8 KB after the first filter with
+ * `/data/post.json`, each rounded up, plus 10 KB of room: the filter card and
+ * its active chips added 9.6 KB to the 238.0 KB of 2026-09-27.
  */
-const BLOG_SCRIPT_BUDGET = (238 + 10) * KB;
-const BLOG_FILTERED_BUDGET = (239 + 10) * KB;
+const BLOG_SCRIPT_BUDGET = (248 + 10) * KB;
+const BLOG_FILTERED_BUDGET = (250 + 10) * KB;
 
 /**
  * Measured 159.6 KB on 2026-09-25, rounded up, plus 10 KB of room: the

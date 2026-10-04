@@ -37,12 +37,13 @@ test('the filter keeps its choices in the URL, through reload and history', asyn
 
   await page.reload();
   await expect(shownPosts(page)).toHaveCount(1);
-  await expect(page.getByRole('button', { name: 'Testing' })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  );
-
-  await page.getByRole('button', { name: 'Testing' }).click();
+  await expect(
+    page.getByRole('button', { name: 'Testing', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
+  // What is in force, counted on the card, each a chip that removes it.
+  await expect(page.getByText('1 active')).toBeVisible();
+  await page.getByRole('button', { name: 'Remove Tag: Testing' }).click();
+  await expect(page).toHaveURL(/\/en\/blog\/$/);
   await page.getByRole('button', { name: 'Amazon CloudFront' }).click();
   await page.getByRole('button', { name: '2026' }).click();
   await expect(page).toHaveURL(/\?tech=cloudfront&year=2026$/);
@@ -104,32 +105,54 @@ test('a post renders its Markdown: paragraph types, a figure, links and code', a
   ).toHaveCount(3);
 });
 
-test('the sidebar is open on the blog, folded on a post, and toggles', async ({
+test('the blog’s sidebar is its filter, a post’s its table of contents, and it folds', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/en/blog/');
-  const sidebar = page.getByRole('complementary', { name: 'Filter the posts' });
-  await expect(sidebar.getByRole('searchbox')).toBeVisible();
+  const filter = page.getByRole('complementary', { name: 'Filter the posts' });
+  await expect(filter.getByRole('searchbox')).toBeVisible();
 
-  await page.getByRole('link', { name: 'Books', exact: true }).click();
-  await expect(page).toHaveURL(/\/en\/blog\/books\/$/);
+  await page.goto('/en/blog/rxjs-exceptions-react-hooks/');
+  const sidebar = page.getByRole('complementary', { name: 'On this page' });
+  const outline = sidebar.getByRole('navigation', { name: 'On this page' });
+  await expect(outline).toBeVisible();
   const article = page.locator('.blog-article');
-  const folded = await article.boundingBox();
-  await expect(sidebar.getByRole('link', { name: 'Testing' })).toBeHidden();
+  const open = await article.boundingBox();
+
+  // Its first section, followed: the outline marks it.
+  const first = outline.getByRole('link').first();
+  await first.click();
+  await expect(first).toHaveAttribute('aria-current', 'location');
 
   // Folded, the toggle is its icon; its name is for a reader alone.
   const toggle = sidebar.locator('summary');
-  await expect(toggle).toHaveAccessibleName('Show filters');
+  await expect(toggle).toHaveAccessibleName('Hide contents');
   await toggle.click();
-  await expect(sidebar.getByRole('link', { name: 'Testing' })).toBeVisible();
+  await expect(outline).toBeHidden();
   await expect
     .poll(async () => (await article.boundingBox())?.x)
-    .toBeGreaterThan(folded?.x ?? 0);
-
-  await expect(toggle).toHaveAccessibleName('Hide filters');
+    .toBeLessThan(open?.x ?? 0);
+  await expect(toggle).toHaveAccessibleName('Show contents');
   await toggle.click();
-  await expect(sidebar.getByRole('link', { name: 'Testing' })).toBeHidden();
+  await expect(outline).toBeVisible();
+});
+
+test.describe('on a phone', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('a post opens on its title, its contents folded a tap away', async ({
+    page,
+  }) => {
+    await page.goto('/en/blog/rxjs-exceptions-react-hooks/');
+    const outline = page.getByRole('navigation', { name: 'On this page' });
+    await expect(outline).toBeHidden();
+    await page.getByRole('complementary').locator('summary').click();
+    await expect(outline).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(390);
+  });
 });
 
 test('each locale has a feed, and no draft is exported', async ({
