@@ -29,3 +29,52 @@ describe('a toggle group', () => {
     expect(onToggle).toHaveBeenCalledWith('web');
   });
 });
+
+describe('a toggle group’s chips', () => {
+  const options = [
+    {
+      key: 'adopt',
+      name: 'Adopt',
+      swatch: 'red',
+      description: 'In production, chosen again.',
+    },
+    { key: 'hold', name: 'Hold', swatch: 'grey' },
+  ];
+
+  it('dot an unpressed chip, check a pressed one, and describe each', () => {
+    const { container } = render(
+      <ToggleGroup
+        label="Ring"
+        options={options}
+        selected={['adopt']}
+        onToggle={vi.fn()}
+      />,
+    );
+    const adopt = screen.getByRole('button', { name: 'Adopt' });
+    expect(adopt.querySelector('[data-slot="filter-chip-check"]')).toBeTruthy();
+    expect(adopt.querySelector('[data-slot="filter-chip-swatch"]')).toBeNull();
+    const tooltip = screen.getByRole('tooltip');
+    expect(adopt.getAttribute('aria-describedby')).toBe(tooltip.id);
+    expect(tooltip.textContent).toBe('In production, chosen again.');
+    const hold = screen.getByRole('button', { name: 'Hold' });
+    expect(
+      (hold.querySelector('[data-slot="filter-chip-swatch"]') as HTMLElement)
+        .style.background,
+    ).toBe('grey');
+    expect(hold.hasAttribute('aria-describedby')).toBe(false);
+    expect(container.querySelector('[data-slot="filter-note"]')).toBeNull();
+  });
+
+  it('say under them what the pressed ones mean', () => {
+    render(
+      <ToggleGroup
+        label="Ring"
+        options={options}
+        selected={[]}
+        onToggle={vi.fn()}
+        note={<p>Adopt: in production.</p>}
+      />,
+    );
+    expect(screen.getByText('Adopt: in production.')).toBeTruthy();
+  });
+});

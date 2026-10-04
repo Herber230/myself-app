@@ -111,4 +111,84 @@ describe('the radar chart', () => {
     const link = container.querySelector('a[data-blip]')!;
     expect(() => fireEvent.pointerEnter(link)).not.toThrow();
   });
+
+  it('makes each quadrant’s name a button that reports it, pressed once chosen', () => {
+    const onQuadrant = vi.fn();
+    const { container } = renderChart({ onQuadrant, selectedQuadrants: [2] });
+    const toggles = [
+      ...container.querySelectorAll<HTMLButtonElement>(
+        '[data-slot="radar-quadrant-toggle"]',
+      ),
+    ];
+    expect(toggles.map(toggle => toggle.textContent)).toEqual(QUADRANTS);
+    expect(toggles.map(toggle => toggle.getAttribute('aria-pressed'))).toEqual([
+      'false',
+      'false',
+      'true',
+      'false',
+    ]);
+    // Each at its own outer corner.
+    expect(
+      toggles.map(toggle => [
+        toggle.style.right !== '' ? 'right' : 'left',
+        toggle.style.bottom !== '' ? 'bottom' : 'top',
+      ]),
+    ).toEqual([
+      ['right', 'bottom'],
+      ['left', 'bottom'],
+      ['left', 'top'],
+      ['right', 'top'],
+    ]);
+    fireEvent.click(toggles[1] as HTMLButtonElement);
+    expect(onQuadrant).toHaveBeenCalledWith(1);
+  });
+
+  it.each([
+    [0, [1, 1], 'start', 1],
+    [1, [-1, 1], 'end', 1],
+    [2, [-1, -1], 'end', -1],
+    [3, [1, -1], 'start', -1],
+  ] as const)(
+    'zooms quadrant %i from its outer corner, its rings named inside it',
+    (zoom, [x, y], anchor, sign) => {
+      const { container } = renderChart({
+        onQuadrant: vi.fn(),
+        zoom,
+        zoomOutLabel: 'Show the whole radar',
+      });
+      const group = container.querySelector<SVGGElement>(
+        '[data-slot="radar-zoom"]',
+      ) as SVGGElement;
+      // The view box starts at minus the reach: the picture's corner.
+      const reach = -Number(
+        container.querySelector('svg')?.getAttribute('viewBox')?.split(' ')[0],
+      );
+      expect(group.style.transform).toBe('scale(2)');
+      expect(group.style.transformOrigin).toBe(`${x * reach}px ${y * reach}px`);
+      const ring = screen.getByText(RINGS[0] as string);
+      expect(ring.getAttribute('text-anchor')).toBe(anchor);
+      expect(Math.sign(Number(ring.getAttribute('y')))).toBe(sign);
+      const toggles = container.querySelectorAll(
+        '[data-slot="radar-quadrant-toggle"]',
+      );
+      expect(toggles).toHaveLength(1);
+      expect(toggles[0]?.textContent).toBe(QUADRANTS[zoom]);
+      expect(toggles[0]?.getAttribute('title')).toBe('Show the whole radar');
+    },
+  );
+
+  it('draws the whole radar, unscaled, while nothing is zoomed', () => {
+    const { container } = renderChart({ onQuadrant: vi.fn() });
+    const group = container.querySelector<SVGGElement>(
+      '[data-slot="radar-zoom"]',
+    ) as SVGGElement;
+    expect(group.style.transform).toBe('');
+    const ring = screen.getByText(RINGS[0] as string);
+    expect(ring.getAttribute('text-anchor')).toBe('middle');
+    expect(
+      container
+        .querySelector('[data-slot="radar-quadrant-toggle"]')
+        ?.hasAttribute('title'),
+    ).toBe(false);
+  });
 });

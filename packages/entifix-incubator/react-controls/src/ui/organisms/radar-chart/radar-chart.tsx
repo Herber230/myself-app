@@ -11,6 +11,11 @@
  * page ships no JavaScript for it (ADR 0003). Each blip links to its
  * technology's page (#42), and names itself on hover.
  *
+ * Given `onQuadrant`, the quadrant names become toggle buttons over the
+ * picture's corners — beside the SVG, not in it, since a `role="img"` holds no
+ * controls — so a page with scripting can filter from the chart itself. Given
+ * `zoom`, one quadrant fills the picture, its blips twice the size.
+ *
  * The picture is decorative in the accessibility sense: `RadarLegend` carries
  * the same blips as text, which is the keyboard and screen-reader path. So a
  * blip's link is for the pointer only: out of the tab order, and hidden from
@@ -49,7 +54,19 @@ export interface RadarChartProps {
   readonly highlighted?: string;
   /** Told which blip the pointer is over, or `undefined` when it leaves. */
   readonly onHighlight?: (id: string | undefined) => void;
+  /** Told which quadrant's name was pressed: the names become buttons. */
+  readonly onQuadrant?: (quadrant: number) => void;
+  /** The quadrants pressed, by index. */
+  readonly selectedQuadrants?: readonly number[];
+  /** A quadrant to fill the picture with, by index: the rest scrolls away. */
+  readonly zoom?: number;
+  /** The zoomed quadrant's button's title: pressing it shows the whole. */
+  readonly zoomOutLabel?: string;
 }
+
+/** A quadrant's name as a button: quiet, a chip once pressed. */
+const QUADRANT_TOGGLE =
+  'focus-ring absolute cursor-pointer rounded-full border border-transparent bg-transparent px-2xs py-[0.125rem] font-[inherit] text-step-xs leading-tight text-content-muted transition-[background-color,border-color,color] duration-(--duration-fast,150ms) hover:border-primary hover:text-primary aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-surface motion-reduce:transition-none';
 
 export function RadarChart({
   layout,
@@ -61,89 +78,143 @@ export function RadarChart({
   dimmed,
   highlighted,
   onHighlight,
+  onQuadrant,
+  selectedQuadrants = [],
+  zoom,
+  zoomOutLabel,
 }: RadarChartProps) {
   const { extent, ringRadii, blips } = layout;
   const size = 2 * (extent + MARGIN);
+  // The corners' inset, as a share of the picture: it scales with it.
+  const inset = `${((MARGIN / size) * 100).toFixed(2)}%`;
   return (
-    <svg
-      viewBox={`${-extent - MARGIN} ${-extent - MARGIN} ${size} ${size}`}
-      role="img"
-      aria-label={label}
+    <div
+      data-slot="radar-chart"
       /* A length, not a `max-w-*` step: entifix's tokens redefine that scale,
          and `max-w-2xl` there is a spacing token of about 80px. */
-      className="mx-auto block h-auto w-full max-w-[42rem]"
+      className="relative mx-auto w-full max-w-[42rem]"
     >
-      <g>
-        {[...ringRadii].reverse().map((radius, index) => (
-          <circle
-            key={radius}
-            r={radius}
-            fill={ringFill(ringRadii.length - 1 - index)}
+      <svg
+        viewBox={`${-extent - MARGIN} ${-extent - MARGIN} ${size} ${size}`}
+        role="img"
+        aria-label={label}
+        className="block h-auto w-full"
+      >
+        {/* Zoomed, the picture doubles from the quadrant's outer corner, so
+            that quadrant fills it; the viewport clips the rest. */}
+        <g
+          data-slot="radar-zoom"
+          className="transition-transform duration-300 ease-out motion-reduce:transition-none"
+          style={{
+            // A view box's origin is the user space's, not the picture's
+            // corner: the zoomed quadrant's outer corner, in user units.
+            transformBox: 'view-box',
+            transformOrigin: zoomOrigin(zoom ?? 0, extent + MARGIN),
+            transform: zoom === undefined ? undefined : 'scale(2)',
+          }}
+        >
+          <g>
+            {[...ringRadii].reverse().map((radius, index) => (
+              <circle
+                key={radius}
+                r={radius}
+                fill={ringFill(ringRadii.length - 1 - index)}
+                stroke="var(--color-radar-grid)"
+                strokeWidth={1}
+              />
+            ))}
+          </g>
+          <line
+            x1={-extent}
+            y1={0}
+            x2={extent}
+            y2={0}
             stroke="var(--color-radar-grid)"
-            strokeWidth={1}
+            strokeWidth={2}
           />
-        ))}
-      </g>
-      <line
-        x1={-extent}
-        y1={0}
-        x2={extent}
-        y2={0}
-        stroke="var(--color-radar-grid)"
-        strokeWidth={2}
-      />
-      <line
-        x1={0}
-        y1={-extent}
-        x2={0}
-        y2={extent}
-        stroke="var(--color-radar-grid)"
-        strokeWidth={2}
-      />
-      {quadrants.map((name, quadrant) => (
-        <text
-          key={name}
-          x={quadrantLabel(quadrant, extent).x}
-          y={quadrantLabel(quadrant, extent).y}
-          textAnchor={quadrant === 1 || quadrant === 2 ? 'start' : 'end'}
-          fill="var(--color-content-muted)"
-          fontSize={16}
-          className="select-none"
-        >
-          {name}
-        </text>
-      ))}
-      {blips.map(blip => (
-        <Blip
-          key={blip.id}
-          blip={blip}
-          href={hrefOf(blip.id)}
-          title={`${blip.number}. ${blip.label[locale] ?? blip.id}`}
-          dimmed={dimmed?.has(blip.id) === true}
-          highlighted={highlighted === blip.id}
-          onHighlight={onHighlight}
-        />
-      ))}
-      {/* Last, and haloed: a ring's name has to stay readable where a blip
+          <line
+            x1={0}
+            y1={-extent}
+            x2={0}
+            y2={extent}
+            stroke="var(--color-radar-grid)"
+            strokeWidth={2}
+          />
+          {onQuadrant === undefined &&
+            quadrants.map((name, quadrant) => (
+              <text
+                key={name}
+                x={quadrantLabel(quadrant, extent).x}
+                y={quadrantLabel(quadrant, extent).y}
+                textAnchor={quadrant === 1 || quadrant === 2 ? 'start' : 'end'}
+                fill="var(--color-content-muted)"
+                fontSize={16}
+                className="select-none"
+              >
+                {name}
+              </text>
+            ))}
+          {blips.map(blip => (
+            <Blip
+              key={blip.id}
+              blip={blip}
+              href={hrefOf(blip.id)}
+              title={`${blip.number}. ${blip.label[locale] ?? blip.id}`}
+              dimmed={dimmed?.has(blip.id) === true}
+              highlighted={highlighted === blip.id}
+              onHighlight={onHighlight}
+            />
+          ))}
+          {/* Last, and haloed: a ring's name has to stay readable where a blip
           happens to sit under it, and the legend carries the blip anyway. */}
-      {ringRadii.map((radius, ring) => (
-        <text
-          key={radius}
-          x={0}
-          y={-(ring === 0 ? radius / 2 : (ringRadii[ring - 1] + radius) / 2)}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fill="var(--color-content-muted)"
-          fontSize={14}
-          stroke={ringFill(ring)}
-          strokeWidth={5}
-          paintOrder="stroke"
-          className="select-none"
-        >
-          {rings[ring]}
-        </text>
-      ))}
-    </svg>
+          {ringRadii.map((radius, ring) => {
+            const middle =
+              ring === 0 ? radius / 2 : (ringRadii[ring - 1] + radius) / 2;
+            return (
+              <text
+                key={radius}
+                {...ringLabel(zoom, middle)}
+                dominantBaseline="middle"
+                fill="var(--color-content-muted)"
+                // Zoomed, the picture doubles: the names keep their size.
+                fontSize={zoom === undefined ? 14 : 8}
+                stroke={ringFill(ring)}
+                strokeWidth={zoom === undefined ? 5 : 3}
+                paintOrder="stroke"
+                className="select-none"
+              >
+                {rings[ring]}
+              </text>
+            );
+          })}
+        </g>
+      </svg>
+      {onQuadrant !== undefined &&
+        quadrants.map((name, quadrant) => {
+          // Zoomed, only that quadrant's name is in the picture: pressing it
+          // shows the whole again.
+          if (zoom !== undefined && quadrant !== zoom) return null;
+          const right = quadrant === 0 || quadrant === 3;
+          const bottom = quadrant === 0 || quadrant === 1;
+          return (
+            <button
+              key={name}
+              type="button"
+              data-slot="radar-quadrant-toggle"
+              aria-pressed={selectedQuadrants.includes(quadrant)}
+              title={quadrant === zoom ? zoomOutLabel : undefined}
+              className={QUADRANT_TOGGLE}
+              style={{
+                [right ? 'right' : 'left']: inset,
+                [bottom ? 'bottom' : 'top']: 0,
+              }}
+              onClick={() => onQuadrant(quadrant)}
+            >
+              {name}
+            </button>
+          );
+        })}
+    </div>
   );
 }
 
@@ -241,6 +312,30 @@ function star(radius: number) {
     );
   }
   return `M ${points.join(' L ')} Z`;
+}
+
+/**
+ * Where a ring's name sits, `middle` from the centre: up the vertical axis,
+ * or, zoomed, along it inside the zoomed quadrant, where it would otherwise be
+ * cut in half or out of the picture.
+ */
+function ringLabel(zoom: number | undefined, middle: number) {
+  if (zoom === undefined)
+    return { x: 0, y: -middle, textAnchor: 'middle' } as const;
+  const right = zoom === 0 || zoom === 3;
+  const bottom = zoom === 0 || zoom === 1;
+  return {
+    x: right ? 4 : -4,
+    y: bottom ? middle : -middle,
+    textAnchor: right ? 'start' : 'end',
+  } as const;
+}
+
+/** A quadrant's outer corner, `reach` from the centre: where it zooms from. */
+function zoomOrigin(quadrant: number, reach: number) {
+  const right = quadrant === 0 || quadrant === 3;
+  const bottom = quadrant === 0 || quadrant === 1;
+  return `${right ? reach : -reach}px ${bottom ? reach : -reach}px`;
 }
 
 /** The outer corner of a quadrant, where its name sits. */
