@@ -5,10 +5,11 @@ import {
   type LocalizedText,
 } from '@myself-app/domain';
 import type { CvSheet as CvSheetContent } from '@myself-app/domain/use-cases';
+import { SegmentedNav } from '@myself-app/entifix-incubator-react-controls';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-import { CvPrintButton } from '../../atoms/cv-print-button/cv-print-button.js';
+import { DownloadIcon } from '../../atoms/icons/icons.js';
 import { siteT } from '../../i18n/server.js';
 import {
   CvCustomizer,
@@ -16,6 +17,7 @@ import {
 } from '../../organisms/cv-customizer/cv-customizer.js';
 import { cvPart } from '../../organisms/cv-customizer/cv-hidden.js';
 import { CvHiddenScript } from '../../organisms/cv-customizer/cv-hidden-script.js';
+import { CvDownloadMenu } from '../../organisms/cv-download-menu/cv-download-menu.js';
 import {
   CV_MODES,
   type CvMode,
@@ -96,62 +98,72 @@ export function CvPageView({
     <>
       <SiteNav locale={locale} path={path} />
       <main className="cv-desk">
-        <div className="cv-controls print:hidden">
-          <p className="cv-lead">{t('cvLead')}</p>
-          <CvSwitch label={t('cvPage.variants')}>
-            {variants.map(variant => {
+        {/* A child of the desk itself, so it sticks the whole sheet down. */}
+        <div className="cv-toolbar print:hidden">
+          <SegmentedNav
+            className="cv-toolbar-choice"
+            label={t('cvPage.variants')}
+            link={Link}
+            items={variants.map(variant => {
               const id = String(variant.id);
-              return (
-                <SwitchItem
-                  key={id}
-                  current={id === variantId}
-                  href={localePath(locale, cvPath(id, mode, defaultVariant))}
-                >
-                  {titleOf(variant, locale)}
-                </SwitchItem>
-              );
+              return {
+                key: id,
+                label: titleOf(variant, locale),
+                href: localePath(locale, cvPath(id, mode, defaultVariant)),
+                current: id === variantId,
+              };
             })}
-          </CvSwitch>
-          <CvSwitch label={t('cvPage.mode')}>
-            {CV_MODES.map(each => (
-              <SwitchItem
-                key={each}
-                current={each === mode}
-                href={localePath(
-                  locale,
-                  cvPath(variantId, each, defaultVariant),
-                )}
-              >
-                {t(`cvPage.modes.${each}`)}
-              </SwitchItem>
-            ))}
-          </CvSwitch>
+          />
+          <SegmentedNav
+            className="cv-toolbar-choice"
+            label={t('cvPage.mode')}
+            link={Link}
+            items={CV_MODES.map(each => ({
+              key: each,
+              label: t(`cvPage.modes.${each}`),
+              href: localePath(locale, cvPath(variantId, each, defaultVariant)),
+              current: each === mode,
+            }))}
+          />
           <div className="cv-actions">
-            <CvPrintButton label={t('cvPage.print')} fileName={fileName} />
-            <a
-              className={button({ variant: 'secondary', size: 'sm' })}
-              href={cvPdfName(variantId, locale, mode)}
-              download
-              // `tools/render-pdfs.mjs` writes the file this names, and sets
-              // these on it, so the page and its PDF cannot disagree.
-              data-cv-pdf
-              data-pdf-title={fileName}
-              data-pdf-author={`${sheet.profile.firstName} ${sheet.profile.lastName}`}
-              data-pdf-subject={t('cvPage.pdfSubject')}
-              data-pdf-keywords={sheet.technologies
-                .map(each => inLocale(each.name, locale))
-                .join(', ')}
-              data-pdf-language={locale}
+            <CvDownloadMenu
+              fileName={fileName}
+              copy={{
+                more: t('cvPage.downloadMore'),
+                print: t('cvPage.print'),
+                printHint: t('cvPage.printHint'),
+                copyLink: t('cvPage.copyLink'),
+                linkCopied: t('cvPage.linkCopied'),
+              }}
             >
-              {t('cvPage.download')}
-            </a>
-            <p className="cv-hint">{t('cvPage.printHint')}</p>
+              <a
+                className={button({ variant: 'primary', size: 'sm' })}
+                href={cvPdfName(variantId, locale, mode)}
+                download
+                // `tools/render-pdfs.mjs` writes the file this names, and sets
+                // these on it, so the page and its PDF cannot disagree.
+                data-cv-pdf
+                data-pdf-title={fileName}
+                data-pdf-author={`${sheet.profile.firstName} ${sheet.profile.lastName}`}
+                data-pdf-subject={t('cvPage.pdfSubject')}
+                data-pdf-keywords={sheet.technologies
+                  .map(each => inLocale(each.name, locale))
+                  .join(', ')}
+                data-pdf-language={locale}
+              >
+                <DownloadIcon className="cv-action-icon" />
+                {t('cvPage.download')}
+              </a>
+            </CvDownloadMenu>
           </div>
+        </div>
+        <div className="cv-controls print:hidden">
           {customizable && (
             <CvCustomizer
               groups={customizerGroups(sheet, locale, t)}
               copy={{
                 label: t('cvPage.customize.label'),
+                hidden: t('cvPage.customize.hidden', { n: '{{n}}' }),
                 reset: t('cvPage.customize.reset'),
                 downloadNote: t('cvPage.customize.downloadNote'),
               }}
@@ -195,6 +207,7 @@ export function customizerGroups(
     },
     {
       legend: t('cvPage.customize.positions'),
+      wide: true,
       options: sheet.employments.map(({ period, employer }) => ({
         part: cvPart('position', String(period.id)),
         label: `${inLocale(period.role, locale)} · ${employer.name}`,
@@ -208,46 +221,4 @@ export function customizerGroups(
       })),
     },
   ];
-}
-
-/** A labelled row of links, one of them the page itself. */
-function CvSwitch({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <nav className="cv-switch" aria-label={label}>
-      <span className="cv-switch-label" aria-hidden="true">
-        {label}
-      </span>
-      <ul>{children}</ul>
-    </nav>
-  );
-}
-
-function SwitchItem({
-  current,
-  href,
-  children,
-}: {
-  current: boolean;
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <li>
-      {current ? (
-        <span className="cv-switch-item" aria-current="page">
-          {children}
-        </span>
-      ) : (
-        <Link className="cv-switch-item" href={href}>
-          {children}
-        </Link>
-      )}
-    </li>
-  );
 }

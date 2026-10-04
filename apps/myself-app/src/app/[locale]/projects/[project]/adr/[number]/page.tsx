@@ -5,6 +5,7 @@ import {
   loadDecisionRoutes,
 } from '@myself-app/domain/use-cases';
 import { siteT } from '@myself-app/implementation-ui/i18n';
+import { outlineOf } from '@myself-app/implementation-ui/markdown';
 import { renderMarkdownBody } from '@myself-app/implementation-ui/organisms';
 import {
   isSiteLocale,
@@ -56,14 +57,26 @@ export default async function DecisionPage({
 }: PageProps<'/[locale]/projects/[project]/adr/[number]'>) {
   const { locale, page } = await pageOf(params);
   const id = String(page.decision.id);
-  const body = await renderMarkdownBody({
-    source: `adrs/${id}.md`,
-    id,
-    // The build requires every record's body.
-    markdown: page.decision.body as string,
-    locale,
-    sitePaths: await loadSitePaths(SITE_CONTENT),
-    publicDirectory: join(process.cwd(), 'public'),
-  });
-  return <DecisionPageView locale={locale} page={page} body={body} />;
+  const source = `adrs/${id}.md`;
+  // The build requires every record's body.
+  const markdown = page.decision.body as string;
+  const [body, outline] = await Promise.all([
+    renderMarkdownBody({
+      source,
+      id,
+      markdown,
+      locale,
+      sitePaths: await loadSitePaths(SITE_CONTENT),
+      publicDirectory: join(process.cwd(), 'public'),
+    }),
+    outlineOf(markdown, source),
+  ]);
+  return (
+    <DecisionPageView
+      locale={locale}
+      page={page}
+      body={body}
+      outline={outline}
+    />
+  );
 }

@@ -15,23 +15,30 @@
 import { ArchitectureDecision } from '@myself-app/domain/entities/architecture-decision';
 import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
 import {
+  ActiveFilters,
+  activeFiltersOf,
   FilterFieldset,
+  FilterPanel,
   FilterSummary,
   SortControl,
   SplitView,
   ToggleGroup,
+  useMediaQuery,
 } from '@myself-app/entifix-incubator-react-controls';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
+import { SlidersIcon } from '../../atoms/icons/icons.js';
 import { InlineCode } from '../../atoms/inline-code/inline-code.js';
 import { StatusBadge } from '../../atoms/status-badge/status-badge.js';
+import { fill } from '../../i18n/fill.js';
 import {
   DecisionLineage,
   type LineageLink,
 } from '../../molecules/decision-lineage/decision-lineage.js';
 import { DecisionTimeline } from '../../molecules/decision-timeline/decision-timeline.js';
 import { useSources } from '../../sources/sources.js';
+import { NOT_NARROW, NOT_WIDE } from '../../theme/breakpoints.js';
 import {
   type DecisionParam,
   decisionQuery,
@@ -68,6 +75,12 @@ export interface DecisionExplorerCopy {
   readonly status: string;
   readonly area: string;
   readonly search: string;
+  /** What to type, while the search is empty. */
+  readonly placeholder: string;
+  /** `{{n}}` is replaced: the card's count of what is in force. */
+  readonly active: string;
+  /** `{{name}}` is replaced: an active filter's remove button. */
+  readonly remove: string;
   readonly clear: string;
   /** `{{shown}}` and `{{total}}` are replaced. */
   readonly showing: string;
@@ -130,47 +143,97 @@ export function DecisionExplorer({
   }, [decisions, order]);
   // The record the URL names, while the filter shows it; else the first.
   const chosen = shown.find(row => row.number === filter?.adr[0]) ?? shown[0];
+  // The rows start open beside nothing; on a phone, closed over the list.
+  const open = useMediaQuery(NOT_NARROW, true);
+  // Below the wide layout the list is an accordion: a chosen row's record
+  // opens under it, so the row is brought to the top to read it from.
+  const stacked = useMediaQuery(NOT_WIDE, false);
+  const choose = (id: string) => {
+    const row = decisions.find(each => each.id === id) as DecisionRow;
+    set('adr', [row.number]);
+    if (stacked)
+      requestAnimationFrame(() =>
+        document
+          .querySelector(`[data-adr="${id}"]`)
+          ?.closest('[data-slot="split-row"]')
+          ?.scrollIntoView({ block: 'start' }),
+      );
+  };
+
+  const active =
+    filter === null
+      ? []
+      : activeFiltersOf({
+          groups: [
+            { param: 'status', label: copy.status, options: statuses },
+            { param: 'area', label: copy.area, options: areas },
+          ],
+          selected: param => filter[param],
+          search: { label: copy.search, text: filter.q[0] ?? '' },
+          removeLabel: name => fill(copy.remove, { name }),
+          onToggle: toggle,
+          onClearSearch: () => set('q', []),
+        });
 
   return (
     <div className="adr-explorer">
       {filter !== null && (
-        <FilterFieldset label={copy.label}>
-          <FilterSummary
-            searchLabel={copy.search}
-            search={filter.q[0] ?? ''}
-            onSearch={text => set('q', [text])}
-            showing={copy.showing
-              .replace('{{shown}}', String(shown.length))
-              .replace('{{total}}', String(decisions.length))}
-            clearLabel={copy.clear}
-            onClear={filtering ? clear : undefined}
-          />
-          <ToggleGroup
-            label={copy.status}
-            options={statuses}
-            selected={filter.status}
-            onToggle={status => toggle('status', status)}
-          />
-          <ToggleGroup
-            label={copy.area}
-            options={areas}
-            selected={filter.area}
-            onToggle={area => toggle('area', area)}
-          />
-          <SortControl
-            label={copy.sort}
-            fields={SORT_FIELDS.map(field => ({
-              key: field,
-              name: copy.sortFields[field],
-              ...(field in INITIAL && {
-                initial: INITIAL[field as keyof typeof INITIAL],
-              }),
-            }))}
-            value={sortChoiceOf(filter.sort[0])}
-            directionLabels={{ asc: copy.ascending, desc: copy.descending }}
-            onChange={choice => set('sort', [sortValueOf(choice)])}
-          />
-        </FilterFieldset>
+        <FilterPanel
+          title={copy.label}
+          icon={<SlidersIcon className="size-[1.1em]" />}
+          activeLabel={
+            active.length > 0
+              ? fill(copy.active, { n: active.length })
+              : undefined
+          }
+          open={open}
+          footer={
+            <div className="adr-filter-footer">
+              <FilterSummary
+                searchLabel={copy.search}
+                search={filter.q[0] ?? ''}
+                onSearch={text => set('q', [text])}
+                placeholder={copy.placeholder}
+                showing={fill(copy.showing, {
+                  shown: shown.length,
+                  total: decisions.length,
+                })}
+                clearLabel={copy.clear}
+                onClear={filtering ? clear : undefined}
+              >
+                {active.length > 0 && <ActiveFilters active={active} />}
+              </FilterSummary>
+              <SortControl
+                label={copy.sort}
+                fields={SORT_FIELDS.map(field => ({
+                  key: field,
+                  name: copy.sortFields[field],
+                  ...(field in INITIAL && {
+                    initial: INITIAL[field as keyof typeof INITIAL],
+                  }),
+                }))}
+                value={sortChoiceOf(filter.sort[0])}
+                directionLabels={{ asc: copy.ascending, desc: copy.descending }}
+                onChange={choice => set('sort', [sortValueOf(choice)])}
+              />
+            </div>
+          }
+        >
+          <FilterFieldset label={copy.label}>
+            <ToggleGroup
+              label={copy.status}
+              options={statuses}
+              selected={filter.status}
+              onToggle={status => toggle('status', status)}
+            />
+            <ToggleGroup
+              label={copy.area}
+              options={areas}
+              selected={filter.area}
+              onToggle={area => toggle('area', area)}
+            />
+          </FilterFieldset>
+        </FilterPanel>
       )}
       <DecisionTimeline
         label={copy.timeline}
@@ -180,10 +243,7 @@ export function DecisionExplorer({
         }))}
         kept={kept}
         selected={chosen?.id}
-        onSelect={id => {
-          const row = decisions.find(each => each.id === id) as DecisionRow;
-          set('adr', [row.number]);
-        }}
+        onSelect={choose}
       />
       {shown.length === 0 ? (
         <p className="adr-empty">{copy.empty}</p>
@@ -192,10 +252,7 @@ export function DecisionExplorer({
           label={copy.label}
           className="adr-split"
           selected={chosen?.id}
-          onSelect={id => {
-            const row = shown.find(each => each.id === id) as DecisionRow;
-            set('adr', [row.number]);
-          }}
+          onSelect={choose}
           items={shown.map(row => ({
             id: row.id,
             href: row.href,

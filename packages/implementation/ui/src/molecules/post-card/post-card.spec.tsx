@@ -8,7 +8,6 @@ const POST: PostCardData = {
   href: '/en/blog/static-sites/',
   title: 'Static sites',
   summary: 'On S3.',
-  excerpt: 'A private bucket behind a CDN.',
   publishedAt: '2026-06-12T00:00:00.000Z',
   date: '12 Jun 2026',
   readingTime: '3 min read',

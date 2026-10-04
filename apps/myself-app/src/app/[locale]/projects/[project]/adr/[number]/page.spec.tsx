@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { paramsOf, renderPage } from '../../../../../../test/render';
@@ -30,6 +30,17 @@ describe("a decision record's page", () => {
       ),
     ).not.toBeNull();
   }, 30_000);
+
+  it('outlines the record from its own headings', async () => {
+    await renderPage(DecisionPage(propsOf('en', 'myself-app', '0016')), 'en');
+    const outline = screen.getByRole('navigation', { name: 'On this page' });
+    const links = within(outline).getAllByRole('link');
+    expect(links.map(link => link.textContent)).toContain('Context');
+    for (const link of links)
+      expect(
+        document.getElementById((link.getAttribute('href') as string).slice(1)),
+      ).not.toBeNull();
+  });
 
   it('names itself by its title, and describes itself by its symptom', async () => {
     const metadata = await generateMetadata(

@@ -51,7 +51,8 @@ export function sampleDecision(
  * life of a record in five steps, then a real record's header, line by line,
  * with what each line is for. It says what makes the records worth reading
  * for an agent: the symptom that should send one to a rule before it breaks
- * it. Open until a reader closes it, and closed for them after.
+ * it. Closed until a reader opens it, and the way they left it after: the
+ * explorer below is what most come for.
  */
 export function DecisionPractice({
   locale,
@@ -73,6 +74,7 @@ export function DecisionPractice({
   return (
     <RememberedDetails
       storageKey="decision-practice"
+      defaultOpen={false}
       className="adr-practice"
       summary={t('projectPage.practice.summary')}
     >

@@ -35,8 +35,9 @@ const BASE = defaultSchema as Schema & {
   attributes: Record<string, Attributes>;
 };
 
-/** The default allowlist, and what the site's own markup needs on top. */
-const SCHEMA: Schema = {
+/** The default allowlist, and what the site's own markup needs on top: the
+ * renderer's, and the outline's (`outline.ts`), so their ids agree. */
+export const SCHEMA: Schema = {
   ...BASE,
   tagNames: [...BASE.tagNames, 'aside', 'figure', 'figcaption'],
   attributes: {

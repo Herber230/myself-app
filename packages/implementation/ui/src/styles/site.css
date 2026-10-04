@@ -6,6 +6,28 @@
  */
 
 /*
+ * Utopia's one-up space pairs (ADR 0006), beside entifix's single steps: each
+ * runs from one step at the smallest screen (360px) to the next at the
+ * largest (1240px), so it grows faster than either. A card or a panel pads
+ * with a pair — tight on a phone, roomy on a desk, with no media query. As
+ * utilities too: `p-s-m`, `gap-xs-s`.
+ */
+@theme {
+  --spacing-xs-s: clamp(0.8438rem, 0.6776rem + 0.7386vw, 1.25rem);
+  --spacing-s-m: clamp(1.125rem, 0.8182rem + 1.3636vw, 1.875rem);
+  --spacing-m-l: clamp(1.6875rem, 1.3551rem + 1.4773vw, 2.5rem);
+  --spacing-l-xl: clamp(2.25rem, 1.6364rem + 2.7273vw, 3.75rem);
+  --spacing-xl-2xl: clamp(3.375rem, 2.7102rem + 2.9545vw, 5rem);
+}
+
+/*
+ * The two screen widths (`theme/breakpoints.ts`, ADR 0006), for what only the
+ * screen decides: a part a before-paint script folds, a sticky part, a
+ * phone's view. Narrow is `width < 40rem`; wide is `width >= 64rem`.
+ * Everything else is fluid or intrinsic, and needs neither.
+ */
+
+/*
  * The landing page (ADR 0008, 0011). Motion is CSS only: an entrance on load,
  * a slow drift behind the hero, and the nav and the scroll cue keyed to the
  * page's scroll. `prefers-reduced-motion` turns all of it off, at the end.
@@ -63,7 +85,7 @@
     gap: 0.25rem;
   }
 
-  @media (min-width: 64rem) {
+  @media (width >= 64rem) {
     .site-nav-bar {
       grid-template-columns: auto 1fr auto;
       grid-template-areas: 'brand links tools';
@@ -140,7 +162,7 @@
     gap: var(--spacing-s);
   }
 
-  @media (min-width: 64rem) {
+  @media (width >= 64rem) {
     .site-nav-bar {
       grid-template-columns: auto 1fr auto;
       grid-template-areas: 'brand links tools';
@@ -817,70 +839,129 @@
  * rather than reflowed, so a phone shows the same document that prints.
  */
 @layer components {
+  /* A column, not a grid: a grid item sticks only within its own row, and
+     the toolbar must stick the whole sheet down. */
   .cv-desk {
-    display: grid;
-    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: var(--spacing-m);
     padding: var(--spacing-l) var(--spacing-m) var(--spacing-2xl);
+  }
+
+  .cv-controls,
+  .cv-toolbar {
+    width: 100%;
+    max-width: 210mm;
   }
 
   .cv-controls {
     display: grid;
     gap: var(--spacing-s);
-    width: 100%;
-    max-width: 210mm;
   }
 
-  .cv-lead {
-    margin: 0;
-    color: var(--color-content-muted);
-  }
-
-  .cv-switch {
-    display: flex;
-    flex-wrap: wrap;
+  /* Choosing the sheet, and taking it away: two rows, kept in view while the
+     sheet scrolls under them. Each row's label sits in one shared column. */
+  .cv-toolbar {
+    position: sticky;
+    top: var(--spacing-xs);
+    z-index: 50;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--spacing-xs) var(--spacing-s);
-  }
-
-  .cv-switch-label {
-    color: var(--color-content-muted);
-    font-size: var(--text-step-sm);
-  }
-
-  .cv-switch ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-3xs);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .cv-switch-item {
-    display: inline-block;
-    padding: var(--spacing-3xs) var(--spacing-xs);
+    margin-inline: auto;
+    padding: var(--spacing-xs) var(--spacing-s);
     border: 1px solid var(--color-border);
-    border-radius: 999px;
-    color: var(--color-content);
-    font-size: var(--text-step-sm);
-    text-decoration: none;
+    border-radius: var(--radius-lg);
+    background-color: color-mix(
+      in srgb,
+      var(--color-surface-elevated) 88%,
+      transparent
+    );
+    backdrop-filter: blur(8px);
+    box-shadow: 0 6px 20px rgb(0 0 0 / 0.12);
   }
 
-  a.cv-switch-item:hover {
-    border-color: var(--color-primary);
+  /* Each chooser lends its label to the toolbar's first column (subgrid), so
+     both labels line up. The reading spans the row; the mode leaves the last
+     column to the actions. */
+  .cv-toolbar-choice {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    align-items: center;
+  }
+
+  .cv-toolbar-choice + .cv-toolbar-choice {
+    grid-column: 1 / 3;
+  }
+
+  .cv-toolbar-choice:first-child [data-slot='segmented-nav-list'] {
+    grid-column: 2 / -1;
+  }
+
+  .cv-toolbar .cv-actions {
+    justify-self: end;
+  }
+
+  .cv-action-icon {
+    flex: none;
+    font-size: 1.1em;
+  }
+
+  /* The download menu: each entry an icon, its name and, under it, a note. */
+  .cv-download-menu {
+    width: min(20rem, calc(100vw - 2 * var(--spacing-m)));
+  }
+
+  .cv-download-menu .nav-menu-item {
+    align-items: flex-start;
+    padding-block: var(--spacing-2xs);
+  }
+
+  .cv-download-menu-icon {
+    flex: none;
+    margin-top: 0.15em;
+    color: var(--color-content-muted);
+  }
+
+  .cv-download-menu-text {
+    display: grid;
+    gap: 0.125rem;
+  }
+
+  .cv-download-menu-text small {
+    color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
+    line-height: 1.4;
+  }
+
+  .cv-download-status {
     color: var(--color-primary);
+    font-size: var(--text-step-xs);
   }
 
-  a.cv-switch-item:focus-visible {
-    outline: 2px solid var(--color-focus-ring);
-    outline-offset: 2px;
-  }
+  /* Narrow: each label above its segments, the actions on a row of their own. */
+  @media (width < 40rem) {
+    .cv-toolbar {
+      grid-template-columns: minmax(0, 1fr);
+    }
 
-  .cv-switch-item[aria-current] {
-    border-color: var(--color-primary);
-    background-color: var(--color-primary);
-    color: var(--color-primary-content);
+    .cv-toolbar-choice,
+    .cv-toolbar-choice + .cv-toolbar-choice {
+      grid-column: 1;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--spacing-3xs);
+    }
+
+    .cv-toolbar-choice:first-child [data-slot='segmented-nav-list'] {
+      grid-column: 1;
+    }
+
+    .cv-toolbar .cv-actions {
+      justify-self: start;
+    }
   }
 
   .cv-paper {
@@ -947,29 +1028,74 @@
     font-size: var(--text-step-xs);
   }
 
-  /* Tailoring the sheet (#38, ADR 0015): a disclosure, closed by default. */
+  /* Tailoring the sheet (#38, ADR 0015): a disclosure, closed by default,
+     drawn as a panel card (below, with the radar's filter) between the
+     toolbar and the paper. */
+  .cv-customize {
+    overflow: hidden;
+  }
+
   .cv-customize > summary {
-    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2xs);
+    padding: var(--spacing-xs) var(--spacing-s);
     color: var(--color-content);
     font-size: var(--text-step-sm);
+    font-weight: 500;
+    list-style: none;
     cursor: pointer;
+    user-select: none;
+  }
+
+  .cv-customize > summary::-webkit-details-marker {
+    display: none;
   }
 
   .cv-customize > summary:focus-visible {
     outline: 2px solid var(--color-focus-ring);
-    outline-offset: 2px;
+    outline-offset: -2px;
+    border-radius: var(--radius-lg);
+  }
+
+  .cv-customize-icon {
+    color: var(--color-primary);
+    font-size: 1.1em;
+  }
+
+  .cv-customize-count {
+    padding: 0.0625rem var(--spacing-2xs);
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    color: var(--color-primary);
+    font-size: var(--text-step-xs);
+    font-weight: 500;
+  }
+
+  .cv-customize-chevron {
+    width: 1rem;
+    height: 1rem;
+    margin-left: auto;
+    fill: none;
+    stroke: var(--color-content-muted);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: rotate var(--duration-fast, 150ms) ease;
+  }
+
+  .cv-customize[open] .cv-customize-chevron {
+    rotate: 180deg;
   }
 
   .cv-customize-body {
     display: grid;
     gap: var(--spacing-s);
-    margin-top: var(--spacing-xs);
+    padding: var(--spacing-s);
+    border-top: 1px solid var(--color-border);
   }
 
   .cv-customize fieldset {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-3xs) var(--spacing-s);
     margin: 0;
     padding: 0;
     border: 0;
@@ -977,22 +1103,24 @@
   }
 
   .cv-customize legend {
-    width: 100%;
-    margin-bottom: var(--spacing-3xs);
+    margin-bottom: var(--spacing-2xs);
     padding: 0;
     color: var(--color-content-muted);
-    font-size: var(--text-step-sm);
+    font-size: var(--text-step-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
-  .cv-customize label {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-3xs);
-    font-size: var(--text-step-sm);
+  /* One column grid per group, so every switch lines up with the one above. */
+  .cv-customize-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(10rem, 100%), 1fr));
+    gap: var(--spacing-2xs) var(--spacing-s);
   }
 
-  .cv-customize input {
-    accent-color: var(--color-primary);
+  .cv-customize-options[data-wide] {
+    grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr));
   }
 
   .cv-customize-footer {
@@ -1000,6 +1128,14 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--spacing-xs) var(--spacing-s);
+    padding-top: var(--spacing-s);
+    border-top: 1px solid var(--color-border);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cv-customize-chevron {
+      transition: none;
+    }
   }
 }
 
@@ -1048,6 +1184,28 @@
  * utilities and name their parts with `data-slot`; these rules restyle a part
  * for this site. Unlayered, so they win over the controls' utilities.
  */
+
+/* The CV's customizer: a long label wraps beside its switch, which stays on
+   the first line; its reset at the toolbar's size. */
+.cv-customize [data-slot='switch'] {
+  align-items: flex-start;
+  font-size: var(--text-step-sm);
+  line-height: 1.35;
+}
+
+.cv-customize [data-slot='switch-track'] {
+  margin-top: 0.05em;
+}
+
+.cv-customize-footer > button {
+  font-size: var(--text-step-sm);
+}
+
+/* The CV's download: its label the toolbar's size, its icon spaced from it. */
+.cv-actions [data-slot='split-button'] > a {
+  gap: var(--spacing-3xs);
+  font-size: var(--text-step-sm);
+}
 
 /* The narrow screen's menu: a panel as wide as the bar, dropping below it. */
 .nav-menu-sheet {
@@ -1155,22 +1313,21 @@
 
   /* ── A project's page ─────────────────────────────────────────────────── */
 
-  .project-page-title {
-    display: flex;
-    gap: var(--spacing-s);
-    align-items: center;
+  /* Room for the outline beside the page; prose keeps its measure. */
+  .project-page,
+  .decision-page {
+    --measure: 74rem;
   }
 
-  /* The header's calls to action: centred under it, the source first to the
-     eye. On hover a button rises, the source's glows, a sheen crosses it and
-     its mark turns, as a cat looks up. */
-  .project-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--spacing-s);
-    margin-top: var(--spacing-xl);
+  .project-page :is(.post-body, .page-header-lead),
+  .decision-page
+    :is(.decision-page-body, .page-header-lead, .decision-page-read-when) {
+    max-width: 68ch;
   }
+
+  /* The header's calls to action, the source first to the eye. On hover a
+     button rises, the source's glows, a sheen crosses it and its mark turns,
+     as a cat looks up. */
 
   .project-action {
     position: relative;
@@ -1232,9 +1389,11 @@
     scroll-margin-top: 5rem;
   }
 
+  /* Intrinsic: as many 15rem columns as fit (three beside the outline), one
+     on a phone. */
   .pattern-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
     gap: var(--spacing-m);
     margin: 0;
     padding: 0;
@@ -1242,7 +1401,7 @@
   }
 
   .pattern-card {
-    padding: var(--spacing-m);
+    padding: var(--spacing-xs-s) var(--spacing-s-m);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background-color: var(--color-surface-elevated);
@@ -1267,12 +1426,12 @@
   /* The file tree: a monospace name, and its note beside it. */
   .file-tree-list {
     margin: 0;
-    padding-left: var(--spacing-m);
+    padding-left: var(--spacing-xs-s);
     list-style: none;
   }
 
   .file-tree {
-    padding: var(--spacing-m);
+    padding: var(--spacing-xs-s) var(--spacing-s-m);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background-color: var(--color-surface-elevated);
@@ -1295,7 +1454,9 @@
     color: var(--color-primary);
   }
 
+  /* Beside its name while both fit, under it when they do not. */
   .file-tree-note {
+    flex: 1 1 14rem;
     color: var(--color-content-muted);
     font-size: 0.875em;
   }
@@ -1314,8 +1475,10 @@
     gap: var(--spacing-l);
   }
 
-  /* How the records steer the work: a disclosure, open until closed. */
+  /* How the records steer the work: a disclosure, closed until opened. Its
+     steps and its anatomy lay themselves out by its own width. */
   .adr-practice {
+    container-type: inline-size;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     background-color: color-mix(
@@ -1326,7 +1489,7 @@
   }
 
   .adr-practice > summary {
-    padding: var(--spacing-s) var(--spacing-m);
+    padding: var(--spacing-xs-s) var(--spacing-s-m);
     font-weight: 600;
     cursor: pointer;
   }
@@ -1336,7 +1499,7 @@
   }
 
   .adr-practice > :not(summary) {
-    margin-inline: var(--spacing-m);
+    margin-inline: var(--spacing-s-m);
   }
 
   .adr-practice-lead {
@@ -1350,8 +1513,8 @@
     font-size: 0.875em;
   }
 
-  /* The life of a record: a row of five on a wide screen, joined by a line;
-     a column on a narrow one. */
+  /* The life of a record: a row of five where the box has room, joined by a
+     line; a column where it has not. */
   .adr-steps {
     display: grid;
     gap: var(--spacing-m);
@@ -1412,10 +1575,11 @@
   .adr-step-text {
     grid-area: text;
     color: var(--color-content-muted);
-    font-size: 0.875em;
+    font-size: var(--text-step-xs);
+    line-height: 1.5;
   }
 
-  @media (min-width: 64rem) {
+  @container (width >= 50rem) {
     .adr-steps {
       grid-template-columns: repeat(5, 1fr);
     }
@@ -1483,7 +1647,7 @@
     font-size: 0.875em;
   }
 
-  @media (min-width: 48rem) {
+  @container (width >= 40rem) {
     .adr-anatomy-line {
       grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
       gap: var(--spacing-m);
@@ -1491,9 +1655,19 @@
   }
 
   /* The timeline: dots along a line, arcs above it, a tick below. */
+  /* Wider than its room on a phone: it scrolls sideways, its ends faded and
+     padded so the first and last ticks show whole. */
   .adr-timeline {
     overflow-x: auto;
-    padding-block: var(--spacing-2xs);
+    padding: var(--spacing-2xs) var(--spacing-s);
+    scrollbar-width: none;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 var(--spacing-s),
+      #000 calc(100% - var(--spacing-s)),
+      transparent
+    );
   }
 
   .adr-timeline-track {
@@ -1577,7 +1751,7 @@
     left: 50%;
     translate: -50% 0;
     color: var(--color-content-muted);
-    font-size: 0.6875rem;
+    font-size: var(--text-step-xs);
     white-space: nowrap;
   }
 
@@ -1586,9 +1760,11 @@
     margin-top: 0.125rem;
   }
 
+  /* One line a record: its number, its title in two lines at most, and its
+     status, small, at the end. */
   .adr-row-head {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     gap: var(--spacing-xs);
     align-items: baseline;
   }
@@ -1601,19 +1777,24 @@
   }
 
   .adr-row-title {
-    flex: 1 1 12rem;
+    display: -webkit-box;
+    overflow: hidden;
     font-weight: 500;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   .adr-row-head .adr-status {
-    font-size: 0.75em;
+    font-size: var(--text-step-xs);
   }
 
   .adr-detail {
     display: grid;
     gap: var(--spacing-s);
     align-content: start;
-    padding: var(--spacing-m);
+    padding: var(--spacing-xs-s) var(--spacing-s-m);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background-color: var(--color-surface-elevated);
@@ -1663,7 +1844,7 @@
     flex-wrap: wrap;
     gap: var(--spacing-2xs);
     margin: 0;
-    padding: var(--spacing-2xs) var(--spacing-xs);
+    padding: var(--spacing-2xs) var(--spacing-xs-s);
     border-left: 3px solid var(--color-primary);
     background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
   }
@@ -2082,7 +2263,7 @@
     display: flex;
   }
 
-  @media (min-width: 40rem) {
+  @media (width >= 40rem) {
     .contact-card-list {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -2753,4 +2934,631 @@
   .channel-link:focus-visible .channel-link-badge {
     rotate: none;
   }
+}
+
+/*
+ * A panel card: the CV's Customize disclosure and the radar's filter (#41).
+ * A primary-tinted border, a glow from its far corner as the link cards have,
+ * stronger while hovered or open. Unlayered, so it wins over the filter
+ * panel's own utilities.
+ */
+:is(.cv-customize, [data-slot='filter-panel']) {
+  border: 1px solid
+    color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      color-mix(in oklab, var(--color-primary) 20%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      80% 120% at 0% 100%,
+      color-mix(in oklab, var(--color-accent) 8%, transparent),
+      transparent 60%
+    ),
+    var(--color-surface-elevated);
+  transition: border-color var(--duration-fast, 150ms) ease;
+}
+
+:is(.cv-customize, [data-slot='filter-panel']):is(
+  :hover,
+  [open],
+  :has(> details[open])
+) {
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary) 50%,
+    var(--color-border)
+  );
+}
+
+[data-slot='filter-panel-summary']:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+  border-radius: var(--radius-lg);
+}
+
+/* The footer sits on the card's glow: a hairline, not a slab. */
+[data-slot='filter-panel']
+  :is([data-slot='filter-panel-body'], [data-slot='filter-panel-footer']) {
+  border-top-color: color-mix(in srgb, var(--color-border) 70%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.cv-customize, [data-slot='filter-panel']) {
+    transition: none;
+  }
+}
+
+/*
+ * The legend's fold (#40): a toggle shown on a wide screen, where the list
+ * sits beside the picture; below that the list is the primary view and stays
+ * open — unless it was folded there, when the toggle stays to unfold it.
+ */
+.radar-legend-toggle {
+  display: none;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  height: 2.25rem;
+  padding-inline: var(--spacing-xs);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-content-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color var(--duration-fast, 150ms) ease,
+    color var(--duration-fast, 150ms) ease;
+}
+
+.radar-legend-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.radar-legend-toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-content);
+}
+
+.radar-legend-toggle:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.radar-legend-panel:not([open]) > .radar-legend-toggle {
+  display: inline-flex;
+}
+
+.radar-legend-toggle-icon {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.radar-legend-panel[open] .radar-legend-toggle-icon path {
+  stroke-width: 2.5;
+}
+
+.radar-legend-when-open,
+.radar-legend-panel[open] .radar-legend-when-closed {
+  display: none;
+}
+
+.radar-legend-panel[open] .radar-legend-when-open {
+  display: inline;
+}
+
+/*
+ * The radar on a wide screen (#40, #41): the page widens, and the picture sits
+ * beside a compact legend, held in view under the nav while the legend
+ * scrolls, so a filter's answer and a hovered entry show on both at once.
+ * Folded, the legend is a rail as wide as its toggle, and the picture grows.
+ */
+@media (width >= 64rem) {
+  .radar-main {
+    max-width: 76rem;
+  }
+
+  .radar-split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+    align-items: start;
+    transition: grid-template-columns 220ms var(--ease-enter, ease-out);
+  }
+
+  .radar-split:has(.radar-legend-panel:not([open])) {
+    grid-template-columns: minmax(0, 1fr) 2.75rem;
+  }
+
+  .radar-split-chart {
+    position: sticky;
+    top: 5rem;
+  }
+
+  /* Never taller than the window, or its bottom would never be seen. */
+  .radar-split-chart [data-slot='radar-chart'] {
+    max-width: min(52rem, calc(100dvh - 7rem));
+  }
+
+  /* Nothing spills while the column narrows to the rail. */
+  .radar-split-legend {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .radar-legend-toggle {
+    display: inline-flex;
+  }
+
+  .radar-legend-body {
+    margin-top: var(--spacing-s);
+  }
+
+  /* Folded, the toggle is a tab down the picture's side: tinted, its name
+     written upwards, so the list reads as there to open. */
+  .radar-legend-panel:not([open]) > .radar-legend-toggle {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: var(--spacing-xs);
+    width: 2.75rem;
+    height: auto;
+    padding: var(--spacing-s) 0;
+    border-color: color-mix(
+      in srgb,
+      var(--color-primary) 50%,
+      var(--color-border)
+    );
+    background-color: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    color: var(--color-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    box-shadow: 0 0 0 0 transparent;
+    transition:
+      background-color var(--duration-fast, 150ms) ease,
+      border-color var(--duration-fast, 150ms) ease,
+      box-shadow var(--duration-fast, 150ms) ease;
+  }
+
+  .radar-legend-panel:not([open]) > .radar-legend-toggle:hover {
+    border-color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 24%, transparent);
+    color: var(--color-primary);
+    box-shadow: 0 0 1.25rem
+      color-mix(in srgb, var(--color-primary) 30%, transparent);
+  }
+
+  .radar-legend-panel:not([open]) .radar-legend-when-closed {
+    writing-mode: vertical-rl;
+    rotate: 180deg;
+  }
+
+  /* Beside the picture: the quadrants in two columns once there is room. */
+  .radar-legend-body .radar-legend-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(9.5rem, 100%), 1fr));
+    gap: var(--spacing-m) var(--spacing-s);
+  }
+
+  .radar-legend-body {
+    font-size: 0.8125rem;
+  }
+}
+
+/*
+ * The legend, compact at every width: a small heading, each quadrant a row
+ * that folds onto its rings (folded on a phone by `RadarLegendScript`), its
+ * count beside it, rings as eyebrows over their entries.
+ */
+.radar-legend-body {
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.radar-legend-body h2 {
+  font-size: var(--text-step-0, 1rem);
+}
+
+.radar-legend-body h3 {
+  font-size: 0.9375rem;
+}
+
+.radar-legend-quadrant-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  padding-block: var(--spacing-2xs);
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.radar-legend-quadrant-summary::-webkit-details-marker {
+  display: none;
+}
+
+.radar-legend-quadrant-summary:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+.radar-legend-count {
+  margin-left: auto;
+  color: var(--color-content-muted);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.radar-legend-chevron {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: var(--color-content-muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: rotate var(--duration-fast, 150ms) ease;
+}
+
+.radar-legend-quadrant[open] .radar-legend-chevron {
+  rotate: 180deg;
+}
+
+.radar-legend-quadrant-body {
+  padding-bottom: var(--spacing-xs);
+}
+
+.radar-legend-ring {
+  gap: 0.125rem;
+}
+
+.radar-legend-ring h4 {
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/*
+ * The radar below a wide screen (#40): the List | Chart switch shows one view
+ * at a time (with no script, both: the legend first, the primary view), and
+ * the legend's quadrants are a single column of rows, a hairline apart.
+ */
+.radar-view-switch {
+  align-self: flex-start;
+}
+
+@media (width >= 64rem) {
+  .radar-view-switch {
+    display: none;
+  }
+}
+
+@media (width < 64rem) {
+  .radar-split:not([data-view]) > .radar-split-chart {
+    order: 1;
+  }
+
+  .radar-split[data-view='list'] > .radar-split-chart,
+  .radar-split[data-view='chart'] > .radar-split-legend {
+    display: none;
+  }
+
+  .radar-legend-body .radar-legend-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .radar-legend-grid > section + section {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .radar-legend-quadrant-summary {
+    padding-block: var(--spacing-xs);
+  }
+}
+
+/* On a phone, no card around the page: the radar takes the width. */
+@media (width < 40rem) {
+  .radar-card {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radar-split,
+  .radar-legend-toggle,
+  .radar-legend-chevron {
+    transition: none;
+  }
+}
+
+/*
+ * A page's head (`PageHeader`): the title beside its mark, the labels and the
+ * calls to action on one line, wrapping. Laid out by its own width: where it
+ * is narrow, each action takes a line, full width, an easy target.
+ */
+@layer components {
+  .page-header {
+    container-type: inline-size;
+  }
+
+  .page-header-title {
+    display: flex;
+    gap: var(--spacing-xs-s);
+    align-items: center;
+  }
+
+  .page-header-title > h1 {
+    margin: 0;
+  }
+
+  /* The labels wrap in what is left; the actions keep their line's end. */
+  .page-header-meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--spacing-s);
+    align-items: start;
+  }
+
+  .page-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    justify-content: end;
+  }
+
+  @container (width < 30rem) {
+    .page-header-title .project-glyph {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .page-header-meta {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .page-header-actions > * {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+  }
+}
+
+/*
+ * A page's table of contents (`PageOutline`): muted links, the subsections
+ * indented, the one being read in the primary colour with a bar beside it.
+ */
+@layer components {
+  .page-outline-label {
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .page-outline-list {
+    display: grid;
+    gap: 0.125rem;
+    margin: var(--spacing-2xs) 0 0;
+    padding: 0;
+    border-left: 1px solid var(--color-border);
+    list-style: none;
+  }
+
+  .page-outline-list a {
+    display: block;
+    margin-left: -1px;
+    padding: 0.25rem 0 0.25rem var(--spacing-xs);
+    border-left: 2px solid transparent;
+    color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
+    line-height: 1.4;
+    text-decoration: none;
+    transition:
+      color var(--duration-fast, 150ms) ease,
+      border-color var(--duration-fast, 150ms) ease,
+      background-color var(--duration-fast, 150ms) ease;
+  }
+
+  .page-outline-list [data-depth='3'] a {
+    padding-left: calc(var(--spacing-xs) + var(--spacing-s));
+  }
+
+  .page-outline-list a:hover {
+    color: var(--color-content);
+  }
+
+  .page-outline-list a[aria-current] {
+    border-left-color: var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  .page-outline-list a:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 1px;
+    border-radius: 2px;
+  }
+}
+
+/*
+ * A page beside its outline (`OutlineLayout`). Wide: a column of its own,
+ * held in view. Below that: a strip of links held under the top edge, one
+ * row that scrolls sideways, each link a 44px target, the sections only.
+ */
+@layer components {
+  .outline-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--spacing-l);
+  }
+
+  .outline-layout-main,
+  .outline-layout-aside {
+    min-width: 0;
+  }
+
+  @media (width < 64rem) {
+    .outline-layout-aside {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin-inline: calc(-1 * var(--spacing-s));
+      padding-inline: var(--spacing-s);
+      border-bottom: 1px solid var(--color-border);
+      background-color: color-mix(
+        in srgb,
+        var(--color-surface) 88%,
+        transparent
+      );
+      backdrop-filter: blur(10px);
+    }
+
+    .outline-layout .page-outline-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .outline-layout .page-outline-list {
+      display: flex;
+      gap: var(--spacing-2xs);
+      margin: 0;
+      padding-block: var(--spacing-3xs);
+      overflow-x: auto;
+      border: 0;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+      mask-image: linear-gradient(
+        to right,
+        transparent,
+        #000 var(--spacing-xs),
+        #000 calc(100% - var(--spacing-xs)),
+        transparent
+      );
+    }
+
+    .outline-layout .page-outline-list li {
+      flex: none;
+      scroll-snap-align: center;
+    }
+
+    .outline-layout .page-outline-list [data-depth='3'] {
+      display: none;
+    }
+
+    .outline-layout .page-outline-list a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+      margin: 0;
+      padding: 0 var(--spacing-xs);
+      border: 0;
+      border-radius: 999px;
+      font-size: var(--text-step-sm);
+      white-space: nowrap;
+    }
+
+    .outline-layout .page-outline-list a[aria-current] {
+      background-color: color-mix(
+        in srgb,
+        var(--color-primary) 16%,
+        transparent
+      );
+    }
+  }
+
+  @media (width >= 64rem) {
+    .outline-layout[data-outlined] {
+      grid-template-columns: minmax(0, 1fr) 13rem;
+      column-gap: var(--spacing-xl);
+      align-items: start;
+    }
+
+    .outline-layout-main {
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    .outline-layout-aside {
+      position: sticky;
+      top: var(--spacing-l);
+      grid-row: 1;
+      grid-column: 2;
+      max-height: calc(100dvh - 2 * var(--spacing-l));
+      overflow-y: auto;
+    }
+  }
+}
+
+/* A narrow head's title one step down the scale: unlayered, so it wins over
+   the title's own step utility. */
+@container (width < 30rem) {
+  .page-header-title > h1 {
+    font-size: var(--text-step-2);
+    line-height: var(--text-step-2--line-height);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-outline-list a {
+    transition: none;
+  }
+}
+
+/*
+ * The decision records' explorer (#77): the list and its pane take most of a
+ * screen, and the sort reads as a choice of order — square segments — not as
+ * one more filter.
+ */
+.adr-split [data-slot='split-list'],
+.adr-split [data-slot='split-detail'] {
+  max-height: min(36rem, calc(100dvh - 8rem));
+}
+
+.adr-split[data-slot='split-view'] {
+  min-height: min(36rem, calc(100dvh - 8rem));
+}
+
+@media (width < 64rem) {
+  .adr-split [data-slot='split-list'],
+  .adr-split [data-slot='split-detail'] {
+    max-height: none;
+  }
+
+  .adr-split[data-slot='split-view'] {
+    min-height: 0;
+  }
+
+  /* A row brought to the top clears the outline's strip. */
+  .adr-split [data-slot='split-row'] {
+    scroll-margin-top: 3.5rem;
+  }
+}
+
+.adr-filter-footer {
+  display: grid;
+  gap: var(--spacing-2xs);
+}
+
+.adr-explorer [data-slot='sort-chip'] {
+  border-radius: var(--radius-sm, 0.25rem);
 }

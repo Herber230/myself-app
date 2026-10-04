@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { paramsOf, renderPage } from '../../../test/render';
@@ -20,16 +20,21 @@ describe('the tech radar page', () => {
 
   it('says what each ring means, from content', async () => {
     await renderPage(TechRadarPage(paramsOf({ locale: 'en' }) as Props), 'en');
-    expect(
-      screen.getByRole('heading', { level: 2, name: 'What the rings mean' }),
-    ).toBeTruthy();
-    expect(screen.getAllByRole('term').map(term => term.textContent)).toEqual([
+    // Each ring's chip, described by what it means.
+    const rings = within(screen.getByRole('group', { name: 'Ring' }))
+      .getAllByRole('button')
+      .map(chip => [
+        chip.textContent,
+        document.getElementById(chip.getAttribute('aria-describedby') ?? '')
+          ?.textContent,
+      ]);
+    expect(rings.map(([name]) => name)).toEqual([
       'Adopt',
       'Trial',
       'Assess',
       'Hold',
     ]);
-    expect(screen.getByText('I am learning it.')).toBeTruthy();
+    expect(rings.map(([, meaning]) => meaning)).toContain('I am learning it.');
   });
 
   it('is titled and alternated per locale', async () => {

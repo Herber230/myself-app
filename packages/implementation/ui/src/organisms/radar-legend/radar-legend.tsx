@@ -27,6 +27,8 @@ export interface RadarLegendProps {
   readonly quadrants: readonly string[];
   /** Ring names, innermost first. */
   readonly rings: readonly string[];
+  /** A quadrant's count, beside its name: `{{n}}` is replaced. */
+  readonly countLabel?: string;
   /** Entries a filter leaves out: shown faint, in place (#41). */
   readonly dimmed?: ReadonlySet<string>;
   /** The entry whose blip is under the pointer. */
@@ -45,31 +47,60 @@ export function RadarLegend({
   locale,
   quadrants,
   rings,
+  countLabel,
   ...emphasis
 }: RadarLegendProps) {
   return (
-    <div className="grid grid-cols-1 gap-l sm:grid-cols-2">
+    <div className="radar-legend-grid grid grid-cols-1 gap-l @[36rem]:grid-cols-2">
       {quadrants.map((quadrant, index) => (
         <section key={quadrant} aria-labelledby={`radar-quadrant-${index}`}>
-          <Stack gap="s">
-            <Text
-              as="h3"
-              id={`radar-quadrant-${index}`}
-              step={1}
-              weight="semibold"
-            >
-              {quadrant}
-            </Text>
-            {RING_INDICES.map(ring => (
-              <RingList
-                key={ring}
-                name={rings[ring]}
-                blips={blipsIn(layout, index, ring)}
-                locale={locale}
-                {...emphasis}
-              />
-            ))}
-          </Stack>
+          {/* Folds on a phone (the page's `FoldScript`): four rows, each
+              opening onto its rings. Open in the HTML. */}
+          <details
+            className="radar-legend-quadrant"
+            open
+            suppressHydrationWarning
+          >
+            <summary className="radar-legend-quadrant-summary">
+              <Text
+                as="h3"
+                id={`radar-quadrant-${index}`}
+                step={1}
+                weight="semibold"
+              >
+                {quadrant}
+              </Text>
+              {countLabel !== undefined && (
+                <span className="radar-legend-count">
+                  {countLabel.replace(
+                    '{{n}}',
+                    String(
+                      layout.blips.filter(blip => blip.quadrant === index)
+                        .length,
+                    ),
+                  )}
+                </span>
+              )}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="radar-legend-chevron"
+              >
+                <path d="m7 10 5 5 5-5" />
+              </svg>
+            </summary>
+            <Stack gap="s" className="radar-legend-quadrant-body">
+              {RING_INDICES.map(ring => (
+                <RingList
+                  key={ring}
+                  name={rings[ring]}
+                  blips={blipsIn(layout, index, ring)}
+                  locale={locale}
+                  {...emphasis}
+                />
+              ))}
+            </Stack>
+          </details>
         </section>
       ))}
     </div>
@@ -90,7 +121,7 @@ function RingList({
 }) {
   if (blips.length === 0) return null;
   return (
-    <Stack gap="2xs">
+    <Stack gap="2xs" className="radar-legend-ring">
       <Text as="h4" step={0} weight="semibold" muted>
         {name}
       </Text>

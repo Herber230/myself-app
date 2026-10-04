@@ -27,14 +27,36 @@ describe('a remembered disclosure', () => {
     expect(details.querySelector('summary')?.textContent).toBe('How');
   });
 
-  it('remembers being closed, and forgets once opened again', () => {
+  it('remembers being closed, and being opened again', () => {
     const details = renderDetails();
     details.open = false;
     fireEvent(details, new Event('toggle'));
     expect(localStorage.getItem(KEY)).toBe('closed');
     details.open = true;
     fireEvent(details, new Event('toggle'));
-    expect(localStorage.getItem(KEY)).toBeNull();
+    expect(localStorage.getItem(KEY)).toBe('open');
+  });
+
+  it('starts closed when asked, and opens when it was opened before', () => {
+    const { container, unmount } = render(
+      <RememberedDetails storageKey={KEY} summary="How" defaultOpen={false}>
+        <p>{'Inside'}</p>
+      </RememberedDetails>,
+    );
+    expect(container.querySelector('details')?.open).toBe(false);
+    unmount();
+    localStorage.setItem(KEY, 'open');
+    const again = render(
+      <RememberedDetails storageKey={KEY} summary="How" defaultOpen={false}>
+        <p>{'Inside'}</p>
+      </RememberedDetails>,
+    );
+    expect(again.container.querySelector('details')?.open).toBe(true);
+  });
+
+  it('ignores a stored value it did not write', () => {
+    localStorage.setItem(KEY, 'sideways');
+    expect(renderDetails().open).toBe(true);
   });
 
   it('opens closed when it was closed before', () => {
@@ -101,5 +123,27 @@ describe('a remembered disclosure', () => {
     );
     expect(container.querySelector('details')?.open).toBe(false);
     expect(localStorage.getItem(KEY)).toBe('closed');
+  });
+
+  it('remembers being opened before the page was ready', () => {
+    const { container } = render(
+      <RememberedDetails storageKey={KEY} summary="How" defaultOpen={false}>
+        <p>{'Inside'}</p>
+      </RememberedDetails>,
+      {
+        wrapper: ({ children }) => (
+          <div
+            ref={node => {
+              const details = node?.querySelector('details');
+              if (details) details.open = true;
+            }}
+          >
+            {children}
+          </div>
+        ),
+      },
+    );
+    expect(container.querySelector('details')?.open).toBe(true);
+    expect(localStorage.getItem(KEY)).toBe('open');
   });
 });

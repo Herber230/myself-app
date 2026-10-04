@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * A project's decision records along a line (#77): one dot per record in the
  * order they were decided, coloured by status, with an arc from each record
@@ -5,8 +7,11 @@
  * share days; a tick names the day where it changes, when there is room.
  *
  * Each dot is a button that chooses its record. The records a filter leaves
- * out stay on the line, dimmed, so the history keeps its shape.
+ * out stay on the line, dimmed, so the history keeps its shape. Where the line
+ * is wider than its room (a phone), it scrolls sideways, and the chosen dot is
+ * brought to the middle.
  */
+import { useEffect, useRef } from 'react';
 
 /** One record as a dot shows it, translated at build. */
 export interface TimelineDecision {
@@ -75,9 +80,19 @@ export function DecisionTimeline({
     return decision.dayLabel;
   });
   const width = ordered.length * TIMELINE_STEP;
+  const line = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const box = line.current as HTMLDivElement;
+    const dot = box.querySelector('[aria-pressed="true"]');
+    if (dot === null || box.scrollWidth <= box.clientWidth) return;
+    const { left, width: size } = dot.getBoundingClientRect();
+    const frame = box.getBoundingClientRect();
+    box.scrollLeft += left + size / 2 - (frame.left + frame.width / 2);
+    // Only a new choice moves the line; a filter leaves it where it is.
+  }, [selected]);
 
   return (
-    <div className="adr-timeline" role="group" aria-label={label}>
+    <div className="adr-timeline" role="group" aria-label={label} ref={line}>
       <div className="adr-timeline-track" style={{ width }}>
         <svg
           aria-hidden="true"

@@ -1,15 +1,9 @@
-import {
-  Center,
-  linkClassName,
-  Stack,
-  Text,
-} from '@entifix/react-controls/primitives';
+import { Center, Stack } from '@entifix/react-controls/primitives';
 import type { ArchitectureDecision } from '@myself-app/domain';
 import {
   decisionNumber,
   type DecisionPage,
 } from '@myself-app/domain/use-cases';
-import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { StatusBadge } from '../../atoms/status-badge/status-badge.js';
@@ -18,6 +12,8 @@ import {
   DecisionLineage,
   type LineageLink,
 } from '../../molecules/decision-lineage/decision-lineage.js';
+import { PageHeader } from '../../molecules/page-header/page-header.js';
+import type { OutlineEntry } from '../../molecules/page-outline/page-outline.js';
 import { formatDay } from '../../molecules/post-card/post-cards.js';
 import { SiteNav } from '../../organisms/site-nav/site-nav.js';
 import {
@@ -26,12 +22,15 @@ import {
   projectPath,
 } from '../../routing/project-paths.js';
 import type { SiteLocale } from '../../routing/site-locales.js';
+import { OutlineLayout } from '../outline-layout/outline-layout.js';
 
 export interface DecisionPageData {
   readonly locale: SiteLocale;
   readonly page: DecisionPage;
   /** Its body, rendered from Markdown (`renderMarkdownBody`). */
   readonly body: ReactNode;
+  /** Its sections, read from the same Markdown (`outlineOf`). */
+  readonly outline: readonly OutlineEntry[];
 }
 
 /**
@@ -39,7 +38,12 @@ export interface DecisionPageData {
  * decided, the symptom that should send a reader to it, what it replaces and
  * what replaces it, and the record itself — in English, as written (ADR 0020).
  */
-export function DecisionPageView({ locale, page, body }: DecisionPageData) {
+export function DecisionPageView({
+  locale,
+  page,
+  body,
+  outline,
+}: DecisionPageData) {
   const t = siteT(locale);
   const { decision, project, supersedes, supersededBy } = page;
   const projectId = String(project.id);
@@ -56,20 +60,21 @@ export function DecisionPageView({ locale, page, body }: DecisionPageData) {
       <SiteNav locale={locale} path={`/projects/${projectId}/adr/${number}`} />
       <Center as="main" gutters className="decision-page py-2xl">
         <Stack gap="l">
-          <Link
-            href={`${projectPath(locale, projectId)}#${DECISIONS_ANCHOR}`}
-            className={linkClassName}
-          >
-            {t('decisionPage.back', { project: project.name })}
-          </Link>
-          <header className="decision-page-header">
-            <Stack gap="s">
+          <PageHeader
+            className="decision-page-header"
+            back={{
+              href: `${projectPath(locale, projectId)}#${DECISIONS_ANCHOR}`,
+              label: t('decisionPage.back', { project: project.name }),
+            }}
+            eyebrow={
               <p className="decision-page-number">
                 {t('decisionPage.number', { number })}
               </p>
-              <Text as="h1" step={3} weight="semibold" lang="en">
-                {decision.title}
-              </Text>
+            }
+            title={decision.title}
+            titleLang="en"
+          >
+            <Stack gap="s" className="decision-page-about">
               <dl className="decision-page-facts">
                 <div>
                   <dt>{t('projectPage.sort.status')}</dt>
@@ -110,11 +115,17 @@ export function DecisionPageView({ locale, page, body }: DecisionPageData) {
                 }}
               />
             </Stack>
-          </header>
-          <p className="adr-language-note">{t('projectPage.englishOnly')}</p>
-          <article lang="en" className="decision-page-body">
-            {body}
-          </article>
+          </PageHeader>
+          <OutlineLayout entries={outline} label={t('outline')}>
+            <Stack gap="l">
+              <p className="adr-language-note">
+                {t('projectPage.englishOnly')}
+              </p>
+              <article lang="en" className="decision-page-body">
+                {body}
+              </article>
+            </Stack>
+          </OutlineLayout>
         </Stack>
       </Center>
     </>

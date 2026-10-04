@@ -1,7 +1,7 @@
 'use client';
 
 import { button } from '@entifix/react-controls/primitives';
-import { useSyncExternalStore } from 'react';
+import { type ReactNode, useSyncExternalStore } from 'react';
 
 const subscribe = () => () => undefined;
 
@@ -17,14 +17,20 @@ const subscribe = () => () => undefined;
  * a fallback.
  *
  * Rendered only once hydrated: without scripting there is nothing to click,
- * and the browser's own Print still prints the same sheet.
+ * and the browser's own Print still prints the same sheet. What it shows and
+ * how it looks are the caller's: a button, or an entry of the download menu.
  */
 export function CvPrintButton({
-  label,
   fileName,
+  className = button({ variant: 'primary', size: 'sm' }),
+  onPrint,
+  children,
 }: {
-  label: string;
   fileName: string;
+  className?: string;
+  /** Called as the dialog opens: a menu closes itself here. */
+  onPrint?: () => void;
+  children: ReactNode;
 }) {
   const hydrated = useSyncExternalStore(
     subscribe,
@@ -44,16 +50,13 @@ export function CvPrintButton({
       { once: true },
     );
     await document.fonts.ready;
+    onPrint?.();
     window.print();
   }
 
   return (
-    <button
-      type="button"
-      className={button({ variant: 'primary', size: 'sm' })}
-      onClick={() => void print()}
-    >
-      {label}
+    <button type="button" className={className} onClick={() => void print()}>
+      {children}
     </button>
   );
 }

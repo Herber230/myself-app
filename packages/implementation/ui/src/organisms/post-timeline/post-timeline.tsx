@@ -28,7 +28,7 @@ export function PostTimeline({ posts }: { posts: readonly PostCardData[] }) {
           <ol className="post-timeline-list">
             {inYear.map(post => (
               <li key={post.id} className="post-timeline-item">
-                <PostCard post={post} heading="h3" withExcerpt />
+                <PostCard post={post} heading="h3" />
               </li>
             ))}
           </ol>

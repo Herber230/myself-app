@@ -22,11 +22,15 @@ export interface BlogSidebarCopy {
 }
 
 export function BlogLayout({
+  header,
   sidebar,
   sidebarOpen,
   copy,
   children,
 }: {
+  /** The page's title, over its own column: on a narrow screen, above the
+   *  sidebar too, so the page opens on what it is. */
+  header?: ReactNode;
   sidebar: ReactNode;
   /** Whether the sidebar starts open. */
   sidebarOpen: boolean;
@@ -35,8 +39,16 @@ export function BlogLayout({
 }) {
   return (
     <div className="blog-layout">
+      {header !== undefined && (
+        <div className="blog-layout-header">{header}</div>
+      )}
       <aside className="blog-sidebar" aria-label={copy.label}>
-        <details className="blog-sidebar-panel" open={sidebarOpen}>
+        <details
+          className="blog-sidebar-panel"
+          open={sidebarOpen}
+          // A post folds it before hydration on a phone (`FoldScript`).
+          suppressHydrationWarning
+        >
           <summary className="blog-sidebar-toggle">
             <svg
               className="blog-sidebar-icon"

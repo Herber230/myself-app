@@ -1,8 +1,6 @@
 import {
   Center,
   Cluster,
-  Lead,
-  linkClassName,
   Stack,
   Text,
 } from '@entifix/react-controls/primitives';
@@ -12,7 +10,6 @@ import {
   type LocalizedText,
 } from '@myself-app/domain';
 import type { InterestSection } from '@myself-app/domain/use-cases';
-import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { InterestGlyph } from '../../atoms/interest-glyph/interest-glyph.js';
@@ -20,6 +17,7 @@ import { siteT } from '../../i18n/server.js';
 import { ChannelLinks } from '../../molecules/channel-links/channel-links.js';
 import { LinkCard } from '../../molecules/link-card/link-card.js';
 import { MediaGallery } from '../../molecules/media-gallery/media-gallery.js';
+import { PageHeader } from '../../molecules/page-header/page-header.js';
 import { postPath } from '../../molecules/post-card/post-cards.js';
 import { channelLinksOf } from '../../organisms/beyond-code-teaser/beyond-code-teaser.js';
 import { SiteNav } from '../../organisms/site-nav/site-nav.js';
@@ -51,15 +49,16 @@ export function BeyondCodePageView({
       <SiteNav locale={locale} path="/beyond-code" />
       <Center as="main" gutters className="beyond-page py-2xl">
         <Stack gap="2xl">
-          <header className="beyond-page-header">
-            <Stack gap="m">
-              <Link href={localePath(locale, '/')} className={linkClassName}>
-                {t('beyondCode.back')}
-              </Link>
-              <Text as="h1" step={3} weight="semibold">
-                {t('beyondCode.title')}
-              </Text>
-              <Lead muted>{t('beyondCode.lead')}</Lead>
+          <PageHeader
+            className="beyond-page-header"
+            back={{
+              href: localePath(locale, '/'),
+              label: t('beyondCode.back'),
+            }}
+            title={t('beyondCode.title')}
+            lead={t('beyondCode.lead')}
+          >
+            <Stack gap="s">
               {channels.length > 0 && (
                 <ChannelLinks
                   id="beyond-code-elsewhere"
@@ -85,7 +84,7 @@ export function BeyondCodePageView({
                 ))}
               </Cluster>
             </Stack>
-          </header>
+          </PageHeader>
           {sections.map(({ interest, media, posts }) => {
             const id = String(interest.id);
             const name = localize(interest.name as LocalizedText, locale);

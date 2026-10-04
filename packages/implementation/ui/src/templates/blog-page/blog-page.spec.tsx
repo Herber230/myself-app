@@ -5,12 +5,12 @@ import { describe, expect, it } from 'vitest';
 
 import { SourcesProvider } from '../../sources/sources.js';
 import { renderPage } from '../../test/render.js';
-import { BLOG_PREVIEWS, SITE_CONTENT } from '../../test/shipped-content.js';
+import { BLOG_READS, SITE_CONTENT } from '../../test/shipped-content.js';
 import { BlogPageView } from './blog-page.js';
 
 describe("the blog's home", () => {
   it('lists every post under its title, with the filter and the feed', async () => {
-    const previews = await loadPostPreviews(SITE_CONTENT, BLOG_PREVIEWS);
+    const previews = await loadPostPreviews(SITE_CONTENT, BLOG_READS);
     await renderPage(
       Promise.resolve(
         <SourcesProvider sources={browserSources}>

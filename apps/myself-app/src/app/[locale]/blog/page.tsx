@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { SITE_CONTENT } from '../../../composition';
-import { BLOG_PREVIEWS } from '../../../content/blog-reads';
+import { BLOG_READS } from '../../../content/blog-reads';
 import { BrowserSources } from '../../../providers/browser-sources';
 
 const PATH = '/blog';
@@ -39,7 +39,7 @@ export default async function BlogPage({
 }: PageProps<'/[locale]/blog'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const previews = await loadPostPreviews(SITE_CONTENT, BLOG_PREVIEWS);
+  const previews = await loadPostPreviews(SITE_CONTENT, BLOG_READS);
   return (
     <BrowserSources>
       <BlogPageView locale={locale} previews={previews} />

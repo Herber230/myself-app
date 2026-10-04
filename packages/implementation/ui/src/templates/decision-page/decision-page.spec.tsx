@@ -24,6 +24,7 @@ async function pageOf(
       <DecisionPageView
         locale={locale}
         page={page}
+        outline={[]}
         body={<p>The record.</p>}
       />,
     ),

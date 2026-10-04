@@ -22,6 +22,7 @@ const groups: CvCustomizerGroup[] = [
 
 const copy = {
   label: 'Customize',
+  hidden: 'Hidden: {{n}}',
   reset: 'Show everything',
   downloadNote: 'The download is the full sheet.',
 };
@@ -56,7 +57,7 @@ describe('the CV customizer', () => {
     });
     expect(hiddenStyle()).toBe(written);
     expect(hiddenStyle()?.textContent).toContain('tech:jest');
-    expect(screen.getByRole('checkbox', { name: 'Jest' })).toHaveProperty(
+    expect(screen.getByRole('switch', { name: 'Jest' })).toHaveProperty(
       'checked',
       false,
     );
@@ -69,28 +70,30 @@ describe('the CV customizer', () => {
     const sections = screen.getByRole('group', { name: 'Sections' });
     expect(
       within(sections)
-        .getAllByRole('checkbox')
+        .getAllByRole('switch')
         .map(box => (box as HTMLInputElement).checked),
     ).toEqual([true, true]);
     expect(
       screen.getByRole('button', { name: 'Show everything' }),
     ).toHaveProperty('disabled', true);
     expect(screen.queryByText(copy.downloadNote)).toBeNull();
+    expect(screen.queryByText(/^Hidden:/)).toBeNull();
     expect(hiddenStyle()).toBeNull();
   });
 
   it('hides a part when it is unchecked, in the page and in the URL', () => {
     at('/en/cv/?lang=en#top');
     render(customizer);
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Jest' }));
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Education' }));
+    fireEvent.click(screen.getByRole('switch', { name: 'Jest' }));
+    fireEvent.click(screen.getByRole('switch', { name: 'Education' }));
     expect(hiddenStyle()?.textContent).toBe(
       '[data-cv-part="section:education"],[data-cv-part="tech:jest"]{display:none!important}',
     );
     expect(url()).toBe('/en/cv/?lang=en&hide=section:education,tech:jest#top');
     expect(screen.getByText(copy.downloadNote)).toBeTruthy();
+    expect(screen.getByText('Hidden: 2')).toBeTruthy();
 
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Jest' }));
+    fireEvent.click(screen.getByRole('switch', { name: 'Jest' }));
     expect(hiddenStyle()?.textContent).toBe(
       '[data-cv-part="section:education"]{display:none!important}',
     );
@@ -100,14 +103,14 @@ describe('the CV customizer', () => {
   it('starts from what the URL hides, and shows everything again on reset', () => {
     at('/en/cv/?hide=tech:jest');
     render(customizer);
-    expect(screen.getByRole('checkbox', { name: 'Jest' })).toHaveProperty(
+    expect(screen.getByRole('switch', { name: 'Jest' })).toHaveProperty(
       'checked',
       false,
     );
     expect(hiddenStyle()?.textContent).toContain('tech:jest');
 
     fireEvent.click(screen.getByRole('button', { name: 'Show everything' }));
-    expect(screen.getByRole('checkbox', { name: 'Jest' })).toHaveProperty(
+    expect(screen.getByRole('switch', { name: 'Jest' })).toHaveProperty(
       'checked',
       true,
     );
@@ -122,7 +125,7 @@ describe('the CV customizer', () => {
       at('/en/cv/?hide=tech:jest');
       window.dispatchEvent(new PopStateEvent('popstate'));
     });
-    expect(screen.getByRole('checkbox', { name: 'Jest' })).toHaveProperty(
+    expect(screen.getByRole('switch', { name: 'Jest' })).toHaveProperty(
       'checked',
       false,
     );

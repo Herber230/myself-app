@@ -9,6 +9,8 @@ export const en = {
   /** The narrow screen's menu button. */
   menu: 'Menu',
   techRadar: 'Tech radar',
+  // A page's table of contents: a post's, a project's, a record's.
+  outline: 'On this page',
   blog: 'Blog',
   /** The language menu. Each language is named in itself, in every locale. */
   language: {
@@ -16,7 +18,6 @@ export const en = {
     en: 'English',
     es: 'Español',
   },
-  cvLead: 'One page, in four readings. Print it, or download it as a PDF.',
   /** The CV page around the sheet: its controls, hidden in print. */
   cvPage: {
     variants: 'Reading',
@@ -31,10 +32,15 @@ export const en = {
     pdfSubject: 'Curriculum vitae',
     print: 'Print or save as PDF',
     printHint:
-      'For a clean sheet: A4, margins none, headers and footers off, background graphics on.',
+      'Keeps what you hid. A4, margins none, headers and footers off, background graphics on.',
+    /** The ▾ beside Download: printing and sharing this version. */
+    downloadMore: 'More ways to save',
+    copyLink: 'Copy link to this version',
+    linkCopied: 'Link copied',
     /** Tailoring the human sheet before printing (#38, ADR 0015). */
     customize: {
       label: 'Customize',
+      hidden: 'Hidden: {{n}}',
       sections: 'Sections',
       positions: 'Positions',
       technologies: 'Technologies',
@@ -203,7 +209,13 @@ export const en = {
       label: 'Filter the records',
       status: 'Status',
       area: 'Area',
-      search: 'Search titles and symptoms',
+      search: 'Search',
+      /** What to type, while the search is empty: titles and symptoms. */
+      placeholder: 'A symptom, a title…',
+      /** `{{n}}` is replaced: the card's count of what is in force. */
+      active: '{{n}} active',
+      /** `{{name}}` is replaced: an active filter's remove button. */
+      remove: 'Remove {{name}}',
       clear: 'Clear filters',
       /** `{{shown}}` and `{{total}}` are replaced in the browser. */
       showing: 'Showing {{shown}} of {{total}}',
@@ -249,7 +261,15 @@ export const en = {
     chartLabel:
       'Tech radar: four quadrants of technologies, ringed by how far I trust them',
     legend: 'Every blip, by quadrant and ring',
-    ringKey: 'What the rings mean',
+    legendHide: 'Hide the list',
+    legendShow: 'Show the list',
+    legendCount: '{{n}} technologies',
+    zoomOut: 'Show the whole radar',
+    view: {
+      label: 'Show as',
+      list: 'List',
+      chart: 'Chart',
+    },
     quadrants: {
       techniques: 'Techniques',
       tools: 'Tools',
@@ -262,6 +282,10 @@ export const en = {
       ring: 'Ring',
       area: 'Area',
       search: 'Search',
+      placeholder: 'Kubernetes, Effect, Nx…',
+      title: 'Filters',
+      active: '{{n}} active',
+      remove: 'Remove {{name}}',
       clear: 'Show everything',
       showing: 'Showing {{shown}} of {{total}}',
     },
@@ -296,6 +320,9 @@ export const en = {
       search: 'Search titles',
       clear: 'Show every post',
       showing: 'Showing {{shown}} of {{total}}',
+      placeholder: 'TypeScript, architecture…',
+      active: '{{n}} active',
+      remove: 'Remove {{name}}',
     },
     empty: 'No post matches this filter.',
     published: 'Published',
@@ -307,6 +334,8 @@ export const en = {
     sidebar: {
       show: 'Show filters',
       hide: 'Hide filters',
+      showContents: 'Show contents',
+      hideContents: 'Hide contents',
     },
     tags: 'Tags',
     technologies: 'On the radar',

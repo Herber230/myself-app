@@ -2,7 +2,6 @@ import {
   Card,
   Center,
   Cluster,
-  Lead,
   linkClassName,
   Stack,
   Text,
@@ -13,6 +12,7 @@ import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 import Link from 'next/link';
 
 import { siteT } from '../../i18n/server.js';
+import { PageHeader } from '../../molecules/page-header/page-header.js';
 import { postPath } from '../../molecules/post-card/post-cards.js';
 import { formatPeriod, inLocale } from '../../organisms/cv-sheet/cv-format.js';
 import { SiteNav } from '../../organisms/site-nav/site-nav.js';
@@ -47,15 +47,14 @@ export function TechnologyPageView({
       <Center as="main" gutters className="py-2xl">
         <Card>
           <Stack gap="l">
-            <Link href={radarEntryPath(locale, id)} className={linkClassName}>
-              {t('radar.detail.back')}
-            </Link>
-            <Stack gap="s">
-              <Text as="h1" step={3} weight="semibold">
-                {inLocale(technology.name, locale)}
-              </Text>
-              <Lead muted>{inLocale(technology.description, locale)}</Lead>
-            </Stack>
+            <PageHeader
+              back={{
+                href: radarEntryPath(locale, id),
+                label: t('radar.detail.back'),
+              }}
+              title={inLocale(technology.name, locale)}
+              lead={inLocale(technology.description, locale)}
+            />
             <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-m gap-y-2xs">
               <Text as="dt" weight="semibold">
                 {t('radar.detail.quadrant')}

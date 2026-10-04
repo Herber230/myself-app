@@ -3,7 +3,9 @@
  */
 import { cleanup } from '@testing-library/react';
 import type { ComponentPropsWithoutRef } from 'react';
-import { afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
+
+import { installMatchMedia } from './match-media';
 
 // Node 26 declares a `localStorage` of its own, `undefined` unless started
 // with `--localstorage-file`, and it hides jsdom's: point it back at the
@@ -21,6 +23,9 @@ vi.mock('next/link', () => ({
     <a href={href} {...props} />
   ),
 }));
+
+// jsdom has no `matchMedia`: a stand-in at a desk's width (`match-media.ts`).
+beforeEach(() => installMatchMedia());
 
 afterEach(() => {
   cleanup();

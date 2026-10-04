@@ -55,6 +55,7 @@ const explorer = () => (
       locale="en"
       quadrants={['Techniques', 'Tools', 'Platforms', 'Languages']}
       rings={['Adopt', 'Trial', 'Assess', 'Hold']}
+      ringMeanings={['In production, chosen again.', 'Trying it on real work.']}
       areas={[
         { id: 'css', name: 'CSS' },
         { id: 'monorepo', name: 'Monorepo' },
@@ -78,6 +79,17 @@ const explorer = () => (
         area: 'Area',
         search: 'Search',
         clear: 'Show everything',
+        placeholder: 'Kubernetes…',
+        hideLegend: 'Hide the list',
+        showLegend: 'Show the list',
+        legendCount: '{{n}} technologies',
+        view: 'Show as',
+        viewList: 'List',
+        viewChart: 'Chart',
+        zoomOut: 'Show the whole radar',
+        title: 'Filters',
+        active: '{{n}} active',
+        remove: 'Remove {{name}}',
         showing: 'Showing {{shown}} of {{total}}',
       }}
     >
@@ -187,5 +199,60 @@ describe('the radar explorer', () => {
     fireEvent.pointerLeave(blip);
     expect(entry.hasAttribute('data-highlighted')).toBe(false);
     unmount();
+  });
+
+  it('says what the chosen rings mean, and counts and removes what is in force', async () => {
+    window.history.replaceState(
+      null,
+      '',
+      '/en/tech-radar/?ring=adopt&ring=hold&q=nx',
+    );
+    render(explorer());
+    await screen.findByText('3 active');
+    // Only a ring with a meaning is told.
+    const note = document.querySelector('[data-slot="filter-note"]');
+    expect(note?.textContent).toBe('AdoptIn production, chosen again.');
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Remove Search: “nx”' }),
+    );
+    expect(window.location.search).toBe('?ring=adopt&ring=hold');
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Ring: Hold' }));
+    expect(window.location.search).toBe('?ring=adopt');
+  });
+
+  it('filters by a quadrant pressed on the picture, and zooms into it alone', () => {
+    const { container } = render(explorer());
+    const toggles = () =>
+      [
+        ...container.querySelectorAll<HTMLButtonElement>(
+          '[data-slot="radar-quadrant-toggle"]',
+        ),
+      ].map(toggle => toggle.textContent);
+    expect(toggles()).toEqual([
+      'Techniques',
+      'Tools',
+      'Platforms',
+      'Languages',
+    ]);
+    fireEvent.click(
+      container.querySelectorAll(
+        '[data-slot="radar-quadrant-toggle"]',
+      )[2] as Element,
+    );
+    expect(window.location.search).toBe('?quadrant=platforms');
+    expect(toggles()).toEqual(['Platforms']);
+    expect(
+      container
+        .querySelector('[data-slot="radar-quadrant-toggle"]')
+        ?.getAttribute('title'),
+    ).toBe('Show the whole radar');
+  });
+
+  it('switches between the list and the picture on a narrow screen', () => {
+    const { container } = render(explorer());
+    const split = container.querySelector('.radar-split') as HTMLElement;
+    expect(split.dataset['view']).toBe('list');
+    fireEvent.click(screen.getByRole('radio', { name: 'Chart' }));
+    expect(split.dataset['view']).toBe('chart');
   });
 });
