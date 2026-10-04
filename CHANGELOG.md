@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.9.0](https://github.com/Herber230/myself-app/compare/v1.8.0...v1.9.0) (2026-10-04)
+
+### Features
+
+* polish the CV, radar, blog and project pages on fluid, intrinsic layouts ([#81](https://github.com/Herber230/myself-app/issues/81)) ([3055b57](https://github.com/Herber230/myself-app/commit/3055b57517f39dea6b7764148f0ac9be58fa54d9))
+
 ## [1.8.0](https://github.com/Herber230/myself-app/compare/v1.7.0...v1.8.0) (2026-10-01)
 
 ### Features
