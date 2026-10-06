@@ -3,8 +3,8 @@
     "id": "entifix",
     "name": "entifix",
     "summary": {
-      "en": "A TypeScript framework for entity-driven applications on Effect, from metadata to repositories to React controls.",
-      "es": "Un framework de TypeScript para aplicaciones guiadas por entidades sobre Effect, de los metadatos a los repositorios y los controles de React."
+      "en": "A code-first framework for Clean Architecture and domain-driven design: entities and use cases are the application; storage, API and UI are adapters around them.",
+      "es": "Un framework code-first para Clean Architecture y diseño guiado por el dominio: las entidades y los casos de uso son la aplicación; el almacenamiento, la API y la interfaz son adaptadores a su alrededor."
     },
     "repositoryUrl": "https://github.com/r10c-technologies/entifix",
     "technologies": ["effect", "typescript", "nx"],

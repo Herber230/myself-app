@@ -1,3 +1,5 @@
-entifix is an entity framework for TypeScript: an entity is described once, and the same description drives the repository that stores it, the route that serves it, the table that lists it and the form that edits it.
+entifix is a code-first framework for Clean Architecture and domain-driven design. The domain is written as code: an entity is a class that describes itself — its members, their types, which of them can be filtered or sorted — and a use case is a business operation over entities. There is no schema file or configuration to keep in step with it: the code is the model.
 
-It was extracted from a marketplace that had driven it for a year, so its code is exercised; what is new is the packaging into independent tiers, each adoptable without the ones above it.
+Everything else stands around that domain as an adapter. A use case depends on a port — a repository, a session, a token service — never on a database or a framework, so the same use case runs in the browser over REST and on a server over Mongo or SQL; the adapter is chosen where the application is composed. The UI is an adapter too, and an implementation detail: the same description drives the table that lists an entity and the form that edits it, and React's controls are simply the first.
+
+It was extracted from a marketplace that had driven it for a year, so its code is exercised; what is new is the packaging into independent tiers, each adoptable without the ones above it. Today's implementation is TypeScript on Effect.
