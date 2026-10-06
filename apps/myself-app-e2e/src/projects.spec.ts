@@ -93,23 +93,44 @@ test('the pane shows a record, chosen by the keys, the timeline or the URL', asy
   await expect(dot(page, '0016')).toHaveAttribute('data-dimmed', '');
 });
 
-test('the practice is told on request, and stays open once opened', async ({
+test('the lifecycle opens on request, stays open, and drives the explorer in place', async ({
   page,
 }) => {
   await page.goto('/en/projects/entifix/');
-  const practice = page.locator('details.adr-practice');
-  await expect(practice).not.toHaveAttribute('open');
+  const band = page.locator('#lifecycle details');
+  await expect(band).not.toHaveAttribute('open');
+  await expect(page.getByText('See how it works')).toBeVisible();
   // Hydrated: the explorer's controls render only then.
   await expect(page.getByRole('searchbox')).toBeVisible();
-  await page.getByText('How the records steer the work').click();
-  await expect(practice).toHaveAttribute('open', '');
-  await expect(page.locator('.adr-step')).toHaveCount(5);
-  // `toggle` is dispatched after the change, in a task of its own.
+  await page.locator('#lifecycle summary').click();
+  await expect(band).toHaveAttribute('open', '');
+  await expect(page.locator('.step-loop-step')).toHaveCount(4);
   await expect
-    .poll(() => page.evaluate(() => localStorage.getItem('decision-practice')))
+    .poll(() => page.evaluate(() => localStorage.getItem('decision-lifecycle')))
     .toBe('open');
+
+  // A state chosen shows its own panel, and only it.
+  await page
+    .locator('#lifecycle .state-path-state', { hasText: /^\d+Accepted/ })
+    .click();
+  await expect(
+    page.locator('#lifecycle input[value="accepted"]'),
+  ).toBeChecked();
+  const shown = page.locator('.state-path-panel:visible');
+  await expect(shown).toHaveCount(1);
+  await expect(shown).toContainText('The rule.');
+
+  // Its records, asked of the explorer below, with no page load.
+  await page.evaluate(() => ((window as { stayed?: boolean }).stayed = true));
+  await shown.getByRole('link', { name: /^See all/ }).click();
+  await expect(page).toHaveURL(/\?status=accepted#decisions$/);
+  await expect(page.getByText('Showing 4 of 4')).toBeVisible();
+  expect(
+    await page.evaluate(() => (window as { stayed?: boolean }).stayed),
+  ).toBe(true);
+
   await page.reload();
-  await expect(practice).toHaveAttribute('open', '');
+  await expect(band).toHaveAttribute('open', '');
 });
 
 test('the filter card counts what is in force, and a chip removes it', async ({
@@ -170,7 +191,7 @@ test.describe('on a phone', () => {
     ).toBe(0);
     const current = page
       .getByRole('navigation', { name: 'On this page' })
-      .getByRole('link', { name: 'Architecture decisions' });
+      .getByRole('link', { name: 'All records' });
     await expect(current).toHaveAttribute('aria-current', 'location');
     await expect(current).toBeInViewport();
     expect((await current.boundingBox())?.height).toBeGreaterThanOrEqual(44);

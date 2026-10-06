@@ -14,8 +14,8 @@
     "project": "entifix",
     "path": "packages/ts/core/",
     "note": {
-      "en": "Entities, metadata, links and the load use case: tier 1.",
-      "es": "Entidades, metadatos, vínculos y el caso de uso de carga: nivel 1."
+      "en": "The entity system: decorators, metadata, links and serialization. Tier 1.",
+      "es": "El sistema de entidades: decoradores, metadatos, vínculos y serialización. Nivel 1."
     },
     "order": 1
   },

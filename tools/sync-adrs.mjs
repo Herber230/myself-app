@@ -201,6 +201,8 @@ function readRecord(project, file) {
       status,
       date: fields.Date,
       area: fields.Area,
+      // How many times its facts were corrected in place: its Revised lines.
+      revisions: revisions.length,
       ...(fields['Read when'] && { readWhen: fields['Read when'] }),
       ...(summary && { summary }),
       project: project.id,

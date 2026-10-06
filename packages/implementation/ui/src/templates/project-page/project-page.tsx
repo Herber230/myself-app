@@ -6,8 +6,9 @@ import {
   Text,
 } from '@entifix/react-controls/primitives';
 import { localize, type LocalizedText } from '@myself-app/domain';
-import type { ProjectPage } from '@myself-app/domain/use-cases';
+import { decisionNumber, type ProjectPage } from '@myself-app/domain/use-cases';
 import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
+import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
@@ -24,7 +25,7 @@ import {
   decisionOptionsOf,
   decisionRowsOf,
 } from '../../organisms/decision-explorer/decision-rows.js';
-import { DecisionPractice } from '../../organisms/decision-practice/decision-practice.js';
+import { DecisionLifecycle } from '../../organisms/decision-lifecycle/decision-lifecycle.js';
 import { SiteNav } from '../../organisms/site-nav/site-nav.js';
 import { sectionPath } from '../../routing/landing-sections.js';
 import { DECISIONS_ANCHOR } from '../../routing/project-paths.js';
@@ -64,9 +65,11 @@ function Part({ id, heading, children }: Section & { children: ReactNode }) {
 }
 
 /**
- * A project's page (#77): what it is and what it is built with, its
- * overview, the patterns it is built on, its file structure, and its
- * architecture decisions in an explorer — the records in English, the page
+ * A project's page (#77): what it is and what it is built with; first, how
+ * it is built — its decisions as a lifecycle, collapsed until opened; then
+ * its overview, the patterns it is built on (each linked to the records that
+ * decided it), its file structure (each path linked into the repository),
+ * and all its records in an explorer — the records in English, the page
  * around them in the reader's language (ADR 0020).
  */
 export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
@@ -156,20 +159,33 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
             label={t('outline')}
           >
             <Stack gap="2xl">
+              <DecisionLifecycle locale={locale} decisions={decisions} />
               <Part {...overviewPart}>{overview}</Part>
               <Part {...patternsPart}>
                 <PatternList
+                  anchor={DECISIONS_ANCHOR}
                   patterns={patterns.map(pattern => ({
                     id: String(pattern.id),
                     // Validation requires both in every locale.
                     name: localize(pattern.name as LocalizedText, locale),
                     summary: localize(pattern.summary as LocalizedText, locale),
+                    decisions: targetsOf(pattern.decisions).map(decision => ({
+                      number: decisionNumber(decision),
+                      label: t('projectPage.decisionLink', {
+                        number: decisionNumber(decision),
+                      }),
+                    })),
                   }))}
                 />
               </Part>
               <Part {...structurePart}>
                 <FileTree
                   label={t('projectPage.structure')}
+                  baseUrl={
+                    project.repositoryUrl
+                      ? `${project.repositoryUrl}/tree/main/`
+                      : undefined
+                  }
                   rows={paths.map(row => ({
                     path: row.path,
                     note: localize(row.note as LocalizedText, locale),
@@ -177,11 +193,9 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
                 />
               </Part>
               <Part {...decisionsPart}>
-                <Text muted>{t('projectPage.decisionsLead')}</Text>
                 <p className="adr-language-note">
-                  {t('projectPage.englishOnly')}
+                  {t('projectPage.englishOnly')} {t('projectPage.synced')}
                 </p>
-                <DecisionPractice locale={locale} decisions={decisions} />
                 <DecisionExplorer
                   decisions={decisionRowsOf(decisions, locale, t)}
                   statuses={options.statuses}

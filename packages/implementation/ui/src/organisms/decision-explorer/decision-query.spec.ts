@@ -11,9 +11,12 @@ const query = decisionQuery({
 describe('the decision records’ query', () => {
   it('keeps the statuses and areas there are, and one sort it knows', () => {
     expect(
-      query.parse('?status=accepted&status=gone&area=ui&sort=date-desc&sort=x'),
+      query.parse(
+        '?status=accepted&status=gone&revised=yes&revised=no&area=ui&sort=date-desc&sort=x',
+      ),
     ).toEqual({
       status: ['accepted'],
+      revised: ['yes'],
       area: ['ui'],
       q: [],
       sort: ['date-desc'],
@@ -35,6 +38,12 @@ describe('the decision records’ query', () => {
       ],
       sorting: [{ 0: { property: 'number', type: 'asc' } }],
     });
+  });
+
+  it('keeps the records revised at least once, whatever their status', () => {
+    expect(
+      query.request(query.parse('?revised=yes'), undefined).filtering,
+    ).toEqual([{ property: 'revisions', operator: 'gt', value: 0 }]);
   });
 
   it('orders by the sort chosen', () => {

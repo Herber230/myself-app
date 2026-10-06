@@ -135,6 +135,18 @@ describe('a project’s decision records', () => {
     expect(window.location.search).toBe('');
   });
 
+  it('keep the records revised at least once, whatever their status', async () => {
+    const page = await loadProjectPage(SITE_CONTENT, 'myself-app');
+    const revised = (page?.decisions ?? []).filter(
+      decision => decision.revisions > 0,
+    ).length;
+    render(explorer());
+    fireEvent.click(screen.getByRole('button', { name: 'Revised' }));
+    expect(window.location.search).toBe('?revised=yes');
+    await waitFor(() => expect(shownRecords()).toHaveLength(revised));
+    expect(revised).toBeLessThan(numbers.length);
+  });
+
   it('show the first record in the pane, and another once chosen', async () => {
     render(explorer());
     const pane = () =>

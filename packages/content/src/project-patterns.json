@@ -1,29 +1,42 @@
 [
   {
-    "id": "entifix-entities",
+    "id": "entifix-code-first",
     "project": "entifix",
     "name": {
-      "en": "Entities described once",
-      "es": "Entidades descritas una vez"
+      "en": "Code first",
+      "es": "Code first"
     },
     "summary": {
-      "en": "An entity's metadata — its members, types, links and what is filterable — drives its repository, its routes, its tables and its forms.",
-      "es": "Los metadatos de una entidad —sus miembros, tipos, vínculos y qué se puede filtrar— guían su repositorio, sus rutas, sus tablas y sus formularios."
+      "en": "An entity is a class that describes itself: its members, their types, its links and what can be filtered. There is no schema file to keep in step; the code is the model.",
+      "es": "Una entidad es una clase que se describe a sí misma: sus miembros, sus tipos, sus vínculos y qué se puede filtrar. No hay un archivo de esquema que mantener al día; el código es el modelo."
     },
     "order": 0
   },
   {
-    "id": "entifix-effect",
+    "id": "entifix-domain",
     "project": "entifix",
     "name": {
-      "en": "Built on Effect",
-      "es": "Construido sobre Effect"
+      "en": "Entities and use cases at the centre",
+      "es": "Entidades y casos de uso al centro"
     },
     "summary": {
-      "en": "Use cases, repositories and services are Effect programs, so errors, dependencies and resources are typed rather than hoped for.",
-      "es": "Los casos de uso, repositorios y servicios son programas de Effect, así que los errores, las dependencias y los recursos están tipados en lugar de supuestos."
+      "en": "The application is its entities and the use cases over them. A use case depends on ports, never on a database; today each is an Effect program, so its errors and dependencies are typed.",
+      "es": "La aplicación son sus entidades y los casos de uso sobre ellas. Un caso de uso depende de puertos, nunca de una base de datos; hoy cada uno es un programa de Effect, así que sus errores y dependencias están tipados."
     },
     "order": 1
+  },
+  {
+    "id": "entifix-adapters",
+    "project": "entifix",
+    "name": {
+      "en": "Ports and adapters",
+      "es": "Puertos y adaptadores"
+    },
+    "summary": {
+      "en": "Storage, API and UI plug in around the domain: the same use case runs over REST in the browser and over Mongo or SQL on a server. The UI framework is an implementation detail.",
+      "es": "El almacenamiento, la API y la interfaz se conectan alrededor del dominio: el mismo caso de uso corre sobre REST en el navegador y sobre Mongo o SQL en un servidor. El framework de UI es un detalle de implementación."
+    },
+    "order": 2
   },
   {
     "id": "entifix-tiers",
@@ -36,7 +49,8 @@
       "en": "Six tiers, from standalone to testing. A package depends only on its own tier or below, and a check fails the build when an edge breaks the rule.",
       "es": "Seis niveles, de independiente a pruebas. Un paquete depende solo de su nivel o de los inferiores, y una verificación rompe el build cuando un vínculo viola la regla."
     },
-    "order": 2
+    "order": 3,
+    "decisions": ["entifix-0001"]
   },
   {
     "id": "entifix-host-seam",
@@ -49,7 +63,8 @@
       "en": "The framework reads no file: catalogs, grants and token checks cross into it as values, so an application decides them and the framework stays generic.",
       "es": "El framework no lee archivos: catálogos, permisos y validación de tokens entran como valores, así que la aplicación los decide y el framework sigue siendo genérico."
     },
-    "order": 3
+    "order": 4,
+    "decisions": ["entifix-0001"]
   },
   {
     "id": "entifix-examples",
@@ -62,7 +77,8 @@
       "en": "Each example takes a different cut through the tiers, which proves a tier can be adopted without the ones above it.",
       "es": "Cada ejemplo toma un corte distinto de los niveles, lo que demuestra que un nivel puede adoptarse sin los superiores."
     },
-    "order": 4
+    "order": 5,
+    "decisions": ["entifix-0004"]
   },
   {
     "id": "myself-app-static-export",
@@ -75,7 +91,8 @@
       "en": "Next.js renders every page once, at build, into files served from a private S3 bucket behind CloudFront. There is no server at request time.",
       "es": "Next.js genera cada página una sola vez, en el build, como archivos servidos desde un bucket privado de S3 detrás de CloudFront. No hay servidor en tiempo de petición."
     },
-    "order": 0
+    "order": 0,
+    "decisions": ["myself-app-0001", "myself-app-0013"]
   },
   {
     "id": "myself-app-content-as-entities",
@@ -88,7 +105,8 @@
       "en": "Every value on the site is JSON validated against entifix entities before any page renders, so a wrong record stops the build with its path.",
       "es": "Cada valor del sitio es JSON validado contra entidades de entifix antes de generar cualquier página, así que un registro erróneo detiene el build con su ruta."
     },
-    "order": 1
+    "order": 1,
+    "decisions": ["myself-app-0010", "myself-app-0018"]
   },
   {
     "id": "myself-app-layers",
@@ -101,7 +119,8 @@
       "en": "Domain, content, an incubator of code meant for entifix, and implementations of UI and adapters. Lint enforces which layer may import which.",
       "es": "Dominio, contenido, una incubadora de código destinado a entifix e implementaciones de UI y adaptadores. El lint impone qué capa puede importar a cuál."
     },
-    "order": 2
+    "order": 2,
+    "decisions": ["myself-app-0019"]
   },
   {
     "id": "myself-app-browser-queries",
@@ -114,7 +133,8 @@
       "en": "Pages that filter answer in the browser through the same entifix load use case the build runs, over JSON files the build writes.",
       "es": "Las páginas que filtran responden en el navegador con el mismo caso de uso de carga de entifix que ejecuta el build, sobre archivos JSON que el build escribe."
     },
-    "order": 3
+    "order": 3,
+    "decisions": ["myself-app-0016"]
   },
   {
     "id": "myself-app-adrs",
@@ -127,6 +147,7 @@
       "en": "Every significant decision is an ADR whose Read when line names the symptom that should send a reader to it — which is how an agent finds the rule before breaking it.",
       "es": "Cada decisión importante es un ADR cuya línea Read when nombra el síntoma que debe llevar a leerlo; así un agente encuentra la regla antes de romperla."
     },
-    "order": 4
+    "order": 4,
+    "decisions": ["myself-app-0020"]
   }
 ]

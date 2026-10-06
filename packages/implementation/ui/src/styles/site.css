@@ -1477,11 +1477,12 @@
     scroll-margin-top: 5rem;
   }
 
-  /* Intrinsic: as many 15rem columns as fit (three beside the outline), one
-     on a phone. */
+  /* Intrinsic: two columns of 22rem beside the outline, one on a phone; a
+     card left alone on its row takes the row. Each card numbered, its
+     records at its foot. */
   .pattern-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
     gap: var(--spacing-m);
     margin: 0;
     padding: 0;
@@ -1489,21 +1490,40 @@
   }
 
   .pattern-card {
-    padding: var(--spacing-xs-s) var(--spacing-s-m);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xs);
+    padding: var(--spacing-s-m);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background-color: var(--color-surface-elevated);
-    transition: border-color 200ms var(--ease-smooth, ease-out);
+    transition:
+      border-color 200ms var(--ease-smooth, ease-out),
+      translate 200ms var(--ease-smooth, ease-out);
   }
 
   .pattern-card:hover {
     border-color: var(--color-primary);
+    translate: 0 -0.125rem;
+  }
+
+  .pattern-list > .pattern-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .pattern-card-number {
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: var(--text-step-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.08em;
   }
 
   .pattern-card-name {
-    margin: 0 0 var(--spacing-2xs);
+    margin: 0;
     font-size: var(--text-step-1);
     font-weight: 600;
+    line-height: 1.3;
   }
 
   .pattern-card-summary {
@@ -1511,30 +1531,89 @@
     color: var(--color-content-muted);
   }
 
-  /* The file tree: a monospace name, and its note beside it. */
-  .file-tree-list {
-    margin: 0;
-    padding-left: var(--spacing-xs-s);
-    list-style: none;
+  .pattern-card-decisions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2xs);
+    margin: auto 0 0;
+    padding-top: var(--spacing-2xs);
   }
 
+  .pattern-card-decision {
+    padding: 0.125rem var(--spacing-xs);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: var(--text-step-xs);
+    text-decoration: none;
+  }
+
+  .pattern-card-decision::after {
+    content: ' →';
+  }
+
+  .pattern-card-decision:hover,
+  .pattern-card-decision:focus-visible {
+    border-color: var(--color-primary);
+  }
+
+  /* The file tree: guide lines from each folder to what it holds, a folder
+     mark on every name, a chevron on the ones that fold, and the notes in
+     one column whatever the depth. Narrow, a note goes under its name. */
   .file-tree {
-    padding: var(--spacing-xs-s) var(--spacing-s-m);
+    --tree-indent: 1.25rem;
+    --tree-names: 15rem;
+    container-type: inline-size;
+    padding: var(--spacing-s) var(--spacing-s-m);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background-color: var(--color-surface-elevated);
   }
 
+  .file-tree-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .file-tree-list .file-tree-list {
+    margin-left: 0.4375rem;
+    padding-left: calc(var(--tree-indent) - 0.4375rem);
+    border-left: 1px solid var(--color-border);
+  }
+
+  .file-tree-list .file-tree-list > .file-tree-item {
+    position: relative;
+  }
+
+  /* The tick from the guide line to the name. */
+  .file-tree-list .file-tree-list > .file-tree-item::before {
+    content: '';
+    position: absolute;
+    top: 0.9rem;
+    left: calc(-1 * (var(--tree-indent) - 0.4375rem));
+    width: calc(var(--tree-indent) - 0.75rem);
+    border-top: 1px solid var(--color-border);
+  }
+
   .file-tree-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-xs);
+    display: grid;
+    grid-template-columns:
+      calc(var(--tree-names) - var(--depth, 0) * (var(--tree-indent) + 1px))
+      1fr;
+    gap: var(--spacing-s);
     align-items: baseline;
-    padding-block: 0.125rem;
+    padding-block: 0.25rem;
   }
 
   summary.file-tree-row {
     cursor: pointer;
+    list-style: none;
+  }
+
+  summary.file-tree-row::-webkit-details-marker {
+    display: none;
   }
 
   .file-tree-name {
@@ -1542,11 +1621,47 @@
     color: var(--color-primary);
   }
 
-  /* Beside its name while both fit, under it when they do not. */
+  /* A folder mark before every name; a fold's turns with it. */
+  .file-tree-name::before {
+    content: '▸';
+    display: inline-block;
+    width: 1em;
+    color: var(--color-content-muted);
+    transition: rotate 150ms;
+  }
+
+  .file-tree-row:not(summary) .file-tree-name::before {
+    content: '·';
+  }
+
+  .file-tree-folder[open] > summary .file-tree-name::before {
+    rotate: 90deg;
+  }
+
+  .file-tree-link {
+    text-decoration: none;
+  }
+
+  .file-tree-link:hover .file-tree-name,
+  .file-tree-link:focus-visible .file-tree-name {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
   .file-tree-note {
-    flex: 1 1 14rem;
     color: var(--color-content-muted);
     font-size: 0.875em;
+  }
+
+  @container (width < 36rem) {
+    .file-tree-row {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .file-tree-note {
+      padding-left: 1em;
+    }
   }
 
   /* ── The decision records ─────────────────────────────────────────────── */
@@ -1558,188 +1673,13 @@
     font-style: italic;
   }
 
+  /* An archive, read closely: a step under the page's body text, so a list
+     of twenty records and the one open beside it stay compact. */
   .adr-explorer {
     display: grid;
     gap: var(--spacing-l);
-  }
-
-  /* How the records steer the work: a disclosure, closed until opened. Its
-     steps and its anatomy lay themselves out by its own width. */
-  .adr-practice {
-    container-type: inline-size;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background-color: color-mix(
-      in srgb,
-      var(--color-surface-elevated) 85%,
-      transparent
-    );
-  }
-
-  .adr-practice > summary {
-    padding: var(--spacing-xs-s) var(--spacing-s-m);
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .adr-practice[open] > summary {
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .adr-practice > :not(summary) {
-    margin-inline: var(--spacing-s-m);
-  }
-
-  .adr-practice-lead {
-    margin-block: var(--spacing-m) 0;
-    max-width: 65ch;
-  }
-
-  .adr-practice-synced {
-    margin-block: 0 var(--spacing-m);
-    color: var(--color-content-muted);
-    font-size: 0.875em;
-  }
-
-  /* The life of a record: a row of five where the box has room, joined by a
-     line; a column where it has not. */
-  .adr-steps {
-    display: grid;
-    gap: var(--spacing-m);
-    margin-block: var(--spacing-l);
-    padding: 0;
-    list-style: none;
-    counter-reset: step;
-  }
-
-  .adr-step {
-    position: relative;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-areas:
-      'icon name'
-      'icon text';
-    column-gap: var(--spacing-s);
-    row-gap: 0.125rem;
-    align-items: start;
-    align-content: start;
-  }
-
-  .adr-step-icon {
-    grid-area: icon;
-    width: 2.5rem;
-    height: 2.5rem;
-    padding: 0.5rem;
-    border: 1px solid var(--color-primary);
-    border-radius: 999px;
-    background-color: var(--color-surface-elevated);
-    color: var(--color-primary);
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .adr-step-number {
-    position: absolute;
-    top: -0.25rem;
-    left: 1.875rem;
-    min-width: 1.125rem;
-    padding: 0 0.25rem;
-    border-radius: 999px;
-    background-color: var(--color-primary);
-    color: var(--color-surface);
-    font-size: 0.6875rem;
-    font-weight: 700;
-    line-height: 1.125rem;
-    text-align: center;
-  }
-
-  .adr-step-name {
-    grid-area: name;
-  }
-
-  .adr-step-text {
-    grid-area: text;
-    color: var(--color-content-muted);
-    font-size: var(--text-step-xs);
-    line-height: 1.5;
-  }
-
-  @container (width >= 50rem) {
-    .adr-steps {
-      grid-template-columns: repeat(5, 1fr);
-    }
-
-    .adr-step {
-      grid-template-columns: 1fr;
-      grid-template-areas: 'icon' 'name' 'text';
-      row-gap: var(--spacing-2xs);
-    }
-
-    /* The line from one step to the next, behind the icons. */
-    .adr-step:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      top: 1.25rem;
-      left: 2.75rem;
-      right: calc(-1 * var(--spacing-m) + 0.25rem);
-      border-top: 1px dashed var(--color-primary);
-      opacity: 0.6;
-    }
-  }
-
-  /* A record's header, line by line: the code, and what the line is for. */
-  .adr-anatomy {
-    margin-block: 0 var(--spacing-m);
-  }
-
-  .adr-anatomy figcaption {
-    margin-bottom: var(--spacing-xs);
-    font-weight: 600;
-  }
-
-  .adr-anatomy-lines {
-    display: grid;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-  }
-
-  .adr-anatomy-line {
-    display: grid;
-    gap: var(--spacing-3xs);
-    padding: var(--spacing-xs) var(--spacing-s);
-  }
-
-  .adr-anatomy-line + .adr-anatomy-line {
-    border-top: 1px solid var(--color-border);
-  }
-
-  .adr-anatomy-line[data-line='readWhen'] {
-    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
-  }
-
-  .adr-anatomy-code {
-    font-family: var(--font-mono);
-    font-size: 0.8125em;
-    overflow-wrap: anywhere;
-  }
-
-  .adr-anatomy-note {
-    color: var(--color-content-muted);
-    font-size: 0.875em;
-  }
-
-  @container (width >= 40rem) {
-    .adr-anatomy-line {
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-      gap: var(--spacing-m);
-    }
+    font-size: var(--text-step-sm);
+    line-height: var(--text-step-sm--line-height);
   }
 
   /* The timeline: dots along a line, arcs above it, a tick below. */
@@ -1893,8 +1833,9 @@
     gap: var(--spacing-xs);
     align-items: baseline;
     margin: 0;
-    font-size: var(--text-step-1);
+    font-size: var(--text-step-0);
     font-weight: 600;
+    line-height: 1.35;
   }
 
   .adr-detail-heading {
@@ -3770,4 +3711,600 @@
 
 .adr-explorer [data-slot='sort-chip'] {
   border-radius: var(--radius-sm, 0.25rem);
+}
+
+/*
+ * A project's decision lifecycle (`DecisionLifecycle`), and the two controls it
+ * is made of: `StatePath`, states on a path that each show a panel, and
+ * `StepLoop`, steps lit one after another.
+ */
+@layer components {
+  .adr-life {
+    display: grid;
+    gap: var(--spacing-m);
+    padding: var(--spacing-m-l);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-elevated);
+  }
+
+  /* The summary stays when the band is closed: title and totals on a line,
+     the lead under them, a chevron at the end. */
+  .adr-life-details > summary {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: 'title totals chevron' 'lead lead lead';
+    align-items: baseline;
+    gap: var(--spacing-2xs) var(--spacing-s);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  /* Narrow: the totals under the title, which keeps its line. */
+  .adr-life {
+    container-type: inline-size;
+  }
+
+  @container (width < 34rem) {
+    .adr-life-details > summary {
+      grid-template-columns: 1fr auto;
+      grid-template-areas: 'title chevron' 'totals totals' 'lead lead';
+    }
+  }
+
+  .adr-life-details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .adr-life-details > summary::after {
+    content: '▾';
+    grid-area: chevron;
+    color: var(--color-content-muted);
+    transition: rotate 200ms;
+  }
+
+  .adr-life-details:not([open]) > summary::after {
+    rotate: -90deg;
+  }
+
+  /* Closed: a cue under the lead, and a nudge — the band glows and the
+     cue's arrow bobs, three times, then rests. Open, the cue is gone. */
+  .adr-life-expand {
+    grid-column: 1 / -1;
+    display: inline-flex;
+    gap: 0.375em;
+    align-items: center;
+    justify-self: start;
+    margin-top: var(--spacing-2xs);
+    padding: 0.375rem var(--spacing-s);
+    border: 1px solid var(--color-primary);
+    border-radius: 999px;
+    color: var(--color-primary);
+    font-size: var(--text-step-xs);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .adr-life-expand::after {
+    content: '↓';
+  }
+
+  .adr-life-details[open] .adr-life-expand {
+    display: none;
+  }
+
+  /* The glossary that opens the band's content: small, set off by a rule. */
+  .adr-life-about {
+    max-width: 65ch;
+    margin-bottom: 0;
+    padding-left: var(--spacing-s);
+    border-left: 2px solid
+      color-mix(in srgb, var(--color-primary) 45%, transparent);
+    color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
+    line-height: 1.5;
+  }
+
+  .adr-life-details > summary:hover .adr-life-expand {
+    background-color: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .adr-life:has(.adr-life-details:not([open])) {
+      animation: adr-life-nudge 2.4s ease-in-out 1.2s 3;
+    }
+
+    .adr-life-details:not([open]) .adr-life-expand::after {
+      animation: adr-life-bob 1.2s ease-in-out 1.2s 6;
+    }
+  }
+
+  @keyframes adr-life-nudge {
+    0%,
+    100% {
+      border-color: var(--color-border);
+      box-shadow: none;
+    }
+    50% {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 0.375rem
+        color-mix(in srgb, var(--color-primary) 16%, transparent);
+    }
+  }
+
+  @keyframes adr-life-bob {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 0.25rem;
+    }
+  }
+
+  .adr-life-details > :not(summary) {
+    margin-top: var(--spacing-m);
+  }
+
+  .adr-life-title {
+    grid-area: title;
+    margin: 0;
+    font-size: var(--text-step-2);
+  }
+
+  .adr-life-lead {
+    grid-area: lead;
+    max-width: 60ch;
+    color: var(--color-content-muted);
+  }
+
+  .adr-life-totals {
+    grid-area: totals;
+    color: var(--color-content-muted);
+  }
+
+  /* The states as a path, joined like the agent loop: a node per state,
+     its count inside, its name under it. The chosen node fills; the panel
+     under the path points up at it. One under another in a narrow band. */
+  .state-path {
+    --path-states: 6;
+    container-type: inline-size;
+    display: grid;
+    gap: var(--spacing-s);
+  }
+
+  .state-path-hint {
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
+  }
+
+  .state-path-hint::before {
+    content: '↓ ';
+    color: var(--color-primary);
+  }
+
+  .state-path-states {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .state-path-state {
+    position: relative;
+    display: grid;
+    flex: 1 1 0;
+    justify-items: center;
+    align-content: start;
+    gap: var(--spacing-2xs);
+    padding: 0 var(--spacing-3xs);
+    color: var(--color-content-muted);
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .state-path-state input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* The line to the next node, with an arrowhead at its end. */
+  .state-path-state:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 1.375rem;
+    left: calc(50% + 1.75rem);
+    right: calc(-50% + 1.75rem);
+    height: 2px;
+    background-color: var(--color-border);
+  }
+
+  .state-path-state:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    top: calc(1.375rem - 0.25rem);
+    right: calc(-50% + 1.75rem);
+    border-block: 0.3rem solid transparent;
+    border-left: 0.4rem solid var(--color-border);
+  }
+
+  .state-path-node {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1.5px solid var(--color-border);
+    border-radius: 50%;
+    background-color: var(--color-surface);
+    color: var(--color-content);
+    font-weight: var(--font-weight-semibold);
+    transition:
+      translate 200ms var(--ease-smooth, ease-out),
+      border-color 200ms,
+      background-color 200ms,
+      color 200ms,
+      box-shadow 200ms;
+  }
+
+  .state-path-name {
+    font-size: var(--text-step-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.25;
+    transition: color 200ms;
+  }
+
+  .state-path-state[data-empty] .state-path-node {
+    border-style: dashed;
+    color: var(--color-content-muted);
+  }
+
+  /* Pointed at: the node lifts and takes the primary colour. */
+  .state-path-state:hover .state-path-node,
+  .state-path-state:has(input:focus-visible) .state-path-node {
+    translate: 0 -0.2rem;
+    border-color: var(--color-primary);
+    box-shadow: 0 0.375rem 1rem
+      color-mix(in srgb, var(--color-primary) 22%, transparent);
+  }
+
+  .state-path-state:hover .state-path-name {
+    color: var(--color-content);
+  }
+
+  .state-path-state:has(input:focus-visible) .state-path-node {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 3px;
+  }
+
+  /* Chosen: filled. */
+  .state-path-state:has(input:checked) .state-path-node {
+    border-color: var(--color-primary);
+    border-style: solid;
+    background-color: var(--color-primary);
+    color: var(--color-primary-content);
+    box-shadow: 0 0 0 0.375rem
+      color-mix(in srgb, var(--color-primary) 18%, transparent);
+  }
+
+  .state-path-state:has(input:checked) .state-path-name {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Only the chosen state's panel, with a caret under its node. */
+  .state-path-panel {
+    position: relative;
+    display: none;
+    gap: var(--spacing-2xs);
+    margin-top: var(--spacing-xs);
+    padding: var(--spacing-s) var(--spacing-m);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    background-color: color-mix(in srgb, var(--color-primary) 6%, transparent);
+  }
+
+  .state-path-panel::before {
+    content: '';
+    position: absolute;
+    top: -0.45rem;
+    left: calc((var(--at) + 0.5) / var(--path-states) * 100% - 0.45rem);
+    width: 0.9rem;
+    height: 0.9rem;
+    border-top: 1px solid var(--color-primary);
+    border-left: 1px solid var(--color-primary);
+    background:
+      linear-gradient(
+        color-mix(in srgb, var(--color-primary) 6%, transparent),
+        color-mix(in srgb, var(--color-primary) 6%, transparent)
+      ),
+      var(--color-surface-elevated);
+    rotate: 45deg;
+  }
+
+  /* The panel in the chosen state's place: the n-th node shows the n-th panel. */
+  .state-path:has(
+      .state-path-state:nth-child(1 of .state-path-state) input:checked
+    )
+    .state-path-panel:nth-child(1 of .state-path-panel),
+  .state-path:has(
+      .state-path-state:nth-child(2 of .state-path-state) input:checked
+    )
+    .state-path-panel:nth-child(2 of .state-path-panel),
+  .state-path:has(
+      .state-path-state:nth-child(3 of .state-path-state) input:checked
+    )
+    .state-path-panel:nth-child(3 of .state-path-panel),
+  .state-path:has(
+      .state-path-state:nth-child(4 of .state-path-state) input:checked
+    )
+    .state-path-panel:nth-child(4 of .state-path-panel),
+  .state-path:has(
+      .state-path-state:nth-child(5 of .state-path-state) input:checked
+    )
+    .state-path-panel:nth-child(5 of .state-path-panel),
+  .state-path:has(
+      .state-path-state:nth-child(6 of .state-path-state) input:checked
+    )
+    .state-path-panel:nth-child(6 of .state-path-panel),
+  .state-path:has(
+      .state-path-state:nth-child(7 of .state-path-state) input:checked
+    )
+    .state-path-panel:nth-child(7 of .state-path-panel),
+  .state-path:has(
+      .state-path-state:nth-child(8 of .state-path-state) input:checked
+    )
+    .state-path-panel:nth-child(8 of .state-path-panel) {
+    display: grid;
+  }
+
+  /* Motion: the band's height eases open and shut, and a state's panel
+     fades and rises in each time it is chosen (an animation reruns whenever
+     its element leaves display: none). A browser without ::details-content
+     opens and shuts at once. Still under reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    .adr-life {
+      interpolate-size: allow-keywords;
+    }
+
+    .adr-life-details::details-content {
+      block-size: 0;
+      overflow: clip;
+      opacity: 0;
+      transition:
+        block-size 380ms var(--ease-smooth, ease-out),
+        opacity 260ms ease-out,
+        content-visibility 380ms allow-discrete;
+    }
+
+    .adr-life-details[open]::details-content {
+      block-size: auto;
+      opacity: 1;
+    }
+
+    .state-path-panel {
+      animation: state-path-panel-in 260ms var(--ease-smooth, ease-out);
+    }
+
+    .state-path-panel::before {
+      animation: state-path-caret-in 260ms var(--ease-smooth, ease-out);
+    }
+  }
+
+  @keyframes state-path-panel-in {
+    from {
+      opacity: 0;
+      translate: 0 0.5rem;
+    }
+  }
+
+  @keyframes state-path-caret-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @container (width < 34rem) {
+    .state-path-states {
+      flex-direction: column;
+      gap: var(--spacing-s);
+    }
+
+    .state-path-state {
+      grid-template-columns: auto 1fr;
+      justify-items: start;
+      align-items: center;
+      gap: var(--spacing-s);
+      text-align: start;
+    }
+
+    .state-path-state:not(:last-child)::after {
+      top: calc(100% - 0.125rem);
+      left: calc(1.375rem + var(--spacing-3xs) - 1px);
+      right: auto;
+      width: 2px;
+      height: calc(var(--spacing-s) + 0.25rem);
+    }
+
+    .state-path-state:not(:last-child)::before {
+      display: none;
+    }
+
+    .state-path-panel::before {
+      display: none;
+    }
+  }
+
+  .state-path-panel p {
+    margin: 0;
+  }
+
+  .adr-life-quote {
+    display: block;
+    color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
+  }
+
+  .adr-life-none {
+    color: var(--color-content-muted);
+  }
+
+  /* The agent loop: four beats joined by a line, lit one after another and
+     round again, as the work goes. Still, all lit, under reduced motion. */
+  .step-loop {
+    container-type: inline-size;
+    padding-top: var(--spacing-m);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .step-loop-list {
+    --loop-beat: 1.6s;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .step-loop-step {
+    position: relative;
+    display: grid;
+    flex: 1 1 0;
+    justify-items: center;
+    gap: var(--spacing-2xs);
+    padding-inline: var(--spacing-3xs);
+    color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
+    text-align: center;
+  }
+
+  /* The line to the next beat, from this icon's edge to the next one's. */
+  .step-loop-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 1.375rem;
+    left: calc(50% + 1.625rem);
+    right: calc(-50% + 1.625rem);
+    height: 2px;
+    border-radius: 1px;
+    background:
+      linear-gradient(90deg, transparent, var(--color-primary) 50%, transparent)
+        no-repeat -100% 0 / 50% 100%,
+      var(--color-border);
+  }
+
+  .step-loop-icon {
+    box-sizing: content-box;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0.625rem;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background-color: var(--color-surface);
+  }
+
+  .step-loop-name {
+    font-weight: var(--font-weight-medium);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .step-loop-step {
+      animation: step-loop-beat calc(var(--loop-steps, 4) * var(--loop-beat))
+        infinite;
+      animation-delay: calc(var(--step) * var(--loop-beat));
+    }
+
+    .step-loop-step .step-loop-icon {
+      animation: step-loop-icon calc(var(--loop-steps, 4) * var(--loop-beat))
+        infinite;
+      animation-delay: inherit;
+    }
+
+    /* A spark runs along the line as the next beat lights. */
+    .step-loop-step:not(:last-child)::after {
+      animation: step-loop-spark calc(var(--loop-steps, 4) * var(--loop-beat))
+        infinite;
+      animation-delay: calc(var(--step) * var(--loop-beat));
+    }
+
+    /* Hovered or focused, the loop holds still on what is read. */
+    .step-loop-list:hover .step-loop-step,
+    .step-loop-list:hover .step-loop-icon,
+    .step-loop-list:hover .step-loop-step::after {
+      animation-play-state: paused;
+    }
+  }
+
+  /* Lit for its beat, then back to quiet. */
+  @keyframes step-loop-beat {
+    0%,
+    25% {
+      color: var(--color-content);
+    }
+    32%,
+    100% {
+      color: var(--color-content-muted);
+    }
+  }
+
+  @keyframes step-loop-icon {
+    0% {
+      border-color: var(--color-border);
+      box-shadow: none;
+      scale: 1;
+    }
+    6%,
+    22% {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      box-shadow: 0 0 0 0.375rem
+        color-mix(in srgb, var(--color-primary) 18%, transparent);
+      scale: 1.08;
+    }
+    32%,
+    100% {
+      border-color: var(--color-border);
+      box-shadow: none;
+      scale: 1;
+    }
+  }
+
+  @keyframes step-loop-spark {
+    0%,
+    15% {
+      background-position:
+        -100% 0,
+        0 0;
+    }
+    25%,
+    100% {
+      background-position:
+        200% 0,
+        0 0;
+    }
+  }
+
+  /* A narrow band: the beats one under another, the line running down. */
+  @container (width < 30rem) {
+    .step-loop-list {
+      flex-direction: column;
+      gap: var(--spacing-s);
+    }
+
+    .step-loop-step {
+      grid-template-columns: auto 1fr;
+      justify-items: start;
+      align-items: center;
+      gap: var(--spacing-s);
+      text-align: start;
+    }
+
+    .step-loop-step:not(:last-child)::after {
+      top: calc(100% - 0.25rem);
+      left: 1.375rem;
+      right: auto;
+      width: 2px;
+      height: calc(var(--spacing-s) + 0.5rem);
+      background: var(--color-border);
+    }
+  }
 }

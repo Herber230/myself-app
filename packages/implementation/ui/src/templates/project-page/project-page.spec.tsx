@@ -58,7 +58,7 @@ describe("a project's page", () => {
     expect(screen.queryByRole('link', { name: 'Visit the site' })).toBeNull();
   });
 
-  it('shows its overview, patterns, file tree and decisions', async () => {
+  it('shows how it is built, its overview, patterns, file tree and records', async () => {
     const page = (await loadProjectPage(
       SITE_CONTENT,
       'myself-app',
@@ -66,19 +66,42 @@ describe("a project's page", () => {
     await pageOf(page, 'es');
     expect(screen.getByText('The overview.')).toBeTruthy();
     for (const heading of [
+      'Decisiones que evolucionan',
       'Resumen',
       'Patrones',
       'Estructura de archivos',
-      'Decisiones de arquitectura',
+      'Todos los registros',
     ]) {
       expect(
         screen.getByRole('heading', { level: 2, name: heading }),
       ).toBeTruthy();
     }
+    // The band comes first, before the overview.
+    const band = document.getElementById('lifecycle') as HTMLElement;
     expect(
-      screen.getByText('Los registros están escritos en inglés.'),
+      band.compareDocumentPosition(
+        document.getElementById('overview') as HTMLElement,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      screen.getByText(
+        /^Los registros están escritos en inglés\. Los registros/,
+      ),
     ).toBeTruthy();
     expect(screen.getByText('packages/')).toBeTruthy();
+    // A pattern links to the records that decided it, in the explorer.
+    const patterns = document.getElementById('patterns') as HTMLElement;
+    expect(
+      within(patterns)
+        .getByRole('link', { name: 'ADR 0016' })
+        .getAttribute('href'),
+    ).toBe('?adr=0016#decisions');
+    // A path links into the repository.
+    expect(
+      document
+        .querySelector('#structure a.file-tree-link')
+        ?.getAttribute('href'),
+    ).toBe('https://github.com/Herber230/myself-app/tree/main/apps/');
     expect(document.querySelectorAll('[data-slot="split-row"]')).toHaveLength(
       page.decisions.length,
     );
@@ -104,6 +127,9 @@ describe("a project's page", () => {
     });
     await pageOf((await loadProjectPage(content, 'entifix')) as ProjectPage);
     expect(document.querySelector('.page-header-actions')).toBeNull();
+    // Without a repository, its paths are names, not links.
+    expect(document.querySelector('.file-tree-link')).toBeNull();
+    expect(document.querySelector('.file-tree-name')).not.toBeNull();
   });
 
   it('links a site where a project has one', async () => {

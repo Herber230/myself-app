@@ -46,10 +46,12 @@ export async function loadProjectPage(
       },
       { resolve: ['technologies'] },
     ),
-    content.loadAll(ProjectPattern, {
-      filtering: [ofProject],
-      sorting: [...byOrder],
-    }),
+    content.loadAll(
+      ProjectPattern,
+      { filtering: [ofProject], sorting: [...byOrder] },
+      // A pattern's card links to the records that decided it.
+      { resolve: ['decisions'] },
+    ),
     content.loadAll(ProjectPath, {
       filtering: [ofProject],
       sorting: [...byOrder],
