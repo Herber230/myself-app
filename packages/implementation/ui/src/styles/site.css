@@ -759,6 +759,8 @@
   .cv-sheet[data-mode='ats'] {
     --cv-accent: var(--color-content);
     --cv-rule: var(--color-content-muted);
+    /* Every field on its own line runs longer than the human sheet. */
+    padding-block: 12mm;
   }
 
   .cv-sheet :where(h1, h2, h3, p, ul) {
@@ -859,15 +861,25 @@
     display: block;
   }
 
+  /* Its head takes three lines, not two: closer entries keep it one page. */
+  .cv-sheet[data-mode='ats'] .cv-entry + .cv-entry {
+    margin-top: 1.5mm;
+  }
+
   .cv-responsibilities,
   .cv-meta {
     color: var(--color-content-muted);
   }
 
   .cv-tech {
-    margin-top: 0.5mm;
-    color: var(--color-content-muted);
+    display: block;
     font-size: 8.5pt;
+    line-height: 1.3;
+  }
+
+  .cv-sheet[data-mode='ats'] .cv-tech {
+    display: inline;
+    font-size: inherit;
   }
 
   .cv-list {

@@ -269,16 +269,20 @@ function Employment({
       </div>
       <p className="cv-responsibilities">
         {inLocale(period.responsibilities, locale)}
+        {/* A line of its own on paper; on the ATS sheet, the same sentence. */}
+        {technologies.length > 0 && (
+          <>
+            {' '}
+            <span className="cv-tech">
+              {t('cvSheet.technologies', {
+                names: technologies
+                  .map(technology => inLocale(technology.name, locale))
+                  .join(', '),
+              })}
+            </span>
+          </>
+        )}
       </p>
-      {technologies.length > 0 && (
-        <p className="cv-tech">
-          {t('cvSheet.technologies', {
-            names: technologies
-              .map(technology => inLocale(technology.name, locale))
-              .join(', '),
-          })}
-        </p>
-      )}
       {highlights.length > 0 && (
         <ul className="cv-list">
           {highlights.map(highlight => (
