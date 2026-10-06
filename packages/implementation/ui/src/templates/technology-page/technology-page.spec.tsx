@@ -1,4 +1,6 @@
 import {
+  type CvSheet,
+  loadCvSheet,
   loadPostsForTechnology,
   loadTechnologyDetail,
   type TechnologyDetail,
@@ -70,12 +72,59 @@ describe("a technology's page", () => {
     expect(screen.queryByRole('link', { name: 'Source' })).toBeNull();
   });
 
-  it('shows its areas and links, and says when no project uses it', async () => {
-    await renderPage(pageOf('es', 'static-first-delivery'), 'es');
+  it('names the jobs it was used at, newest first, before the projects', async () => {
+    const detail = (await loadTechnologyDetail(
+      SITE_CONTENT,
+      'typescript',
+    )) as TechnologyDetail;
+    const cv = (await loadCvSheet(SITE_CONTENT, 'full-stack')) as CvSheet;
+    // Two jobs, as the content's link would resolve them.
+    const employments = cv.employments
+      .slice(0, 2)
+      .map(({ period, employer }) => ({ period, employer }));
+    await renderPage(
+      Promise.resolve(
+        <TechnologyPageView
+          locale="en"
+          detail={{ ...detail, employments }}
+          posts={[]}
+        />,
+      ),
+      'en',
+    );
+    const used = screen.getByRole('heading', { name: 'Where I used it' })
+      .nextElementSibling as HTMLElement;
+    const items = within(used)
+      .getAllByRole('listitem')
+      .map(each => each.textContent);
+    expect(items.slice(0, 3)).toEqual([
+      'Frontend Software Engineer at VanaNov 2025 – Present',
+      'Frontend Software Engineer at HealthCare.comNov 2020 – Nov 2025',
+      'entifixA project on this site',
+    ]);
+  });
+
+  it('shows its areas and links, and says when nothing has used it', async () => {
+    const detail = (await loadTechnologyDetail(
+      SITE_CONTENT,
+      'static-first-delivery',
+    )) as TechnologyDetail;
+    await renderPage(
+      Promise.resolve(
+        <TechnologyPageView
+          locale="es"
+          detail={{ ...detail, employments: [], projects: [] }}
+          posts={[]}
+        />,
+      ),
+      'es',
+    );
     expect(screen.getByText('Áreas')).toBeTruthy();
     expect(screen.queryByRole('link', { name: 'Sitio web' })).toBeNull();
     expect(
-      screen.getByText('Ningún proyecto de este sitio la usa todavía.'),
+      screen.getByText(
+        'Ni un trabajo ni un proyecto de este sitio la ha usado todavía.',
+      ),
     ).toBeTruthy();
   });
 });

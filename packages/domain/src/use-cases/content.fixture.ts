@@ -121,6 +121,7 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
       responsibilities: text('Engines.'),
       start: '2015-01-01',
       end: '2019-12-31',
+      technologies: ['typescript', 'jest'],
     },
     {
       id: 'globex-architect',
@@ -128,6 +129,7 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
       role: text('Architect'),
       responsibilities: text('Plans.'),
       start: '2020-01-01',
+      technologies: ['typescript'],
     },
   ],
   'cv-focuses.json': [

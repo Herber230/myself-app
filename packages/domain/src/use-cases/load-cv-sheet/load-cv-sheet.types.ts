@@ -11,6 +11,8 @@ import type { Technology } from '../../entities/technology.entity.js';
 export interface CvEmployment {
   readonly period: EmploymentPeriod;
   readonly employer: Employer;
+  /** The ones used there, in the order the employment lists them. */
+  readonly technologies: readonly Technology[];
   /** The ones sharing a focus with the variant, by their order. */
   readonly highlights: readonly EmploymentHighlight[];
 }

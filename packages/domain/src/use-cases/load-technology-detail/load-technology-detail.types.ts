@@ -1,3 +1,5 @@
+import type { Employer } from '../../entities/employer.entity.js';
+import type { EmploymentPeriod } from '../../entities/employment-period.entity.js';
 import type { Project } from '../../entities/project.entity.js';
 import type { Quadrant } from '../../entities/quadrant.entity.js';
 import type { Ring } from '../../entities/ring.entity.js';
@@ -20,6 +22,11 @@ export interface TechnologyDetail {
   readonly areas: readonly TechnologyArea[];
   /** Oldest first. */
   readonly history: readonly RingStretch[];
+  /** Where it was used, newest first. */
+  readonly employments: readonly {
+    readonly period: EmploymentPeriod;
+    readonly employer: Employer;
+  }[];
   /** By the projects' own order. */
   readonly projects: readonly Project[];
 }

@@ -2,14 +2,20 @@ import {
   accessor,
   type Entity,
   entity,
+  EntityCollectionLink,
   type EntityId,
   EntityLink,
 } from '@entifix/core';
 
 import type { LocalizedText } from '../localized-text.js';
 import { Employer } from './employer.entity.js';
+import { Technology } from './technology.entity.js';
 
-/** One stretch at one employer. `end` absent means it is the current one. */
+/**
+ * One stretch at one employer. `end` absent means it is the current one.
+ * `technologies` are the ones used there: a technology's page says where it
+ * was used, and the CV lists them under the role.
+ */
 @entity({ key: 'employment-period', domain: 'cv' })
 export class EmploymentPeriod implements Entity {
   #id?: EntityId;
@@ -18,6 +24,7 @@ export class EmploymentPeriod implements Entity {
   #responsibilities?: LocalizedText;
   #start?: Date;
   #end?: Date;
+  #technologies = new EntityCollectionLink(Technology);
 
   @accessor({ type: 'id' })
   get id(): EntityId {
@@ -73,5 +80,10 @@ export class EmploymentPeriod implements Entity {
   }
   set end(value: Date | undefined) {
     this.#end = value;
+  }
+
+  @accessor({ type: 'linkCollection' })
+  get technologies(): EntityCollectionLink<Technology> {
+    return this.#technologies;
   }
 }

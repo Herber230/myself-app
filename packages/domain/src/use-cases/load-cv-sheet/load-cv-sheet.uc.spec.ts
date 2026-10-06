@@ -19,6 +19,10 @@ describe("a variant's sheet", () => {
       'globex',
       'acme',
     ]);
+    expect(sheet?.employments.map(each => ids(each.technologies))).toEqual([
+      ['typescript'],
+      ['typescript', 'jest'],
+    ]);
   });
 
   it('carries the profile, its channels, education and certificates, by order', async () => {

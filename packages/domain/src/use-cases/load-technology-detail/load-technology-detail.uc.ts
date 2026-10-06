@@ -4,6 +4,7 @@ import {
   targetsOf,
 } from '@myself-app/entifix-incubator-static-adapter';
 
+import { EmploymentPeriod } from '../../entities/employment-period.entity.js';
 import { Project } from '../../entities/project.entity.js';
 import { Technology } from '../../entities/technology.entity.js';
 import { TechnologyUsePeriod } from '../../entities/technology-use-period.entity.js';
@@ -12,17 +13,18 @@ import type { TechnologyDetail } from './load-technology-detail.types.js';
 /**
  * Everything a technology's detail shows (#42): the technology, its quadrant
  * and ring, its areas, the stretches it spent in each ring — oldest first, so
- * the list is its ring history — and the projects that use it. Nothing for an
+ * the list is its ring history — the employments it was used at, newest
+ * first, and the projects that use it. Nothing for an
  * id that names no technology.
  *
- * Its links are resolved by the load (ADR 0018), and the periods and projects
- * are filtered on their links to it, which the static adapter compares by id.
+ * Its links are resolved by the load (ADR 0018), and the periods, employments
+ * and projects are filtered on their links to it, which the static adapter compares by id.
  */
 export async function loadTechnologyDetail(
   content: StaticContent,
   id: string,
 ): Promise<TechnologyDetail | undefined> {
-  const [[technology], periods, projects] = await Promise.all([
+  const [[technology], periods, employments, projects] = await Promise.all([
     content.loadAll(
       Technology,
       { filtering: [{ property: 'id', operator: 'eq', value: id }] },
@@ -37,6 +39,14 @@ export async function loadTechnologyDetail(
       { resolve: ['ring'] },
     ),
     // `in` over a collection matches any of its ids, as Mongo's does.
+    content.loadAll(
+      EmploymentPeriod,
+      {
+        filtering: [{ property: 'technologies', operator: 'in', values: [id] }],
+        sorting: [{ 0: { property: 'start', type: 'desc' } }],
+      },
+      { resolve: ['employer'] },
+    ),
     content.loadAll(Project, {
       filtering: [{ property: 'technologies', operator: 'in', values: [id] }],
       sorting: [{ 0: { property: 'order', type: 'asc' } }],
@@ -54,6 +64,10 @@ export async function loadTechnologyDetail(
       // Validation has made every start present.
       start: period.start as Date,
       end: period.end,
+    })),
+    employments: employments.map(period => ({
+      period,
+      employer: targetOf(period.employer),
     })),
     projects,
   };

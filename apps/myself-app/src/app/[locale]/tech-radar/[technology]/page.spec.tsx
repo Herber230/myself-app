@@ -70,16 +70,14 @@ describe("a technology's page", () => {
     expect(screen.queryByRole('link', { name: 'Source' })).toBeNull();
   });
 
-  it('shows its areas and links, and says when no project uses it', async () => {
+  it('shows its areas, and where it was used', async () => {
     await renderPage(
       TechnologyPage(propsOf('es', 'static-first-delivery')),
       'es',
     );
     expect(screen.getByText('Áreas')).toBeTruthy();
     expect(screen.queryByRole('link', { name: 'Sitio web' })).toBeNull();
-    expect(
-      screen.getByText('Ningún proyecto de este sitio la usa todavía.'),
-    ).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Dónde la usé' })).toBeTruthy();
   });
 
   it('is titled and alternated per locale', async () => {

@@ -864,6 +864,12 @@
     color: var(--color-content-muted);
   }
 
+  .cv-tech {
+    margin-top: 0.5mm;
+    color: var(--color-content-muted);
+    font-size: 8.5pt;
+  }
+
   .cv-list {
     margin-top: 1mm;
     padding-left: 4.5mm;

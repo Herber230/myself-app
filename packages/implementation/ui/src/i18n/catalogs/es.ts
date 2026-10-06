@@ -53,6 +53,7 @@ export const es = {
       certificates: 'Certificaciones',
     },
     present: 'Actualidad',
+    technologies: 'Tecnologías: {{names}}',
     notCompleted: 'sin concluir',
     location: 'Ubicación',
   },
@@ -283,7 +284,10 @@ export const es = {
       repository: 'Código',
       history: 'Cómo se movió',
       projects: 'Dónde la usé',
-      noProjects: 'Ningún proyecto de este sitio la usa todavía.',
+      employment: '{{role}} en {{employer}}',
+      project: 'Un proyecto de este sitio',
+      noProjects:
+        'Ni un trabajo ni un proyecto de este sitio la ha usado todavía.',
       posts: 'Entradas sobre ella',
     },
     rings: {

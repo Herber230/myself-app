@@ -178,6 +178,9 @@ describe('a localized member', () => {
 describe('the links between entities', () => {
   it('point where the pages need to walk', () => {
     expect(columnsOf(EmploymentPeriod).get('employer')?.type).toBe('link');
+    expect(columnsOf(EmploymentPeriod).get('technologies')?.type).toBe(
+      'linkCollection',
+    );
     expect(columnsOf(Technology).get('quadrant')?.type).toBe('link');
     expect(columnsOf(Technology).get('ring')?.type).toBe('link');
     expect(columnsOf(Technology).get('areas')?.type).toBe('linkCollection');

@@ -38,6 +38,20 @@ describe("a technology's detail", () => {
     ]);
   });
 
+  it('lists the employments it was used at, newest first, with their employer', async () => {
+    const detail = await detailOf('typescript');
+    expect(
+      detail?.employments.map(({ period, employer }) => [
+        period.id,
+        employer.name,
+      ]),
+    ).toEqual([
+      ['globex-architect', 'Globex'],
+      ['acme-engineer', 'Acme'],
+    ]);
+    expect((await detailOf('react'))?.employments).toEqual([]);
+  });
+
   it('is undefined for an id that names no technology', async () => {
     expect(await detailOf('cobol')).toBeUndefined();
   });

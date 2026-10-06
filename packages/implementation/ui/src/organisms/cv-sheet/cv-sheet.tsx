@@ -234,8 +234,8 @@ function Channel({
 }
 
 /**
- * The role, then the employer and dates, then what was done — each on its
- * own line, the order a parser expects its fields in.
+ * The role, then the employer and dates, then what was done and with what —
+ * each on its own line, the order a parser expects its fields in.
  */
 function Employment({
   part,
@@ -249,6 +249,10 @@ function Employment({
   t: T;
 }) {
   const { period, employer, highlights } = employment;
+  // Tools, platforms and languages: names a reader and a parser look for.
+  const technologies = employment.technologies.filter(
+    technology => technology.quadrant.id !== 'techniques',
+  );
   return (
     <div className="cv-entry" data-cv-part={part}>
       <div className="cv-entry-head">
@@ -266,6 +270,15 @@ function Employment({
       <p className="cv-responsibilities">
         {inLocale(period.responsibilities, locale)}
       </p>
+      {technologies.length > 0 && (
+        <p className="cv-tech">
+          {t('cvSheet.technologies', {
+            names: technologies
+              .map(technology => inLocale(technology.name, locale))
+              .join(', '),
+          })}
+        </p>
+      )}
       {highlights.length > 0 && (
         <ul className="cv-list">
           {highlights.map(highlight => (
