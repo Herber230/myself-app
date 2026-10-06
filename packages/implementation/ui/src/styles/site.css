@@ -470,6 +470,23 @@
     scroll-margin-top: 4rem;
   }
 
+  /* A feathered scrim under each section's column keeps the site's backdrop
+     to the margins, out from under the text. */
+  .landing-section > * {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .landing-section > *::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--spacing-s)) 0;
+    z-index: -1;
+    border-radius: var(--radius-lg);
+    background-color: color-mix(in srgb, var(--color-surface) 85%, transparent);
+    filter: blur(24px);
+  }
+
   .landing-section + .landing-section {
     border-top: 1px solid var(--color-border);
   }
@@ -480,25 +497,12 @@
 
   /* The portrait and the facts beside the bio, as a sidebar (Every Layout):
      side by side while the bio keeps at least 55% of the row, stacked below
-     that, with no media query. A feathered scrim keeps the site's backdrop
-     out from under the text. */
+     that, with no media query. */
   .about-body {
-    position: relative;
-    isolation: isolate;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
     gap: var(--spacing-l);
-  }
-
-  .about-body::before {
-    content: '';
-    position: absolute;
-    inset: calc(-1 * var(--spacing-s));
-    z-index: -1;
-    border-radius: var(--radius-lg);
-    background-color: color-mix(in srgb, var(--color-surface) 85%, transparent);
-    filter: blur(24px);
   }
 
   /* The portrait and the facts wrap the same way: the portrait alone on top
@@ -1350,9 +1354,35 @@
 @layer components {
   /* ── The landing cards ────────────────────────────────────────────────── */
 
+  /* Side by side while each keeps 20rem, one above the other below that;
+     a third project takes its place with no media query. Each card is the
+     row's height, its glyph on top, and its cue at its foot. */
   .project-card-list {
     display: grid;
-    gap: var(--spacing-l);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: var(--spacing-m-l);
+  }
+
+  .project-card-list > li {
+    display: flex;
+  }
+
+  .project-card-list .link-card {
+    flex-direction: column;
+    gap: var(--spacing-s);
+    padding: var(--spacing-m-l);
+  }
+
+  .project-card-list .link-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xs);
+    align-self: stretch;
+  }
+
+  .project-card-list .link-card-footer {
+    margin-top: auto;
+    padding-top: var(--spacing-xs);
   }
 
   /* ── A project's glyph, redrawn stroke by stroke on hover ──────────────── */
@@ -2194,6 +2224,23 @@
   .link-card-text {
     margin: 0;
     color: var(--color-content-muted);
+  }
+
+  .link-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3xs) var(--spacing-2xs);
+    margin: var(--spacing-2xs) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .link-card-tags > li {
+    padding: 0.125rem var(--spacing-xs);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
   }
 
   .link-card-footer {

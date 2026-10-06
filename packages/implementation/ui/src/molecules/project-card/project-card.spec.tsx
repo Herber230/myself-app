@@ -12,6 +12,7 @@ describe('a project card', () => {
         summary="An entity framework."
         href="/en/projects/entifix/"
         cue="How it works"
+        technologies={['Effect', 'TypeScript']}
       />,
     );
     const links = screen.getAllByRole('link');
@@ -22,5 +23,8 @@ describe('a project card', () => {
     ).toBeTruthy();
     expect(screen.getByText('An entity framework.')).toBeTruthy();
     expect(container.querySelector('svg.project-glyph')).toBeTruthy();
+    expect(
+      screen.getAllByRole('listitem').map(item => item.textContent),
+    ).toEqual(['Effect', 'TypeScript']);
   });
 });

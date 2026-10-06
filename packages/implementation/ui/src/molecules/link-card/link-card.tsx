@@ -15,6 +15,8 @@ export interface LinkCardProps {
   readonly eyebrow?: string;
   /** One or two sentences under the title. */
   readonly description?: string;
+  /** Short labels under the description: a project's technologies. */
+  readonly tags?: readonly string[];
   /** What following it does: "How it works". Its arrow is `site.css`'s. */
   readonly cue?: string;
   /** A drawing or a logo, in the badge at its start. */
@@ -48,6 +50,7 @@ export function LinkCard({
   name,
   eyebrow,
   description,
+  tags = [],
   cue,
   mark,
   markKind = 'glyph',
@@ -80,6 +83,13 @@ export function LinkCard({
           )}
         </Title>
         {description && <p className="link-card-text">{description}</p>}
+        {tags.length > 0 && (
+          <ul className="link-card-tags">
+            {tags.map(tag => (
+              <li key={tag}>{tag}</li>
+            ))}
+          </ul>
+        )}
         {(cue !== undefined || extra) && (
           <div className="link-card-footer">
             <span aria-hidden="true" className="link-card-cue">

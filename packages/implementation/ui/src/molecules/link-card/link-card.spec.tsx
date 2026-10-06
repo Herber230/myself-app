@@ -87,7 +87,18 @@ describe('a link card', () => {
     expect(card?.hasAttribute('data-variant')).toBe(false);
     expect(container.querySelector('.link-card-eyebrow')).toBeNull();
     expect(container.querySelector('.link-card-text')).toBeNull();
+    expect(container.querySelector('.link-card-tags')).toBeNull();
     expect(container.querySelector('.link-card-footer')).toBeNull();
+  });
+
+  it('lists its tags under the description, outside its one link', () => {
+    render(
+      <LinkCard href="/en/" title="entifix" tags={['Effect', 'TypeScript']} />,
+    );
+    expect(
+      screen.getAllByRole('listitem').map(item => item.textContent),
+    ).toEqual(['Effect', 'TypeScript']);
+    expect(screen.getByRole('link').textContent).toBe('entifix');
   });
 
   it('keeps the arrow alone when its cue is empty, and drops the mark it lacks', () => {
