@@ -16,7 +16,7 @@ describe("a technology's detail", () => {
         end: stretch.end?.toISOString().slice(0, 10),
       })),
     ).toEqual([
-      { ring: 'adopt', start: '2017-08-01', end: '2026-01-01' },
+      { ring: 'adopt', start: '2020-11-01', end: '2026-01-01' },
       { ring: 'hold', start: '2026-01-01', end: undefined },
     ]);
   });

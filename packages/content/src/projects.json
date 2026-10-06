@@ -7,7 +7,13 @@
       "es": "Un framework code-first para Clean Architecture y diseño guiado por el dominio: las entidades y los casos de uso son la aplicación; el almacenamiento, la API y la interfaz son adaptadores a su alrededor."
     },
     "repositoryUrl": "https://github.com/r10c-technologies/entifix",
-    "technologies": ["effect", "typescript", "nx"],
+    "technologies": [
+      "effect",
+      "typescript",
+      "nx",
+      "clean-architecture",
+      "vitest"
+    ],
     "featured": true,
     "order": 0
   },
@@ -28,7 +34,11 @@
       "pulumi",
       "amazon-s3",
       "cloudfront",
-      "playwright"
+      "playwright",
+      "react",
+      "static-first-delivery",
+      "vitest",
+      "trunk-based-development"
     ],
     "featured": true,
     "order": 1
