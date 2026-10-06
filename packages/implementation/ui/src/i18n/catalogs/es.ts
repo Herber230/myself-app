@@ -89,7 +89,7 @@ export const es = {
     headings: {
       about: 'Sobre mí',
       projects: 'Proyectos',
-      contact: 'Contacto profesional',
+      contact: 'Hablemos',
     },
     about: {
       facts: 'De un vistazo',
@@ -101,6 +101,7 @@ export const es = {
     contact: {
       link: '{{channel}}: {{handle}}',
       lead: 'Abierto a nuevos roles, colaboraciones y a una buena conversación sobre software. Elige la vía que prefieras.',
+      cv: 'Descarga mi CV (PDF)',
       actions: {
         email: 'Escríbeme un correo',
         linkedin: 'Conectemos en LinkedIn',

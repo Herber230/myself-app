@@ -25,7 +25,7 @@ describe('the landing page', () => {
     expect(headings).toEqual([
       'About me',
       'Projects',
-      'Professional contact',
+      'Get in touch',
       'Beyond the code',
     ]);
   });
@@ -41,7 +41,7 @@ describe('the landing page', () => {
       projects.querySelector('a[href="/es/projects/entifix/"]'),
     ).not.toBeNull();
     const contact = screen.getByRole('region', {
-      name: 'Contacto profesional',
+      name: 'Hablemos',
     });
     expect(
       contact.querySelector('a[href="https://github.com/Herber230"]'),

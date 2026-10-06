@@ -20,6 +20,8 @@ export interface LandingPageData {
   readonly career: Career;
   readonly projects: readonly FeaturedProject[];
   readonly channels: readonly ContactChannel[];
+  /** The default CV variant, whose PDF the contact section links to. */
+  readonly cvVariant: string;
   readonly beyondCode: BeyondCodeTeaserData;
   /** The personal channels, for the "Beyond the code" teaser. */
   readonly personalChannels: readonly ContactChannel[];
@@ -37,6 +39,7 @@ export function LandingPageView({
   career,
   projects,
   channels,
+  cvVariant,
   beyondCode,
   personalChannels,
 }: LandingPageData) {
@@ -47,7 +50,11 @@ export function LandingPageView({
         <Hero locale={locale} profile={profile} />
         <AboutSection locale={locale} profile={profile} career={career} />
         <ProjectsSection locale={locale} projects={projects} />
-        <ContactSection locale={locale} channels={channels} />
+        <ContactSection
+          locale={locale}
+          channels={channels}
+          cvVariant={cvVariant}
+        />
         <BeyondCodeTeaser
           locale={locale}
           teaser={beyondCode}

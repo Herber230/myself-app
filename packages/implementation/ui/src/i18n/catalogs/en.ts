@@ -99,7 +99,7 @@ export const en = {
     headings: {
       about: 'About me',
       projects: 'Projects',
-      contact: 'Professional contact',
+      contact: 'Get in touch',
     },
     /** The facts beside the bio; their values come from content. */
     about: {
@@ -113,6 +113,8 @@ export const en = {
       /** A link's name: the channel, then the handle it shows. */
       link: '{{channel}}: {{handle}}',
       lead: 'Open to new roles, collaborations and a good conversation about software. Pick whichever way suits you best.',
+      /** The link to the default CV's prebuilt PDF, under the cards. */
+      cv: 'Download my CV (PDF)',
       /** Each card's cue: what following the channel does. */
       actions: {
         email: 'Send me an email',

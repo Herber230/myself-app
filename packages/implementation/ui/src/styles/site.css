@@ -2388,6 +2388,48 @@
     }
   }
 
+  /* On a narrow screen, the mark above the words, so the handle has the
+     card's whole width; the email shrinks with the screen rather than break
+     inside the address. */
+  @media (width < 40rem) {
+    .contact-card-list .link-card {
+      flex-direction: column;
+      gap: var(--spacing-s);
+      padding: var(--spacing-m-l);
+    }
+
+    .contact-card-list > li:first-child .link-card-title {
+      font-size: clamp(1rem, 5.5vw, var(--text-step-1));
+    }
+
+    .contact-card-list > li:first-child .link-card-link {
+      overflow-wrap: normal;
+    }
+  }
+
+  /* The CV's PDF, under the cards: a quiet link, not another card. */
+  .contact-cv {
+    display: inline-flex;
+    gap: var(--spacing-2xs);
+    align-items: center;
+    align-self: flex-start;
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    text-underline-offset: 0.2em;
+  }
+
+  .contact-cv:hover,
+  .contact-cv:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
+  .contact-cv-icon {
+    width: 1.125em;
+    height: 1.125em;
+  }
+
   /* Beside the cue, above the stretched link, so it takes its own clicks. */
   .contact-card-copy {
     position: relative;

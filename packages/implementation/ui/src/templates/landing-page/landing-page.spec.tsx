@@ -38,6 +38,7 @@ describe('the landing page', () => {
           career={career}
           projects={projects}
           channels={channels}
+          cvVariant="full-stack"
           beyondCode={beyondCode}
           personalChannels={personalChannels}
         />,

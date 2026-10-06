@@ -1,4 +1,5 @@
 import {
+  defaultCvVariantId,
   loadBeyondCodeTeaser,
   loadCareer,
   loadContactChannels,
@@ -34,15 +35,23 @@ export async function generateMetadata({
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const [profile, career, projects, channels, beyondCode, personalChannels] =
-    await Promise.all([
-      loadProfile(SITE_CONTENT),
-      loadCareer(SITE_CONTENT),
-      loadFeaturedProjects(SITE_CONTENT),
-      loadContactChannels(SITE_CONTENT),
-      loadBeyondCodeTeaser(SITE_CONTENT),
-      loadPersonalChannels(SITE_CONTENT),
-    ]);
+  const [
+    profile,
+    career,
+    projects,
+    channels,
+    cvVariant,
+    beyondCode,
+    personalChannels,
+  ] = await Promise.all([
+    loadProfile(SITE_CONTENT),
+    loadCareer(SITE_CONTENT),
+    loadFeaturedProjects(SITE_CONTENT),
+    loadContactChannels(SITE_CONTENT),
+    defaultCvVariantId(SITE_CONTENT),
+    loadBeyondCodeTeaser(SITE_CONTENT),
+    loadPersonalChannels(SITE_CONTENT),
+  ]);
   return (
     <LandingPageView
       locale={locale}
@@ -50,6 +59,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
       career={career}
       projects={projects}
       channels={channels}
+      cvVariant={String(cvVariant)}
       beyondCode={beyondCode}
       personalChannels={personalChannels}
     />

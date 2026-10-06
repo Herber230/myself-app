@@ -51,9 +51,7 @@ for (const [locale, copy] of Object.entries(HERO)) {
   });
 }
 
-test('the projects are stacked cards, each one link to its page', async ({
-  page,
-}) => {
+test('the projects are cards, each one link to its page', async ({ page }) => {
   await page.goto('/en/');
   const projects = page.getByRole('region', { name: 'Projects' });
   const links = projects.getByRole('link');
@@ -61,6 +59,23 @@ test('the projects are stacked cards, each one link to its page', async ({
   // The link is stretched over its card: a click on the card follows it.
   await projects.getByRole('article').first().click();
   await page.waitForURL('/en/projects/entifix/');
+});
+
+test('the contact section offers the default CV as the PDF it ships', async ({
+  page,
+  request,
+}) => {
+  await page.goto('/es/');
+  const cv = page
+    .getByRole('region', { name: 'Hablemos' })
+    .getByRole('link', { name: 'Descarga mi CV (PDF)' });
+  await expect(cv).toHaveAttribute(
+    'href',
+    '/es/cv/herber-colop-cv-full-stack-es.pdf',
+  );
+  const pdf = await request.get('/es/cv/herber-colop-cv-full-stack-es.pdf');
+  expect(pdf.status()).toBe(200);
+  expect(pdf.headers()['content-type']).toContain('application/pdf');
 });
 
 test('the bar is hidden over the hero and revealed by scrolling', async ({
@@ -178,7 +193,7 @@ test.describe('with scripting off', () => {
     page,
   }) => {
     await page.goto('/en/#contact');
-    const contact = page.getByRole('region', { name: 'Contact' });
+    const contact = page.getByRole('region', { name: 'Get in touch' });
     await expect(
       contact.getByRole('link', { name: 'GitHub: Herber230' }),
     ).toHaveAttribute('href', 'https://github.com/Herber230');

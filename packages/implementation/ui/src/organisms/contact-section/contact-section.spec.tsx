@@ -17,6 +17,15 @@ describe('the contact section', () => {
     ).toEqual(channels.map(each => each.url));
   });
 
+  it('links to the default CV’s PDF, beside its page, in the reader’s language', () => {
+    render(<ContactSection locale="es" channels={[]} cvVariant="general" />);
+    const cv = screen.getByRole('link', { name: 'Descarga mi CV (PDF)' });
+    expect(cv.getAttribute('href')).toBe(
+      '/es/cv/herber-colop-cv-general-es.pdf',
+    );
+    expect(cv.hasAttribute('download')).toBe(true);
+  });
+
   it('names each link by its channel, then its handle', () => {
     render(
       <ContactSection
