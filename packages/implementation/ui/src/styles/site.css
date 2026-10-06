@@ -2474,15 +2474,62 @@
     overflow-x: clip;
   }
 
-  .beyond-teaser-body {
-    display: grid;
-    gap: var(--spacing-xl);
-    align-items: center;
+  /* One column in the order of the markup — the photos right after the
+     lead, the channels last — and, once the frame has room for a 15rem
+     column beside the words, the photos and the channels move into it. The
+     frame's width decides, not the screen's. */
+  .beyond-teaser-frame {
+    container-type: inline-size;
   }
 
-  @media (min-width: 48rem) {
+  .beyond-teaser-body {
+    display: grid;
+    grid-template-areas: 'intro' 'photos' 'list' 'cta' 'channels';
+    gap: var(--spacing-l);
+  }
+
+  .beyond-teaser-intro {
+    grid-area: intro;
+    display: grid;
+    gap: var(--spacing-l);
+  }
+
+  .beyond-teaser-photos {
+    grid-area: photos;
+  }
+
+  .beyond-teaser-list {
+    grid-area: list;
+  }
+
+  .beyond-teaser-cta {
+    grid-area: cta;
+    justify-self: start;
+  }
+
+  .beyond-teaser-body > .channel-links {
+    grid-area: channels;
+    justify-self: center;
+    width: min(100%, 15rem);
+  }
+
+  @container (width >= 44rem) {
     .beyond-teaser-body {
       grid-template-columns: minmax(0, 1fr) 15rem;
+      grid-template-areas:
+        'intro photos'
+        'list photos'
+        'list channels'
+        'cta channels';
+      column-gap: var(--spacing-xl);
+    }
+
+    .beyond-teaser-photos {
+      align-self: center;
+    }
+
+    .beyond-teaser-body > .channel-links {
+      align-self: start;
     }
   }
 
@@ -2492,32 +2539,40 @@
     margin: 0;
     padding: 0;
     list-style: none;
+    container-type: inline-size;
   }
 
-  .beyond-teaser-cta {
-    align-self: flex-start;
+  /* A narrow list: the glyph above the words, so the summary has the card's
+     whole width, and the arrow in the corner beside the title. */
+  @container (width < 26rem) {
+    .beyond-teaser-list .link-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-s-m);
+    }
+
+    .beyond-teaser-list .link-card-body {
+      padding-right: var(--spacing-l);
+    }
+
+    .beyond-teaser-list .link-card-footer {
+      position: absolute;
+      top: var(--spacing-s-m);
+      right: var(--spacing-s-m);
+      margin: 0;
+    }
   }
 
-  /* The photos, and the personal channels stacked under them. */
-  .beyond-teaser-aside {
-    display: grid;
-    gap: var(--spacing-xl);
-    justify-items: center;
-  }
-
-  .beyond-teaser-aside .channel-links {
-    width: min(100%, 15rem);
-  }
-
-  .beyond-teaser-aside .channel-links-heading {
+  .beyond-teaser .channel-links-heading {
     text-align: center;
   }
 
-  .beyond-teaser-aside .channel-links-list {
+  .beyond-teaser .channel-links-list {
     flex-direction: column;
   }
 
-  .beyond-teaser-aside .channel-link {
+  .beyond-teaser .channel-link {
     width: 100%;
   }
 
@@ -2534,11 +2589,18 @@
   }
 
   /* Three photos stacked like prints on a table; they fan out on hover. */
+  /* Smaller in one column, where they only open the section. */
   .beyond-teaser-photos {
     position: relative;
     justify-self: center;
-    width: min(14rem, 60vw);
+    width: min(11rem, 50vw);
     aspect-ratio: 4 / 5;
+  }
+
+  @container (width >= 44rem) {
+    .beyond-teaser-photos {
+      width: 14rem;
+    }
   }
 
   .beyond-teaser-photos img {
