@@ -100,6 +100,22 @@ describe('the paragraph types', () => {
   });
 });
 
+describe('a colon inside a word', () => {
+  it('stays text: a ratio, a time or a tag is not a directive', async () => {
+    const out = await html('A 1:N relation, at 10:30, tagged layer:base.');
+    expect(out).toContain('A 1:N relation, at 10:30, tagged layer:base.');
+  });
+
+  it('is still a directive with a label or attributes', async () => {
+    expect(await failure('Glued word:sparkle[label] here.')).toContain(
+      'unknown directive "sparkle"',
+    );
+    expect(await failure('Glued word:sparkle{x=1} here.')).toContain(
+      'unknown directive "sparkle"',
+    );
+  });
+});
+
 describe('images', () => {
   it('load lazily, every one of them', async () => {
     const out = await html('![One](./diagram.svg)\n\n![Two](./diagram.svg)');

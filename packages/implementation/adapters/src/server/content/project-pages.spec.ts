@@ -18,11 +18,12 @@ describe('the project pages (#77)', () => {
   it('are one per featured project, entifix first', async () => {
     expect(await loadProjectIds(SITE_CONTENT)).toEqual([
       'entifix',
+      'r10c',
       'myself-app',
     ]);
   });
 
-  it.each(['entifix', 'myself-app'])(
+  it.each(['entifix', 'r10c', 'myself-app'])(
     '%s has an overview, patterns, a file tree and decisions',
     async id => {
       const page = await loadProjectPage(SITE_CONTENT, id);
@@ -43,10 +44,11 @@ describe('the project pages (#77)', () => {
 });
 
 describe('the decision records (#77)', () => {
-  it('are every record of both repositories', async () => {
+  it('are every record of the three repositories', async () => {
     const routes = await loadDecisionRoutes(SITE_CONTENT);
     expect(routes).toContainEqual({ project: 'myself-app', number: '0001' });
     expect(routes).toContainEqual({ project: 'entifix', number: '0001' });
+    expect(routes).toContainEqual({ project: 'r10c', number: '0059' });
   });
 
   it('carry what supersedes them, and what they supersede', async () => {

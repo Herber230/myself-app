@@ -39,6 +39,7 @@ describe("a technology's detail", () => {
     const detail = await detailOf('typescript');
     expect(detail?.projects.map(project => project.id)).toEqual([
       'entifix',
+      'r10c',
       'myself-app',
     ]);
   });

@@ -11,6 +11,7 @@ import type { SiteLocale } from './site-locales.js';
  */
 export const NAV_PROJECTS = [
   { id: 'entifix', name: 'entifix' },
+  { id: 'r10c', name: 'r10c' },
   { id: 'myself-app', name: 'myself-app' },
 ] as const;
 

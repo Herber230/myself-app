@@ -1,8 +1,6 @@
 - Revised: 2026-09-25 by [ADR 0014](/projects/myself-app/adr/0014/) — filtering (#41) dims blips the build placed; the layout stays out of the browser
 - Revised: 2026-09-28 by [ADR 0019](/projects/myself-app/adr/0019/) — the chart and its layout are the incubator's `radar-chart` organism, which takes a link per blip and the locale to number by
 
-proposed
-
 ## Context
 
 The tech radar (#39, #40) is the site's one genuinely graphical page: four

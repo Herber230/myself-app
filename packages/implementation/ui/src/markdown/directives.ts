@@ -8,7 +8,9 @@
  *
  * Each becomes an element with a class `post-body.css` styles. Any other
  * directive stops the build: a typo is caught where it was made, not found
- * later as text on the page.
+ * later as text on the page. A bare text directive glued to the word before
+ * it is prose — a ratio, a time or a tag, `1:N`, `10:30`, `layer:base` — and
+ * is written back as the text it was.
  */
 import type { Paragraph, PhrasingContent, Root } from 'mdast';
 import type { ContainerDirective, LeafDirective } from 'mdast-util-directive';
@@ -55,7 +57,21 @@ function asFigure(node: LeafDirective, source: string) {
 export const remarkPostDirectives: Plugin<[{ source: string }], Root> =
   ({ source }) =>
   tree => {
-    visit(tree, node => {
+    visit(tree, (node, index, parent) => {
+      if (node.type === 'textDirective' && parent && index !== undefined) {
+        const before = parent.children[index - 1];
+        const glued = before?.type === 'text' && /\S$/.test(before.value);
+        const bare =
+          node.children.length === 0 &&
+          Object.keys({ ...node.attributes }).length === 0;
+        if (glued && bare) {
+          parent.children.splice(index, 1, {
+            type: 'text',
+            value: `:${node.name}`,
+          });
+          return;
+        }
+      }
       if (
         node.type !== 'containerDirective' &&
         node.type !== 'leafDirective' &&
