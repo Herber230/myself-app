@@ -49,14 +49,14 @@ describe("a technology's page", () => {
   });
 
   it('lists the posts about it, and has no such list when there are none', async () => {
-    await renderPage(pageOf('en', 'cloudfront'), 'en');
+    await renderPage(pageOf('en', 'react'), 'en');
     expect(
       screen
         .getByRole('link', {
-          name: 'A static site behind CloudFront, defined in Pulumi',
+          name: 'Handling exceptions with Rxjs and React hooks',
         })
         .getAttribute('href'),
-    ).toBe('/en/blog/a-static-site-on-s3/');
+    ).toBe('/en/blog/rxjs-exceptions-react-hooks/');
     cleanup();
     await renderPage(pageOf('en', 'angularjs'), 'en');
     expect(

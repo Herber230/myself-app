@@ -331,7 +331,8 @@ export const en = {
       hold: 'Hold',
     },
   },
-  blogLead: 'Notes on what I build and how I build it.',
+  blogLead:
+    'Notes on what I build and how I build it, and essays and stories on everything else.',
   /** The blog (ADR 0017): its home, its filter and each post. */
   blogPage: {
     filter: {
@@ -363,6 +364,10 @@ export const en = {
     technologies: 'On the radar',
     related: 'Related posts',
     feed: 'RSS feed',
+    /** Over the newest post's card, while nothing is filtered. */
+    latest: 'Latest',
+    /** The folded technology filter: its name and how many there are. */
+    moreTechnologies: 'Technology ({{n}})',
     feedTitle: '{{name}} — Blog',
     /** What each paragraph type is called, above its text. */
     callout: {

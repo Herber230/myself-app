@@ -23,7 +23,7 @@ import {
 } from '@myself-app/entifix-incubator-react-controls';
 import { useMemo } from 'react';
 
-import { SlidersIcon } from '../../atoms/icons/icons.js';
+import { FeedIcon, SlidersIcon } from '../../atoms/icons/icons.js';
 import { fill } from '../../i18n/fill.js';
 import { FilterLinks } from '../../molecules/filter-links/filter-links.js';
 import { PageHeader } from '../../molecules/page-header/page-header.js';
@@ -56,9 +56,16 @@ export interface PostExplorerCopy {
   /** The sidebar toggle's names, closed and open. */
   readonly showSidebar: string;
   readonly hideSidebar: string;
+  /** Over the newest post, while nothing is filtered. */
+  readonly latest: string;
+  /** The folded technology filter: `{{n}}` is replaced. */
+  readonly moreTechnologies: string;
 }
 
 type Option = { readonly id: string; readonly name: string };
+
+/** How many technologies show unfolded: past it, the list folds. */
+const FOLDED_AFTER = 5;
 
 export interface PostExplorerProps {
   /** Every post, newest first. */
@@ -72,7 +79,7 @@ export interface PostExplorerProps {
   /** Above the timeline: the blog's title and what it is about. */
   readonly title: string;
   readonly lead: string;
-  /** At the sidebar's foot: the feed. */
+  /** Beside the title: the feed. */
   readonly feed: { readonly href: string; readonly label: string };
 }
 
@@ -122,13 +129,13 @@ export function PostExplorer({
       ? []
       : activeFiltersOf({
           groups: [
+            { param: 'year', label: copy.year, options: yearOptions },
             { param: 'tag', label: copy.tag, options: options(tags) },
             {
               param: 'tech',
               label: copy.technology,
               options: options(technologies),
             },
-            { param: 'year', label: copy.year, options: yearOptions },
           ],
           selected: param => filter[param],
           search: { label: copy.search, text: filter.q[0] ?? '' },
@@ -138,34 +145,28 @@ export function PostExplorer({
         });
 
   const sidebar = (
-    <Stack gap="l">
+    <Stack gap="s">
       {filter === null ? (
         <Stack gap="s">
           <h2 className="blog-sidebar-heading">{copy.filters}</h2>
           <FilterLinks
             blogPath={localePath(locale, '/blog')}
             groups={[
+              { param: 'year', label: copy.year, options: yearOptions },
               { param: 'tag', label: copy.tag, options: options(tags) },
               {
                 param: 'tech',
                 label: copy.technology,
                 options: options(technologies),
               },
-              { param: 'year', label: copy.year, options: yearOptions },
             ]}
           />
         </Stack>
       ) : (
-        <FilterPanel
-          title={copy.filters}
-          icon={<SlidersIcon className="size-[1.1em]" />}
-          activeLabel={
-            active.length > 0
-              ? fill(copy.active, { n: active.length })
-              : undefined
-          }
-          open={wide}
-          footer={
+        <>
+          {/* The search first: what most visitors reach for. It and the
+              count stay in view while the rows are folded, on a phone. */}
+          <div className="blog-search">
             <FilterSummary
               searchLabel={copy.search}
               search={filter.q[0] ?? ''}
@@ -180,39 +181,70 @@ export function PostExplorer({
             >
               {active.length > 0 && <ActiveFilters active={active} />}
             </FilterSummary>
-          }
-        >
-          <FilterFieldset label={copy.filters}>
-            <ToggleGroup
-              label={copy.tag}
-              options={options(tags)}
-              selected={filter.tag}
-              onToggle={tag => toggle('tag', tag)}
-            />
-            <ToggleGroup
-              label={copy.technology}
-              options={options(technologies)}
-              selected={filter.tech}
-              onToggle={tech => toggle('tech', tech)}
-            />
-            <ToggleGroup
-              label={copy.year}
-              options={yearOptions}
-              selected={filter.year}
-              onToggle={year => toggle('year', year)}
-            />
-          </FilterFieldset>
-        </FilterPanel>
+          </div>
+          <FilterPanel
+            title={copy.filters}
+            icon={<SlidersIcon className="size-[1.1em]" />}
+            activeLabel={
+              active.length > 0
+                ? fill(copy.active, { n: active.length })
+                : undefined
+            }
+            open={wide}
+          >
+            <FilterFieldset label={copy.filters}>
+              <ToggleGroup
+                label={copy.year}
+                options={yearOptions}
+                selected={filter.year}
+                onToggle={year => toggle('year', year)}
+              />
+              <ToggleGroup
+                label={copy.tag}
+                options={options(tags)}
+                selected={filter.tag}
+                onToggle={tag => toggle('tag', tag)}
+              />
+              {/* A long list folded until wanted, or while in use; a short
+                  one open. */}
+              <details
+                className="blog-filter-more"
+                open={
+                  filter.tech.length > 0 || technologies.length <= FOLDED_AFTER
+                }
+              >
+                <summary>
+                  {fill(copy.moreTechnologies, { n: technologies.length })}
+                </summary>
+                <ToggleGroup
+                  label={copy.technology}
+                  options={options(technologies)}
+                  selected={filter.tech}
+                  onToggle={tech => toggle('tech', tech)}
+                />
+              </details>
+            </FilterFieldset>
+          </FilterPanel>
+        </>
       )}
-      <a href={feed.href} className="blog-feed-link">
-        {feed.label}
-      </a>
     </Stack>
   );
 
   return (
     <BlogLayout
-      header={<PageHeader title={title} lead={lead} className="blog-header" />}
+      header={
+        <PageHeader
+          title={title}
+          lead={lead}
+          className="blog-header"
+          actions={
+            <a href={feed.href} className="blog-feed-link">
+              <FeedIcon className="blog-feed-icon" />
+              {feed.label}
+            </a>
+          }
+        />
+      }
       sidebar={sidebar}
       sidebarOpen
       copy={{
@@ -225,7 +257,10 @@ export function PostExplorer({
         {shown.length === 0 ? (
           <Text muted>{copy.empty}</Text>
         ) : (
-          <PostTimeline posts={shown} />
+          <PostTimeline
+            posts={shown}
+            featured={filtering ? undefined : copy.latest}
+          />
         )}
       </Stack>
     </BlogLayout>

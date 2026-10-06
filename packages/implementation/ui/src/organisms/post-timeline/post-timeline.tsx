@@ -1,6 +1,6 @@
 /**
  * Posts as a timeline (ADR 0017): newest first, grouped by the year each was
- * published in, each a card on a line.
+ * published in, each a card on a line; the first featured when asked.
  */
 import {
   PostCard,
@@ -19,7 +19,14 @@ export function byYear(
   return [...years];
 }
 
-export function PostTimeline({ posts }: { posts: readonly PostCardData[] }) {
+export function PostTimeline({
+  posts,
+  featured,
+}: {
+  posts: readonly PostCardData[];
+  /** The first post's label, to feature it: "Latest". None, none featured. */
+  featured?: string;
+}) {
   return (
     <div className="post-timeline">
       {byYear(posts).map(([year, inYear]) => (
@@ -28,7 +35,11 @@ export function PostTimeline({ posts }: { posts: readonly PostCardData[] }) {
           <ol className="post-timeline-list">
             {inYear.map(post => (
               <li key={post.id} className="post-timeline-item">
-                <PostCard post={post} heading="h3" />
+                <PostCard
+                  post={post}
+                  heading="h3"
+                  featured={post === posts[0] ? featured : undefined}
+                />
               </li>
             ))}
           </ol>

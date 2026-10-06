@@ -19,9 +19,6 @@ describe('the blog’s feed', () => {
       match => match[1],
     );
     expect(links).toEqual([
-      'https://herber.example/es/blog/entifix-in-the-browser/',
-      'https://herber.example/es/blog/a-static-site-on-s3/',
-      'https://herber.example/es/blog/coverage-at-one-hundred/',
       'https://herber.example/es/blog/then-i-saw-you-dance/',
       'https://herber.example/es/blog/books/',
       'https://herber.example/es/blog/rxjs-exceptions-react-hooks/',
@@ -30,7 +27,7 @@ describe('the blog’s feed', () => {
       'https://herber.example/es/blog/the-embodiment-of-irony/',
       'https://herber.example/es/blog/an-analogy-for-life-plans/',
     ]);
-    expect(feed).toContain('<pubDate>Fri, 12 Jun 2026 00:00:00 GMT</pubDate>');
+    expect(feed).toContain('<pubDate>Thu, 12 Sep 2024 00:00:00 GMT</pubDate>');
   });
 
   it('escapes what XML would read as markup', () => {

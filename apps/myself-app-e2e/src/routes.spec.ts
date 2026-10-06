@@ -124,7 +124,7 @@ test('the sitemap lists every page in every locale, and robots.txt points at it'
       'cv/devops/',
       'tech-radar/',
       'blog/',
-      'blog/a-static-site-on-s3/',
+      'blog/books/',
     ]) {
       expect(xml).toContain(`/${locale}/${path}</loc>`);
     }

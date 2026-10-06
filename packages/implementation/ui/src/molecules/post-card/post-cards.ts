@@ -7,6 +7,7 @@ import type { TFunction } from 'i18next';
 
 import { inLocale } from '../../organisms/cv-sheet/cv-format.js';
 import { localePath } from '../../routing/locale-path.js';
+import { technologyPath } from '../../routing/radar-paths.js';
 import type { SiteLocale } from '../../routing/site-locales.js';
 import type { PostCardData } from './post-card.js';
 
@@ -49,6 +50,7 @@ export function postCardOf(
     technologies: preview.technologies.map(technology => ({
       id: technology.id,
       name: inLocale(technology.name, locale),
+      href: technologyPath(locale, technology.id),
     })),
   };
 }

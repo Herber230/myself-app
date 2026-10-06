@@ -179,7 +179,7 @@ test("the blog's scripts stay within the budget, filtering through entifix", asy
     '/en/blog/',
     each => each.getByRole('group', { name: 'Tag' }),
     async each => {
-      await each.getByRole('button', { name: 'Testing' }).click();
+      await each.getByRole('button', { name: 'Fiction' }).click();
       await expect(each.locator('article[data-post]')).toHaveCount(1);
     },
   );

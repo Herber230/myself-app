@@ -3,7 +3,7 @@
  * drafts are read is fixed when the blog's module loads, so this loads it
  * again with `NODE_ENV` as `next dev` sets it.
  */
-import { screen } from '@testing-library/react';
+import { within } from '@testing-library/react';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { paramsOf, renderPage } from '../../../../test/render';
@@ -31,7 +31,22 @@ describe('a draft, under next dev', () => {
       Page['default']
     >[0];
     await renderPage(page.default(props), 'en');
-    expect(screen.getByText('Draft').className).toBe('post-card-draft');
+    const header = document.querySelector(
+      '.blog-article-header',
+    ) as HTMLElement;
+    expect(within(header).getByText('Draft').className).toBe('post-card-draft');
     // A fresh module graph loads Shiki again: seconds.
   }, 60_000);
+
+  it('carries the time it was updated, for a post updated since', async () => {
+    const metadata = await page.generateMetadata(
+      paramsOf({ locale: 'en', slug: 'a-static-site-on-s3' }) as Parameters<
+        Page['generateMetadata']
+      >[0],
+    );
+    expect(metadata.openGraph).toMatchObject({
+      publishedTime: '2026-06-12T00:00:00.000Z',
+      modifiedTime: '2026-09-20T00:00:00.000Z',
+    });
+  });
 });

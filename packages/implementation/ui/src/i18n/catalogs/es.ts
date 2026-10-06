@@ -293,7 +293,8 @@ export const es = {
       hold: 'Detener',
     },
   },
-  blogLead: 'Notas sobre lo que construyo y cómo lo construyo.',
+  blogLead:
+    'Notas sobre lo que construyo y cómo lo construyo, y ensayos y relatos sobre todo lo demás.',
   blogPage: {
     filter: {
       label: 'Filtrar las entradas',
@@ -324,6 +325,8 @@ export const es = {
     technologies: 'En el radar',
     related: 'Entradas relacionadas',
     feed: 'Feed RSS',
+    latest: 'Lo más reciente',
+    moreTechnologies: 'Tecnología ({{n}})',
     feedTitle: '{{name}} — Blog',
     callout: {
       note: 'Nota',

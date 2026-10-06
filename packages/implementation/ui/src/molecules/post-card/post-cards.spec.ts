@@ -28,7 +28,13 @@ describe('a post’s card data', () => {
       date: '27 sept 2026',
       readingTime: '4 min de lectura',
       tags: [{ id: 'web', label: 'Web' }],
-      technologies: [{ id: 'amazon-s3', name: 'Amazon S3' }],
+      technologies: [
+        {
+          id: 'amazon-s3',
+          name: 'Amazon S3',
+          href: '/es/tech-radar/amazon-s3/',
+        },
+      ],
     });
   });
 

@@ -1,7 +1,9 @@
 /**
  * A post's preview (ADR 0017): its title, when it was published, how long it
  * takes to read, what it says it is about — clamped to a few lines — and its
- * tags as chips, its technologies as a quiet line after them.
+ * tags as chips, its technologies as a quiet line after them, each a link to
+ * its place on the radar. The newest post, unfiltered, is featured: labelled,
+ * its summary longer.
  *
  * Plain props, translated and formatted at build, so the blog's filter can
  * render the same card in the browser without the content's code.
@@ -25,18 +27,30 @@ export interface PostCardData {
   readonly technologies: readonly {
     readonly id: string;
     readonly name: string;
+    /** Its page on the radar. */
+    readonly href?: string;
   }[];
 }
 
 export function PostCard({
   post,
   heading = 'h2',
+  featured,
 }: {
   post: PostCardData;
   heading?: 'h2' | 'h3';
+  /** Featured, with this label over it: "Latest". */
+  featured?: string;
 }) {
   return (
-    <article className="post-card" data-post={post.id}>
+    <article
+      className="post-card"
+      data-post={post.id}
+      data-featured={featured === undefined ? undefined : ''}
+    >
+      {featured !== undefined && (
+        <p className="post-card-eyebrow">{featured}</p>
+      )}
       <Text as={heading} step={1} weight="semibold">
         <Link href={post.href}>{post.title}</Link>
       </Text>
@@ -58,7 +72,15 @@ export function PostCard({
         {post.technologies.length > 0 && (
           <ul className="post-card-techs">
             {post.technologies.map(technology => (
-              <li key={`tech-${technology.id}`}>{technology.name}</li>
+              <li key={`tech-${technology.id}`}>
+                {technology.href ? (
+                  <Link href={technology.href} className="post-card-tech">
+                    {technology.name}
+                  </Link>
+                ) : (
+                  technology.name
+                )}
+              </li>
             ))}
           </ul>
         )}

@@ -7,9 +7,10 @@ describe('the site’s paths', () => {
   it('are the fixed pages, then each CV variant, technology, post, project and decision record', async () => {
     const paths = await loadSitePaths(SITE_CONTENT);
     expect(paths.slice(0, 4)).toEqual(['/', '/cv', '/tech-radar', '/blog']);
-    expect(paths).toContain('/blog/a-static-site-on-s3');
+    expect(paths).toContain('/blog/books');
     // A draft is served by `next dev` only.
     expect(paths).not.toContain('/blog/effect-four');
+    expect(paths).not.toContain('/blog/a-static-site-on-s3');
     expect(paths).toContain('/cv/frontend');
     expect(paths).toContain('/tech-radar/nx');
     expect(paths).toContain('/projects/entifix');

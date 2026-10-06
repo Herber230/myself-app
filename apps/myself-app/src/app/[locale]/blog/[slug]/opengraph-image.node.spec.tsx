@@ -10,23 +10,22 @@ describe('a post’s social image', () => {
     expect(route.size).toEqual({ width: 1200, height: 630 });
     expect(route.alt).toBe('Herber Colop — Blog');
     const params = await route.generateStaticParams();
-    expect(params).toContainEqual({
-      locale: 'es',
-      slug: 'a-static-site-on-s3',
-    });
-    expect(params).toHaveLength(20);
+    expect(params).toContainEqual({ locale: 'es', slug: 'books' });
+    // Seven published posts, in two locales; no draft.
+    expect(params).toHaveLength(14);
+    expect(params).not.toContainEqual({ locale: 'en', slug: 'effect-four' });
   });
 
   it('draws the post’s title', async () => {
     const response = await route.default(
-      paramsOf({ locale: 'es', slug: 'a-static-site-on-s3' }),
+      paramsOf({ locale: 'es', slug: 'books' }),
     );
     expect(response.headers.get('content-type')).toBe('image/png');
   });
 
   it('is not found for another locale, or no post', async () => {
     await expect(
-      route.default(paramsOf({ locale: 'fr', slug: 'a-static-site-on-s3' })),
+      route.default(paramsOf({ locale: 'fr', slug: 'books' })),
     ).rejects.toThrow('NEXT_HTTP_ERROR_FALLBACK;404');
     await expect(
       route.default(paramsOf({ locale: 'en', slug: 'nowhere' })),

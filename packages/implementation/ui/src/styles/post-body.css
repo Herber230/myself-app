@@ -411,14 +411,84 @@
     text-transform: uppercase;
   }
 
+  /* The feed, beside the title: an icon and its name, quiet until pointed
+     at. It keeps its own width on a phone, where actions take a line. */
   .blog-feed-link {
+    display: inline-flex;
+    flex: none !important;
+    gap: var(--spacing-3xs);
+    align-items: center;
+    align-self: start;
+    padding: 0.25rem var(--spacing-xs);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
     color: var(--color-content-muted);
+    font-size: var(--text-step-xs);
     text-decoration: none;
+  }
+
+  .blog-header .page-header-actions {
+    justify-content: start;
+  }
+
+  .blog-feed-icon {
+    width: 1em;
+    height: 1em;
+    color: #f59e0b;
   }
 
   .blog-feed-link:hover,
   .blog-feed-link:focus-visible {
+    border-color: var(--color-primary);
     color: var(--color-primary);
+  }
+
+  /* The search over the filter's card, the count beside it. */
+  .blog-search {
+    padding: var(--spacing-xs) var(--spacing-s);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-elevated);
+    font-size: var(--text-step-sm);
+  }
+
+  .blog-search [data-slot='filter-row'] {
+    display: grid;
+    gap: var(--spacing-3xs);
+  }
+
+  /* The technologies, folded under their count until wanted. */
+  .blog-filter-more > summary {
+    display: flex;
+    gap: var(--spacing-3xs);
+    align-items: center;
+    padding-block: var(--spacing-2xs);
+    color: var(--color-content-muted);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .blog-filter-more > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .blog-filter-more > summary::before {
+    content: '▸';
+    transition: rotate 150ms;
+  }
+
+  .blog-filter-more[open] > summary::before {
+    rotate: 90deg;
+  }
+
+  /* Its row's own label would repeat the summary: kept for a screen reader. */
+  .blog-filter-more [data-slot='filter-label'] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   /* ── The chips: a tag is tinted, a technology outlined ────────────────── */
@@ -557,6 +627,55 @@
 
   :is(.post-timeline, .blog-related) .post-card a:hover {
     text-decoration: none;
+  }
+
+  /* A technology is its own link, above the card's stretched one. */
+  .post-card-tech {
+    position: relative;
+    z-index: 1;
+  }
+
+  .post-card .post-card-tech:hover,
+  .post-card .post-card-tech:focus-visible {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  /* The newest post, while nothing is filtered: labelled, its border lit,
+     its title a step larger and its summary longer. */
+  .post-card-eyebrow {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: var(--text-step-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  :is(.post-timeline, .blog-related) .post-card[data-featured] {
+    padding: var(--spacing-m) var(--spacing-m-l);
+    border-color: color-mix(
+      in srgb,
+      var(--color-primary) 55%,
+      var(--color-border)
+    );
+    background:
+      radial-gradient(
+        ellipse 70% 90% at 100% 0%,
+        color-mix(in srgb, var(--color-primary) 10%, transparent),
+        transparent 70%
+      ),
+      var(--color-surface-elevated);
+  }
+
+  .post-card[data-featured] h3 {
+    font-size: var(--text-step-2);
+  }
+
+  .post-card[data-featured] .post-card-summary {
+    font-size: var(--text-step-sm);
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
   }
 
   /* ── The article ──────────────────────────────────────────────────────── */
