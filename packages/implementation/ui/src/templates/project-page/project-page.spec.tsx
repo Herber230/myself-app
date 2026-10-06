@@ -147,4 +147,15 @@ describe("a project's page", () => {
       screen.getByRole('link', { name: 'Visit the site' }).getAttribute('href'),
     ).toBe('https://entifix.example');
   });
+
+  it('has neither the lifecycle nor the explorer for a project with no records here', async () => {
+    await pageOf((await loadProjectPage(SITE_CONTENT, 'r10c')) as ProjectPage);
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'r10c' }),
+    ).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Patterns' })).toBeTruthy();
+    expect(document.getElementById('lifecycle')).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'All records' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'All records' })).toBeNull();
+  });
 });

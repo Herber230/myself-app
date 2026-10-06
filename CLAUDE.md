@@ -30,7 +30,7 @@ pnpm nx e2e myself-app-e2e -- -g "404"          # journeys matching a name
 pnpm nx test @myself-app/implementation-ui      # also domain, implementation-adapters, entifix-incubator-*; content has no test target
 pnpm nx build @myself-app/domain                # SWC to dist; the app's build/test/typecheck run ^build first
 pnpm nx test @myself-app/conventions            # the repository's conventions (attribution, CI wiring, layer tags, ADR copies); uncached
-node tools/sync-adrs.mjs                        # copy docs/adr (and entifix's and r10c's, from $ENTIFIX_REPO and $R10C_REPO) into the content; --check to verify
+node tools/sync-adrs.mjs                        # copy docs/adr (and entifix's, from $ENTIFIX_REPO) into the content; --check to verify
 pnpm nx preview @myself-app/infra               # pulumi preview of the prod stack (AWS credentials + the Pulumi CLI)
 pnpm nx up @myself-app/infra                    # pulumi up; asks before applying
 NEXT_PUBLIC_SITE_URL=https://herbercolop.dev pnpm nx deploy myself-app   # build, PDFs, sync to the bucket, invalidate

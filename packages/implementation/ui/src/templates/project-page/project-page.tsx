@@ -70,13 +70,15 @@ function Part({ id, heading, children }: Section & { children: ReactNode }) {
  * its overview, the patterns it is built on (each linked to the records that
  * decided it), its file structure (each path linked into the repository),
  * and all its records in an explorer — the records in English, the page
- * around them in the reader's language (ADR 0020).
+ * around them in the reader's language (ADR 0020). A project with no records
+ * here has neither the lifecycle nor the explorer, nor their outline entry.
  */
 export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
   const t = siteT(locale);
   const { project, technologies, patterns, paths, decisions } = page;
   const id = String(project.id);
   const options = decisionOptionsOf(decisions, t);
+  const recorded = decisions.length > 0;
   const parts = [
     { id: 'overview', heading: t('projectPage.overview') },
     { id: 'patterns', heading: t('projectPage.patterns') },
@@ -151,7 +153,7 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
             </Cluster>
           </PageHeader>
           <OutlineLayout
-            entries={parts.map(part => ({
+            entries={(recorded ? parts : parts.slice(0, -1)).map(part => ({
               id: part.id,
               text: part.heading,
               depth: 2,
@@ -159,7 +161,9 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
             label={t('outline')}
           >
             <Stack gap="2xl">
-              <DecisionLifecycle locale={locale} decisions={decisions} />
+              {recorded && (
+                <DecisionLifecycle locale={locale} decisions={decisions} />
+              )}
               <Part {...overviewPart}>{overview}</Part>
               <Part {...patternsPart}>
                 <PatternList
@@ -192,17 +196,19 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
                   }))}
                 />
               </Part>
-              <Part {...decisionsPart}>
-                <p className="adr-language-note">
-                  {t('projectPage.englishOnly')} {t('projectPage.synced')}
-                </p>
-                <DecisionExplorer
-                  decisions={decisionRowsOf(decisions, locale, t)}
-                  statuses={options.statuses}
-                  areas={options.areas}
-                  copy={decisionExplorerCopyOf(t)}
-                />
-              </Part>
+              {recorded && (
+                <Part {...decisionsPart}>
+                  <p className="adr-language-note">
+                    {t('projectPage.englishOnly')} {t('projectPage.synced')}
+                  </p>
+                  <DecisionExplorer
+                    decisions={decisionRowsOf(decisions, locale, t)}
+                    statuses={options.statuses}
+                    areas={options.areas}
+                    copy={decisionExplorerCopyOf(t)}
+                  />
+                </Part>
+              )}
             </Stack>
           </OutlineLayout>
         </Stack>

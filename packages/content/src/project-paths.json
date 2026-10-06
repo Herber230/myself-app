@@ -264,8 +264,8 @@
     "project": "r10c",
     "path": "docs/adr/",
     "note": {
-      "en": "The decision records shown on this page.",
-      "es": "Los registros de decisiones que muestra esta página."
+      "en": "Its decision records, one per choice that shaped it.",
+      "es": "Sus registros de decisiones, uno por cada elección que le dio forma."
     },
     "order": 7
   }

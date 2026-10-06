@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Copies the architecture decision records of this repository, of entifix and
- * of r10c into the content package (#77, ADR 0020): one record per ADR in
+ * Copies the architecture decision records of this repository and of entifix
+ * into the content package (#77, ADR 0020): one record per ADR in
  * `packages/content/src/adrs.json`, and its Markdown, header lines stripped,
  * in `packages/content/src/adrs/<project>-<number>.md`.
  *
@@ -9,9 +9,8 @@
  *   node tools/sync-adrs.mjs --check    fail if this repository's copies drift
  *
  * entifix is read from `$ENTIFIX_REPO` (default `../../r10c/entifix`, beside
- * this checkout), and r10c from `$R10C_REPO` (default `../../r10c/r10c`). When
- * one is not there, its copies are kept as they are: only this repository's
- * records are checked, since only they are always at hand.
+ * this checkout). When it is not there, its copies are kept as they are: only
+ * this repository's records are checked, since only they are always at hand.
  *
  * What a record's header says becomes its fields:
  *
@@ -55,14 +54,6 @@ export const PROJECTS = [
     github: 'r10c-technologies/entifix',
     directory: join(
       resolve(REPO_ROOT, process.env.ENTIFIX_REPO ?? '../../r10c/entifix'),
-      'docs/adr',
-    ),
-  },
-  {
-    id: 'r10c',
-    github: 'r10c-technologies/r10c',
-    directory: join(
-      resolve(REPO_ROOT, process.env.R10C_REPO ?? '../../r10c/r10c'),
       'docs/adr',
     ),
   },
