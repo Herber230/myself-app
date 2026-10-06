@@ -478,16 +478,48 @@
     max-width: 65ch;
   }
 
-  /* The portrait beside the bio, and above it on a narrow screen. Its box is
-     known before the file arrives (4:5), so nothing shifts when it does. */
+  /* The portrait and the facts beside the bio, as a sidebar (Every Layout):
+     side by side while the bio keeps at least 55% of the row, stacked below
+     that, with no media query. A feathered scrim keeps the site's backdrop
+     out from under the text. */
   .about-body {
-    display: grid;
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
     gap: var(--spacing-l);
-    align-items: start;
   }
 
+  .about-body::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--spacing-s));
+    z-index: -1;
+    border-radius: var(--radius-lg);
+    background-color: color-mix(in srgb, var(--color-surface) 85%, transparent);
+    filter: blur(24px);
+  }
+
+  /* The portrait and the facts wrap the same way: the portrait alone on top
+     in the 16rem sidebar, a small one beside the facts once the sidebar has
+     the whole row. */
+  .about-aside {
+    flex: 1 1 16rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-m);
+  }
+
+  /* Its box is known before the file arrives (4:5), so nothing shifts when
+     it does. */
+  /* No minimum but its basis: the width attribute would otherwise hold it at
+     its largest, and the facts would never fit beside it. */
   .about-portrait {
-    width: min(16rem, 70%);
+    flex: 1 1 7rem;
+    min-width: 0;
+    max-width: 16rem;
     height: auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
@@ -496,20 +528,46 @@
     box-shadow: var(--shadow-card);
   }
 
-  /* Justified, and hyphenated in the page's language (<html lang>) so the
-     narrow column does not open gaps between words. */
-  .about-bio {
-    text-align: justify;
-    hyphens: auto;
+  .about-facts {
+    flex: 999 1 11rem;
+    display: grid;
+    gap: var(--spacing-s);
+    margin: 0;
   }
 
-  @media (min-width: 48rem) {
-    .about-body {
-      grid-template-columns: 16rem 1fr;
-    }
+  .about-facts dt {
+    font-size: var(--text-step-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-content-muted);
+  }
 
-    .about-portrait {
-      width: 100%;
+  .about-facts dd {
+    margin: 0;
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* Ragged right: justifying the narrow column opened gaps between words,
+     and hyphenating it broke a word at every other line. */
+  .about-bio {
+    flex: 999 1 0;
+    min-width: 55%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+    text-wrap: pretty;
+  }
+
+  .about-bio > p {
+    margin: 0;
+  }
+
+  /* Beside a long bio, the sidebar stays in view while it scrolls. */
+  @media (width >= 64rem) {
+    .about-aside {
+      position: sticky;
+      top: 5rem;
     }
   }
 

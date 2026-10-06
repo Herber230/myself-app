@@ -1,6 +1,7 @@
 import type { ContactChannel, Profile } from '@myself-app/domain';
 import type {
   BeyondCodeTeaser as BeyondCodeTeaserData,
+  Career,
   FeaturedProject,
 } from '@myself-app/domain/use-cases';
 
@@ -15,6 +16,8 @@ import type { SiteLocale } from '../../routing/site-locales.js';
 export interface LandingPageData {
   readonly locale: SiteLocale;
   readonly profile: Profile;
+  /** The facts beside the bio. */
+  readonly career: Career;
   readonly projects: readonly FeaturedProject[];
   readonly channels: readonly ContactChannel[];
   readonly beyondCode: BeyondCodeTeaserData;
@@ -31,6 +34,7 @@ export interface LandingPageData {
 export function LandingPageView({
   locale,
   profile,
+  career,
   projects,
   channels,
   beyondCode,
@@ -41,7 +45,7 @@ export function LandingPageView({
       <SiteNav locale={locale} path="/" reveal />
       <main>
         <Hero locale={locale} profile={profile} />
-        <AboutSection locale={locale} profile={profile} />
+        <AboutSection locale={locale} profile={profile} career={career} />
         <ProjectsSection locale={locale} projects={projects} />
         <ContactSection locale={locale} channels={channels} />
         <BeyondCodeTeaser

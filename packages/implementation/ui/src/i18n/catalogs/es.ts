@@ -91,6 +91,13 @@ export const es = {
       projects: 'Proyectos',
       contact: 'Contacto profesional',
     },
+    about: {
+      facts: 'De un vistazo',
+      location: 'Con base en',
+      since: 'Desarrollando software desde',
+      current: 'Actualmente',
+      role: '{{role}} en {{employer}}',
+    },
     contact: {
       link: '{{channel}}: {{handle}}',
       lead: 'Abierto a nuevos roles, colaboraciones y a una buena conversación sobre software. Elige la vía que prefieras.',

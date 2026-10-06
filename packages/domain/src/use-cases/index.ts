@@ -1,5 +1,6 @@
 export * from './load-architecture-decision/index.js';
 export * from './load-beyond-code/index.js';
+export * from './load-career/index.js';
 export * from './load-contact-channels/index.js';
 export * from './load-cv-sheet/index.js';
 export * from './load-cv-variants/index.js';

@@ -1,5 +1,6 @@
 import {
   loadBeyondCodeTeaser,
+  loadCareer,
   loadContactChannels,
   loadFeaturedProjects,
   loadPersonalChannels,
@@ -33,9 +34,10 @@ export async function generateMetadata({
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
   if (!isSiteLocale(locale)) notFound();
-  const [profile, projects, channels, beyondCode, personalChannels] =
+  const [profile, career, projects, channels, beyondCode, personalChannels] =
     await Promise.all([
       loadProfile(SITE_CONTENT),
+      loadCareer(SITE_CONTENT),
       loadFeaturedProjects(SITE_CONTENT),
       loadContactChannels(SITE_CONTENT),
       loadBeyondCodeTeaser(SITE_CONTENT),
@@ -45,6 +47,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
     <LandingPageView
       locale={locale}
       profile={profile}
+      career={career}
       projects={projects}
       channels={channels}
       beyondCode={beyondCode}

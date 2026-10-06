@@ -1,5 +1,6 @@
 import {
   loadBeyondCodeTeaser,
+  loadCareer,
   loadContactChannels,
   loadFeaturedProjects,
   loadPersonalChannels,
@@ -20,9 +21,10 @@ beforeEach(() => {
 
 describe('the landing page', () => {
   it('runs the hero, then each section the nav anchors to, then the door to "Beyond the code"', async () => {
-    const [profile, projects, channels, beyondCode, personalChannels] =
+    const [profile, career, projects, channels, beyondCode, personalChannels] =
       await Promise.all([
         loadProfile(SITE_CONTENT),
+        loadCareer(SITE_CONTENT),
         loadFeaturedProjects(SITE_CONTENT),
         loadContactChannels(SITE_CONTENT),
         loadBeyondCodeTeaser(SITE_CONTENT),
@@ -33,6 +35,7 @@ describe('the landing page', () => {
         <LandingPageView
           locale="en"
           profile={profile}
+          career={career}
           projects={projects}
           channels={channels}
           beyondCode={beyondCode}

@@ -101,6 +101,14 @@ export const en = {
       projects: 'Projects',
       contact: 'Professional contact',
     },
+    /** The facts beside the bio; their values come from content. */
+    about: {
+      facts: 'At a glance',
+      location: 'Based in',
+      since: 'Building software since',
+      current: 'Currently',
+      role: '{{role}} at {{employer}}',
+    },
     contact: {
       /** A link's name: the channel, then the handle it shows. */
       link: '{{channel}}: {{handle}}',
