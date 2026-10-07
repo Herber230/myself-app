@@ -286,6 +286,19 @@
     "supersedes": []
   },
   {
+    "id": "myself-app-0023",
+    "number": 23,
+    "title": "The delivery pipeline, drawn on the project page",
+    "status": "accepted",
+    "date": "2026-10-07",
+    "area": "ui",
+    "revisions": 0,
+    "readWhen": "a workflow in `.github/workflows` or a git hook gained, lost or rewired a job and the conventions spec fails on \"the pipeline drawn on the project page\", the project page's Delivery section shows a job the repository does not run, the release decision on it disagrees with what a release did, or someone asks where the page gets the current version",
+    "summary": "A Delivery section on the project page.\nThe jobs are content, held to the files.\nThe graph draws only arrows no longer path implies.\nThe release decision reads the release's own config.",
+    "project": "myself-app",
+    "supersedes": []
+  },
+  {
     "id": "entifix-0001",
     "number": 1,
     "title": "The tier contract, and the seam a host configures across",
