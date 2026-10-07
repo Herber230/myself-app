@@ -1,0 +1,47 @@
+[
+  {
+    "id": "myself-app-build-cv",
+    "project": "myself-app",
+    "label": {
+      "en": "The build renders the CV",
+      "es": "El build renderiza el CV"
+    },
+    "order": 0
+  },
+  {
+    "id": "myself-app-filter-radar",
+    "project": "myself-app",
+    "label": {
+      "en": "A visitor filters the radar",
+      "es": "Un visitante filtra el radar"
+    },
+    "order": 1
+  },
+  {
+    "id": "myself-app-broken-record",
+    "project": "myself-app",
+    "label": {
+      "en": "A broken record stops the build",
+      "es": "Un registro roto detiene el build"
+    },
+    "order": 2
+  },
+  {
+    "id": "entifix-load-list",
+    "project": "entifix",
+    "label": {
+      "en": "A table loads a list",
+      "es": "Una tabla carga una lista"
+    },
+    "order": 0
+  },
+  {
+    "id": "entifix-rejected-save",
+    "project": "entifix",
+    "label": {
+      "en": "A save breaks a rule",
+      "es": "Un guardado rompe una regla"
+    },
+    "order": 1
+  }
+]

@@ -1,0 +1,280 @@
+[
+  {
+    "id": "myself-app-feat-ships-1",
+    "scenario": "myself-app-feat-ships",
+    "order": 0,
+    "jobs": ["myself-app-pre-commit"],
+    "title": {
+      "en": "Checked before it exists",
+      "es": "Comprobado antes de existir"
+    },
+    "text": {
+      "en": "The hook runs on what the branch changed, so a broken commit never leaves the machine.",
+      "es": "El hook corre sobre lo que la rama cambió, así que un commit roto nunca sale de la máquina."
+    },
+    "code": "pnpm nx affected --target=lint,typecheck,test,build --base=origin/main --head=HEAD"
+  },
+  {
+    "id": "myself-app-feat-ships-2",
+    "scenario": "myself-app-feat-ships",
+    "order": 1,
+    "jobs": ["myself-app-commit-msg"],
+    "title": {
+      "en": "A message with a type",
+      "es": "Un mensaje con tipo"
+    },
+    "text": {
+      "en": "The type and scope are checked here, because the release will read them.",
+      "es": "El tipo y el scope se comprueban aquí, porque el release los leerá."
+    },
+    "code": "feat(implementation-ui): architecture explorer on project pages"
+  },
+  {
+    "id": "myself-app-feat-ships-3",
+    "scenario": "myself-app-feat-ships",
+    "order": 2,
+    "jobs": ["myself-app-initialize"],
+    "title": {
+      "en": "The pull request opens",
+      "es": "Se abre el pull request"
+    },
+    "text": {
+      "en": "One install, and the affected projects worked out once for every job.",
+      "es": "Una instalación, y los proyectos afectados calculados una vez para todos los jobs."
+    }
+  },
+  {
+    "id": "myself-app-feat-ships-4",
+    "scenario": "myself-app-feat-ships",
+    "order": 3,
+    "jobs": [
+      "myself-app-lint",
+      "myself-app-build",
+      "myself-app-test",
+      "myself-app-e2e",
+      "myself-app-infra-preview",
+      "myself-app-conventions",
+      "myself-app-commits"
+    ],
+    "title": {
+      "en": "Seven checks at once",
+      "es": "Siete comprobaciones a la vez"
+    },
+    "text": {
+      "en": "Each runs only on the projects it affects; infra preview is skipped when the infrastructure did not change.",
+      "es": "Cada una corre solo en los proyectos que afecta; infra preview se omite cuando la infraestructura no cambió."
+    }
+  },
+  {
+    "id": "myself-app-feat-ships-5",
+    "scenario": "myself-app-feat-ships",
+    "order": 4,
+    "jobs": ["myself-app-ci-gate"],
+    "title": {
+      "en": "The gate turns green",
+      "es": "La puerta se pone en verde"
+    },
+    "text": {
+      "en": "main requires this one check by name, so a new job cannot be forgotten: the conventions spec fails until the gate needs it.",
+      "es": "main exige esta única comprobación por nombre, así que un job nuevo no se puede olvidar: la spec de convenciones falla hasta que la puerta lo necesita."
+    }
+  },
+  {
+    "id": "myself-app-feat-ships-6",
+    "scenario": "myself-app-feat-ships",
+    "order": 5,
+    "jobs": ["myself-app-merge"],
+    "title": {
+      "en": "Squashed into one commit",
+      "es": "Aplastado en un commit"
+    },
+    "text": {
+      "en": "Its type is feat: a minor release.",
+      "es": "Su tipo es feat: un release minor."
+    },
+    "code": "gh pr merge --squash --admin"
+  },
+  {
+    "id": "myself-app-feat-ships-7",
+    "scenario": "myself-app-feat-ships",
+    "order": 6,
+    "jobs": ["myself-app-release"],
+    "title": {
+      "en": "A version, and its notes",
+      "es": "Una versión, y sus notas"
+    },
+    "text": {
+      "en": "The changelog is committed to main by the release App, the one actor allowed to push there, and the tag points at that commit.",
+      "es": "El changelog lo commitea a main la App de release, el único actor que puede hacer push ahí, y la etiqueta apunta a ese commit."
+    },
+    "code": "chore: release 1.11.0 [skip ci]"
+  },
+  {
+    "id": "myself-app-feat-ships-8",
+    "scenario": "myself-app-feat-ships",
+    "order": 7,
+    "jobs": ["myself-app-infra"],
+    "title": {
+      "en": "The infrastructure first",
+      "es": "Primero la infraestructura"
+    },
+    "text": {
+      "en": "Applied from the tagged commit, so what runs is what was released.",
+      "es": "Aplicada desde el commit etiquetado, así que lo que corre es lo que se publicó."
+    },
+    "code": "pulumi up"
+  },
+  {
+    "id": "myself-app-feat-ships-9",
+    "scenario": "myself-app-feat-ships",
+    "order": 8,
+    "jobs": ["myself-app-site"],
+    "title": {
+      "en": "Then the files",
+      "es": "Luego los archivos"
+    },
+    "text": {
+      "en": "Built, synced and invalidated: the new version is live.",
+      "es": "Compilados, sincronizados e invalidados: la nueva versión está en línea."
+    },
+    "code": "NEXT_PUBLIC_SITE_URL=https://herbercolop.dev pnpm nx deploy myself-app"
+  },
+  {
+    "id": "myself-app-docs-releases-nothing-1",
+    "scenario": "myself-app-docs-releases-nothing",
+    "order": 0,
+    "jobs": [
+      "myself-app-initialize",
+      "myself-app-lint",
+      "myself-app-build",
+      "myself-app-test",
+      "myself-app-e2e",
+      "myself-app-infra-preview",
+      "myself-app-conventions",
+      "myself-app-commits",
+      "myself-app-ci-gate"
+    ],
+    "title": {
+      "en": "Checked like any other",
+      "es": "Comprobado como cualquier otro"
+    },
+    "text": {
+      "en": "The same checks, the same gate.",
+      "es": "Las mismas comprobaciones, la misma puerta."
+    }
+  },
+  {
+    "id": "myself-app-docs-releases-nothing-2",
+    "scenario": "myself-app-docs-releases-nothing",
+    "order": 1,
+    "jobs": ["myself-app-merge"],
+    "title": {
+      "en": "Squashed as docs",
+      "es": "Aplastado como docs"
+    },
+    "text": {
+      "en": "docs, chore, refactor, test and the rest are hidden from the release notes.",
+      "es": "docs, chore, refactor, test y los demás quedan fuera de las notas de release."
+    },
+    "code": "docs: ADR 0022, architecture views as content"
+  },
+  {
+    "id": "myself-app-docs-releases-nothing-3",
+    "scenario": "myself-app-docs-releases-nothing",
+    "order": 2,
+    "jobs": ["myself-app-release"],
+    "skips": ["myself-app-infra", "myself-app-site"],
+    "title": {
+      "en": "No version",
+      "es": "Ninguna versión"
+    },
+    "text": {
+      "en": "semantic-release finds nothing to release, so nothing is deployed. A deploy by hand is one workflow run away.",
+      "es": "semantic-release no encuentra nada que publicar, así que no se despliega nada. Un despliegue manual está a una ejecución del workflow."
+    },
+    "code": "gh workflow run deploy.yml"
+  },
+  {
+    "id": "myself-app-attribution-refused-1",
+    "scenario": "myself-app-attribution-refused",
+    "order": 0,
+    "jobs": ["myself-app-commit-msg"],
+    "title": {
+      "en": "Refused on the machine",
+      "es": "Rechazado en la máquina"
+    },
+    "text": {
+      "en": "A trailer naming an assistant fails the no-ai-attribution rule, and the commit is not made.",
+      "es": "Un trailer que nombra a un asistente falla la regla no-ai-attribution, y el commit no se hace."
+    },
+    "code": "Co-Authored-By: an assistant <noreply@…>",
+    "fails": true
+  },
+  {
+    "id": "myself-app-attribution-refused-2",
+    "scenario": "myself-app-attribution-refused",
+    "order": 1,
+    "jobs": ["myself-app-commits"],
+    "title": {
+      "en": "Refused again in CI",
+      "es": "Rechazado otra vez en CI"
+    },
+    "text": {
+      "en": "A hook can be skipped; the same predicate runs over every commit, the title and the body.",
+      "es": "Un hook se puede saltar; el mismo predicado corre sobre cada commit, el título y el cuerpo."
+    },
+    "fails": true
+  },
+  {
+    "id": "myself-app-attribution-refused-3",
+    "scenario": "myself-app-attribution-refused",
+    "order": 2,
+    "jobs": ["myself-app-ci-gate"],
+    "skips": ["myself-app-merge"],
+    "title": {
+      "en": "The gate stays red",
+      "es": "La puerta sigue en rojo"
+    },
+    "text": {
+      "en": "Nothing merges until the commit is rewritten.",
+      "es": "Nada se fusiona hasta que el commit se reescribe."
+    },
+    "fails": true
+  },
+  {
+    "id": "myself-app-e2e-blocks-1",
+    "scenario": "myself-app-e2e-blocks",
+    "order": 0,
+    "jobs": ["myself-app-e2e"],
+    "title": {
+      "en": "A journey fails",
+      "es": "Falla un recorrido"
+    },
+    "text": {
+      "en": "Playwright finds the page broken in the exported files, where a dev server would have hidden it; the report is kept as an artifact.",
+      "es": "Playwright encuentra la página rota en los archivos exportados, donde un servidor de desarrollo lo habría ocultado; el informe se guarda como artefacto."
+    },
+    "fails": true
+  },
+  {
+    "id": "myself-app-e2e-blocks-2",
+    "scenario": "myself-app-e2e-blocks",
+    "order": 1,
+    "jobs": ["myself-app-ci-gate"],
+    "skips": [
+      "myself-app-merge",
+      "myself-app-release",
+      "myself-app-infra",
+      "myself-app-site"
+    ],
+    "title": {
+      "en": "Nothing moves",
+      "es": "Nada avanza"
+    },
+    "text": {
+      "en": "The gate fails, main refuses the merge, and the deploy never starts.",
+      "es": "La puerta falla, main rechaza el merge y el despliegue nunca empieza."
+    },
+    "fails": true
+  }
+]

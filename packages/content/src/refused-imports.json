@@ -1,0 +1,47 @@
+[
+  {
+    "id": "myself-app-ui-to-adapters",
+    "from": "myself-app-ui",
+    "to": "myself-app-adapters",
+    "reason": {
+      "en": "The UI never reads content: only a route loads it.",
+      "es": "La interfaz nunca lee contenido: solo una ruta lo carga."
+    }
+  },
+  {
+    "id": "myself-app-incubator-to-domain",
+    "from": "myself-app-incubator",
+    "to": "myself-app-domain",
+    "reason": {
+      "en": "Incubator code is meant for entifix: it knows no entity of this site.",
+      "es": "El código de la incubadora es para entifix: no conoce ninguna entidad de este sitio."
+    }
+  },
+  {
+    "id": "myself-app-domain-to-content",
+    "from": "myself-app-domain",
+    "to": "myself-app-content",
+    "reason": {
+      "en": "The domain never names the data: the adapters compose it.",
+      "es": "El dominio nunca nombra los datos: los componen los adaptadores."
+    }
+  },
+  {
+    "id": "entifix-core-to-storage",
+    "from": "entifix-core",
+    "to": "entifix-storage",
+    "reason": {
+      "en": "Upward: a package depends only on its own tier or below.",
+      "es": "Hacia arriba: un paquete solo depende de su propio nivel o de los inferiores."
+    }
+  },
+  {
+    "id": "entifix-storage-to-transport",
+    "from": "entifix-storage",
+    "to": "entifix-transport",
+    "reason": {
+      "en": "Sideways, and not declared in the register.",
+      "es": "De lado, y sin declararlo en el registro."
+    }
+  }
+]

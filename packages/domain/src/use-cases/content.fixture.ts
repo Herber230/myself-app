@@ -5,6 +5,9 @@ import {
 } from '@myself-app/entifix-incubator-static-adapter';
 
 import { ArchitectureDecision } from '../entities/architecture-decision.entity.js';
+import { ArchitectureNode } from '../entities/architecture-node.entity.js';
+import { ArchitectureRuntime } from '../entities/architecture-runtime.entity.js';
+import { ArchitectureScenario } from '../entities/architecture-scenario.entity.js';
 import { Certificate } from '../entities/certificate.entity.js';
 import { ContactChannel } from '../entities/contact-channel.entity.js';
 import { CvFocus } from '../entities/cv-focus.entity.js';
@@ -15,6 +18,12 @@ import { EmploymentHighlight } from '../entities/employment-highlight.entity.js'
 import { EmploymentPeriod } from '../entities/employment-period.entity.js';
 import { Interest } from '../entities/interest.entity.js';
 import { InterestMedia } from '../entities/interest-media.entity.js';
+import { LayerPackage } from '../entities/layer-package.entity.js';
+import { PackageLayer } from '../entities/package-layer.entity.js';
+import { PipelineJob } from '../entities/pipeline-job.entity.js';
+import { PipelineScenario } from '../entities/pipeline-scenario.entity.js';
+import { PipelineStage } from '../entities/pipeline-stage.entity.js';
+import { PipelineStep } from '../entities/pipeline-step.entity.js';
 import { Post } from '../entities/post.entity.js';
 import { Profile } from '../entities/profile.entity.js';
 import { Project } from '../entities/project.entity.js';
@@ -22,7 +31,9 @@ import { ProjectPath } from '../entities/project-path.entity.js';
 import { ProjectPattern } from '../entities/project-pattern.entity.js';
 import { Quadrant } from '../entities/quadrant.entity.js';
 import { RadarEdition } from '../entities/radar-edition.entity.js';
+import { RefusedImport } from '../entities/refused-import.entity.js';
 import { Ring } from '../entities/ring.entity.js';
+import { ScenarioStep } from '../entities/scenario-step.entity.js';
 import { Tag } from '../entities/tag.entity.js';
 import { Technology } from '../entities/technology.entity.js';
 import { TechnologyArea } from '../entities/technology-area.entity.js';
@@ -332,6 +343,143 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
       order: 0,
     },
   ],
+  // The architecture views (ADR 0022): the engine has them, the library not.
+  'architecture-runtimes.json': [
+    { id: 'engine-server', project: 'engine', label: text('Server'), order: 1 },
+    {
+      id: 'engine-browser',
+      project: 'engine',
+      label: text('Browser'),
+      order: 0,
+    },
+  ],
+  'architecture-nodes.json': [
+    {
+      id: 'engine-entity',
+      project: 'engine',
+      label: 'Entity',
+      ring: 'domain',
+      angle: -90,
+      text: text('The model.'),
+      path: 'src/',
+    },
+    {
+      id: 'engine-repository',
+      project: 'engine',
+      label: 'Repository',
+      ring: 'ports',
+      angle: 180,
+      text: text('A port.'),
+      connects: ['engine-entity'],
+    },
+    {
+      id: 'engine-sql',
+      project: 'engine',
+      label: 'SQL',
+      ring: 'adapters',
+      angle: 180,
+      runtime: 'engine-server',
+      text: text('An adapter.'),
+      connects: ['engine-repository'],
+    },
+  ],
+  'architecture-scenarios.json': [
+    { id: 'engine-load', project: 'engine', label: text('A load'), order: 0 },
+  ],
+  'scenario-steps.json': [
+    {
+      id: 'engine-load-2',
+      scenario: 'engine-load',
+      order: 1,
+      nodes: ['engine-sql'],
+      from: 'engine-sql',
+      to: 'engine-repository',
+      runtime: 'engine-server',
+      title: text('Stored'),
+      text: text('The adapter answers.'),
+      code: 'select 1',
+      fails: false,
+    },
+    {
+      id: 'engine-load-1',
+      scenario: 'engine-load',
+      order: 0,
+      nodes: ['engine-entity', 'engine-repository'],
+      title: text('Asked'),
+      text: text('The use case asks.'),
+      fails: false,
+    },
+  ],
+  'package-layers.json': [
+    { id: 'engine-bottom', project: 'engine', name: text('Bottom'), order: 1 },
+    { id: 'engine-top', project: 'engine', name: text('Top'), order: 0 },
+  ],
+  'layer-packages.json': [
+    {
+      id: 'engine-app',
+      layer: 'engine-top',
+      label: 'app',
+      column: 1,
+      folder: 'engine-src',
+      imports: ['engine-core'],
+    },
+    {
+      id: 'engine-core',
+      layer: 'engine-bottom',
+      label: 'core',
+      column: 1,
+      note: text('The core.'),
+    },
+  ],
+  'refused-imports.json': [
+    {
+      id: 'engine-core-to-app',
+      from: 'engine-core',
+      to: 'engine-app',
+      reason: text('Upward.'),
+    },
+  ],
+  // The delivery pipeline (ADR 0023): the engine has one, the library not.
+  'pipeline-stages.json': [
+    { id: 'engine-ship', project: 'engine', name: text('Ship'), order: 1 },
+    { id: 'engine-check', project: 'engine', name: text('Check'), order: 0 },
+  ],
+  'pipeline-jobs.json': [
+    {
+      id: 'engine-deploy',
+      stage: 'engine-ship',
+      label: 'Deploy',
+      workflow: 'ci.yml',
+      job: 'deploy',
+      text: text('Ships it.'),
+      order: 1,
+      needs: ['engine-test'],
+      decisions: ['engine-0002'],
+    },
+    {
+      id: 'engine-test',
+      stage: 'engine-check',
+      label: 'Test',
+      text: text('Tests it.'),
+      order: 0,
+    },
+  ],
+  'pipeline-scenarios.json': [
+    { id: 'engine-ships', project: 'engine', label: text('Ships'), order: 0 },
+  ],
+  'pipeline-steps.json': [
+    {
+      id: 'engine-ships-1',
+      scenario: 'engine-ships',
+      order: 0,
+      jobs: ['engine-test'],
+      skips: ['engine-deploy'],
+      title: text('Tested'),
+      text: text('Only tested.'),
+      code: 'test',
+      fails: true,
+    },
+  ],
   'project-paths.json': [
     {
       id: 'engine-src',
@@ -497,6 +645,23 @@ const SOURCES = [
   }),
   defineSource({ entity: ProjectPattern, file: 'project-patterns.json' }),
   defineSource({ entity: ProjectPath, file: 'project-paths.json' }),
+  defineSource({
+    entity: ArchitectureRuntime,
+    file: 'architecture-runtimes.json',
+  }),
+  defineSource({ entity: ArchitectureNode, file: 'architecture-nodes.json' }),
+  defineSource({
+    entity: ArchitectureScenario,
+    file: 'architecture-scenarios.json',
+  }),
+  defineSource({ entity: ScenarioStep, file: 'scenario-steps.json' }),
+  defineSource({ entity: PackageLayer, file: 'package-layers.json' }),
+  defineSource({ entity: LayerPackage, file: 'layer-packages.json' }),
+  defineSource({ entity: RefusedImport, file: 'refused-imports.json' }),
+  defineSource({ entity: PipelineStage, file: 'pipeline-stages.json' }),
+  defineSource({ entity: PipelineJob, file: 'pipeline-jobs.json' }),
+  defineSource({ entity: PipelineScenario, file: 'pipeline-scenarios.json' }),
+  defineSource({ entity: PipelineStep, file: 'pipeline-steps.json' }),
   defineSource({
     entity: ArchitectureDecision,
     file: 'adrs.json',

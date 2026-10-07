@@ -12,7 +12,7 @@ const dot = (page: Page, number: string) =>
     .getByRole('group', { name: 'The records in the order they were decided' })
     .getByRole('button', { name: new RegExp(`^${number} · `) });
 
-test('a project’s page shows its patterns, file tree and every record', async ({
+test('a project’s page shows its patterns, its views and every record', async ({
   page,
 }) => {
   await page.goto('/en/projects/myself-app/');
@@ -23,9 +23,18 @@ test('a project’s page shows its patterns, file tree and every record', async 
     page.getByRole('heading', { level: 2, name: 'Patterns' }),
   ).toBeVisible();
   await expect(
-    page.getByRole('list', { name: 'File structure' }),
+    page.getByRole('group', { name: 'Ports and adapters' }),
   ).toBeVisible();
-  await expect(records(page)).toHaveCount(21);
+  await expect(
+    page.getByRole('group', { name: 'Packages by layer' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('group', { name: 'Delivery pipeline' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { level: 2, name: 'Decision archive' }),
+  ).toBeVisible();
+  await expect(records(page)).toHaveCount(23);
   // A technology leads to its page on the radar.
   await page.getByRole('link', { name: 'Pulumi', exact: true }).click();
   await page.waitForURL('/en/tech-radar/pulumi/');
@@ -50,7 +59,7 @@ test('the records filter and sort in the URL, through a reload', async ({
   ).toHaveAttribute('aria-pressed', 'true');
   await expect(records(page).first()).toHaveAttribute(
     'data-adr',
-    'myself-app-0020',
+    'myself-app-0022',
   );
 });
 
@@ -148,11 +157,70 @@ test('the outline beside the page follows the section being read', async ({
 }) => {
   await page.goto('/en/projects/myself-app/');
   const outline = page.getByRole('navigation', { name: 'On this page' });
-  await outline.getByRole('link', { name: 'File structure' }).click();
+  await outline.getByRole('link', { name: 'Structure' }).click();
   await expect(page).toHaveURL(/#structure$/);
   await expect(
-    outline.getByRole('link', { name: 'File structure' }),
+    outline.getByRole('link', { name: 'Structure' }),
   ).toHaveAttribute('aria-current', 'location');
+});
+
+test('the hexagon walks a request through it, a step at a time', async ({
+  page,
+}) => {
+  await page.goto('/en/projects/myself-app/');
+  const architecture = page.locator('#architecture');
+  await architecture
+    .getByRole('combobox', { name: 'Scenario' })
+    .selectOption({ label: 'A visitor filters the radar' });
+  await expect(architecture.getByText('Step 1 of 6')).toBeVisible();
+  await architecture.getByRole('button', { name: 'Next step' }).click();
+  await expect(architecture.getByText('Step 2 of 6')).toBeVisible();
+  await expect(
+    architecture.locator('[data-slot="hexagon-node"][data-state="lit"]'),
+  ).toHaveCount(2);
+  // The build's adapters fade while the request runs in the browser.
+  await expect(
+    architecture.getByRole('button', { name: 'Static adapter' }),
+  ).toHaveAttribute('data-state', 'dim');
+});
+
+test('a package names its folder and what it may import; lint’s refusals are drawn on demand', async ({
+  page,
+}) => {
+  await page.goto('/en/projects/myself-app/');
+  const structure = page.locator('#structure');
+  await structure.getByRole('button', { name: 'ui', exact: true }).hover();
+  await expect(
+    structure.getByRole('link', { name: 'packages/implementation/ui/' }),
+  ).toBeVisible();
+  await structure
+    .getByRole('button', { name: 'Show what lint refuses' })
+    .click();
+  await expect(
+    structure.locator('[data-slot="layer-edge"][data-refused]'),
+  ).toHaveCount(3);
+});
+
+test('a pipeline job names its workflow, and the release decision answers from the release config', async ({
+  page,
+}) => {
+  await page.goto('/en/projects/myself-app/');
+  const delivery = page.locator('#delivery');
+  await delivery.getByRole('button', { name: 'CI Gate' }).click();
+  await expect(
+    delivery.getByRole('link', {
+      name: '.github/workflows/pull_request_check.yml',
+    }),
+  ).toBeVisible();
+  const release = delivery.locator('.release');
+  await release.getByRole('combobox', { name: 'Type' }).selectOption('docs');
+  await expect(release.getByText('No release')).toBeVisible();
+  // The checkbox is drawn as a track; its label is what a person presses.
+  await release.getByText('Breaking change (!)').click();
+  await expect(
+    release.getByRole('switch', { name: 'Breaking change (!)' }),
+  ).toBeChecked();
+  await expect(release.getByText(/→ \d+\.0\.0, a major release/)).toBeVisible();
 });
 
 test('a record’s outline jumps to its own headings', async ({ page }) => {
@@ -191,7 +259,7 @@ test.describe('on a phone', () => {
     ).toBe(0);
     const current = page
       .getByRole('navigation', { name: 'On this page' })
-      .getByRole('link', { name: 'All records' });
+      .getByRole('link', { name: 'Decision archive' });
     await expect(current).toHaveAttribute('aria-current', 'location');
     await expect(current).toBeInViewport();
     expect((await current.boundingBox())?.height).toBeGreaterThanOrEqual(44);

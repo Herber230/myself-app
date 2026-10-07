@@ -12,7 +12,21 @@ import { renderPage } from '../../test/render.js';
 import { SITE_CONTENT, SITE_RECORDS } from '../../test/shipped-content.js';
 import { ProjectPageView } from './project-page.js';
 
-async function pageOf(page: ProjectPage, locale: 'en' | 'es' = 'en') {
+/** This repository's release policy, as the route reads it. */
+const RELEASE = {
+  version: '1.10.0',
+  repositoryUrl: 'https://github.com/Herber230/myself-app',
+  types: [
+    { type: 'feat', level: 'minor' as const, section: 'Features' },
+    { type: 'docs' },
+  ],
+};
+
+async function pageOf(
+  page: ProjectPage,
+  locale: 'en' | 'es' = 'en',
+  release?: typeof RELEASE,
+) {
   await renderPage(
     Promise.resolve(
       <SourcesProvider sources={browserSources}>
@@ -20,6 +34,7 @@ async function pageOf(page: ProjectPage, locale: 'en' | 'es' = 'en') {
           locale={locale}
           page={page}
           overview={<p>The overview.</p>}
+          release={release}
         />
       </SourcesProvider>,
     ),
@@ -58,19 +73,21 @@ describe("a project's page", () => {
     expect(screen.queryByRole('link', { name: 'Visit the site' })).toBeNull();
   });
 
-  it('shows how it is built, its overview, patterns, file tree and records', async () => {
+  it('shows how it is built: overview, patterns, architecture, structure, delivery and the archive', async () => {
     const page = (await loadProjectPage(
       SITE_CONTENT,
       'myself-app',
     )) as ProjectPage;
-    await pageOf(page, 'es');
+    await pageOf(page, 'es', RELEASE);
     expect(screen.getByText('The overview.')).toBeTruthy();
     for (const heading of [
       'Decisiones que evolucionan',
       'Resumen',
       'Patrones',
-      'Estructura de archivos',
-      'Todos los registros',
+      'Arquitectura',
+      'Estructura',
+      'Entrega',
+      'Archivo de decisiones',
     ]) {
       expect(
         screen.getByRole('heading', { level: 2, name: heading }),
@@ -83,12 +100,17 @@ describe("a project's page", () => {
         document.getElementById('overview') as HTMLElement,
       ) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
+    // The archive says what it is, then how it is kept.
+    expect(
+      screen.getByText(
+        /^Cada registro de decisión de arquitectura \(ADR\) de myself-app/,
+      ),
+    ).toBeTruthy();
     expect(
       screen.getByText(
         /^Los registros están escritos en inglés\. Los registros/,
       ),
     ).toBeTruthy();
-    expect(screen.getByText('packages/')).toBeTruthy();
     // A pattern links to the records that decided it, in the explorer.
     const patterns = document.getElementById('patterns') as HTMLElement;
     expect(
@@ -96,23 +118,52 @@ describe("a project's page", () => {
         .getByRole('link', { name: 'ADR 0016' })
         .getAttribute('href'),
     ).toBe('?adr=0016#decisions');
-    // A path links into the repository.
+    // The hexagon, the layers with their folders linked into the repository,
+    // and the pipeline with the release decision under it.
+    expect(
+      screen.getByRole('group', { name: 'Puertos y adaptadores' }),
+    ).toBeTruthy();
     expect(
       document
-        .querySelector('#structure a.file-tree-link')
+        .querySelector('#structure a.architecture-path')
         ?.getAttribute('href'),
-    ).toBe('https://github.com/Herber230/myself-app/tree/main/apps/');
+    ).toBe(
+      'https://github.com/Herber230/myself-app/tree/main/apps/myself-app/',
+    );
+    expect(document.querySelector('.file-tree')).toBeNull();
+    expect(
+      screen.getByRole('group', { name: 'Pipeline de entrega' }),
+    ).toBeTruthy();
+    expect(screen.getByText('¿Qué publicaría este commit?')).toBeTruthy();
     expect(document.querySelectorAll('[data-slot="split-row"]')).toHaveLength(
       page.decisions.length,
     );
-    expect(document.getElementById('decisions')).not.toBeNull();
-    // Its four parts, each a link of the outline.
+    // Its parts, each a link of the outline.
     const outline = screen.getByRole('navigation', { name: 'En esta página' });
     expect(
       within(outline)
         .getAllByRole('link')
         .map(link => link.getAttribute('href')),
-    ).toEqual(['#overview', '#patterns', '#structure', '#decisions']);
+    ).toEqual([
+      '#overview',
+      '#patterns',
+      '#architecture',
+      '#structure',
+      '#delivery',
+      '#decisions',
+    ]);
+  });
+
+  it('shows the pipeline without the release decision when given no policy', async () => {
+    const page = (await loadProjectPage(
+      SITE_CONTENT,
+      'myself-app',
+    )) as ProjectPage;
+    await pageOf(page);
+    expect(
+      screen.getByRole('group', { name: 'Delivery pipeline' }),
+    ).toBeTruthy();
+    expect(screen.queryByText('What would this commit release?')).toBeNull();
   });
 
   it('offers no actions where a project links nothing', async () => {
@@ -127,9 +178,11 @@ describe("a project's page", () => {
     });
     await pageOf((await loadProjectPage(content, 'entifix')) as ProjectPage);
     expect(document.querySelector('.page-header-actions')).toBeNull();
-    // Without a repository, its paths are names, not links.
-    expect(document.querySelector('.file-tree-link')).toBeNull();
-    expect(document.querySelector('.file-tree-name')).not.toBeNull();
+    // Without a repository, its folders are names, not links.
+    expect(document.querySelector('#structure a.architecture-path')).toBeNull();
+    expect(
+      document.querySelector('#structure code.architecture-path'),
+    ).not.toBeNull();
   });
 
   it('links a site where a project has one', async () => {
@@ -148,14 +201,44 @@ describe("a project's page", () => {
     ).toBe('https://entifix.example');
   });
 
-  it('has neither the lifecycle nor the explorer for a project with no records here', async () => {
-    await pageOf((await loadProjectPage(SITE_CONTENT, 'r10c')) as ProjectPage);
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'r10c' }),
-    ).toBeTruthy();
+  it('keeps the file tree, and has neither views nor records, for a project with none of them', async () => {
+    const {
+      architecture: _architecture,
+      layers: _layers,
+      pipeline: _pipeline,
+      ...rest
+    } = (await loadProjectPage(SITE_CONTENT, 'entifix')) as ProjectPage;
+    await pageOf({ ...rest, decisions: [] });
     expect(screen.getByRole('heading', { name: 'Patterns' })).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: 'Architecture' })).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'Delivery' })).toBeNull();
     expect(document.getElementById('lifecycle')).toBeNull();
-    expect(screen.queryByRole('heading', { name: 'All records' })).toBeNull();
-    expect(screen.queryByRole('link', { name: 'All records' })).toBeNull();
+    expect(
+      screen.queryByRole('heading', { name: 'Decision archive' }),
+    ).toBeNull();
+    expect(
+      document
+        .querySelector('#structure a.file-tree-link')
+        ?.getAttribute('href'),
+    ).toBe('https://github.com/r10c-technologies/entifix/tree/main/packages/');
+    const outline = screen.getByRole('navigation', { name: 'On this page' });
+    expect(
+      within(outline)
+        .getAllByRole('link')
+        .map(link => link.getAttribute('href')),
+    ).toEqual(['#overview', '#patterns', '#structure']);
+  });
+
+  it('keeps the file tree’s names unlinked without a repository', async () => {
+    const {
+      layers: _layers,
+      project,
+      ...rest
+    } = (await loadProjectPage(SITE_CONTENT, 'entifix')) as ProjectPage;
+    // An entity, so its repository is cleared rather than left out.
+    project.repositoryUrl = undefined;
+    await pageOf({ ...rest, project });
+    expect(document.querySelector('.file-tree-link')).toBeNull();
+    expect(document.querySelector('.file-tree-name')).not.toBeNull();
   });
 });

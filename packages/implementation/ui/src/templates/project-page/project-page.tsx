@@ -19,6 +19,11 @@ import { siteT } from '../../i18n/server.js';
 import { FileTree } from '../../molecules/file-tree/file-tree.js';
 import { PageHeader } from '../../molecules/page-header/page-header.js';
 import { PatternList } from '../../molecules/pattern-list/pattern-list.js';
+import { ArchitectureExplorer } from '../../organisms/architecture-explorer/architecture-explorer.js';
+import {
+  architectureCopyOf,
+  architectureViewOf,
+} from '../../organisms/architecture-explorer/architecture-rows.js';
 import { DecisionExplorer } from '../../organisms/decision-explorer/decision-explorer.js';
 import {
   decisionExplorerCopyOf,
@@ -26,6 +31,19 @@ import {
   decisionRowsOf,
 } from '../../organisms/decision-explorer/decision-rows.js';
 import { DecisionLifecycle } from '../../organisms/decision-lifecycle/decision-lifecycle.js';
+import {
+  layersCopyOf,
+  layersViewOf,
+} from '../../organisms/package-layers/layer-rows.js';
+import { PackageLayers } from '../../organisms/package-layers/package-layers.js';
+import { PipelineExplorer } from '../../organisms/pipeline-explorer/pipeline-explorer.js';
+import {
+  pipelineCopyOf,
+  pipelineViewOf,
+} from '../../organisms/pipeline-explorer/pipeline-rows.js';
+import { releaseCopyOf } from '../../organisms/release-decision/release-copy.js';
+import { ReleaseDecision } from '../../organisms/release-decision/release-decision.js';
+import type { ReleaseDecisionPolicy } from '../../organisms/release-decision/release-rules.js';
 import { SiteNav } from '../../organisms/site-nav/site-nav.js';
 import { sectionPath } from '../../routing/landing-sections.js';
 import { DECISIONS_ANCHOR } from '../../routing/project-paths.js';
@@ -38,6 +56,11 @@ export interface ProjectPageData {
   readonly page: ProjectPage;
   /** Its overview, rendered from Markdown (`renderMarkdownBody`). */
   readonly overview: ReactNode;
+  /**
+   * Its repository's release policy, for the release decision: given only
+   * for the project whose repository the build runs in (ADR 0023).
+   */
+  readonly release?: ReleaseDecisionPolicy;
 }
 
 /** A section of the page: its anchor and its heading. */
@@ -73,24 +96,50 @@ function Part({ id, heading, children }: Section & { children: ReactNode }) {
  * around them in the reader's language (ADR 0020). A project with no records
  * here has neither the lifecycle nor the explorer, nor their outline entry.
  */
-export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
+export function ProjectPageView({
+  locale,
+  page,
+  overview,
+  release,
+}: ProjectPageData) {
   const t = siteT(locale);
-  const { project, technologies, patterns, paths, decisions } = page;
+  const {
+    project,
+    technologies,
+    patterns,
+    paths,
+    decisions,
+    architecture,
+    pipeline,
+  } = page;
   const id = String(project.id);
   const options = decisionOptionsOf(decisions, t);
   const recorded = decisions.length > 0;
   const parts = [
     { id: 'overview', heading: t('projectPage.overview') },
     { id: 'patterns', heading: t('projectPage.patterns') },
+    { id: 'architecture', heading: t('projectPage.architecture') },
     { id: 'structure', heading: t('projectPage.structure') },
+    { id: 'delivery', heading: t('projectPage.delivery') },
     { id: DECISIONS_ANCHOR, heading: t('projectPage.decisions') },
   ];
-  const [overviewPart, patternsPart, structurePart, decisionsPart] = parts as [
-    Section,
-    Section,
-    Section,
-    Section,
-  ];
+  const [
+    overviewPart,
+    patternsPart,
+    architecturePart,
+    structurePart,
+    deliveryPart,
+    decisionsPart,
+  ] = parts as [Section, Section, Section, Section, Section, Section];
+  const baseUrl = project.repositoryUrl
+    ? `${project.repositoryUrl}/tree/main/`
+    : undefined;
+  const shown = parts.filter(
+    part =>
+      (part.id !== 'architecture' || architecture !== undefined) &&
+      (part.id !== 'delivery' || pipeline !== undefined) &&
+      (part.id !== DECISIONS_ANCHOR || recorded),
+  );
   return (
     <>
       <SiteNav locale={locale} path={`/projects/${id}`} />
@@ -153,7 +202,7 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
             </Cluster>
           </PageHeader>
           <OutlineLayout
-            entries={(recorded ? parts : parts.slice(0, -1)).map(part => ({
+            entries={shown.map(part => ({
               id: part.id,
               text: part.heading,
               depth: 2,
@@ -182,22 +231,54 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
                   }))}
                 />
               </Part>
+              {architecture && (
+                <Part {...architecturePart}>
+                  <ArchitectureExplorer
+                    view={architectureViewOf(architecture, locale, t)}
+                    copy={architectureCopyOf(t)}
+                    baseUrl={baseUrl}
+                  />
+                </Part>
+              )}
               <Part {...structurePart}>
-                <FileTree
-                  label={t('projectPage.structure')}
-                  baseUrl={
-                    project.repositoryUrl
-                      ? `${project.repositoryUrl}/tree/main/`
-                      : undefined
-                  }
-                  rows={paths.map(row => ({
-                    path: row.path,
-                    note: localize(row.note as LocalizedText, locale),
-                  }))}
-                />
+                {page.layers ? (
+                  <PackageLayers
+                    view={layersViewOf(page.layers, paths, locale)}
+                    copy={layersCopyOf(t)}
+                    baseUrl={baseUrl}
+                  />
+                ) : (
+                  <FileTree
+                    label={t('projectPage.structure')}
+                    baseUrl={baseUrl}
+                    rows={paths.map(row => ({
+                      path: row.path,
+                      note: localize(row.note as LocalizedText, locale),
+                    }))}
+                  />
+                )}
               </Part>
+              {pipeline && (
+                <Part {...deliveryPart}>
+                  <PipelineExplorer
+                    view={pipelineViewOf(pipeline, {
+                      locale,
+                      projectId: id,
+                      repositoryUrl: project.repositoryUrl,
+                      t,
+                    })}
+                    copy={pipelineCopyOf(t)}
+                  />
+                  {release && (
+                    <ReleaseDecision policy={release} copy={releaseCopyOf(t)} />
+                  )}
+                </Part>
+              )}
               {recorded && (
                 <Part {...decisionsPart}>
+                  <p className="adr-archive-lead">
+                    {t('projectPage.archive', { project: project.name })}
+                  </p>
                   <p className="adr-language-note">
                     {t('projectPage.englishOnly')} {t('projectPage.synced')}
                   </p>

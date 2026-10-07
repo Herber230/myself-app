@@ -33,7 +33,6 @@ describe('the site nav', () => {
         '/en/#about',
         '/en/#projects',
         '/en/projects/entifix/',
-        '/en/projects/r10c/',
         '/en/projects/myself-app/',
         '/en/#contact',
         '/en/cv/',

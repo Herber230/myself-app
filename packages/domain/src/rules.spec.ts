@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  connectsOthers,
+  folderOrNote,
+  jobInItsWorkflow,
   oneChannelPerType,
+  refusesOthers,
   statusMatchesSupersession,
   supersedesWithinProject,
+  travelsBothEnds,
   variantIdNotReserved,
 } from './rules.js';
 
@@ -100,5 +105,60 @@ describe('a status that matches supersession', () => {
       '0 › status › is superseded, but nothing supersedes it',
       '1 › status › is accepted, but a later record supersedes it',
     ]);
+  });
+});
+
+describe('the architecture views (ADR 0022, 0023)', () => {
+  it('want a package to name its folder or carry a note', () => {
+    expect(
+      problemsOf(folderOrNote, [
+        { folder: 'src' },
+        { note: { en: 'a', es: 'a' } },
+        {},
+      ]),
+    ).toEqual(['2 › note › is missing, and no folder gives one']);
+  });
+
+  it('want a step to travel both ends of a line, or none', () => {
+    expect(
+      problemsOf(travelsBothEnds, [
+        {},
+        { from: 'a', to: 'b' },
+        { from: 'a' },
+        { to: 'b' },
+      ]),
+    ).toEqual([
+      '2 › to › is missing, while the other end is set',
+      '3 › from › is missing, while the other end is set',
+    ]);
+  });
+
+  it('refuse a part connected to itself', () => {
+    expect(
+      problemsOf(connectsOthers, [
+        { id: 'a' },
+        { id: 'b', connects: ['a'] },
+        { id: 'c', connects: ['c'] },
+      ]),
+    ).toEqual(['2 › connects › names the part itself']);
+  });
+
+  it('refuse an import refused from a package to itself', () => {
+    expect(
+      problemsOf(refusesOthers, [
+        { from: 'a', to: 'b' },
+        { from: 'a', to: 'a' },
+      ]),
+    ).toEqual(['1 › to › is the package it starts from']);
+  });
+
+  it('want a job key only with its workflow', () => {
+    expect(
+      problemsOf(jobInItsWorkflow, [
+        {},
+        { workflow: 'ci.yml', job: 'test' },
+        { job: 'test' },
+      ]),
+    ).toEqual(['2 › workflow › is missing, while job names a key in it']);
   });
 });

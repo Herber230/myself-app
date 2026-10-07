@@ -55,7 +55,7 @@ test('the projects are cards, each one link to its page', async ({ page }) => {
   await page.goto('/en/');
   const projects = page.getByRole('region', { name: 'Projects' });
   const links = projects.getByRole('link');
-  await expect(links).toHaveText(['entifix', 'r10c', 'myself-app']);
+  await expect(links).toHaveText(['entifix', 'myself-app']);
   // The link is stretched over its card: a click on the card follows it.
   await projects.getByRole('article').first().click();
   await page.waitForURL('/en/projects/entifix/');
@@ -165,7 +165,7 @@ test.describe('on a phone', () => {
     const trigger = banner.getByLabel('Menu', { exact: true });
     await trigger.click();
     const menu = banner.getByRole('navigation', { name: 'Sections' });
-    await expect(menu.getByRole('link')).toHaveCount(9);
+    await expect(menu.getByRole('link')).toHaveCount(8);
 
     await menu.getByRole('link', { name: 'Contact' }).click();
     await page.waitForURL('/en/#contact');
@@ -201,7 +201,7 @@ test.describe('with scripting off', () => {
       page
         .getByRole('region', { name: 'Projects' })
         .getByRole('heading', { level: 3 }),
-    ).toHaveText(['entifix', 'r10c', 'myself-app']);
+    ).toHaveText(['entifix', 'myself-app']);
   });
 
   test('the language menu is a menu of plain links', async ({ page }) => {

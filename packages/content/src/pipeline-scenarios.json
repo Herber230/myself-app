@@ -1,0 +1,38 @@
+[
+  {
+    "id": "myself-app-feat-ships",
+    "project": "myself-app",
+    "label": {
+      "en": "A feat ships",
+      "es": "Un feat se publica"
+    },
+    "order": 0
+  },
+  {
+    "id": "myself-app-docs-releases-nothing",
+    "project": "myself-app",
+    "label": {
+      "en": "A docs change releases nothing",
+      "es": "Un cambio de docs no publica nada"
+    },
+    "order": 1
+  },
+  {
+    "id": "myself-app-attribution-refused",
+    "project": "myself-app",
+    "label": {
+      "en": "An attributed commit is refused",
+      "es": "Un commit atribuido se rechaza"
+    },
+    "order": 2
+  },
+  {
+    "id": "myself-app-e2e-blocks",
+    "project": "myself-app",
+    "label": {
+      "en": "A failing journey blocks the merge",
+      "es": "Un recorrido roto bloquea el merge"
+    },
+    "order": 3
+  }
+]

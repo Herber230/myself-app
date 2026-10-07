@@ -18,7 +18,6 @@ describe('the project pages (#77)', () => {
   it('are one per featured project, entifix first', async () => {
     expect(await loadProjectIds(SITE_CONTENT)).toEqual([
       'entifix',
-      'r10c',
       'myself-app',
     ]);
   });
@@ -43,13 +42,25 @@ describe('the project pages (#77)', () => {
   });
 });
 
-describe('a project with no records here', () => {
-  it('has an overview, patterns and a file tree: r10c', async () => {
-    const page = await loadProjectPage(SITE_CONTENT, 'r10c');
-    expect(page?.project.overview?.en).toBeTruthy();
-    expect(page?.patterns.length).toBeGreaterThanOrEqual(4);
-    expect(page?.paths.length).toBeGreaterThanOrEqual(8);
-    expect(page?.decisions).toEqual([]);
+describe('the views drawn from content (ADR 0022, 0023)', () => {
+  it('give both projects a hexagon and layers', async () => {
+    for (const id of ['entifix', 'myself-app']) {
+      const page = await loadProjectPage(SITE_CONTENT, id);
+      expect(page?.architecture?.nodes.length, id).toBeGreaterThanOrEqual(8);
+      expect(page?.architecture?.scenarios.length, id).toBeGreaterThanOrEqual(
+        2,
+      );
+      expect(page?.layers?.packages.length, id).toBeGreaterThanOrEqual(6);
+    }
+  });
+
+  it('give only this repository a pipeline', async () => {
+    const [entifix, mine] = await Promise.all([
+      loadProjectPage(SITE_CONTENT, 'entifix'),
+      loadProjectPage(SITE_CONTENT, 'myself-app'),
+    ]);
+    expect(entifix).not.toHaveProperty('pipeline');
+    expect(mine?.pipeline?.jobs.length).toBeGreaterThanOrEqual(10);
   });
 });
 

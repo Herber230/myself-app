@@ -1,0 +1,146 @@
+[
+  {
+    "id": "myself-app-app",
+    "layer": "myself-app-app",
+    "label": "myself-app",
+    "column": 1.5,
+    "folder": "myself-app-apps-myself-app",
+    "imports": ["myself-app-ui", "myself-app-adapters", "myself-app-domain"]
+  },
+  {
+    "id": "myself-app-ui",
+    "layer": "myself-app-implementation",
+    "label": "ui",
+    "column": 0.5,
+    "folder": "myself-app-packages-implementation-ui",
+    "imports": ["myself-app-domain", "myself-app-incubator"]
+  },
+  {
+    "id": "myself-app-adapters",
+    "layer": "myself-app-implementation",
+    "label": "adapters",
+    "column": 2.5,
+    "folder": "myself-app-packages-implementation-adapters",
+    "imports": [
+      "myself-app-domain",
+      "myself-app-content",
+      "myself-app-incubator"
+    ]
+  },
+  {
+    "id": "myself-app-domain",
+    "layer": "myself-app-domain",
+    "label": "domain",
+    "column": 1.5,
+    "folder": "myself-app-packages-domain",
+    "imports": ["myself-app-incubator"]
+  },
+  {
+    "id": "myself-app-incubator",
+    "layer": "myself-app-foundations",
+    "label": "entifix-incubator",
+    "column": 0.25,
+    "folder": "myself-app-packages-entifix-incubator"
+  },
+  {
+    "id": "myself-app-content",
+    "layer": "myself-app-foundations",
+    "label": "content",
+    "column": 2.75,
+    "folder": "myself-app-packages-content"
+  },
+  {
+    "id": "entifix-testing",
+    "layer": "entifix-t5",
+    "label": "testing-*",
+    "column": 1.5,
+    "note": {
+      "en": "Doubles that may impersonate anything: unit, e2e and auth.",
+      "es": "Dobles que pueden suplantar cualquier cosa: unitarias, e2e y autenticación."
+    },
+    "imports": ["entifix-business"]
+  },
+  {
+    "id": "entifix-service-shell",
+    "layer": "entifix-t4",
+    "label": "service-shell",
+    "column": 0.5,
+    "folder": "entifix-packages-effect-service-shell",
+    "imports": ["entifix-business", "entifix-storage"]
+  },
+  {
+    "id": "entifix-next-shell",
+    "layer": "entifix-t4",
+    "label": "next-shell",
+    "column": 2.5,
+    "folder": "entifix-packages-next",
+    "imports": ["entifix-react"]
+  },
+  {
+    "id": "entifix-react",
+    "layer": "entifix-t3",
+    "label": "react-controls",
+    "column": 2,
+    "folder": "entifix-packages-react",
+    "imports": ["entifix-core", "entifix-style"]
+  },
+  {
+    "id": "entifix-storage",
+    "layer": "entifix-t2",
+    "label": "mongo · sql · redis",
+    "column": 0,
+    "folder": "entifix-packages-ts",
+    "note": {
+      "en": "The storage adapters: the drivers behind a repository.",
+      "es": "Los adaptadores de almacenamiento: los drivers detrás de un repositorio."
+    },
+    "imports": ["entifix-business"]
+  },
+  {
+    "id": "entifix-transport",
+    "layer": "entifix-t2",
+    "label": "rest · amqp",
+    "column": 1.33,
+    "note": {
+      "en": "A repository over HTTP, and events over a broker.",
+      "es": "Un repositorio sobre HTTP, y eventos sobre un broker."
+    },
+    "imports": ["entifix-business"]
+  },
+  {
+    "id": "entifix-identity",
+    "layer": "entifix-t2",
+    "label": "jwt · zitadel",
+    "column": 2.66,
+    "note": {
+      "en": "Tokens and sign-in, behind the token service.",
+      "es": "Tokens e inicio de sesión, detrás del servicio de tokens."
+    },
+    "imports": ["entifix-business"]
+  },
+  {
+    "id": "entifix-core",
+    "layer": "entifix-t1",
+    "label": "core",
+    "column": 0.75,
+    "folder": "entifix-packages-ts-core"
+  },
+  {
+    "id": "entifix-business",
+    "layer": "entifix-t1",
+    "label": "business",
+    "column": 2.25,
+    "note": {
+      "en": "The use cases (load, get, save, delete) and the ports they depend on.",
+      "es": "Los casos de uso (load, get, save, delete) y los puertos de los que dependen."
+    },
+    "imports": ["entifix-core"]
+  },
+  {
+    "id": "entifix-style",
+    "layer": "entifix-t0",
+    "label": "style",
+    "column": 1.5,
+    "folder": "entifix-packages-style"
+  }
+]

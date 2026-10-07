@@ -15,28 +15,26 @@ describe('the featured projects', () => {
   it('are the shipped ones, in their order', async () => {
     expect(ids(await loadFeaturedProjects(SITE_CONTENT))).toEqual([
       'entifix',
-      'r10c',
       'myself-app',
     ]);
   });
 
   it('leave out a project that is not featured, and follow order, not file position', async () => {
-    const [first, second, third] = structuredClone(
-      CONTENT['projects.json'],
-    ) as Record<string, unknown>[];
+    const [first, second] = structuredClone(CONTENT['projects.json']) as Record<
+      string,
+      unknown
+    >[];
     const content = buildSiteContent({
       ...CONTENT,
       'projects.json': [
         { ...first, order: 5 },
         { ...second, order: 1 },
-        { ...third, order: 7 },
         { ...first, id: 'side-project', featured: false, order: 0 },
       ],
     });
     expect(ids(await loadFeaturedProjects(content))).toEqual([
-      'r10c',
-      'entifix',
       'myself-app',
+      'entifix',
     ]);
   });
 });

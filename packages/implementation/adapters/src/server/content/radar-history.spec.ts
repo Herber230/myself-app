@@ -1,6 +1,5 @@
 import {
   EmploymentPeriod,
-  Project,
   Technology,
   TechnologyUsePeriod,
 } from '@myself-app/domain';
@@ -9,21 +8,20 @@ import { describe, expect, it } from 'vitest';
 import { SITE_CONTENT } from '../shipped-content.fixture.js';
 
 /**
- * The radar is the career, not a wish list: every technology on it was used
- * at a job or in a project, and its history agrees with the jobs that name it.
+ * The radar is the career, not a wish list: every technology on it has a
+ * history of its own, and that history agrees with the jobs that name it. A
+ * technology stands apart from the projects: a job or a featured project is
+ * where it was used, when one is shown, not what puts it on the radar.
  */
 describe("the radar's history", () => {
-  it('has every technology used at an employment or in a project', async () => {
-    const [technologies, employments, projects] = await Promise.all([
+  it('has a history for every technology', async () => {
+    const [technologies, periods] = await Promise.all([
       SITE_CONTENT.loadAll(Technology, {}),
-      SITE_CONTENT.loadAll(EmploymentPeriod, {}),
-      SITE_CONTENT.loadAll(Project, {}),
+      SITE_CONTENT.loadAll(TechnologyUsePeriod, {}),
     ]);
-    const used = new Set(
-      [...employments, ...projects].flatMap(each => each.technologies.ids),
-    );
+    const placed = new Set(periods.map(period => period.technology.id));
     expect(
-      technologies.map(each => each.id).filter(id => !used.has(id)),
+      technologies.map(each => each.id).filter(id => !placed.has(id)),
     ).toEqual([]);
   });
 

@@ -7,7 +7,12 @@ import { ArchitectureDecision } from '../../entities/architecture-decision.entit
 import { Project } from '../../entities/project.entity.js';
 import { ProjectPath } from '../../entities/project-path.entity.js';
 import { ProjectPattern } from '../../entities/project-pattern.entity.js';
+import {
+  loadProjectArchitecture,
+  loadProjectLayers,
+} from './load-project-architecture.uc.js';
 import type { ProjectPage } from './load-project-page.types.js';
+import { loadProjectPipeline } from './load-project-pipeline.uc.js';
 
 const FEATURED = {
   property: 'featured',
@@ -29,7 +34,8 @@ export async function loadProjectIds(
 /**
  * A featured project's page (#77): the project and its technologies, its
  * patterns and file tree in their order, and its decision records by number,
- * each with what it supersedes resolved.
+ * each with what it supersedes resolved; and its hexagon and layers, when it
+ * has them (ADR 0022); and its pipeline, when it has one (ADR 0023).
  * Nothing for an id that names no featured project.
  */
 export async function loadProjectPage(
@@ -38,7 +44,15 @@ export async function loadProjectPage(
 ): Promise<ProjectPage | undefined> {
   const ofProject = { property: 'project', operator: 'eq', value: id } as const;
   const byOrder = [{ 0: { property: 'order', type: 'asc' } }] as const;
-  const [[project], patterns, paths, decisions] = await Promise.all([
+  const [
+    [project],
+    patterns,
+    paths,
+    decisions,
+    architecture,
+    layers,
+    pipeline,
+  ] = await Promise.all([
     content.loadAll(
       Project,
       {
@@ -65,6 +79,9 @@ export async function loadProjectPage(
       // Each row names what it supersedes, and what supersedes it.
       { resolve: ['supersedes'] },
     ),
+    loadProjectArchitecture(content, id),
+    loadProjectLayers(content, id),
+    loadProjectPipeline(content, id),
   ]);
   if (project === undefined) return undefined;
   return {
@@ -73,5 +90,8 @@ export async function loadProjectPage(
     patterns,
     paths,
     decisions,
+    ...(architecture && { architecture }),
+    ...(layers && { layers }),
+    ...(pipeline && { pipeline }),
   };
 }
