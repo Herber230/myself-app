@@ -78,18 +78,13 @@ export function PipelineGraph({
   className,
 }: PipelineGraphProps) {
   const id = useId();
-  const columnOf = new Map(stages.map((stage, index) => [stage.id, index]));
   const slots = new Map<string, PipelineSlot>();
-  for (const stage of stages) {
+  stages.forEach((stage, column) => {
     const inStage = jobs.filter(job => job.stage === stage.id);
     inStage.forEach((job, row) =>
-      slots.set(job.id, {
-        column: columnOf.get(stage.id) ?? 0,
-        row,
-        rows: inStage.length,
-      }),
+      slots.set(job.id, { column, row, rows: inStage.length }),
     );
-  }
+  });
   const tallest = Math.max(1, ...[...slots.values()].map(slot => slot.rows));
   const { width, height } = pipelineSize(stages.length, tallest);
   const stateOf = new Map(jobs.map(job => [job.id, job.state]));
