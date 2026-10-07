@@ -18,40 +18,6 @@
     "order": 0
   },
   {
-    "id": "r10c",
-    "name": "r10c",
-    "summary": {
-      "en": "A marketplace platform named from TM Forum SID: event-driven services on Kubernetes, storage per organization, and the application entifix was extracted from.",
-      "es": "Una plataforma de marketplace nombrada a partir de SID del TM Forum: servicios orientados a eventos sobre Kubernetes, almacenamiento por organización, y la aplicación de la que se extrajo entifix."
-    },
-    "repositoryUrl": "https://github.com/r10c-technologies/r10c",
-    "technologies": [
-      "effect",
-      "typescript",
-      "nx",
-      "pnpm",
-      "next-js",
-      "react",
-      "kubernetes",
-      "mongodb",
-      "postgresql",
-      "redis",
-      "rabbitmq",
-      "zitadel",
-      "opentelemetry",
-      "tanstack-query",
-      "vitest",
-      "playwright",
-      "event-driven-architecture",
-      "microservices",
-      "cqrs-sagas",
-      "tm-forum-frameworx",
-      "clean-architecture"
-    ],
-    "featured": true,
-    "order": 1
-  },
-  {
     "id": "myself-app",
     "name": "myself-app",
     "summary": {
@@ -75,6 +41,6 @@
       "trunk-based-development"
     ],
     "featured": true,
-    "order": 2
+    "order": 1
   }
 ]
