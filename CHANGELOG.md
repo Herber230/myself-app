@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.10.0](https://github.com/Herber230/myself-app/compare/v1.9.0...v1.10.0) (2026-10-07)
+
+### Features
+
+* final content and polish, with the radar bound to the real career ([#82](https://github.com/Herber230/myself-app/issues/82)) ([cb14baf](https://github.com/Herber230/myself-app/commit/cb14bafa78d49f6b5c4bf7cc12624d606b36f459))
+
 ## [1.9.0](https://github.com/Herber230/myself-app/compare/v1.8.0...v1.9.0) (2026-10-04)
 
 ### Features
