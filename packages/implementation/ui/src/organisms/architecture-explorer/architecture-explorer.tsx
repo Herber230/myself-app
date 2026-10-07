@@ -2,14 +2,16 @@
 
 import {
   ExternalLink,
+  SegmentedControl,
+} from '@myself-app/entifix-incubator-react-controls';
+import {
   HexagonDiagram,
   type HexagonEdge,
   type HexagonNode,
   type HexagonNodeState,
-  SegmentedControl,
   StepPlayer,
   type StepPlayerCopy,
-} from '@myself-app/entifix-incubator-react-controls';
+} from '@myself-app/entifix-incubator-react-controls/diagrams';
 import { useState } from 'react';
 
 export interface ArchitecturePart {

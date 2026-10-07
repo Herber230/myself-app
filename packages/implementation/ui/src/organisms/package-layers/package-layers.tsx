@@ -1,10 +1,10 @@
 'use client';
 
+import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 import {
-  ExternalLink,
   LayerDiagram,
   type LayerEdge,
-} from '@myself-app/entifix-incubator-react-controls';
+} from '@myself-app/entifix-incubator-react-controls/diagrams';
 import { useState } from 'react';
 
 export interface LayersBox {

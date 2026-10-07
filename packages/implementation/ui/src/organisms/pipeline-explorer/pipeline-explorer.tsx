@@ -1,13 +1,13 @@
 'use client';
 
+import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 import {
-  ExternalLink,
   PipelineGraph,
   type PipelineGraphJob,
   type PipelineJobState,
   StepPlayer,
   type StepPlayerCopy,
-} from '@myself-app/entifix-incubator-react-controls';
+} from '@myself-app/entifix-incubator-react-controls/diagrams';
 import Link from 'next/link';
 import { useState } from 'react';
 
