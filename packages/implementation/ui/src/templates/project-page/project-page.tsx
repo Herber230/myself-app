@@ -36,6 +36,14 @@ import {
   layersViewOf,
 } from '../../organisms/package-layers/layer-rows.js';
 import { PackageLayers } from '../../organisms/package-layers/package-layers.js';
+import { PipelineExplorer } from '../../organisms/pipeline-explorer/pipeline-explorer.js';
+import {
+  pipelineCopyOf,
+  pipelineViewOf,
+} from '../../organisms/pipeline-explorer/pipeline-rows.js';
+import { releaseCopyOf } from '../../organisms/release-decision/release-copy.js';
+import { ReleaseDecision } from '../../organisms/release-decision/release-decision.js';
+import type { ReleaseDecisionPolicy } from '../../organisms/release-decision/release-rules.js';
 import { SiteNav } from '../../organisms/site-nav/site-nav.js';
 import { sectionPath } from '../../routing/landing-sections.js';
 import { DECISIONS_ANCHOR } from '../../routing/project-paths.js';
@@ -48,6 +56,11 @@ export interface ProjectPageData {
   readonly page: ProjectPage;
   /** Its overview, rendered from Markdown (`renderMarkdownBody`). */
   readonly overview: ReactNode;
+  /**
+   * Its repository's release policy, for the release decision: given only
+   * for the project whose repository the build runs in (ADR 0023).
+   */
+  readonly release?: ReleaseDecisionPolicy;
 }
 
 /** A section of the page: its anchor and its heading. */
@@ -83,10 +96,22 @@ function Part({ id, heading, children }: Section & { children: ReactNode }) {
  * around them in the reader's language (ADR 0020). A project with no records
  * here has neither the lifecycle nor the explorer, nor their outline entry.
  */
-export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
+export function ProjectPageView({
+  locale,
+  page,
+  overview,
+  release,
+}: ProjectPageData) {
   const t = siteT(locale);
-  const { project, technologies, patterns, paths, decisions, architecture } =
-    page;
+  const {
+    project,
+    technologies,
+    patterns,
+    paths,
+    decisions,
+    architecture,
+    pipeline,
+  } = page;
   const id = String(project.id);
   const options = decisionOptionsOf(decisions, t);
   const recorded = decisions.length > 0;
@@ -95,6 +120,7 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
     { id: 'patterns', heading: t('projectPage.patterns') },
     { id: 'architecture', heading: t('projectPage.architecture') },
     { id: 'structure', heading: t('projectPage.structure') },
+    { id: 'delivery', heading: t('projectPage.delivery') },
     { id: DECISIONS_ANCHOR, heading: t('projectPage.decisions') },
   ];
   const [
@@ -102,14 +128,16 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
     patternsPart,
     architecturePart,
     structurePart,
+    deliveryPart,
     decisionsPart,
-  ] = parts as [Section, Section, Section, Section, Section];
+  ] = parts as [Section, Section, Section, Section, Section, Section];
   const baseUrl = project.repositoryUrl
     ? `${project.repositoryUrl}/tree/main/`
     : undefined;
   const shown = parts.filter(
     part =>
       (part.id !== 'architecture' || architecture !== undefined) &&
+      (part.id !== 'delivery' || pipeline !== undefined) &&
       (part.id !== DECISIONS_ANCHOR || recorded),
   );
   return (
@@ -230,6 +258,22 @@ export function ProjectPageView({ locale, page, overview }: ProjectPageData) {
                   />
                 )}
               </Part>
+              {pipeline && (
+                <Part {...deliveryPart}>
+                  <PipelineExplorer
+                    view={pipelineViewOf(pipeline, {
+                      locale,
+                      projectId: id,
+                      repositoryUrl: project.repositoryUrl,
+                      t,
+                    })}
+                    copy={pipelineCopyOf(t)}
+                  />
+                  {release && (
+                    <ReleaseDecision policy={release} copy={releaseCopyOf(t)} />
+                  )}
+                </Part>
+              )}
               {recorded && (
                 <Part {...decisionsPart}>
                   <p className="adr-language-note">

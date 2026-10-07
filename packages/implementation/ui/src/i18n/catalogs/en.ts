@@ -188,6 +188,36 @@ export const en = {
         adapters: 'Adapters',
       },
     },
+    /** A project's delivery pipeline (ADR 0023). */
+    delivery: 'Delivery',
+    pipeline: {
+      label: 'Delivery pipeline',
+      hint: 'Pick a job to see what it runs and why, or choose a scenario to follow one change from the commit to production.',
+      definedIn: 'Defined in',
+      decidedIn: 'Decided in',
+    },
+    release: {
+      title: 'What would this commit release?',
+      lead: 'The squash commit’s type is the release decision. This reads the repository’s own release config, so it answers as the release would.',
+      type: 'Type',
+      breaking: 'Breaking change (!)',
+      description: 'Description',
+      example: 'a delivery section on the project page',
+      commit: 'Squash commit',
+      next: 'Next version',
+      bump: '{{from}} → {{to}}, a {{level}} release',
+      levels: {
+        major: 'major',
+        minor: 'minor',
+        patch: 'patch',
+      },
+      none: 'No release',
+      deploys: 'Deploys',
+      yes: 'Yes',
+      no: 'No: the deploy is skipped',
+      changelog: 'Added to CHANGELOG.md',
+      hidden: 'Nothing: this type is hidden from the notes.',
+    },
     /** A project's packages in their layers (ADR 0022). */
     layers: {
       label: 'Packages by layer',
