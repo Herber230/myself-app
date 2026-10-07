@@ -51,16 +51,31 @@ for (const [locale, copy] of Object.entries(HERO)) {
   });
 }
 
-test('the projects are stacked cards, each one link to its page', async ({
-  page,
-}) => {
+test('the projects are cards, each one link to its page', async ({ page }) => {
   await page.goto('/en/');
   const projects = page.getByRole('region', { name: 'Projects' });
   const links = projects.getByRole('link');
-  await expect(links).toHaveText(['entifix', 'myself-app']);
+  await expect(links).toHaveText(['entifix', 'r10c', 'myself-app']);
   // The link is stretched over its card: a click on the card follows it.
   await projects.getByRole('article').first().click();
   await page.waitForURL('/en/projects/entifix/');
+});
+
+test('the contact section offers the default CV as the PDF it ships', async ({
+  page,
+  request,
+}) => {
+  await page.goto('/es/');
+  const cv = page
+    .getByRole('region', { name: 'Hablemos' })
+    .getByRole('link', { name: 'Descarga mi CV (PDF)' });
+  await expect(cv).toHaveAttribute(
+    'href',
+    '/es/cv/herber-colop-cv-full-stack-es.pdf',
+  );
+  const pdf = await request.get('/es/cv/herber-colop-cv-full-stack-es.pdf');
+  expect(pdf.status()).toBe(200);
+  expect(pdf.headers()['content-type']).toContain('application/pdf');
 });
 
 test('the bar is hidden over the hero and revealed by scrolling', async ({
@@ -150,7 +165,7 @@ test.describe('on a phone', () => {
     const trigger = banner.getByLabel('Menu', { exact: true });
     await trigger.click();
     const menu = banner.getByRole('navigation', { name: 'Sections' });
-    await expect(menu.getByRole('link')).toHaveCount(8);
+    await expect(menu.getByRole('link')).toHaveCount(9);
 
     await menu.getByRole('link', { name: 'Contact' }).click();
     await page.waitForURL('/en/#contact');
@@ -178,7 +193,7 @@ test.describe('with scripting off', () => {
     page,
   }) => {
     await page.goto('/en/#contact');
-    const contact = page.getByRole('region', { name: 'Contact' });
+    const contact = page.getByRole('region', { name: 'Get in touch' });
     await expect(
       contact.getByRole('link', { name: 'GitHub: Herber230' }),
     ).toHaveAttribute('href', 'https://github.com/Herber230');
@@ -186,7 +201,7 @@ test.describe('with scripting off', () => {
       page
         .getByRole('region', { name: 'Projects' })
         .getByRole('heading', { level: 3 }),
-    ).toHaveText(['entifix', 'myself-app']);
+    ).toHaveText(['entifix', 'r10c', 'myself-app']);
   });
 
   test('the language menu is a menu of plain links', async ({ page }) => {

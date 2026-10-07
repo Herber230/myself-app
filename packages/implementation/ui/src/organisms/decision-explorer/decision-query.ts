@@ -15,7 +15,8 @@ import {
 } from '@myself-app/entifix-incubator-browser';
 import type { SortChoice } from '@myself-app/entifix-incubator-react-controls';
 
-export type DecisionParam = 'status' | 'area' | 'q' | 'sort' | 'adr';
+export type DecisionParam =
+  'status' | 'revised' | 'area' | 'q' | 'sort' | 'adr';
 
 /** The fields a list of records may be ordered by, as the URL names them. */
 export const SORT_FIELDS = ['number', 'date', 'title', 'status'] as const;
@@ -72,6 +73,15 @@ export function decisionQuery(vocabulary: {
   return defineUrlQuery<DecisionParam>({
     params: {
       status: { allowed: vocabulary.statuses, condition: anyOf('status') },
+      // Revised at least once, whatever its status: `?revised=yes`.
+      revised: {
+        allowed: ['yes'],
+        condition: () => ({
+          property: 'revisions',
+          operator: 'gt',
+          value: 0,
+        }),
+      },
       area: { allowed: vocabulary.areas, condition: anyOf('area') },
       q: { single: true, condition: inTitleOrSymptom },
       sort: { sorting: SORTINGS },

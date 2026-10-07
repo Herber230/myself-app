@@ -47,6 +47,8 @@ export function BlogPageView({ locale, previews }: BlogPageData) {
           empty: t('blogPage.empty'),
           showSidebar: t('blogPage.sidebar.show'),
           hideSidebar: t('blogPage.sidebar.hide'),
+          latest: t('blogPage.latest'),
+          moreTechnologies: t('blogPage.moreTechnologies', { n: '{{n}}' }),
         }}
         title={t('blog')}
         lead={t('blogLead')}

@@ -51,18 +51,23 @@ afterEach(() => {
   window.history.replaceState(null, '', '/en/blog/');
 });
 
-const explorer = () => (
+const TECHNOLOGIES = [
+  { id: 'react', name: 'React' },
+  { id: 'typescript', name: 'TypeScript' },
+];
+
+const explorer = (technologies = TECHNOLOGIES) => (
   <SourcesProvider sources={browserSources}>
     <PostExplorer
       posts={posts}
       locale="en"
       tags={[
-        { id: 'entifix', name: 'entifix' },
-        { id: 'testing', name: 'Testing' },
-        { id: 'infrastructure', name: 'Infrastructure' },
+        { id: 'essays', name: 'Essays' },
+        { id: 'fiction', name: 'Fiction' },
+        { id: 'architecture', name: 'Architecture' },
       ]}
-      technologies={[{ id: 'cloudfront', name: 'CloudFront' }]}
-      years={['2026', '2025']}
+      technologies={technologies}
+      years={['2024', '2021', '2019']}
       copy={{
         filters: 'Filter the posts',
         tag: 'Tag',
@@ -77,6 +82,8 @@ const explorer = () => (
         active: '{{n}} active',
         remove: 'Remove {{name}}',
         hideSidebar: 'Hide filters',
+        latest: 'Latest',
+        moreTechnologies: 'Technology ({{n}})',
       }}
       title="Blog"
       lead="Notes on what I build."
@@ -94,14 +101,14 @@ describe('the blog’s posts and filter', () => {
   it('are every post in the static HTML, and the filter as links', () => {
     const html = renderToString(explorer());
     for (const post of posts) expect(html).toContain(post.title);
-    expect(html).toContain('href="/en/blog/?tag=testing"');
-    expect(html).toContain('href="/en/blog/?tech=cloudfront"');
-    expect(html).toContain('href="/en/blog/?year=2025"');
+    expect(html).toContain('href="/en/blog/?tag=fiction"');
+    expect(html).toContain('href="/en/blog/?tech=react"');
+    expect(html).toContain('href="/en/blog/?year=2021"');
     expect(html).not.toContain('type="search"');
     expect(html).not.toContain('aria-pressed');
   });
 
-  it('open their sidebar, under the blog’s title, with the feed at its foot', () => {
+  it('open their sidebar, under the blog’s title, with the feed beside it', () => {
     render(explorer());
     const sidebar = screen.getByRole('complementary', {
       name: 'Filter the posts',
@@ -109,9 +116,10 @@ describe('the blog’s posts and filter', () => {
     expect(sidebar.querySelector('details')?.open).toBe(true);
     expect(within(sidebar).getByText('Hide filters')).toBeTruthy();
     expect(
-      within(sidebar)
-        .getByRole('link', { name: 'RSS feed' })
-        .getAttribute('href'),
+      within(sidebar).queryByRole('link', { name: 'RSS feed' }),
+    ).toBeNull();
+    expect(
+      screen.getByRole('link', { name: 'RSS feed' }).getAttribute('href'),
     ).toBe('/en/blog/rss.xml');
     expect(
       screen.getByRole('heading', { level: 1, name: 'Blog' }),
@@ -120,29 +128,29 @@ describe('the blog’s posts and filter', () => {
   });
 
   it('read the filter from the URL, and show what the use case keeps', async () => {
-    window.history.replaceState(null, '', '/en/blog/?tag=testing');
+    window.history.replaceState(null, '', '/en/blog/?tag=fiction');
     render(explorer());
-    await waitFor(() =>
-      expect(shownPosts()).toEqual(['coverage-at-one-hundred']),
-    );
+    await waitFor(() => expect(shownPosts()).toEqual(['then-i-saw-you-dance']));
     expect(screen.getByText(`Showing 1 of ${posts.length}`)).toBeTruthy();
     expect(
       screen
-        .getByRole('button', { name: 'Testing' })
+        .getByRole('button', { name: 'Fiction' })
         .getAttribute('aria-pressed'),
     ).toBe('true');
   });
 
   it('write each control to the URL, and clear them all', async () => {
     render(explorer());
-    fireEvent.click(screen.getByRole('button', { name: 'CloudFront' }));
-    fireEvent.click(screen.getByRole('button', { name: '2026' }));
-    expect(window.location.search).toBe('?tech=cloudfront&year=2026');
-    await waitFor(() => expect(shownPosts()).toEqual(['a-static-site-on-s3']));
+    fireEvent.click(screen.getByRole('button', { name: 'React' }));
+    fireEvent.click(screen.getByRole('button', { name: '2021' }));
+    expect(window.location.search).toBe('?tech=react&year=2021');
+    await waitFor(() =>
+      expect(shownPosts()).toEqual(['rxjs-exceptions-react-hooks']),
+    );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Infrastructure' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Infrastructure' }));
-    expect(window.location.search).toBe('?tech=cloudfront&year=2026');
+    fireEvent.click(screen.getByRole('button', { name: 'Essays' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Essays' }));
+    expect(window.location.search).toBe('?tech=react&year=2021');
 
     fireEvent.change(screen.getByRole('searchbox'), {
       target: { value: 'nothing like it' },
@@ -159,16 +167,16 @@ describe('the blog’s posts and filter', () => {
   it('follow the URL back and forward', async () => {
     render(explorer());
     act(() => {
-      window.history.pushState(null, '', '/en/blog/?year=2025');
+      window.history.pushState(null, '', '/en/blog/?year=2019');
       window.dispatchEvent(new PopStateEvent('popstate'));
     });
     await waitFor(() =>
-      expect(shownPosts()).toEqual(['coverage-at-one-hundred']),
+      expect(shownPosts()).toEqual(['an-analogy-for-life-plans']),
     );
   });
 
   it('count and remove what is in force, the card closed on a phone', async () => {
-    window.history.replaceState(null, '', '/en/blog/?tag=testing&q=coverage');
+    window.history.replaceState(null, '', '/en/blog/?tag=essays&q=books');
     const { container } = render(explorer());
     expect(await screen.findByText('2 active')).toBeTruthy();
     expect(
@@ -177,14 +185,50 @@ describe('the blog’s posts and filter', () => {
       )?.open,
     ).toBe(true);
     fireEvent.click(
-      screen.getByRole('button', { name: 'Remove Search titles: “coverage”' }),
+      screen.getByRole('button', { name: 'Remove Search titles: “books”' }),
     );
-    expect(window.location.search).toBe('?tag=testing');
+    expect(window.location.search).toBe('?tag=essays');
     act(() => setViewportWidth(390));
     expect(
       container.querySelector<HTMLDetailsElement>(
         '[data-slot="filter-panel-details"]',
       )?.open,
     ).toBe(false);
+  });
+
+  it('feature the newest post, until a filter is in force', async () => {
+    render(explorer());
+    const featured = () =>
+      [...document.querySelectorAll('article[data-featured]')].map(post =>
+        post.getAttribute('data-post'),
+      );
+    expect(featured()).toEqual([posts[0]?.id]);
+    expect(screen.getByText('Latest')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Fiction' }));
+    await waitFor(() => expect(featured()).toEqual([]));
+  });
+
+  it('fold a long list of technologies, and open it while one is chosen', () => {
+    const many = Array.from({ length: 6 }, (_, index) => ({
+      id: `tech-${index}`,
+      name: `Tech ${index}`,
+    }));
+    const { unmount } = render(explorer(many));
+    const fold = () =>
+      document.querySelector<HTMLDetailsElement>('.blog-filter-more');
+    expect(fold()?.open).toBe(false);
+    expect(screen.getByText('Technology (6)')).toBeTruthy();
+    unmount();
+
+    window.history.replaceState(null, '', '/en/blog/?tech=tech-1');
+    render(explorer(many));
+    expect(fold()?.open).toBe(true);
+  });
+
+  it('show a short list of technologies open', () => {
+    render(explorer());
+    expect(
+      document.querySelector<HTMLDetailsElement>('.blog-filter-more')?.open,
+    ).toBe(true);
   });
 });

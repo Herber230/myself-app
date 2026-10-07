@@ -7,7 +7,7 @@ const ids = (records: readonly { id: unknown }[] = []) =>
   records.map(each => each.id);
 
 describe("a variant's sheet", () => {
-  it('lists its technologies and employments in the order it gives them', async () => {
+  it('lists its technologies and employments in its order, each with the variant’s technologies used there', async () => {
     const sheet = await loadCvSheet(fixtureContent(), 'full-stack');
     expect(sheet?.variant.id).toBe('full-stack');
     expect(ids(sheet?.technologies)).toEqual(['react', 'typescript']);
@@ -18,6 +18,11 @@ describe("a variant's sheet", () => {
     expect(sheet?.employments.map(each => each.employer.id)).toEqual([
       'globex',
       'acme',
+    ]);
+    expect(sheet?.employments.map(each => ids(each.technologies))).toEqual([
+      ['typescript'],
+      // jest was used there, but the variant does not list it.
+      ['typescript'],
     ]);
   });
 

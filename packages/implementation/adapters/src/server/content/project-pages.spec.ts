@@ -18,6 +18,7 @@ describe('the project pages (#77)', () => {
   it('are one per featured project, entifix first', async () => {
     expect(await loadProjectIds(SITE_CONTENT)).toEqual([
       'entifix',
+      'r10c',
       'myself-app',
     ]);
   });
@@ -39,6 +40,16 @@ describe('the project pages (#77)', () => {
       .map(row => row.path)
       .filter(path => !existsSync(join(REPO_ROOT, path)));
     expect(missing).toEqual([]);
+  });
+});
+
+describe('a project with no records here', () => {
+  it('has an overview, patterns and a file tree: r10c', async () => {
+    const page = await loadProjectPage(SITE_CONTENT, 'r10c');
+    expect(page?.project.overview?.en).toBeTruthy();
+    expect(page?.patterns.length).toBeGreaterThanOrEqual(4);
+    expect(page?.paths.length).toBeGreaterThanOrEqual(8);
+    expect(page?.decisions).toEqual([]);
   });
 });
 

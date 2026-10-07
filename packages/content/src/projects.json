@@ -3,13 +3,53 @@
     "id": "entifix",
     "name": "entifix",
     "summary": {
-      "en": "A TypeScript framework for entity-driven applications on Effect, from metadata to repositories to React controls.",
-      "es": "Un framework de TypeScript para aplicaciones guiadas por entidades sobre Effect, de los metadatos a los repositorios y los controles de React."
+      "en": "A code-first framework for Clean Architecture and domain-driven design: entities and use cases are the application; storage, API and UI are adapters around them.",
+      "es": "Un framework code-first para Clean Architecture y diseño guiado por el dominio: las entidades y los casos de uso son la aplicación; el almacenamiento, la API y la interfaz son adaptadores a su alrededor."
     },
     "repositoryUrl": "https://github.com/r10c-technologies/entifix",
-    "technologies": ["effect", "typescript", "nx"],
+    "technologies": [
+      "effect",
+      "typescript",
+      "nx",
+      "clean-architecture",
+      "vitest"
+    ],
     "featured": true,
     "order": 0
+  },
+  {
+    "id": "r10c",
+    "name": "r10c",
+    "summary": {
+      "en": "A marketplace platform named from TM Forum SID: event-driven services on Kubernetes, storage per organization, and the application entifix was extracted from.",
+      "es": "Una plataforma de marketplace nombrada a partir de SID del TM Forum: servicios orientados a eventos sobre Kubernetes, almacenamiento por organización, y la aplicación de la que se extrajo entifix."
+    },
+    "repositoryUrl": "https://github.com/r10c-technologies/r10c",
+    "technologies": [
+      "effect",
+      "typescript",
+      "nx",
+      "pnpm",
+      "next-js",
+      "react",
+      "kubernetes",
+      "mongodb",
+      "postgresql",
+      "redis",
+      "rabbitmq",
+      "zitadel",
+      "opentelemetry",
+      "tanstack-query",
+      "vitest",
+      "playwright",
+      "event-driven-architecture",
+      "microservices",
+      "cqrs-sagas",
+      "tm-forum-frameworx",
+      "clean-architecture"
+    ],
+    "featured": true,
+    "order": 1
   },
   {
     "id": "myself-app",
@@ -28,9 +68,13 @@
       "pulumi",
       "amazon-s3",
       "cloudfront",
-      "playwright"
+      "playwright",
+      "react",
+      "static-first-delivery",
+      "vitest",
+      "trunk-based-development"
     ],
     "featured": true,
-    "order": 1
+    "order": 2
   }
 ]

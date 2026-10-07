@@ -91,6 +91,29 @@ describe('the CV sheet', () => {
     expect(within(experience).getByText('Nov 2025 – Present')).toBeTruthy();
   });
 
+  it('names under each employment the technologies used there, but no technique', async () => {
+    const sheet = await sheetOf('frontend');
+    const pick = (id: string) =>
+      sheet.technologies.find(each => each.id === id) as Technology;
+    const [first, ...rest] = sheet.employments;
+    const withTechnologies: CvSheetContent = {
+      ...sheet,
+      employments: [
+        {
+          ...first,
+          technologies: [pick('react'), pick('ab-testing'), pick('next-js')],
+        },
+        ...rest.map(each => ({ ...each, technologies: [] })),
+      ],
+    };
+    const { container } = render(
+      <CvSheet sheet={withTechnologies} locale="es" mode="ats" />,
+    );
+    expect(
+      [...container.querySelectorAll('.cv-tech')].map(each => each.textContent),
+    ).toEqual(['Tecnologías: React, Next.js']);
+  });
+
   it('lists every certificate with its issuer', async () => {
     render(<CvSheet sheet={await sheetOf('devops')} locale="en" mode="ats" />);
     const certificates = screen.getByRole('region', { name: 'Certificates' });
@@ -201,7 +224,11 @@ describe('a sparse sheet', () => {
     const sheet: CvSheetContent = {
       ...full,
       technologies: [{ id: 'nameless' } as Technology],
-      employments: full.employments.map(each => ({ ...each, highlights: [] })),
+      employments: full.employments.map(each => ({
+        ...each,
+        highlights: [],
+        technologies: [],
+      })),
       education: [],
       certificates: [
         {
@@ -218,6 +245,7 @@ describe('a sparse sheet', () => {
     expect(within(skills).getByRole('listitem').textContent).toBe('');
     const experience = screen.getByRole('region', { name: 'Experience' });
     expect(within(experience).queryByRole('list')).toBeNull();
+    expect(experience.querySelector('.cv-tech')).toBeNull();
     expect(screen.getByText('A certificate · An issuer · 2020')).toBeTruthy();
   });
 

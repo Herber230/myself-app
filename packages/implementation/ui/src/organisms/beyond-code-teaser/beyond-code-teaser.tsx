@@ -1,9 +1,4 @@
-import {
-  button,
-  Center,
-  Stack,
-  Text,
-} from '@entifix/react-controls/primitives';
+import { button, Center, Text } from '@entifix/react-controls/primitives';
 import {
   type ContactChannel,
   localize,
@@ -47,7 +42,9 @@ export function channelLinksOf(
  * The landing page's door to "Beyond the code", after the contact section:
  * each interest in a line, and beside them a fanned stack of featured photos
  * that spreads when the section is hovered, with the personal channels under
- * it. The whole section leads to one page.
+ * it. In one column, where there is no room beside them, the photos come
+ * right after the lead, and the channels last. The whole section leads to
+ * one page.
  */
 export function BeyondCodeTeaser({
   locale,
@@ -68,14 +65,27 @@ export function BeyondCodeTeaser({
       className="landing-section beyond-teaser"
     >
       <Center gutters>
-        <div className="beyond-teaser-body">
-          <Stack gap="l">
-            <Text as="h2" id="beyond-code-heading" step={3} weight="semibold">
-              {t('beyondCode.title')}
-            </Text>
-            <Text muted className="landing-prose">
-              {t('beyondCode.teaserLead')}
-            </Text>
+        <div className="beyond-teaser-frame">
+          <div className="beyond-teaser-body">
+            <div className="beyond-teaser-intro">
+              <Text as="h2" id="beyond-code-heading" step={3} weight="semibold">
+                {t('beyondCode.title')}
+              </Text>
+              <Text muted className="landing-prose">
+                {t('beyondCode.teaserLead')}
+              </Text>
+            </div>
+            <div className="beyond-teaser-photos" aria-hidden="true">
+              {teaser.media.slice(0, 3).map(media => (
+                <img
+                  key={String(media.id)}
+                  src={media.thumbnail ?? media.src}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              ))}
+            </div>
             <ul className="beyond-teaser-list">
               {teaser.interests.map(interest => (
                 <li key={String(interest.id)}>
@@ -100,19 +110,6 @@ export function BeyondCodeTeaser({
             >
               {t('beyondCode.cta')}
             </Link>
-          </Stack>
-          <div className="beyond-teaser-aside">
-            <div className="beyond-teaser-photos" aria-hidden="true">
-              {teaser.media.slice(0, 3).map(media => (
-                <img
-                  key={String(media.id)}
-                  src={media.thumbnail ?? media.src}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
-              ))}
-            </div>
             {channels.length > 0 && (
               <ChannelLinks
                 id="beyond-code-elsewhere"

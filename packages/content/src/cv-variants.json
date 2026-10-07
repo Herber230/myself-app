@@ -17,7 +17,8 @@
       "nx",
       "kubernetes",
       "clean-architecture",
-      "playwright"
+      "playwright",
+      "effect"
     ],
     "employments": [
       "vana-frontend-engineer",
@@ -46,7 +47,11 @@
       "spring-boot",
       "event-driven-architecture",
       "clean-architecture",
-      "kubernetes"
+      "kubernetes",
+      "effect",
+      "java",
+      "microservices",
+      "aws-lambda"
     ],
     "employments": [
       "tigo-innovation-developer",
@@ -74,7 +79,10 @@
       "angular",
       "playwright",
       "ab-testing",
-      "tailwind-css"
+      "tailwind-css",
+      "amplitude",
+      "accessibility",
+      "ssr-ssg"
     ],
     "employments": ["vana-frontend-engineer", "healthcare-frontend-engineer"],
     "focuses": ["frontend"],
@@ -97,7 +105,8 @@
       "nx",
       "pulumi",
       "amazon-s3",
-      "cloudfront"
+      "cloudfront",
+      "aws-lambda"
     ],
     "employments": [
       "tigo-innovation-developer",

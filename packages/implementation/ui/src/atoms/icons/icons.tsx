@@ -122,6 +122,18 @@ const PRINTER = (
 );
 
 /** The CV's actions (#36): downloading, printing, sharing this version. */
+const FEED = (
+  <>
+    <path d="M3 7.5a5.5 5.5 0 0 1 5.5 5.5M3 3a10 10 0 0 1 10 10" />
+    <circle cx="3.75" cy="12.25" r="0.75" fill="currentColor" />
+  </>
+);
+
+/** A news feed's waves: the blog's RSS link. */
+export function FeedIcon({ className }: IconProps) {
+  return <Icon className={className}>{FEED}</Icon>;
+}
+
 export function DownloadIcon({ className }: IconProps) {
   return <Icon className={className}>{DOWNLOAD}</Icon>;
 }

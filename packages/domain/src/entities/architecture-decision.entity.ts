@@ -44,6 +44,7 @@ export class ArchitectureDecision implements Entity {
   #status: DecisionStatus = 'accepted';
   #date?: Date;
   #area?: string;
+  #revisions = 0;
   #readWhen?: string;
   #summary?: string;
   #body?: string;
@@ -118,6 +119,19 @@ export class ArchitectureDecision implements Entity {
   }
   set area(value: string | undefined) {
     this.#area = value;
+  }
+
+  /**
+   * How many times its facts were corrected in place: its `- Revised:`
+   * lines, counted by the sync script. A record revised once or more is
+   * "revised" on a project's page, whatever its status.
+   */
+  @accessor({ type: 'number', filterable: true, sortable: true })
+  get revisions(): number {
+    return this.#revisions;
+  }
+  set revisions(value: number) {
+    this.#revisions = value;
   }
 
   /** The symptom that should send a reader to it, human or agent. */

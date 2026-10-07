@@ -10,7 +10,7 @@
       "es": "TODO(#70) Cómo el radar y este blog filtran con el mismo caso de uso con el que el build los renderiza, y cuánto cuesta."
     },
     "publishedAt": "2026-09-27",
-    "draft": false,
+    "draft": true,
     "tags": ["entifix", "architecture", "performance"],
     "technologies": ["effect", "next-js", "clean-architecture"]
   },
@@ -26,7 +26,7 @@
     },
     "publishedAt": "2026-06-12",
     "updatedAt": "2026-09-20",
-    "draft": false,
+    "draft": true,
     "tags": ["infrastructure", "static-sites", "performance"],
     "technologies": ["amazon-s3", "cloudfront", "pulumi"]
   },
@@ -41,7 +41,7 @@
       "es": "TODO(#70) Por qué cada spec corre con cobertura, y qué cambia una puerta al 100% en cómo se escribe el código."
     },
     "publishedAt": "2025-11-03",
-    "draft": false,
+    "draft": true,
     "tags": ["testing"],
     "technologies": []
   },

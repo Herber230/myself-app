@@ -19,16 +19,22 @@ describe('the blog’s home', () => {
       main
         .getAllByRole('heading', { level: 2 })
         .map(heading => heading.textContent),
-    ).toEqual(['2026', '2025', '2024', '2021', '2020', '2019']);
+    ).toEqual(['2024', '2021', '2020', '2019']);
     const titles = main
       .getAllByRole('heading', { level: 3 })
       .map(heading => heading.textContent);
-    expect(titles).toHaveLength(10);
+    expect(titles).toHaveLength(7);
     expect(titles.slice(0, 3)).toEqual([
-      'One use case, two repositories: entifix in the browser',
-      'A static site behind CloudFront, defined in Pulumi',
-      'Coverage at one hundred, on the machine that wrote the code',
+      'And then I saw you dance…',
+      'Books',
+      'Handling exceptions with Rxjs and React hooks',
     ]);
+    // The newest, featured.
+    expect(
+      document
+        .querySelector('article[data-featured]')
+        ?.getAttribute('data-post'),
+    ).toBe('then-i-saw-you-dance');
     expect(titles.at(-1)).toBe('An analogy for life plans');
     expect(
       screen.getByRole('link', { name: 'RSS feed' }).getAttribute('href'),
@@ -38,11 +44,9 @@ describe('the blog’s home', () => {
   it('offers a filter by tag, technology and year, in the reader’s language', async () => {
     await renderPage(BlogPage(propsOf('es')), 'es');
     expect(await screen.findByRole('group', { name: 'Etiqueta' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Pruebas' })).toBeTruthy();
-    expect(
-      screen.getByRole('button', { name: 'Amazon CloudFront' }),
-    ).toBeTruthy();
-    expect(screen.getByRole('button', { name: '2025' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Ficción' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'React' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '2021' })).toBeTruthy();
   });
 
   it('is described, canonical in both locales, and points at its feed', async () => {

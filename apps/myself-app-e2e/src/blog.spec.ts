@@ -14,12 +14,12 @@ test('the blog lists every post, and needs no JavaScript to', async ({
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto('/en/blog/');
-  await expect(shownPosts(page)).toHaveCount(10);
+  await expect(shownPosts(page)).toHaveCount(7);
   // No control that could not work: the filter is links, until hydrated.
   await expect(page.getByRole('searchbox')).toHaveCount(0);
   await expect(page.locator('[aria-pressed]')).toHaveCount(0);
-  await page.getByRole('link', { name: 'Testing' }).click();
-  await expect(page).toHaveURL(/\/en\/blog\/\?tag=testing$/);
+  await page.getByRole('link', { name: 'Fiction' }).click();
+  await expect(page).toHaveURL(/\/en\/blog\/\?tag=fiction$/);
   await context.close();
 });
 
@@ -27,26 +27,26 @@ test('the filter keeps its choices in the URL, through reload and history', asyn
   page,
 }) => {
   await page.goto('/en/blog/');
-  await page.getByRole('button', { name: 'Testing' }).click();
-  await expect(page).toHaveURL(/\/en\/blog\/\?tag=testing$/);
+  await page.getByRole('button', { name: 'Fiction' }).click();
+  await expect(page).toHaveURL(/\/en\/blog\/\?tag=fiction$/);
   await expect(shownPosts(page)).toHaveCount(1);
   await expect(shownPosts(page).first()).toHaveAttribute(
     'data-post',
-    'coverage-at-one-hundred',
+    'then-i-saw-you-dance',
   );
 
   await page.reload();
   await expect(shownPosts(page)).toHaveCount(1);
   await expect(
-    page.getByRole('button', { name: 'Testing', exact: true }),
+    page.getByRole('button', { name: 'Fiction', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');
   // What is in force, counted on the card, each a chip that removes it.
   await expect(page.getByText('1 active')).toBeVisible();
-  await page.getByRole('button', { name: 'Remove Tag: Testing' }).click();
+  await page.getByRole('button', { name: 'Remove Tag: Fiction' }).click();
   await expect(page).toHaveURL(/\/en\/blog\/$/);
-  await page.getByRole('button', { name: 'Amazon CloudFront' }).click();
-  await page.getByRole('button', { name: '2026' }).click();
-  await expect(page).toHaveURL(/\?tech=cloudfront&year=2026$/);
+  await page.getByRole('button', { name: 'React', exact: true }).click();
+  await page.getByRole('button', { name: '2021' }).click();
+  await expect(page).toHaveURL(/\?tech=react&year=2021$/);
   await expect(shownPosts(page)).toHaveCount(1);
 
   await page.getByRole('searchbox').fill('nothing like it');
@@ -54,55 +54,47 @@ test('the filter keeps its choices in the URL, through reload and history', asyn
 
   await page.getByRole('button', { name: 'Show every post' }).click();
   await expect(page).toHaveURL(/\/en\/blog\/$/);
-  await expect(shownPosts(page)).toHaveCount(10);
+  await expect(shownPosts(page)).toHaveCount(7);
 });
 
 test('a filtered link from another page opens filtered', async ({ page }) => {
-  await page.goto('/es/blog/a-static-site-on-s3/');
-  await page.getByRole('link', { name: 'Infraestructura' }).click();
-  await expect(page).toHaveURL(/\/es\/blog\/\?tag=infrastructure$/);
-  await expect(shownPosts(page)).toHaveCount(1);
-  await expect(page.getByText('Mostrando 1 de 10')).toBeVisible();
+  await page.goto('/es/blog/rxjs-exceptions-react-hooks/');
+  await page
+    .locator('.blog-article-header')
+    .getByRole('link', { name: 'Arquitectura' })
+    .click();
+  await expect(page).toHaveURL(/\/es\/blog\/\?tag=architecture$/);
+  await expect(shownPosts(page)).toHaveCount(2);
+  await expect(page.getByText('Mostrando 2 de 7')).toBeVisible();
 });
 
-test('a post renders its Markdown: paragraph types, a figure, links and code', async ({
+// The paragraph types, figures and internal links a post can hold are the
+// placeholders' (#70), drafts until written: the Markdown's own specs hold
+// those, and this a published post as the export writes it.
+test('a post renders its Markdown: headings, links and highlighted code', async ({
   page,
 }) => {
-  await page.goto('/es/blog/entifix-in-the-browser/');
+  await page.goto('/es/blog/rxjs-exceptions-react-hooks/');
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Un caso de uso, dos repositorios: entifix en el navegador',
+      name: 'Manejar excepciones con Rxjs y hooks de React',
     }),
   ).toBeVisible();
   const body = page.locator('.post-body');
-  await expect(body.locator('.post-lead')).toBeVisible();
-  await expect(body.getByRole('note')).toHaveCount(3);
   await expect(
-    page.getByRole('heading', { level: 2, name: 'Tipos de párrafo' }),
-  ).toHaveAttribute('id', 'tipos-de-párrafo');
-
-  const figure = body.locator('figure img');
-  await expect(figure).toHaveAttribute('width', '640');
-  await figure.scrollIntoViewIfNeeded();
-  await expect
-    .poll(() => figure.evaluate(img => (img as HTMLImageElement).naturalWidth))
-    .toBeGreaterThan(0);
-
-  await expect(body.getByRole('link', { name: 'el radar' })).toHaveAttribute(
-    'href',
-    '/es/tech-radar/',
+    page.getByRole('heading', { level: 2, name: 'Calentando motores' }),
+  ).toHaveAttribute('id', 'calentando-motores');
+  await expect(body.getByRole('link', { name: 'Rxjs' })).toHaveAttribute(
+    'rel',
+    'noopener noreferrer',
   );
-  await expect(
-    body.getByRole('link', { name: 'entifix en GitHub' }),
-  ).toHaveAttribute('rel', 'noopener noreferrer');
-  await expect(body.locator('pre.shiki')).toBeVisible();
-
+  await expect(body.locator('pre.shiki').first()).toBeVisible();
   await expect(
     page
       .getByRole('heading', { name: 'Entradas relacionadas' })
       .locator('xpath=following-sibling::ol//article'),
-  ).toHaveCount(3);
+  ).toHaveCount(1);
 });
 
 test('the blog’s sidebar is its filter, a post’s its table of contents, and it folds', async ({
@@ -163,7 +155,8 @@ test('each locale has a feed, and no draft is exported', async ({
     expect(feed.status()).toBe(200);
     expect(await feed.text()).toContain('<rss version="2.0">');
   }
-  expect((await request.get('/en/blog/effect-four/')).status()).toBe(404);
+  for (const draft of ['effect-four', 'a-static-site-on-s3'])
+    expect((await request.get(`/en/blog/${draft}/`)).status()).toBe(404);
   const posts = (await (await request.get('/data/post.json')).json()) as {
     id: string;
     body?: unknown;

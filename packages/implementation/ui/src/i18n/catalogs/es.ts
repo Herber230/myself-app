@@ -53,6 +53,7 @@ export const es = {
       certificates: 'Certificaciones',
     },
     present: 'Actualidad',
+    technologies: 'Tecnologías: {{names}}',
     notCompleted: 'sin concluir',
     location: 'Ubicación',
   },
@@ -89,11 +90,19 @@ export const es = {
     headings: {
       about: 'Sobre mí',
       projects: 'Proyectos',
-      contact: 'Contacto profesional',
+      contact: 'Hablemos',
+    },
+    about: {
+      facts: 'De un vistazo',
+      location: 'Con base en',
+      since: 'Desarrollando software desde',
+      current: 'Actualmente',
+      role: '{{role}} en {{employer}}',
     },
     contact: {
       link: '{{channel}}: {{handle}}',
       lead: 'Abierto a nuevos roles, colaboraciones y a una buena conversación sobre software. Elige la vía que prefieras.',
+      cv: 'Descarga mi CV (PDF)',
       actions: {
         email: 'Escríbeme un correo',
         linkedin: 'Conectemos en LinkedIn',
@@ -135,49 +144,55 @@ export const es = {
     overview: 'Resumen',
     patterns: 'Patrones',
     structure: 'Estructura de archivos',
-    decisions: 'Decisiones de arquitectura',
-    decisionsLead:
-      'Cada decisión importante queda registrada, con el síntoma que debe llevar a un lector —o a un agente— a leerla antes de romper la regla.',
+    decisions: 'Todos los registros',
+    /** Under the records' heading: they are copies, kept in step by CI. */
+    synced:
+      'Los registros de abajo se copian de cada repositorio con un script, y la CI de este repositorio falla cuando una copia se aparta de su registro.',
+    decisionLink: 'ADR {{number}}',
     englishOnly: 'Los registros están escritos en inglés.',
     readWhen: 'Leer cuando',
-    practice: {
-      summary: 'Cómo guían el trabajo los registros',
-      lead: 'Personas y agentes leen los mismos registros. Cada uno nombra el síntoma que debería llevar a alguien hasta él, para que una regla se encuentre antes de romperla, no después.',
-      steps: {
-        decide: {
-          name: 'Decidir',
-          text: 'Una decisión costosa de deshacer, o fácil de romper sin querer, recibe un registro numerado.',
+    lifecycle: {
+      title: 'Decisiones que evolucionan',
+      lead: 'Construyo con agentes de código. Ellos escriben rápido; estos registros los mantienen en el rumbo: cada decisión queda escrita, y cada agente la lee antes de actuar.',
+      totals: '{{records}} registros · {{revisions}} revisiones',
+      legend: 'Los estados por los que pasa un registro',
+      about:
+        'Un ADR (registro de decisión de arquitectura) es un archivo corto en el repositorio: una decisión, por qué se tomó y el síntoma que debería traer a un lector de vuelta. El CLAUDE.md del repositorio dirige a Claude Code hacia ellos, así cada sesión parte de las mismas reglas que leería una persona.',
+      expand: 'Mira cómo funciona',
+      pick: 'Elige un estado para ver un registro real',
+      count: ', {{count}}',
+      states: {
+        proposed: { name: 'Propuesta', meaning: 'Escrita, aún sin acordar.' },
+        accepted: {
+          name: 'Aceptada',
+          meaning: 'La regla. Personas y agentes la siguen.',
         },
-        record: {
-          name: 'Registrar',
-          text: 'Su encabezado tiene un estado, una fecha, un área y una línea Read when: el síntoma que debería traer de vuelta a quien lee.',
+        revised: {
+          name: 'Revisada',
+          meaning: 'Un hecho cambió; el registro se corrige en su sitio.',
         },
-        point: {
-          name: 'Señalar',
-          text: 'El CLAUDE.md del repositorio envía cada sesión de un agente a docs/adr, cuyo README indexa los registros.',
+        'superseded-in-part': {
+          name: 'Reemplazada en parte',
+          meaning: 'Un registro más nuevo reemplaza una parte.',
         },
-        match: {
-          name: 'Reconocer',
-          text: 'Cuando una tarea se topa con un síntoma — una verificación que falla, un build extraño — el agente encuentra el registro cuyo Read when lo nombra, y sigue su regla.',
+        superseded: {
+          name: 'Reemplazada',
+          meaning: 'Un registro más nuevo la reemplaza. Su texto se conserva.',
         },
-        evolve: {
-          name: 'Evolucionar',
-          text: 'Un dato que cambia se corrige en su lugar, en una línea Revised. Una decisión que ya no vale recibe un registro nuevo que la reemplaza. Nada se borra.',
+        promoted: {
+          name: 'Promovida',
+          meaning: 'Incubada aquí, llevada a entifix junto con su código.',
         },
       },
-      synced:
-        'Los registros de abajo se copian de cada repositorio con un script, y la CI de este repositorio falla cuando una copia se aparta de su registro.',
-      anatomy:
-        'Anatomía de un registro: el encabezado del ADR {{number}}, el más reciente con una línea Read when.',
-      callouts: {
-        title:
-          'Un número que nunca cambia, y la decisión en una línea. El README los lista.',
-        status:
-          'En qué estado está. Un registro reemplazado se queda, y nombra el que lo reemplazó.',
-        date: 'Cuándo se decidió. Una corrección posterior agrega abajo una línea Revised, con su propia fecha.',
-        area: 'La parte del sistema que gobierna.',
-        readWhen:
-          'Contra lo que un agente compara: el síntoma que encontraría, no el tema.',
+      none: 'Ninguna todavía.',
+      example: 'ADR {{number}} · {{title}}',
+      all: 'Ver las {{count}} →',
+      loopLabel: 'Cómo usa un agente los registros',
+      loop: {
+        symptom: 'Un síntoma',
+        readWhen: 'Su Read when',
+        rule: 'La regla, seguida',
+        evolve: 'Revisada o reemplazada',
       },
     },
     timeline: 'Los registros en el orden en que se decidieron',
@@ -186,6 +201,8 @@ export const es = {
     filter: {
       label: 'Filtrar los registros',
       status: 'Estado',
+      changes: 'Cambios',
+      revised: 'Revisadas',
       area: 'Área',
       search: 'Buscar',
       placeholder: 'Un síntoma, un título…',
@@ -267,7 +284,10 @@ export const es = {
       repository: 'Código',
       history: 'Cómo se movió',
       projects: 'Dónde la usé',
-      noProjects: 'Ningún proyecto de este sitio la usa todavía.',
+      employment: '{{role}} en {{employer}}',
+      project: 'Un proyecto de este sitio',
+      noProjects:
+        'Ni un trabajo ni un proyecto de este sitio la ha usado todavía.',
       posts: 'Entradas sobre ella',
     },
     rings: {
@@ -277,7 +297,8 @@ export const es = {
       hold: 'Detener',
     },
   },
-  blogLead: 'Notas sobre lo que construyo y cómo lo construyo.',
+  blogLead:
+    'Notas sobre lo que construyo y cómo lo construyo, y ensayos y relatos sobre todo lo demás.',
   blogPage: {
     filter: {
       label: 'Filtrar las entradas',
@@ -308,6 +329,8 @@ export const es = {
     technologies: 'En el radar',
     related: 'Entradas relacionadas',
     feed: 'Feed RSS',
+    latest: 'Lo más reciente',
+    moreTechnologies: 'Tecnología ({{n}})',
     feedTitle: '{{name}} — Blog',
     callout: {
       note: 'Nota',

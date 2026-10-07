@@ -4,9 +4,8 @@
 - Date: 2026-09-18
 - Area: ui
 - Revised: 2026-09-25 by [ADR 0014](0014-a-personal-radar.md) — filtering (#41) dims blips the build placed; the layout stays out of the browser
-- Read when: the radar's blips moved between two builds, or a radar library is
+- Read when: the radar's blips moved between two builds, or a radar library is proposed
 - Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — the chart and its layout are the incubator's `radar-chart` organism, which takes a link per blip and the locale to number by
-  proposed
 
 ## Context
 

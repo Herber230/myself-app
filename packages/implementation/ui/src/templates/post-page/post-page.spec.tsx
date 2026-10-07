@@ -29,7 +29,13 @@ async function pageOf(
   { includeDrafts = false, outlined = true } = {},
 ) {
   const reads = { ...BLOG_READS, includeDrafts };
-  const post = (await loadPost(SITE_CONTENT, id, reads)) as Post;
+  // The placeholders hold every kind of paragraph a post can, so they are the
+  // template's fixtures, though they are drafts until written (#70); what is
+  // related to one is read as the export reads it.
+  const post = (await loadPost(SITE_CONTENT, id, {
+    ...BLOG_READS,
+    includeDrafts: true,
+  })) as Post;
   const [[preview], posts] = await Promise.all([
     previewsOf(SITE_CONTENT, [post]),
     loadPosts(SITE_CONTENT, reads),
@@ -103,14 +109,13 @@ describe('a post’s page', () => {
     await renderPage(pageOf('en', 'entifix-in-the-browser'), 'en');
     const related = screen.getByRole('heading', { name: 'Related posts' })
       .nextElementSibling as HTMLElement;
-    // It shares a tag with the draft too, which is not exported.
+    // It shares a tag with the drafts too, which are not exported.
     expect(
       within(related)
         .getAllByRole('heading', { level: 3 })
         .map(heading => heading.textContent),
     ).toEqual([
       'The first Entifix application',
-      'A static site behind CloudFront, defined in Pulumi',
       'Handling exceptions with Rxjs and React hooks',
     ]);
   });
@@ -165,6 +170,9 @@ describe('a post’s page', () => {
       pageOf('en', 'effect-four', { includeDrafts: true }),
       'en',
     );
-    expect(screen.getByText('Draft').className).toBe('post-card-draft');
+    const header = document.querySelector(
+      '.blog-article-header',
+    ) as HTMLElement;
+    expect(within(header).getByText('Draft').className).toBe('post-card-draft');
   });
 });

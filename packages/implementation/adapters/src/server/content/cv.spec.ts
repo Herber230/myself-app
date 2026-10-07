@@ -64,6 +64,7 @@ describe("a variant's sheet", () => {
       'kubernetes',
       'clean-architecture',
       'playwright',
+      'effect',
     ]);
     expect(sheet?.employments.map(each => each.period.id)).toEqual([
       'vana-frontend-engineer',

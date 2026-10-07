@@ -16,8 +16,10 @@ import type { CvSheet } from './load-cv-sheet.types.js';
 /**
  * What one CV sheet shows (ADR 0012): the variant's technologies and
  * employments in the order it lists them, and inside each employment the
- * highlights that share one of the variant's focuses. Nothing for an id that
- * names no variant.
+ * technologies used there that the variant lists, and the highlights that
+ * share one of the variant's focuses. Nothing for an id that names no variant.
+ * A sheet is one page, so an employment names the variant's skills where they
+ * were used rather than everything it touched.
  */
 export async function loadCvSheet(
   content: StaticContent,
@@ -44,11 +46,14 @@ export async function loadCvSheet(
     ]);
   if (variant === undefined) return undefined;
 
-  // An employment's employer is a second step from the variant.
+  // An employment's employer and technologies are a second step from the
+  // variant.
   const periods = await content.resolve(targetsOf(variant.employments), [
     'employer',
+    'technologies',
   ]);
   const focuses = new Set(variant.focuses.ids);
+  const skills = new Set(variant.technologies.ids);
   const shown = (period: EntityId) =>
     highlights.filter(
       each =>
@@ -64,6 +69,9 @@ export async function loadCvSheet(
     employments: periods.map(period => ({
       period,
       employer: targetOf(period.employer),
+      technologies: targetsOf(period.technologies).filter(technology =>
+        skills.has(technology.id),
+      ),
       highlights: shown(period.id),
     })),
     education,

@@ -12,7 +12,14 @@ const POST: PostCardData = {
   date: '12 Jun 2026',
   readingTime: '3 min read',
   tags: [{ id: 'infrastructure', label: 'Infrastructure' }],
-  technologies: [{ id: 'amazon-s3', name: 'Amazon S3' }],
+  technologies: [
+    {
+      id: 'amazon-s3',
+      name: 'Amazon S3',
+      href: '/en/tech-radar/amazon-s3/',
+    },
+    { id: 'plain', name: 'Plain' },
+  ],
 };
 
 describe('a post’s card', () => {
@@ -31,7 +38,13 @@ describe('a post’s card', () => {
     expect(screen.getByText('On S3.')).toBeTruthy();
     expect(
       screen.getAllByRole('listitem').map(item => item.textContent),
-    ).toEqual(['Infrastructure', 'Amazon S3']);
+    ).toEqual(['Infrastructure', 'Amazon S3', 'Plain']);
+    // A technology with a page links to it; one without is its name.
+    expect(
+      screen.getByRole('link', { name: 'Amazon S3' }).getAttribute('href'),
+    ).toBe('/en/tech-radar/amazon-s3/');
+    expect(screen.queryByRole('link', { name: 'Plain' })).toBeNull();
+    expect(document.querySelector('[data-featured]')).toBeNull();
     expect(document.querySelector('.post-card-draft')).toBeNull();
   });
 
@@ -39,5 +52,13 @@ describe('a post’s card', () => {
     render(<PostCard post={{ ...POST, draft: 'Draft' }} heading="h3" />);
     expect(screen.getByRole('heading', { level: 3 })).toBeTruthy();
     expect(screen.getByText('Draft').className).toBe('post-card-draft');
+  });
+
+  it('is featured with a label over it, when asked', () => {
+    render(<PostCard post={POST} featured="Latest" />);
+    expect(
+      document.querySelector('article')?.hasAttribute('data-featured'),
+    ).toBe(true);
+    expect(screen.getByText('Latest').className).toBe('post-card-eyebrow');
   });
 });

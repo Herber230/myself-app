@@ -2,16 +2,19 @@ import {
   accessor,
   type Entity,
   entity,
+  EntityCollectionLink,
   type EntityId,
   EntityLink,
 } from '@entifix/core';
 
 import type { LocalizedText } from '../localized-text.js';
+import { ArchitectureDecision } from './architecture-decision.entity.js';
 import { Project } from './project.entity.js';
 
 /**
- * A pattern a project is built on (#77): what it is called, and a sentence on
- * how the project uses it. Its page lists them in `order`.
+ * A pattern a project is built on (#77): what it is called, a sentence on
+ * how the project uses it, and the records that decided it. Its page lists
+ * them in `order`.
  */
 @entity({ key: 'project-pattern', domain: 'engineering' })
 export class ProjectPattern implements Entity {
@@ -20,6 +23,7 @@ export class ProjectPattern implements Entity {
   #summary?: LocalizedText;
   #order = 0;
   #project = new EntityLink(Project);
+  #decisions = new EntityCollectionLink(ArchitectureDecision);
 
   @accessor({ type: 'id' })
   get id(): EntityId {
@@ -66,5 +70,11 @@ export class ProjectPattern implements Entity {
   @accessor({ type: 'link', required: true })
   get project(): EntityLink<Project> {
     return this.#project;
+  }
+
+  /** The records that decided it, if any: its card links to them. */
+  @accessor({ type: 'linkCollection' })
+  get decisions(): EntityCollectionLink<ArchitectureDecision> {
+    return this.#decisions;
   }
 }

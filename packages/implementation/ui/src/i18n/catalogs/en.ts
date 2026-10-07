@@ -59,6 +59,7 @@ export const en = {
       certificates: 'Certificates',
     },
     present: 'Present',
+    technologies: 'Technologies: {{names}}',
     notCompleted: 'not completed',
     location: 'Location',
   },
@@ -99,12 +100,22 @@ export const en = {
     headings: {
       about: 'About me',
       projects: 'Projects',
-      contact: 'Professional contact',
+      contact: 'Get in touch',
+    },
+    /** The facts beside the bio; their values come from content. */
+    about: {
+      facts: 'At a glance',
+      location: 'Based in',
+      since: 'Building software since',
+      current: 'Currently',
+      role: '{{role}} at {{employer}}',
     },
     contact: {
       /** A link's name: the channel, then the handle it shows. */
       link: '{{channel}}: {{handle}}',
       lead: 'Open to new roles, collaborations and a good conversation about software. Pick whichever way suits you best.',
+      /** The link to the default CV's prebuilt PDF, under the cards. */
+      cv: 'Download my CV (PDF)',
       /** Each card's cue: what following the channel does. */
       actions: {
         email: 'Send me an email',
@@ -155,51 +166,61 @@ export const en = {
     overview: 'Overview',
     patterns: 'Patterns',
     structure: 'File structure',
-    decisions: 'Architecture decisions',
-    decisionsLead:
-      'Every significant decision is recorded, with the symptom that should send a reader — or an agent — to it before the rule is broken.',
+    decisions: 'All records',
+    /** Under the records' heading: they are copies, kept in step by CI. */
+    synced:
+      'The records below are copied from each repository by a script, and this repository’s CI fails when a copy drifts from its record.',
+    /** A pattern's link to the record that decided it. */
+    decisionLink: 'ADR {{number}}',
     englishOnly: 'The records are written in English.',
     readWhen: 'Read when',
-    /** How the records are written, found and kept: the practice, told. */
-    practice: {
-      summary: 'How the records steer the work',
-      lead: 'People and agents read the same records. Each one names the symptom that should send a reader to it, so a rule is found before it is broken, not after.',
-      steps: {
-        decide: {
-          name: 'Decide',
-          text: 'A choice that would be costly to undo, or easy to break by accident, gets a numbered record.',
+    /** The decisions' lifecycle band, first on a project's page. */
+    lifecycle: {
+      title: 'Decisions that evolve',
+      lead: 'I build with coding agents. They write fast; these records keep them right: every decision is written down, and every agent reads it before it acts.',
+      totals: '{{records}} records · {{revisions}} revisions',
+      legend: 'The states a record lives through',
+      /** The cue on the closed band. */
+      /** On the closed band: what a record is, and how Claude Code reads it. */
+      about:
+        'An ADR (architecture decision record) is a short file in the repository: one decision, why it was made, and the symptom that should send a reader back to it. The repository’s CLAUDE.md points Claude Code to them, so every session starts from the same rules a person would read.',
+      expand: 'See how it works',
+      /** Above the states: what choosing one does. */
+      pick: 'Pick a state to see a real record',
+      /** A state's count, for a screen reader. */
+      count: ', {{count}}',
+      states: {
+        proposed: { name: 'Proposed', meaning: 'Written, not yet agreed.' },
+        accepted: {
+          name: 'Accepted',
+          meaning: 'The rule. People and agents follow it.',
         },
-        record: {
-          name: 'Record',
-          text: 'Its header holds a status, a date, an area and a Read when line: the symptom that should bring a reader back.',
+        revised: {
+          name: 'Revised',
+          meaning: 'A fact changed; the record is corrected in place.',
         },
-        point: {
-          name: 'Point',
-          text: 'The repository’s CLAUDE.md sends every agent session to docs/adr, whose README indexes the records.',
+        'superseded-in-part': {
+          name: 'Superseded in part',
+          meaning: 'A newer record replaces part of it.',
         },
-        match: {
-          name: 'Match',
-          text: 'When a task meets a symptom — a failing check, a strange build — the agent finds the record whose Read when names it, and follows its rule.',
+        superseded: {
+          name: 'Superseded',
+          meaning: 'A newer record replaces it. Its text is kept.',
         },
-        evolve: {
-          name: 'Evolve',
-          text: 'A fact that changes is corrected in place, on a Revised line. A decision that no longer holds gets a new record that supersedes it. Nothing is deleted.',
+        promoted: {
+          name: 'Promoted',
+          meaning: 'Incubated here, moved to entifix with its code.',
         },
       },
-      synced:
-        'The records below are copied from each repository by a script, and this repository’s CI fails when a copy drifts from its record.',
-      /** `{{number}}` is the record's, four digits. */
-      anatomy:
-        'Anatomy of a record: the header of ADR {{number}}, the newest with a Read when line.',
-      callouts: {
-        title:
-          'A number that never changes, and the decision in one line. The README lists them.',
-        status:
-          'Where it stands. A superseded record stays, and names the record that replaced it.',
-        date: 'When it was decided. A later correction adds a Revised line below, with its own date.',
-        area: 'The part of the system it governs.',
-        readWhen:
-          'What an agent matches against: the symptom it would meet, not the topic.',
+      none: 'None yet.',
+      example: 'ADR {{number}} · {{title}}',
+      all: 'See all {{count}} →',
+      loopLabel: 'How an agent uses the records',
+      loop: {
+        symptom: 'A symptom',
+        readWhen: 'Its Read when',
+        rule: 'The rule, followed',
+        evolve: 'Revised or superseded',
       },
     },
     timeline: 'The records in the order they were decided',
@@ -208,6 +229,8 @@ export const en = {
     filter: {
       label: 'Filter the records',
       status: 'Status',
+      changes: 'Changes',
+      revised: 'Revised',
       area: 'Area',
       search: 'Search',
       /** What to type, while the search is empty: titles and symptoms. */
@@ -299,7 +322,9 @@ export const en = {
       repository: 'Source',
       history: 'How it moved',
       projects: 'Where I used it',
-      noProjects: 'No project on this site uses it yet.',
+      employment: '{{role}} at {{employer}}',
+      project: 'A project on this site',
+      noProjects: 'Neither a job nor a project on this site has used it yet.',
       posts: 'Posts about it',
     },
     rings: {
@@ -309,7 +334,8 @@ export const en = {
       hold: 'Hold',
     },
   },
-  blogLead: 'Notes on what I build and how I build it.',
+  blogLead:
+    'Notes on what I build and how I build it, and essays and stories on everything else.',
   /** The blog (ADR 0017): its home, its filter and each post. */
   blogPage: {
     filter: {
@@ -341,6 +367,10 @@ export const en = {
     technologies: 'On the radar',
     related: 'Related posts',
     feed: 'RSS feed',
+    /** Over the newest post's card, while nothing is filtered. */
+    latest: 'Latest',
+    /** The folded technology filter: its name and how many there are. */
+    moreTechnologies: 'Technology ({{n}})',
     feedTitle: '{{name}} — Blog',
     /** What each paragraph type is called, above its text. */
     callout: {

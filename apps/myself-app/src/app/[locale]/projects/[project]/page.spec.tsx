@@ -17,6 +17,7 @@ describe("a project's page", () => {
   it('is written for every featured project, and no other', async () => {
     expect(await generateStaticParams()).toEqual([
       { project: 'entifix' },
+      { project: 'r10c' },
       { project: 'myself-app' },
     ]);
     expect(dynamicParams).toBe(false);

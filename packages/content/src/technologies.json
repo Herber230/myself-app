@@ -98,6 +98,162 @@
     "areas": ["web-rendering", "delivery"]
   },
   {
+    "id": "rest-apis",
+    "name": {
+      "en": "REST APIs",
+      "es": "APIs REST"
+    },
+    "description": {
+      "en": "Resources over HTTP with a contract both sides can read. Where I started splitting systems, when the Ministerio Público moved its applications off server-rendered pages.",
+      "es": "Recursos sobre HTTP con un contrato que ambos lados pueden leer. Donde empecé a dividir sistemas, cuando el Ministerio Público sacó sus aplicaciones de las páginas renderizadas en el servidor."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["architecture"]
+  },
+  {
+    "id": "scrum",
+    "name": {
+      "en": "Scrum",
+      "es": "Scrum"
+    },
+    "description": {
+      "en": "Short iterations, a reviewed increment and a team that plans its own work. I certified as a Scrum Master at Tigo, leading the teams that built what I designed.",
+      "es": "Iteraciones cortas, un incremento revisado y un equipo que planifica su propio trabajo. Me certifiqué como Scrum Master en Tigo, liderando a los equipos que construían lo que diseñaba."
+    },
+    "site": "https://www.scrum.org",
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["delivery"]
+  },
+  {
+    "id": "tm-forum-frameworx",
+    "name": {
+      "en": "TM Forum Frameworx (eTOM, SID, TAM)",
+      "es": "TM Forum Frameworx (eTOM, SID, TAM)"
+    },
+    "description": {
+      "en": "The telecom industry's maps: eTOM for processes, SID for data and TAM for applications. Tigo's migration was planned on them, and r10c's entities still follow SID.",
+      "es": "Los mapas de la industria de telecomunicaciones: eTOM para los procesos, SID para los datos y TAM para las aplicaciones. La migración de Tigo se planificó sobre ellos, y las entidades de r10c todavía siguen SID."
+    },
+    "site": "https://www.tmforum.org",
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["architecture"]
+  },
+  {
+    "id": "microservices",
+    "name": {
+      "en": "Microservices",
+      "es": "Microservicios"
+    },
+    "description": {
+      "en": "Small services, each owning its data and deployed on its own. The shape of the applications that replaced the legacy BSS and OSS at Tigo, and of r10c today.",
+      "es": "Servicios pequeños, cada uno dueño de sus datos y desplegado por separado. La forma de las aplicaciones que reemplazaron los BSS y OSS heredados en Tigo, y la de r10c hoy."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["architecture"]
+  },
+  {
+    "id": "reactive-programming",
+    "name": {
+      "en": "Reactive programming",
+      "es": "Programación reactiva"
+    },
+    "description": {
+      "en": "Streams of values with back-pressure instead of threads that wait. Spring WebFlux and Vert.x at Tigo, and RxJS on the front end.",
+      "es": "Flujos de valores con contrapresión en lugar de hilos que esperan. Spring WebFlux y Vert.x en Tigo, y RxJS en el frontend."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": []
+  },
+  {
+    "id": "ssr-ssg",
+    "name": {
+      "en": "SSR and SSG",
+      "es": "SSR y SSG"
+    },
+    "description": {
+      "en": "Pages rendered on the server per request, or once at build time. At HealthCare.com it decided how fast a landing page loaded and how well it ranked.",
+      "es": "Páginas renderizadas en el servidor en cada petición, o una sola vez al compilar. En HealthCare.com decidía qué tan rápido cargaba una landing page y qué tan bien se posicionaba."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["server-side-rendering", "web-rendering"]
+  },
+  {
+    "id": "seo",
+    "name": {
+      "en": "SEO",
+      "es": "SEO"
+    },
+    "description": {
+      "en": "Making pages that search engines can read, index and rank: rendering, metadata, structured data and speed. Part of every page I shipped at HealthCare.com.",
+      "es": "Hacer páginas que los buscadores puedan leer, indexar y posicionar: renderizado, metadatos, datos estructurados y velocidad. Parte de cada página que publiqué en HealthCare.com."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["web-rendering"]
+  },
+  {
+    "id": "accessibility",
+    "name": {
+      "en": "Accessibility",
+      "es": "Accesibilidad"
+    },
+    "description": {
+      "en": "Interfaces that work with a keyboard, a screen reader and any eyesight. A requirement since HealthCare.com, and checked on every page of this site.",
+      "es": "Interfaces que funcionan con teclado, con lector de pantalla y con cualquier vista. Un requisito desde HealthCare.com, y verificado en cada página de este sitio."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["web-rendering"]
+  },
+  {
+    "id": "responsive-design",
+    "name": {
+      "en": "Responsive design",
+      "es": "Diseño responsivo"
+    },
+    "description": {
+      "en": "One layout that fits every screen, from intrinsic CSS rather than a breakpoint per device. Most of the users I have built for were on a phone.",
+      "es": "Un solo diseño que se adapta a cada pantalla, desde CSS intrínseco y no un breakpoint por dispositivo. La mayoría de los usuarios para los que he construido estaban en un teléfono."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["css"]
+  },
+  {
+    "id": "serverless",
+    "name": {
+      "en": "Serverless",
+      "es": "Serverless"
+    },
+    "description": {
+      "en": "Functions and managed services instead of servers to run. How the backends behind the apps at Vana are built.",
+      "es": "Funciones y servicios administrados en lugar de servidores que operar. Así están construidos los backends detrás de las aplicaciones en Vana."
+    },
+    "quadrant": "techniques",
+    "ring": "adopt",
+    "areas": ["delivery"]
+  },
+  {
+    "id": "cqrs-sagas",
+    "name": {
+      "en": "CQRS and sagas",
+      "es": "CQRS y sagas"
+    },
+    "description": {
+      "en": "Writes and reads kept apart, and a multi-step change tracked as a saga that can be undone. r10c writes through a transaction facade built this way.",
+      "es": "Escrituras y lecturas separadas, y un cambio de varios pasos seguido como una saga que se puede deshacer. r10c escribe a través de una fachada transaccional construida así."
+    },
+    "quadrant": "techniques",
+    "ring": "trial",
+    "areas": ["architecture"]
+  },
+  {
     "id": "nx",
     "name": {
       "en": "Nx",
@@ -194,6 +350,191 @@
     "repositoryUrl": "https://github.com/jestjs/jest"
   },
   {
+    "id": "devexpress-xpo",
+    "name": {
+      "en": "DevExpress XPO",
+      "es": "DevExpress XPO"
+    },
+    "description": {
+      "en": "DevExpress's ORM for .NET. The data layer of the desktop ERP I worked on at Sisnova.",
+      "es": "El ORM de DevExpress para .NET. La capa de datos del ERP de escritorio en el que trabajé en Sisnova."
+    },
+    "site": "https://www.devexpress.com/products/net/orm/",
+    "quadrant": "tools",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "jenkins",
+    "name": {
+      "en": "Jenkins",
+      "es": "Jenkins"
+    },
+    "description": {
+      "en": "A self-hosted automation server, pipelines written as Groovy. It built and tested the services at Tigo; I have moved to pipelines that live with the code.",
+      "es": "Un servidor de automatización autoalojado, con pipelines escritos en Groovy. Compilaba y probaba los servicios en Tigo; me pasé a pipelines que viven junto al código."
+    },
+    "site": "https://www.jenkins.io",
+    "repositoryUrl": "https://github.com/jenkinsci/jenkins",
+    "quadrant": "tools",
+    "ring": "hold",
+    "areas": ["delivery"]
+  },
+  {
+    "id": "gitlab-ci",
+    "name": {
+      "en": "GitLab CI",
+      "es": "GitLab CI"
+    },
+    "description": {
+      "en": "GitLab's pipelines, declared in the repository. Tigo's integration and delivery ran on it beside Jenkins; my repositories are on GitHub now.",
+      "es": "Los pipelines de GitLab, declarados en el repositorio. La integración y entrega en Tigo corría sobre él junto a Jenkins; mis repositorios hoy están en GitHub."
+    },
+    "site": "https://docs.gitlab.com/ci/",
+    "quadrant": "tools",
+    "ring": "hold",
+    "areas": ["delivery"]
+  },
+  {
+    "id": "google-analytics",
+    "name": {
+      "en": "Google Analytics",
+      "es": "Google Analytics"
+    },
+    "description": {
+      "en": "Traffic and conversion analytics. One of the sources HealthCare.com read its funnels from.",
+      "es": "Analítica de tráfico y conversión. Una de las fuentes de las que HealthCare.com leía sus embudos."
+    },
+    "site": "https://marketingplatform.google.com/about/analytics/",
+    "quadrant": "tools",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "vwo",
+    "name": {
+      "en": "VWO",
+      "es": "VWO"
+    },
+    "description": {
+      "en": "An experimentation platform: variants, targeting and the statistics that pick a winner. The A/B tests at HealthCare.com ran on it.",
+      "es": "Una plataforma de experimentación: variantes, segmentación y la estadística que elige a la ganadora. Las pruebas A/B de HealthCare.com corrían sobre ella."
+    },
+    "site": "https://vwo.com",
+    "quadrant": "tools",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "hotjar",
+    "name": {
+      "en": "Hotjar",
+      "es": "Hotjar"
+    },
+    "description": {
+      "en": "Heatmaps and session recordings: what users did, not only what they clicked. How HealthCare.com saw where a form lost people.",
+      "es": "Mapas de calor y grabaciones de sesión: lo que hicieron los usuarios, no solo en qué hicieron clic. Así veía HealthCare.com dónde un formulario perdía gente."
+    },
+    "site": "https://www.hotjar.com",
+    "quadrant": "tools",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "segment",
+    "name": {
+      "en": "Segment",
+      "es": "Segment"
+    },
+    "description": {
+      "en": "One tracking call, sent on to every analytics and marketing tool. The event pipeline behind HealthCare.com.",
+      "es": "Una sola llamada de seguimiento, reenviada a cada herramienta de analítica y marketing. El pipeline de eventos detrás de HealthCare.com."
+    },
+    "site": "https://segment.com",
+    "quadrant": "tools",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "amplitude",
+    "name": {
+      "en": "Amplitude",
+      "es": "Amplitude"
+    },
+    "description": {
+      "en": "Product analytics: events, funnels and cohorts. How Vana reads what users do in its apps.",
+      "es": "Analítica de producto: eventos, embudos y cohortes. Así lee Vana lo que hacen los usuarios en sus aplicaciones."
+    },
+    "site": "https://amplitude.com",
+    "quadrant": "tools",
+    "ring": "adopt",
+    "areas": []
+  },
+  {
+    "id": "vitest",
+    "name": {
+      "en": "Vitest",
+      "es": "Vitest"
+    },
+    "description": {
+      "en": "A test runner on the build's own transform, with ES modules and coverage out of the box. Every spec in r10c, entifix and this site runs on it.",
+      "es": "Un ejecutor de pruebas sobre la propia transformación del build, con módulos ES y cobertura listos de entrada. Cada spec de r10c, entifix y este sitio corre sobre él."
+    },
+    "site": "https://vitest.dev",
+    "repositoryUrl": "https://github.com/vitest-dev/vitest",
+    "quadrant": "tools",
+    "ring": "adopt",
+    "areas": []
+  },
+  {
+    "id": "tanstack-query",
+    "name": {
+      "en": "TanStack Query",
+      "es": "TanStack Query"
+    },
+    "description": {
+      "en": "Server state in the browser: caching, refetching and invalidation. r10c's back office loads its data through it.",
+      "es": "El estado del servidor en el navegador: caché, recarga e invalidación. El back office de r10c carga sus datos con él."
+    },
+    "site": "https://tanstack.com/query",
+    "repositoryUrl": "https://github.com/TanStack/query",
+    "quadrant": "tools",
+    "ring": "trial",
+    "areas": []
+  },
+  {
+    "id": "zitadel",
+    "name": {
+      "en": "Zitadel",
+      "es": "Zitadel"
+    },
+    "description": {
+      "en": "An open-source identity provider: OIDC, MFA and social sign-in as configuration. r10c signs users in through it and stores no password.",
+      "es": "Un proveedor de identidad de código abierto: OIDC, MFA e inicio de sesión social como configuración. r10c autentica a sus usuarios con él y no guarda ninguna contraseña."
+    },
+    "site": "https://zitadel.com",
+    "repositoryUrl": "https://github.com/zitadel/zitadel",
+    "quadrant": "tools",
+    "ring": "trial",
+    "areas": []
+  },
+  {
+    "id": "opentelemetry",
+    "name": {
+      "en": "OpenTelemetry",
+      "es": "OpenTelemetry"
+    },
+    "description": {
+      "en": "One standard for traces, metrics and logs, sent to whatever reads them. r10c's services export to a local Grafana stack.",
+      "es": "Un solo estándar para trazas, métricas y logs, enviados a quien los lea. Los servicios de r10c exportan a un stack local de Grafana."
+    },
+    "site": "https://opentelemetry.io",
+    "repositoryUrl": "https://github.com/open-telemetry",
+    "quadrant": "tools",
+    "ring": "trial",
+    "areas": ["delivery"]
+  },
+  {
     "id": "kubernetes",
     "name": {
       "en": "Kubernetes",
@@ -216,8 +557,8 @@
       "es": "Node.js"
     },
     "description": {
-      "en": "The JavaScript runtime behind most of the backends and all of the tooling I have written.",
-      "es": "El entorno de ejecución de JavaScript detrás de la mayoría de los backends y de todas las herramientas que he escrito."
+      "en": "The JavaScript runtime behind most of the backends and all of the tooling I have written, since my first AngularJS days at Sisnova. My main technology today.",
+      "es": "El entorno de ejecución de JavaScript detrás de la mayoría de los backends y de todas las herramientas que he escrito, desde mis primeros días con AngularJS en Sisnova. Hoy, mi tecnología principal."
     },
     "quadrant": "platforms",
     "ring": "adopt",
@@ -254,6 +595,146 @@
     "ring": "trial",
     "areas": ["delivery"],
     "site": "https://aws.amazon.com/cloudfront/"
+  },
+  {
+    "id": "sql-server",
+    "name": {
+      "en": "SQL Server",
+      "es": "SQL Server"
+    },
+    "description": {
+      "en": "Microsoft's relational database. It held the ERP's data at Sisnova.",
+      "es": "La base de datos relacional de Microsoft. Guardaba los datos del ERP en Sisnova."
+    },
+    "site": "https://www.microsoft.com/sql-server",
+    "quadrant": "platforms",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "oracle-database",
+    "name": {
+      "en": "Oracle Database",
+      "es": "Oracle Database"
+    },
+    "description": {
+      "en": "The relational database under the Ministerio Público's systems and Tigo's legacy ones. I now reach for PostgreSQL.",
+      "es": "La base de datos relacional bajo los sistemas del Ministerio Público y los heredados de Tigo. Hoy recurro a PostgreSQL."
+    },
+    "site": "https://www.oracle.com/database/",
+    "quadrant": "platforms",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "couchbase",
+    "name": {
+      "en": "Couchbase",
+      "es": "Couchbase"
+    },
+    "description": {
+      "en": "A document database with a memory-first cache. It stored the new applications at Tigo.",
+      "es": "Una base de datos de documentos con una caché en memoria por delante. Guardaba las nuevas aplicaciones en Tigo."
+    },
+    "site": "https://www.couchbase.com",
+    "repositoryUrl": "https://github.com/couchbase",
+    "quadrant": "platforms",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "aws-lambda",
+    "name": {
+      "en": "AWS Lambda",
+      "es": "AWS Lambda"
+    },
+    "description": {
+      "en": "Functions that run on demand, billed by the millisecond. The backends behind Vana's apps.",
+      "es": "Funciones que corren bajo demanda, cobradas por milisegundo. Los backends detrás de las aplicaciones de Vana."
+    },
+    "site": "https://aws.amazon.com/lambda/",
+    "quadrant": "platforms",
+    "ring": "adopt",
+    "areas": ["delivery"]
+  },
+  {
+    "id": "amazon-api-gateway",
+    "name": {
+      "en": "Amazon API Gateway",
+      "es": "Amazon API Gateway"
+    },
+    "description": {
+      "en": "The managed front door for HTTP APIs, routing each call to a Lambda function. How Vana's apps reach their backends.",
+      "es": "La puerta de entrada administrada para APIs HTTP, que enruta cada llamada a una función Lambda. Así llegan las aplicaciones de Vana a sus backends."
+    },
+    "site": "https://aws.amazon.com/api-gateway/",
+    "quadrant": "platforms",
+    "ring": "adopt",
+    "areas": ["delivery"]
+  },
+  {
+    "id": "mongodb",
+    "name": {
+      "en": "MongoDB",
+      "es": "MongoDB"
+    },
+    "description": {
+      "en": "A document database. r10c keeps most of its stores in it, one database per organization.",
+      "es": "Una base de datos de documentos. r10c guarda en ella la mayoría de sus almacenes, una base de datos por organización."
+    },
+    "site": "https://www.mongodb.com",
+    "repositoryUrl": "https://github.com/mongodb/mongo",
+    "quadrant": "platforms",
+    "ring": "trial",
+    "areas": []
+  },
+  {
+    "id": "postgresql",
+    "name": {
+      "en": "PostgreSQL",
+      "es": "PostgreSQL"
+    },
+    "description": {
+      "en": "The relational database I choose now. r10c's configuration service runs on it, through entifix's SQL adapter.",
+      "es": "La base de datos relacional que elijo hoy. El servicio de configuración de r10c corre sobre ella, con el adaptador SQL de entifix."
+    },
+    "site": "https://www.postgresql.org",
+    "repositoryUrl": "https://github.com/postgres/postgres",
+    "quadrant": "platforms",
+    "ring": "trial",
+    "areas": []
+  },
+  {
+    "id": "redis",
+    "name": {
+      "en": "Redis",
+      "es": "Redis"
+    },
+    "description": {
+      "en": "In-memory data structures. r10c keeps its sessions and its write locks in it.",
+      "es": "Estructuras de datos en memoria. r10c guarda en él sus sesiones y sus bloqueos de escritura."
+    },
+    "site": "https://redis.io",
+    "repositoryUrl": "https://github.com/redis/redis",
+    "quadrant": "platforms",
+    "ring": "trial",
+    "areas": []
+  },
+  {
+    "id": "rabbitmq",
+    "name": {
+      "en": "RabbitMQ",
+      "es": "RabbitMQ"
+    },
+    "description": {
+      "en": "A message broker. r10c's services publish their events through it.",
+      "es": "Un broker de mensajes. Los servicios de r10c publican sus eventos a través de él."
+    },
+    "site": "https://www.rabbitmq.com",
+    "repositoryUrl": "https://github.com/rabbitmq/rabbitmq-server",
+    "quadrant": "platforms",
+    "ring": "trial",
+    "areas": []
   },
   {
     "id": "typescript",
@@ -310,8 +791,8 @@
       "es": "Angular"
     },
     "description": {
-      "en": "A complete front-end framework, with dependency injection and RxJS built in. Where my TypeScript front-end work started.",
-      "es": "Un framework de frontend completo, con inyección de dependencias y RxJS incluidos. Donde empezó mi trabajo de frontend con TypeScript."
+      "en": "A complete front-end framework, with dependency injection and RxJS built in. Where my TypeScript front-end work started, at the Ministerio Público and Tigo, and the next UI I plan for entifix, to show that its UI is an adapter.",
+      "es": "Un framework de frontend completo, con inyección de dependencias y RxJS incluidos. Donde empezó mi trabajo de frontend con TypeScript, en el Ministerio Público y Tigo, y la próxima interfaz que planeo para entifix, para mostrar que su interfaz es un adaptador."
     },
     "quadrant": "languages-and-frameworks",
     "ring": "adopt",
@@ -326,11 +807,11 @@
       "es": "Spring Boot"
     },
     "description": {
-      "en": "Java services with the wiring already decided. Part of the applications that replaced the legacy systems at Tigo.",
-      "es": "Servicios en Java con la configuración ya resuelta. Parte de las aplicaciones que reemplazaron los sistemas heredados en Tigo."
+      "en": "Java services with the wiring already decided. I used it from the Ministerio Público's move to REST APIs to the applications that replaced the legacy systems at Tigo, and have not reached for it since I moved to TypeScript.",
+      "es": "Servicios en Java con la configuración ya resuelta. Lo usé desde el paso del Ministerio Público a APIs REST hasta las aplicaciones que reemplazaron los sistemas heredados en Tigo, y no he vuelto a él desde que me pasé a TypeScript."
     },
     "quadrant": "languages-and-frameworks",
-    "ring": "adopt",
+    "ring": "hold",
     "areas": [],
     "site": "https://spring.io/projects/spring-boot",
     "repositoryUrl": "https://github.com/spring-projects/spring-boot"
@@ -342,11 +823,11 @@
       "es": "Effect"
     },
     "description": {
-      "en": "Typed effects for TypeScript: errors, dependencies and concurrency in the signature. entifix is built on it.",
-      "es": "Efectos tipados para TypeScript: errores, dependencias y concurrencia en la firma. entifix está construido sobre él."
+      "en": "Typed effects for TypeScript: errors, dependencies and concurrency in the signature. I started with it at HealthCare.com in 2023; entifix and r10c are built on it.",
+      "es": "Efectos tipados para TypeScript: errores, dependencias y concurrencia en la firma. Empecé con él en HealthCare.com en 2023; entifix y r10c están construidos sobre él."
     },
     "quadrant": "languages-and-frameworks",
-    "ring": "trial",
+    "ring": "adopt",
     "areas": ["architecture"],
     "site": "https://effect.website",
     "repositoryUrl": "https://github.com/Effect-TS/effect"
@@ -382,5 +863,99 @@
     "areas": ["web-rendering"],
     "site": "https://angularjs.org",
     "repositoryUrl": "https://github.com/angular/angular.js"
+  },
+  {
+    "id": "csharp",
+    "name": {
+      "en": "C#",
+      "es": "C#"
+    },
+    "description": {
+      "en": "Microsoft's typed language for .NET. The language of my first job, on the ERP at Sisnova.",
+      "es": "El lenguaje tipado de Microsoft para .NET. El lenguaje de mi primer trabajo, en el ERP de Sisnova."
+    },
+    "site": "https://learn.microsoft.com/dotnet/csharp/",
+    "repositoryUrl": "https://github.com/dotnet/csharplang",
+    "quadrant": "languages-and-frameworks",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "dotnet-framework",
+    "name": {
+      "en": ".NET Framework",
+      "es": ".NET Framework"
+    },
+    "description": {
+      "en": "The Windows-only .NET the Sisnova ERP ran on as a desktop application. Superseded by .NET, and behind me.",
+      "es": "El .NET solo para Windows sobre el que corría el ERP de Sisnova como aplicación de escritorio. Reemplazado por .NET, y atrás para mí."
+    },
+    "site": "https://dotnet.microsoft.com/learn/dotnet/what-is-dotnet-framework",
+    "quadrant": "languages-and-frameworks",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "java",
+    "name": {
+      "en": "Java",
+      "es": "Java"
+    },
+    "description": {
+      "en": "The language of my backend years, from the Ministerio Público to Tigo. I write services in TypeScript now.",
+      "es": "El lenguaje de mis años de backend, del Ministerio Público a Tigo. Hoy escribo los servicios en TypeScript."
+    },
+    "site": "https://dev.java",
+    "repositoryUrl": "https://github.com/openjdk/jdk",
+    "quadrant": "languages-and-frameworks",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "java-ee",
+    "name": {
+      "en": "Java EE",
+      "es": "Java EE"
+    },
+    "description": {
+      "en": "Java's enterprise platform, now Jakarta EE. The Ministerio Público's inventory and personnel systems were built on it.",
+      "es": "La plataforma empresarial de Java, hoy Jakarta EE. Los sistemas de inventario y de personal del Ministerio Público estaban construidos sobre ella."
+    },
+    "site": "https://jakarta.ee",
+    "quadrant": "languages-and-frameworks",
+    "ring": "hold",
+    "areas": []
+  },
+  {
+    "id": "jsf-primefaces",
+    "name": {
+      "en": "JSF and PrimeFaces",
+      "es": "JSF y PrimeFaces"
+    },
+    "description": {
+      "en": "Server-rendered Java pages with a component library on top. The Ministerio Público's screens, until we moved them to Angular.",
+      "es": "Páginas Java renderizadas en el servidor con una librería de componentes encima. Las pantallas del Ministerio Público, hasta que las pasamos a Angular."
+    },
+    "site": "https://www.primefaces.org",
+    "repositoryUrl": "https://github.com/primefaces/primefaces",
+    "quadrant": "languages-and-frameworks",
+    "ring": "hold",
+    "areas": ["web-rendering"]
+  },
+  {
+    "id": "eclipse-vertx",
+    "name": {
+      "en": "Eclipse Vert.x",
+      "es": "Eclipse Vert.x"
+    },
+    "description": {
+      "en": "A reactive toolkit for the JVM, on an event loop. Some of the lighter services at Tigo ran on it.",
+      "es": "Un toolkit reactivo para la JVM, sobre un event loop. Algunos de los servicios más ligeros en Tigo corrían sobre él."
+    },
+    "site": "https://vertx.io",
+    "repositoryUrl": "https://github.com/eclipse-vertx/vert.x",
+    "quadrant": "languages-and-frameworks",
+    "ring": "hold",
+    "areas": []
   }
 ]

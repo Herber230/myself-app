@@ -97,6 +97,8 @@ export function decisionExplorerCopyOf(t: T): DecisionExplorerCopy {
   return {
     label: t('projectPage.filter.label'),
     status: t('projectPage.filter.status'),
+    changes: t('projectPage.filter.changes'),
+    revised: t('projectPage.filter.revised'),
     area: t('projectPage.filter.area'),
     search: t('projectPage.filter.search'),
     placeholder: t('projectPage.filter.placeholder'),

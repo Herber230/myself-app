@@ -35,7 +35,7 @@ import {
 import { dirname, join, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { format } from 'prettier';
+import { format, resolveConfig } from 'prettier';
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = join(REPO_ROOT, 'packages/content/src');
@@ -180,8 +180,14 @@ function readRecord(project, file) {
   let index = 1;
   while (index < lines.length && lines[index].trim() === '') index += 1;
   for (; index < lines.length && HEADER.test(lines[index]); index += 1) {
-    const [, key, value] = HEADER.exec(lines[index]);
-    if (key === 'Revised') revisions.push(lines[index]);
+    // A long header line may wrap onto indented lines; they are one line.
+    let line = lines[index];
+    while (/^ {2,}\S/.test(lines[index + 1] ?? '')) {
+      index += 1;
+      line = `${line} ${lines[index].trim()}`;
+    }
+    const [, key, value] = HEADER.exec(line);
+    if (key === 'Revised') revisions.push(line);
     else fields[key] = value;
   }
   for (const key of ['Status', 'Date', 'Area']) {
@@ -201,6 +207,8 @@ function readRecord(project, file) {
       status,
       date: fields.Date,
       area: fields.Area,
+      // How many times its facts were corrected in place: its Revised lines.
+      revisions: revisions.length,
       ...(fields['Read when'] && { readWhen: fields['Read when'] }),
       ...(summary && { summary }),
       project: project.id,
@@ -231,8 +239,18 @@ function readProject(project) {
   return read;
 }
 
-const formatted = async (text, parser) =>
-  format(text, { parser, singleQuote: true, arrowParens: 'avoid' });
+/**
+ * Formatted as `prettier --check` sees the file it lands in: the repository's
+ * options and the file's path. Code blocks are left as written: the API
+ * reformats a TypeScript block in Markdown that the CLI leaves alone, so a
+ * copy formatted here would fail the CI's check.
+ */
+const formatted = async (text, path) =>
+  format(text, {
+    ...(await resolveConfig(path)),
+    filepath: path,
+    embeddedLanguageFormatting: 'off',
+  });
 
 /**
  * Every project's records as they should be written: read from its repository
@@ -253,11 +271,14 @@ async function expected() {
     }
     for (const { record, body } of readProject(project)) {
       records.push(record);
-      bodies.set(record.id, await formatted(body, 'markdown'));
+      bodies.set(
+        record.id,
+        await formatted(body, join(BODIES, `${record.id}.md`)),
+      );
     }
   }
   return {
-    json: await formatted(JSON.stringify(records), 'json'),
+    json: await formatted(JSON.stringify(records), RECORDS_FILE),
     records,
     bodies,
     skipped,

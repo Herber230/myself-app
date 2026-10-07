@@ -10,7 +10,16 @@
       "en": "Web application development focused on the end user, with an emphasis on the experience in mobile browsers.",
       "es": "Aplicaciones web enfocadas en el usuario final, con énfasis en la experiencia en navegadores móviles."
     },
-    "start": "2025-11-01"
+    "start": "2025-11-01",
+    "technologies": [
+      "react",
+      "typescript",
+      "node-js",
+      "amplitude",
+      "aws-lambda",
+      "amazon-api-gateway",
+      "serverless"
+    ]
   },
   {
     "id": "healthcare-frontend-engineer",
@@ -24,7 +33,28 @@
       "es": "Aplicaciones web centradas en el usuario y su comportamiento, con pruebas A/B y seguimiento."
     },
     "start": "2020-11-01",
-    "end": "2025-11-01"
+    "end": "2025-11-01",
+    "technologies": [
+      "react",
+      "next-js",
+      "typescript",
+      "node-js",
+      "effect",
+      "nx",
+      "monorepos",
+      "trunk-based-development",
+      "ssr-ssg",
+      "seo",
+      "accessibility",
+      "responsive-design",
+      "ab-testing",
+      "google-analytics",
+      "vwo",
+      "segment",
+      "hotjar",
+      "jest",
+      "playwright"
+    ]
   },
   {
     "id": "tigo-innovation-developer",
@@ -38,7 +68,27 @@
       "es": "Migrar los BSS y OSS heredados a nuevas aplicaciones internas sobre un clúster de Kubernetes bare-metal."
     },
     "start": "2019-04-01",
-    "end": "2020-10-31"
+    "end": "2020-10-31",
+    "technologies": [
+      "java",
+      "spring-boot",
+      "reactive-programming",
+      "eclipse-vertx",
+      "angular",
+      "typescript",
+      "node-js",
+      "couchbase",
+      "oracle-database",
+      "jenkins",
+      "gitlab-ci",
+      "kubernetes",
+      "gitops",
+      "argo-cd",
+      "microservices",
+      "event-driven-architecture",
+      "tm-forum-frameworx",
+      "clean-architecture"
+    ]
   },
   {
     "id": "tigo-software-architect",
@@ -52,7 +102,8 @@
       "es": "Rol de gestión que convertía requisitos del negocio en diseños de software para los BSS y OSS legados."
     },
     "start": "2017-08-01",
-    "end": "2019-03-31"
+    "end": "2019-03-31",
+    "technologies": ["clean-architecture", "scrum", "rest-apis"]
   },
   {
     "id": "ministerio-publico-analyst",
@@ -66,7 +117,19 @@
       "es": "Análisis, desarrollo y mantenimiento de aplicaciones de negocio internas."
     },
     "start": "2017-02-01",
-    "end": "2017-08-31"
+    "end": "2017-08-31",
+    "technologies": [
+      "java",
+      "java-ee",
+      "jsf-primefaces",
+      "oracle-database",
+      "spring-boot",
+      "rest-apis",
+      "angularjs",
+      "angular",
+      "typescript",
+      "node-js"
+    ]
   },
   {
     "id": "sisnova-analyst",
@@ -80,6 +143,14 @@
       "es": "Análisis, desarrollo y mantenimiento de aplicaciones de negocio internas."
     },
     "start": "2014-07-01",
-    "end": "2016-10-31"
+    "end": "2016-10-31",
+    "technologies": [
+      "csharp",
+      "dotnet-framework",
+      "devexpress-xpo",
+      "sql-server",
+      "angularjs",
+      "node-js"
+    ]
   }
 ]

@@ -49,14 +49,14 @@ describe("a technology's page", () => {
   });
 
   it('lists the posts about it, and has no such list when there are none', async () => {
-    await renderPage(TechnologyPage(propsOf('en', 'cloudfront')), 'en');
+    await renderPage(TechnologyPage(propsOf('en', 'react')), 'en');
     expect(
       screen
         .getByRole('link', {
-          name: 'A static site behind CloudFront, defined in Pulumi',
+          name: 'Handling exceptions with Rxjs and React hooks',
         })
         .getAttribute('href'),
-    ).toBe('/en/blog/a-static-site-on-s3/');
+    ).toBe('/en/blog/rxjs-exceptions-react-hooks/');
     cleanup();
     await renderPage(TechnologyPage(propsOf('en', 'angularjs')), 'en');
     expect(
@@ -70,16 +70,14 @@ describe("a technology's page", () => {
     expect(screen.queryByRole('link', { name: 'Source' })).toBeNull();
   });
 
-  it('shows its areas and links, and says when no project uses it', async () => {
+  it('shows its areas, and where it was used', async () => {
     await renderPage(
       TechnologyPage(propsOf('es', 'static-first-delivery')),
       'es',
     );
     expect(screen.getByText('Áreas')).toBeTruthy();
     expect(screen.queryByRole('link', { name: 'Sitio web' })).toBeNull();
-    expect(
-      screen.getByText('Ningún proyecto de este sitio la usa todavía.'),
-    ).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Dónde la usé' })).toBeTruthy();
   });
 
   it('is titled and alternated per locale', async () => {

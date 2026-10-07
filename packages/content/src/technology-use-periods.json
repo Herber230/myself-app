@@ -54,12 +54,6 @@
     "start": "2023-01-01"
   },
   {
-    "id": "playwright-since-2020-11",
-    "technology": "playwright",
-    "ring": "adopt",
-    "start": "2020-11-01"
-  },
-  {
     "id": "argo-cd-since-2019-04",
     "technology": "argo-cd",
     "ring": "adopt",
@@ -72,29 +66,10 @@
     "start": "2026-09-01"
   },
   {
-    "id": "jest-until-2026-01",
-    "technology": "jest",
-    "ring": "adopt",
-    "start": "2017-08-01",
-    "end": "2026-01-01"
-  },
-  {
-    "id": "jest-since-2026-01",
-    "technology": "jest",
-    "ring": "hold",
-    "start": "2026-01-01"
-  },
-  {
     "id": "kubernetes-since-2019-04",
     "technology": "kubernetes",
     "ring": "adopt",
     "start": "2019-04-01"
-  },
-  {
-    "id": "node-js-since-2017-08",
-    "technology": "node-js",
-    "ring": "adopt",
-    "start": "2017-08-01"
   },
   {
     "id": "amazon-s3-since-2026-09",
@@ -109,12 +84,6 @@
     "start": "2026-09-01"
   },
   {
-    "id": "typescript-since-2017-08",
-    "technology": "typescript",
-    "ring": "adopt",
-    "start": "2017-08-01"
-  },
-  {
     "id": "react-since-2020-11",
     "technology": "react",
     "ring": "adopt",
@@ -127,40 +96,425 @@
     "start": "2020-11-01"
   },
   {
-    "id": "angular-since-2017-08",
-    "technology": "angular",
-    "ring": "adopt",
-    "start": "2017-08-01"
-  },
-  {
-    "id": "spring-boot-since-2019-04",
-    "technology": "spring-boot",
-    "ring": "adopt",
-    "start": "2019-04-01"
-  },
-  {
-    "id": "effect-since-2025-01",
-    "technology": "effect",
-    "ring": "trial",
-    "start": "2025-01-01"
-  },
-  {
     "id": "tailwind-css-since-2026-01",
     "technology": "tailwind-css",
     "ring": "trial",
     "start": "2026-01-01"
   },
   {
-    "id": "angularjs-until-2017-08",
+    "id": "rest-apis-since-2017-02",
+    "technology": "rest-apis",
+    "ring": "adopt",
+    "start": "2017-02-01"
+  },
+  {
+    "id": "scrum-since-2017-08",
+    "technology": "scrum",
+    "ring": "adopt",
+    "start": "2017-08-01"
+  },
+  {
+    "id": "tm-forum-frameworx-since-2019-04",
+    "technology": "tm-forum-frameworx",
+    "ring": "adopt",
+    "start": "2019-04-01"
+  },
+  {
+    "id": "microservices-since-2019-04",
+    "technology": "microservices",
+    "ring": "adopt",
+    "start": "2019-04-01"
+  },
+  {
+    "id": "reactive-programming-since-2019-04",
+    "technology": "reactive-programming",
+    "ring": "adopt",
+    "start": "2019-04-01"
+  },
+  {
+    "id": "ssr-ssg-since-2020-11",
+    "technology": "ssr-ssg",
+    "ring": "adopt",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "seo-since-2020-11",
+    "technology": "seo",
+    "ring": "adopt",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "accessibility-since-2020-11",
+    "technology": "accessibility",
+    "ring": "adopt",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "responsive-design-since-2020-11",
+    "technology": "responsive-design",
+    "ring": "adopt",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "serverless-since-2025-11",
+    "technology": "serverless",
+    "ring": "adopt",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "cqrs-sagas-since-2025-11",
+    "technology": "cqrs-sagas",
+    "ring": "trial",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "devexpress-xpo-until-2016-11",
+    "technology": "devexpress-xpo",
+    "ring": "adopt",
+    "start": "2014-07-01",
+    "end": "2016-11-01"
+  },
+  {
+    "id": "devexpress-xpo-since-2016-11",
+    "technology": "devexpress-xpo",
+    "ring": "hold",
+    "start": "2016-11-01"
+  },
+  {
+    "id": "jenkins-until-2020-11",
+    "technology": "jenkins",
+    "ring": "adopt",
+    "start": "2019-04-01",
+    "end": "2020-11-01"
+  },
+  {
+    "id": "jenkins-since-2020-11",
+    "technology": "jenkins",
+    "ring": "hold",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "gitlab-ci-until-2020-11",
+    "technology": "gitlab-ci",
+    "ring": "adopt",
+    "start": "2019-04-01",
+    "end": "2020-11-01"
+  },
+  {
+    "id": "gitlab-ci-since-2020-11",
+    "technology": "gitlab-ci",
+    "ring": "hold",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "google-analytics-until-2025-11",
+    "technology": "google-analytics",
+    "ring": "adopt",
+    "start": "2020-11-01",
+    "end": "2025-11-01"
+  },
+  {
+    "id": "google-analytics-since-2025-11",
+    "technology": "google-analytics",
+    "ring": "hold",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "vwo-until-2025-11",
+    "technology": "vwo",
+    "ring": "adopt",
+    "start": "2020-11-01",
+    "end": "2025-11-01"
+  },
+  {
+    "id": "vwo-since-2025-11",
+    "technology": "vwo",
+    "ring": "hold",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "hotjar-until-2025-11",
+    "technology": "hotjar",
+    "ring": "adopt",
+    "start": "2020-11-01",
+    "end": "2025-11-01"
+  },
+  {
+    "id": "hotjar-since-2025-11",
+    "technology": "hotjar",
+    "ring": "hold",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "segment-until-2025-11",
+    "technology": "segment",
+    "ring": "adopt",
+    "start": "2020-11-01",
+    "end": "2025-11-01"
+  },
+  {
+    "id": "segment-since-2025-11",
+    "technology": "segment",
+    "ring": "hold",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "amplitude-since-2025-11",
+    "technology": "amplitude",
+    "ring": "adopt",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "vitest-since-2025-11",
+    "technology": "vitest",
+    "ring": "adopt",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "tanstack-query-since-2025-11",
+    "technology": "tanstack-query",
+    "ring": "trial",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "zitadel-since-2025-11",
+    "technology": "zitadel",
+    "ring": "trial",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "opentelemetry-since-2025-11",
+    "technology": "opentelemetry",
+    "ring": "trial",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "sql-server-until-2016-11",
+    "technology": "sql-server",
+    "ring": "adopt",
+    "start": "2014-07-01",
+    "end": "2016-11-01"
+  },
+  {
+    "id": "sql-server-since-2016-11",
+    "technology": "sql-server",
+    "ring": "hold",
+    "start": "2016-11-01"
+  },
+  {
+    "id": "oracle-database-until-2020-11",
+    "technology": "oracle-database",
+    "ring": "adopt",
+    "start": "2017-02-01",
+    "end": "2020-11-01"
+  },
+  {
+    "id": "oracle-database-since-2020-11",
+    "technology": "oracle-database",
+    "ring": "hold",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "couchbase-until-2020-11",
+    "technology": "couchbase",
+    "ring": "adopt",
+    "start": "2019-04-01",
+    "end": "2020-11-01"
+  },
+  {
+    "id": "couchbase-since-2020-11",
+    "technology": "couchbase",
+    "ring": "hold",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "aws-lambda-since-2025-11",
+    "technology": "aws-lambda",
+    "ring": "adopt",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "amazon-api-gateway-since-2025-11",
+    "technology": "amazon-api-gateway",
+    "ring": "adopt",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "mongodb-since-2025-11",
+    "technology": "mongodb",
+    "ring": "trial",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "postgresql-since-2025-11",
+    "technology": "postgresql",
+    "ring": "trial",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "redis-since-2025-11",
+    "technology": "redis",
+    "ring": "trial",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "rabbitmq-since-2025-11",
+    "technology": "rabbitmq",
+    "ring": "trial",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "csharp-until-2016-11",
+    "technology": "csharp",
+    "ring": "adopt",
+    "start": "2014-07-01",
+    "end": "2016-11-01"
+  },
+  {
+    "id": "csharp-since-2016-11",
+    "technology": "csharp",
+    "ring": "hold",
+    "start": "2016-11-01"
+  },
+  {
+    "id": "dotnet-framework-until-2016-11",
+    "technology": "dotnet-framework",
+    "ring": "adopt",
+    "start": "2014-07-01",
+    "end": "2016-11-01"
+  },
+  {
+    "id": "dotnet-framework-since-2016-11",
+    "technology": "dotnet-framework",
+    "ring": "hold",
+    "start": "2016-11-01"
+  },
+  {
+    "id": "java-until-2020-11",
+    "technology": "java",
+    "ring": "adopt",
+    "start": "2017-02-01",
+    "end": "2020-11-01"
+  },
+  {
+    "id": "java-since-2020-11",
+    "technology": "java",
+    "ring": "hold",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "java-ee-until-2017-09",
+    "technology": "java-ee",
+    "ring": "adopt",
+    "start": "2017-02-01",
+    "end": "2017-09-01"
+  },
+  {
+    "id": "java-ee-since-2017-09",
+    "technology": "java-ee",
+    "ring": "hold",
+    "start": "2017-09-01"
+  },
+  {
+    "id": "jsf-primefaces-until-2017-09",
+    "technology": "jsf-primefaces",
+    "ring": "adopt",
+    "start": "2017-02-01",
+    "end": "2017-09-01"
+  },
+  {
+    "id": "jsf-primefaces-since-2017-09",
+    "technology": "jsf-primefaces",
+    "ring": "hold",
+    "start": "2017-09-01"
+  },
+  {
+    "id": "eclipse-vertx-until-2020-11",
+    "technology": "eclipse-vertx",
+    "ring": "adopt",
+    "start": "2019-04-01",
+    "end": "2020-11-01"
+  },
+  {
+    "id": "eclipse-vertx-since-2020-11",
+    "technology": "eclipse-vertx",
+    "ring": "hold",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "node-js-since-2014-07",
+    "technology": "node-js",
+    "ring": "adopt",
+    "start": "2014-07-01"
+  },
+  {
+    "id": "typescript-since-2017-02",
+    "technology": "typescript",
+    "ring": "adopt",
+    "start": "2017-02-01"
+  },
+  {
+    "id": "angular-since-2017-02",
+    "technology": "angular",
+    "ring": "adopt",
+    "start": "2017-02-01"
+  },
+  {
+    "id": "angularjs-until-2017-09",
     "technology": "angularjs",
     "ring": "adopt",
     "start": "2014-07-01",
-    "end": "2017-08-01"
+    "end": "2017-09-01"
   },
   {
-    "id": "angularjs-since-2017-08",
+    "id": "angularjs-since-2017-09",
     "technology": "angularjs",
     "ring": "hold",
-    "start": "2017-08-01"
+    "start": "2017-09-01"
+  },
+  {
+    "id": "spring-boot-until-2020-11",
+    "technology": "spring-boot",
+    "ring": "adopt",
+    "start": "2017-02-01",
+    "end": "2020-11-01"
+  },
+  {
+    "id": "spring-boot-since-2020-11",
+    "technology": "spring-boot",
+    "ring": "hold",
+    "start": "2020-11-01"
+  },
+  {
+    "id": "effect-until-2025-11",
+    "technology": "effect",
+    "ring": "trial",
+    "start": "2023-01-01",
+    "end": "2025-11-01"
+  },
+  {
+    "id": "effect-since-2025-11",
+    "technology": "effect",
+    "ring": "adopt",
+    "start": "2025-11-01"
+  },
+  {
+    "id": "playwright-since-2023-01",
+    "technology": "playwright",
+    "ring": "adopt",
+    "start": "2023-01-01"
+  },
+  {
+    "id": "jest-until-2026-01",
+    "technology": "jest",
+    "ring": "adopt",
+    "start": "2020-11-01",
+    "end": "2026-01-01"
+  },
+  {
+    "id": "jest-since-2026-01",
+    "technology": "jest",
+    "ring": "hold",
+    "start": "2026-01-01"
   }
 ]

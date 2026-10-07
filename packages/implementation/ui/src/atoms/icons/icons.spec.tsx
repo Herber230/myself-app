@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ChannelIcon,
   ChannelMark,
+  FeedIcon,
   GitHubMark,
   LinkedInMark,
   LocationIcon,
@@ -52,6 +53,12 @@ describe('a contact icon', () => {
     expect(container.querySelector('svg')?.getAttribute('class')).toBe(
       'landing-icon',
     );
+  });
+
+  it('draws a feed as its waves', () => {
+    const { container } = render(<FeedIcon className="feed" />);
+    expect(container.querySelector('svg')?.getAttribute('class')).toBe('feed');
+    expect(container.querySelector('circle')).not.toBeNull();
   });
 
   it('marks the location with a pin', () => {

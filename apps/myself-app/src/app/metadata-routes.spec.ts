@@ -30,7 +30,8 @@ describe('the metadata routes', () => {
     const urls = (await sitemap.default()).map(entry => entry.url);
     for (const locale of ['en', 'es']) {
       expect(urls).toContain(`${siteUrl().origin}/${locale}/blog/`);
-      expect(urls).toContain(
+      expect(urls).toContain(`${siteUrl().origin}/${locale}/blog/books/`);
+      expect(urls).not.toContain(
         `${siteUrl().origin}/${locale}/blog/a-static-site-on-s3/`,
       );
       expect(urls).not.toContain(

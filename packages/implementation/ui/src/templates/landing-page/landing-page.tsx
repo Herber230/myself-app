@@ -1,6 +1,7 @@
 import type { ContactChannel, Profile } from '@myself-app/domain';
 import type {
   BeyondCodeTeaser as BeyondCodeTeaserData,
+  Career,
   FeaturedProject,
 } from '@myself-app/domain/use-cases';
 
@@ -15,8 +16,12 @@ import type { SiteLocale } from '../../routing/site-locales.js';
 export interface LandingPageData {
   readonly locale: SiteLocale;
   readonly profile: Profile;
+  /** The facts beside the bio. */
+  readonly career: Career;
   readonly projects: readonly FeaturedProject[];
   readonly channels: readonly ContactChannel[];
+  /** The default CV variant, whose PDF the contact section links to. */
+  readonly cvVariant: string;
   readonly beyondCode: BeyondCodeTeaserData;
   /** The personal channels, for the "Beyond the code" teaser. */
   readonly personalChannels: readonly ContactChannel[];
@@ -31,8 +36,10 @@ export interface LandingPageData {
 export function LandingPageView({
   locale,
   profile,
+  career,
   projects,
   channels,
+  cvVariant,
   beyondCode,
   personalChannels,
 }: LandingPageData) {
@@ -41,9 +48,13 @@ export function LandingPageView({
       <SiteNav locale={locale} path="/" reveal />
       <main>
         <Hero locale={locale} profile={profile} />
-        <AboutSection locale={locale} profile={profile} />
+        <AboutSection locale={locale} profile={profile} career={career} />
         <ProjectsSection locale={locale} projects={projects} />
-        <ContactSection locale={locale} channels={channels} />
+        <ContactSection
+          locale={locale}
+          channels={channels}
+          cvVariant={cvVariant}
+        />
         <BeyondCodeTeaser
           locale={locale}
           teaser={beyondCode}

@@ -72,6 +72,9 @@ export interface DecisionRow {
 /** Every string the controls show, translated at build. */
 export interface DecisionExplorerCopy {
   readonly label: string;
+  /** The revised filter's group, and its one option. */
+  readonly changes: string;
+  readonly revised: string;
   readonly status: string;
   readonly area: string;
   readonly search: string;
@@ -166,6 +169,11 @@ export function DecisionExplorer({
       : activeFiltersOf({
           groups: [
             { param: 'status', label: copy.status, options: statuses },
+            {
+              param: 'revised',
+              label: copy.changes,
+              options: [{ key: 'yes', name: copy.revised }],
+            },
             { param: 'area', label: copy.area, options: areas },
           ],
           selected: param => filter[param],
@@ -225,6 +233,12 @@ export function DecisionExplorer({
               options={statuses}
               selected={filter.status}
               onToggle={status => toggle('status', status)}
+            />
+            <ToggleGroup
+              label={copy.changes}
+              options={[{ key: 'yes', name: copy.revised }]}
+              selected={filter.revised}
+              onToggle={value => toggle('revised', value)}
             />
             <ToggleGroup
               label={copy.area}

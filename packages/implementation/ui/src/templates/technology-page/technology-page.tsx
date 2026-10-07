@@ -37,7 +37,7 @@ export function TechnologyPageView({
   posts,
 }: TechnologyPageData) {
   const t = siteT(locale);
-  const { technology, quadrant, ring, areas, history } = detail;
+  const { technology, quadrant, ring, areas, history, employments } = detail;
   // Only a featured project is on the landing page, with a page of its own (#77).
   const projects = detail.projects.filter(project => project.featured);
   const id = String(technology.id);
@@ -128,18 +128,45 @@ export function TechnologyPageView({
               <Text as="h2" step={2} weight="semibold">
                 {t('radar.detail.projects')}
               </Text>
-              {projects.length === 0 ? (
+              {employments.length === 0 && projects.length === 0 ? (
                 <Text muted>{t('radar.detail.noProjects')}</Text>
               ) : (
                 <ul className="m-0 list-none p-0">
+                  {employments.map(({ period, employer }) => (
+                    <li
+                      key={String(period.id)}
+                      className="flex flex-wrap gap-x-xs"
+                    >
+                      <Text as="span" weight="semibold">
+                        {t('radar.detail.employment', {
+                          role: inLocale(period.role, locale),
+                          employer: employer.name,
+                        })}
+                      </Text>
+                      <Text as="span" muted>
+                        {formatPeriod(
+                          period.start as Date,
+                          period.end,
+                          locale,
+                          t('cvSheet.present'),
+                        )}
+                      </Text>
+                    </li>
+                  ))}
                   {projects.map(project => (
-                    <li key={String(project.id)}>
+                    <li
+                      key={String(project.id)}
+                      className="flex flex-wrap gap-x-xs"
+                    >
                       <Link
                         href={projectPath(locale, String(project.id))}
                         className={linkClassName}
                       >
                         {project.name}
                       </Link>
+                      <Text as="span" muted>
+                        {t('radar.detail.project')}
+                      </Text>
                     </li>
                   ))}
                 </ul>
