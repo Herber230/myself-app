@@ -101,7 +101,7 @@ export function StepPlayer({
       <div className="flex flex-wrap items-center gap-2xs">
         <span
           data-slot="step-player-count"
-          className="me-auto text-step--1 text-content-muted"
+          className="me-auto text-step-sm text-content-muted"
         >
           {copy.step
             .replace('{{n}}', String(index + 1))
