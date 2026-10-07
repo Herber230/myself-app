@@ -276,6 +276,9 @@ export function ProjectPageView({
               )}
               {recorded && (
                 <Part {...decisionsPart}>
+                  <p className="adr-archive-lead">
+                    {t('projectPage.archive', { project: project.name })}
+                  </p>
                   <p className="adr-language-note">
                     {t('projectPage.englishOnly')} {t('projectPage.synced')}
                   </p>
