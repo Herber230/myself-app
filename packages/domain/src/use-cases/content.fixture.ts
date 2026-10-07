@@ -5,6 +5,9 @@ import {
 } from '@myself-app/entifix-incubator-static-adapter';
 
 import { ArchitectureDecision } from '../entities/architecture-decision.entity.js';
+import { ArchitectureNode } from '../entities/architecture-node.entity.js';
+import { ArchitectureRuntime } from '../entities/architecture-runtime.entity.js';
+import { ArchitectureScenario } from '../entities/architecture-scenario.entity.js';
 import { Certificate } from '../entities/certificate.entity.js';
 import { ContactChannel } from '../entities/contact-channel.entity.js';
 import { CvFocus } from '../entities/cv-focus.entity.js';
@@ -15,6 +18,8 @@ import { EmploymentHighlight } from '../entities/employment-highlight.entity.js'
 import { EmploymentPeriod } from '../entities/employment-period.entity.js';
 import { Interest } from '../entities/interest.entity.js';
 import { InterestMedia } from '../entities/interest-media.entity.js';
+import { LayerPackage } from '../entities/layer-package.entity.js';
+import { PackageLayer } from '../entities/package-layer.entity.js';
 import { Post } from '../entities/post.entity.js';
 import { Profile } from '../entities/profile.entity.js';
 import { Project } from '../entities/project.entity.js';
@@ -22,7 +27,9 @@ import { ProjectPath } from '../entities/project-path.entity.js';
 import { ProjectPattern } from '../entities/project-pattern.entity.js';
 import { Quadrant } from '../entities/quadrant.entity.js';
 import { RadarEdition } from '../entities/radar-edition.entity.js';
+import { RefusedImport } from '../entities/refused-import.entity.js';
 import { Ring } from '../entities/ring.entity.js';
+import { ScenarioStep } from '../entities/scenario-step.entity.js';
 import { Tag } from '../entities/tag.entity.js';
 import { Technology } from '../entities/technology.entity.js';
 import { TechnologyArea } from '../entities/technology-area.entity.js';
@@ -332,6 +339,14 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
       order: 0,
     },
   ],
+  // The architecture views (ADR 0022).
+  'architecture-runtimes.json': [],
+  'architecture-nodes.json': [],
+  'architecture-scenarios.json': [],
+  'scenario-steps.json': [],
+  'package-layers.json': [],
+  'layer-packages.json': [],
+  'refused-imports.json': [],
   'project-paths.json': [
     {
       id: 'engine-src',
@@ -497,6 +512,19 @@ const SOURCES = [
   }),
   defineSource({ entity: ProjectPattern, file: 'project-patterns.json' }),
   defineSource({ entity: ProjectPath, file: 'project-paths.json' }),
+  defineSource({
+    entity: ArchitectureRuntime,
+    file: 'architecture-runtimes.json',
+  }),
+  defineSource({ entity: ArchitectureNode, file: 'architecture-nodes.json' }),
+  defineSource({
+    entity: ArchitectureScenario,
+    file: 'architecture-scenarios.json',
+  }),
+  defineSource({ entity: ScenarioStep, file: 'scenario-steps.json' }),
+  defineSource({ entity: PackageLayer, file: 'package-layers.json' }),
+  defineSource({ entity: LayerPackage, file: 'layer-packages.json' }),
+  defineSource({ entity: RefusedImport, file: 'refused-imports.json' }),
   defineSource({
     entity: ArchitectureDecision,
     file: 'adrs.json',

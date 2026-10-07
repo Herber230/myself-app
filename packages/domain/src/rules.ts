@@ -76,3 +76,46 @@ export const statusMatchesSupersession: EntityRule = (records, report) => {
     }
   });
 };
+
+/**
+ * A layer's package names its folder, whose note it shows, or carries a note
+ * of its own (ADR 0022): a box with nothing to say would open an empty panel.
+ */
+export const folderOrNote: EntityRule = (records, report) => {
+  records.forEach((record, index) => {
+    if (record.folder === undefined && record.note === undefined) {
+      report(index, 'note', 'is missing, and no folder gives one');
+    }
+  });
+};
+
+/**
+ * A step travels a line from one part to another, or none (ADR 0022): `from`
+ * without `to`, or the reverse, draws half of nothing.
+ */
+export const travelsBothEnds: EntityRule = (records, report) => {
+  records.forEach((record, index) => {
+    if ((record.from === undefined) !== (record.to === undefined)) {
+      const missing = record.from === undefined ? 'from' : 'to';
+      report(index, missing, 'is missing, while the other end is set');
+    }
+  });
+};
+
+/** A part of the hexagon draws no line to itself (ADR 0022). */
+export const connectsOthers: EntityRule = (records, report) => {
+  records.forEach((record, index) => {
+    if (((record.connects ?? []) as unknown[]).includes(record.id)) {
+      report(index, 'connects', 'names the part itself');
+    }
+  });
+};
+
+/** A refused import is between two packages, not a package and itself. */
+export const refusesOthers: EntityRule = (records, report) => {
+  records.forEach((record, index) => {
+    if (record.from === record.to) {
+      report(index, 'to', 'is the package it starts from');
+    }
+  });
+};

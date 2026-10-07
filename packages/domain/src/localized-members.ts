@@ -1,6 +1,9 @@
 import type { Entity, EntityConstructor } from '@entifix/core';
 
 import { ArchitectureDecision } from './entities/architecture-decision.entity.js';
+import { ArchitectureNode } from './entities/architecture-node.entity.js';
+import { ArchitectureRuntime } from './entities/architecture-runtime.entity.js';
+import { ArchitectureScenario } from './entities/architecture-scenario.entity.js';
 import { Certificate } from './entities/certificate.entity.js';
 import { ContactChannel } from './entities/contact-channel.entity.js';
 import { CvFocus } from './entities/cv-focus.entity.js';
@@ -11,6 +14,8 @@ import { EmploymentHighlight } from './entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from './entities/employment-period.entity.js';
 import { Interest } from './entities/interest.entity.js';
 import { InterestMedia } from './entities/interest-media.entity.js';
+import { LayerPackage } from './entities/layer-package.entity.js';
+import { PackageLayer } from './entities/package-layer.entity.js';
 import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
@@ -18,7 +23,9 @@ import { ProjectPath } from './entities/project-path.entity.js';
 import { ProjectPattern } from './entities/project-pattern.entity.js';
 import { Quadrant } from './entities/quadrant.entity.js';
 import { RadarEdition } from './entities/radar-edition.entity.js';
+import { RefusedImport } from './entities/refused-import.entity.js';
 import { Ring } from './entities/ring.entity.js';
+import { ScenarioStep } from './entities/scenario-step.entity.js';
 import { Tag } from './entities/tag.entity.js';
 import { Technology } from './entities/technology.entity.js';
 import { TechnologyArea } from './entities/technology-area.entity.js';
@@ -53,6 +60,13 @@ export const LOCALIZED_MEMBERS = new Map<
   [Project, ['summary', 'overview']],
   [ProjectPattern, ['name', 'summary']],
   [ProjectPath, ['note']],
+  [ArchitectureRuntime, ['label']],
+  [ArchitectureNode, ['text']],
+  [ArchitectureScenario, ['label']],
+  [ScenarioStep, ['title', 'text']],
+  [PackageLayer, ['name']],
+  [LayerPackage, ['note']],
+  [RefusedImport, ['reason']],
   // Written in English only (ADR 0020).
   [ArchitectureDecision, []],
   [CvVariant, ['title', 'summary']],
