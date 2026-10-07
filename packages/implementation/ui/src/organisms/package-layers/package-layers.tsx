@@ -64,6 +64,8 @@ export function PackageLayers({
   const [active, setActive] = useState<string>();
   const [showRefused, setShowRefused] = useState(false);
   const byId = new Map(view.boxes.map(box => [box.id, box]));
+  // Every import names boxes of the view, so each id has a label.
+  const labelOf = new Map(view.boxes.map(box => [box.id, box.label]));
   const edges: LayerEdge[] = [
     ...view.imports,
     ...(showRefused
@@ -75,7 +77,7 @@ export function PackageLayers({
       : []),
   ];
   const labels = (ids: readonly string[]) =>
-    ids.map(id => byId.get(id)?.label ?? id).join(', ') || copy.nothing;
+    ids.map(id => labelOf.get(id)).join(', ') || copy.nothing;
   const importsOf = (id: string) =>
     view.imports.filter(edge => edge.from === id).map(edge => edge.to);
   const importedBy = (id: string) =>

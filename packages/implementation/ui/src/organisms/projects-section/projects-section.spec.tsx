@@ -13,7 +13,7 @@ describe('the projects section', () => {
       screen
         .getAllByRole('heading', { level: 3 })
         .map(heading => heading.textContent),
-    ).toEqual(['entifix', 'r10c', 'myself-app']);
+    ).toEqual(['entifix', 'myself-app']);
   });
 
   it('leads each card to its project’s page, in the reader’s language', async () => {
@@ -21,11 +21,7 @@ describe('the projects section', () => {
     render(<ProjectsSection locale="es" projects={projects} />);
     expect(
       screen.getAllByRole('link').map(link => link.getAttribute('href')),
-    ).toEqual([
-      '/es/projects/entifix/',
-      '/es/projects/r10c/',
-      '/es/projects/myself-app/',
-    ]);
+    ).toEqual(['/es/projects/entifix/', '/es/projects/myself-app/']);
     const [entifix] = screen.getAllByRole('article');
     expect(
       [...(entifix?.querySelectorAll('.link-card-tags li') ?? [])].map(

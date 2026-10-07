@@ -189,7 +189,14 @@ export function PipelineExplorer({
             <p className="architecture-panel-title">
               {current.label}{' '}
               <span className="architecture-panel-kind">
-                {view.stages.find(stage => stage.id === current.stage)?.label}
+                {
+                  // A job's stage is one of the view's.
+                  (
+                    view.stages.find(stage => stage.id === current.stage) as {
+                      label: string;
+                    }
+                  ).label
+                }
               </span>
             </p>
             <p>{current.text}</p>

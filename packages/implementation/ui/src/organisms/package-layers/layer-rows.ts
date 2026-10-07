@@ -28,9 +28,6 @@ export function layersViewOf(
 ): LayersView {
   const text = (value: LocalizedText | undefined) =>
     localize(value as LocalizedText, locale);
-  const bandOf = new Map(
-    layers.layers.map((layer, index) => [String(layer.id), index]),
-  );
   // A package's folder is one of the project's paths, named by id.
   const pathById = new Map(paths.map(path => [String(path.id), path]));
   const folderOf = (box: (typeof layers.packages)[number]) =>
@@ -50,7 +47,8 @@ export function layersViewOf(
       return {
         id: String(box.id),
         label: box.label,
-        band: bandOf.get(String(box.layer.id)) ?? 0,
+        // Loaded by its layer, so its layer is one of the bands.
+        band: layers.layers.findIndex(layer => layer.id === box.layer.id),
         column: box.column,
         ...(folder && { path: folder.path }),
         // The rule `folderOrNote` holds one of them.

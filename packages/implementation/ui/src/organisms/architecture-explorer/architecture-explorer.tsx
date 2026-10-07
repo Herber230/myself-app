@@ -245,7 +245,14 @@ export function ArchitectureExplorer({
             <p className="architecture-panel-title">
               {current.label}{' '}
               <span className="architecture-panel-kind">
-                {view.rings.find(ring => ring.id === current.ring)?.label}
+                {
+                  // A part's ring is one of the view's.
+                  (
+                    view.rings.find(ring => ring.id === current.ring) as {
+                      label: string;
+                    }
+                  ).label
+                }
               </span>
             </p>
             <p>{current.text}</p>
