@@ -211,7 +211,7 @@ export const es = {
       'Cada registro de decisión de arquitectura (ADR) de {{project}}, en un solo lugar: qué se decidió, por qué y qué reemplazó. Cada uno nombra, en su línea “Read when”, el síntoma que debería llevar a un lector hasta él. Filtra por estado o área, ordena por fecha y abre un registro para leerlo completo.',
     /** Under the records' heading: they are copies, kept in step by CI. */
     synced:
-      'Los registros de abajo se copian de cada repositorio con un script, y la CI de este repositorio falla cuando una copia se aparta de su registro.',
+      'Se copian de cada repositorio con un script, y la CI de este repositorio falla cuando una copia se aparta de su registro.',
     decisionLink: 'ADR {{number}}',
     englishOnly: 'Los registros están escritos en inglés.',
     readWhen: 'Leer cuando',

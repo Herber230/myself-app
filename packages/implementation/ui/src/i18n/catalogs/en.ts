@@ -237,7 +237,7 @@ export const en = {
       'Every architecture decision record (ADR) of {{project}}, in one place: what was decided, why, and what it replaced. Each one names, in its “Read when” line, the symptom that should send a reader to it. Filter by status or area, sort by date, and open a record to read it whole.',
     /** Under the records' heading: they are copies, kept in step by CI. */
     synced:
-      'The records below are copied from each repository by a script, and this repository’s CI fails when a copy drifts from its record.',
+      'They are copied from each repository by a script, and this repository’s CI fails when a copy drifts from its record.',
     /** A pattern's link to the record that decided it. */
     decisionLink: 'ADR {{number}}',
     englishOnly: 'The records are written in English.',

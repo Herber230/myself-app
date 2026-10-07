@@ -108,7 +108,7 @@ describe("a project's page", () => {
     ).toBeTruthy();
     expect(
       screen.getByText(
-        /^Los registros están escritos en inglés\. Los registros/,
+        /^Los registros están escritos en inglés\. Se copian de cada repositorio/,
       ),
     ).toBeTruthy();
     // A pattern links to the records that decided it, in the explorer.
