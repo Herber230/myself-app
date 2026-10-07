@@ -165,7 +165,42 @@ export const en = {
     repository: 'Read the source',
     overview: 'Overview',
     patterns: 'Patterns',
-    structure: 'File structure',
+    architecture: 'Architecture',
+    structure: 'Structure',
+    /** A project's hexagon (ADR 0022). */
+    hexagon: {
+      label: 'Ports and adapters',
+      scenario: 'Scenario',
+      free: 'Explore freely',
+      runs: 'Runs',
+      everywhere: 'Everywhere',
+      hint: 'Pick a part of the hexagon, or choose a scenario to follow one request through it.',
+      livesIn: 'Lives in',
+      step: 'Step {{n}} of {{total}}',
+      previous: 'Previous step',
+      next: 'Next step',
+      play: 'Play',
+      pause: 'Pause',
+      restart: 'Restart',
+      rings: {
+        domain: 'Domain',
+        ports: 'Ports',
+        adapters: 'Adapters',
+      },
+    },
+    /** A project's packages in their layers (ADR 0022). */
+    layers: {
+      label: 'Packages by layer',
+      hint: 'Point at a package, or reach it with Tab: its folder, and what it may import. Arrows point the way imports go.',
+      showRefused: 'Show what lint refuses',
+      allowed: 'allowed',
+      refused: 'refused by lint',
+      imports: 'Imports:',
+      importedBy: 'Imported by:',
+      nothing: 'nothing',
+      around: 'Around the code',
+      pair: '{{from}} → {{to}}',
+    },
     decisions: 'All records',
     /** Under the records' heading: they are copies, kept in step by CI. */
     synced:

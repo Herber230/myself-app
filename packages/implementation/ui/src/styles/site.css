@@ -4345,3 +4345,311 @@
     }
   }
 }
+
+/*
+ * A project's architecture (ADR 0022): the hexagon with its scenarios, and
+ * the packages in their layers. The diagrams are the incubator's controls,
+ * drawn on a wide screen; on a narrow one the same parts are rows of chips
+ * and a list, and the panel tells what is chosen.
+ */
+@layer components {
+  .architecture,
+  .layers {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+  }
+
+  .architecture-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-xs) var(--spacing-s);
+    font-size: var(--text-step-sm);
+  }
+
+  .architecture-field,
+  .architecture-runtime {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-2xs);
+    color: var(--color-content-muted);
+  }
+
+  .architecture-field select,
+  .layers-toggle {
+    padding: var(--spacing-3xs) var(--spacing-xs);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-elevated);
+    color: var(--color-content);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .layers-toggle[aria-pressed='true'] {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+  }
+
+  .architecture-diagram,
+  .layers-diagram {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-elevated);
+  }
+
+  .architecture-rows,
+  .layers-list {
+    display: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .architecture-rows ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3xs);
+    margin: var(--spacing-3xs) 0 var(--spacing-xs);
+    padding: 0;
+    list-style: none;
+  }
+
+  .architecture-band {
+    margin: 0;
+    color: var(--color-content-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .architecture-chip {
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface-elevated);
+    color: var(--color-content);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: opacity 200ms ease;
+  }
+
+  .architecture-chip[aria-pressed='true'] {
+    border-color: var(--color-primary);
+  }
+
+  .architecture-chip[data-state='lit'] {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-primary-content);
+  }
+
+  .architecture-chip[data-state='fails'] {
+    border-color: var(--color-danger);
+    background: var(--color-danger);
+    color: var(--color-danger-content);
+  }
+
+  .architecture-chip[data-state='dim'] {
+    opacity: 0.35;
+  }
+
+  .architecture-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xs);
+    min-height: 7.5rem;
+    padding: var(--spacing-s) var(--spacing-s-m);
+    border: 1px solid var(--color-border);
+    border-inline-start: 3px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-elevated);
+  }
+
+  .architecture-panel[data-fails] {
+    border-inline-start-color: var(--color-danger);
+  }
+
+  .layers-panel {
+    min-height: 6rem;
+  }
+
+  .architecture-panel p {
+    margin: 0;
+  }
+
+  .architecture-panel-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--spacing-2xs);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .architecture-panel-kind {
+    color: var(--color-content-muted);
+    font-size: 0.75rem;
+    font-weight: normal;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .architecture-hint,
+  .architecture-meta {
+    color: var(--color-content-muted);
+  }
+
+  .architecture-meta {
+    font-size: 0.875rem;
+  }
+
+  .layers-relations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem var(--spacing-s);
+  }
+
+  .architecture-path {
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: normal;
+  }
+
+  .architecture-code {
+    margin: var(--spacing-3xs) 0 0;
+    padding: var(--spacing-2xs) var(--spacing-xs);
+    overflow-x: auto;
+    border-radius: var(--radius-sm, 4px);
+    background: color-mix(in srgb, var(--color-content) 7%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+
+  .layers-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-3xs);
+    color: var(--color-content-muted);
+  }
+
+  .layers-key {
+    display: inline-block;
+    width: 1.5rem;
+    border-top: 2px solid
+      color-mix(in srgb, var(--color-content) 45%, transparent);
+  }
+
+  .layers-key[data-kind='refused'] {
+    margin-inline-start: var(--spacing-2xs);
+    border-top: 2px dashed var(--color-danger);
+  }
+
+  .layers-refused {
+    margin: var(--spacing-3xs) 0 0;
+    padding-inline-start: 1.1rem;
+    font-size: 0.875rem;
+  }
+
+  .layers-refused code {
+    color: var(--color-danger);
+  }
+
+  .layers-list ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin: var(--spacing-3xs) 0 var(--spacing-s);
+    padding: 0;
+    list-style: none;
+  }
+
+  .layers-list-box,
+  .layers-around li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .layers-list-box {
+    padding: var(--spacing-xs) var(--spacing-s);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-elevated);
+  }
+
+  .layers-list-box > span,
+  .layers-around li span {
+    color: var(--color-content-muted);
+    font-size: 0.875rem;
+  }
+
+  .layers-around ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+    gap: var(--spacing-xs);
+    margin: var(--spacing-2xs) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .layers-around li {
+    padding: var(--spacing-xs) var(--spacing-s);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  /* A phone: the diagrams give way to their rows and lists. */
+  @media (width < 40rem) {
+    .layers-tools,
+    .layers-panel {
+      display: none;
+    }
+
+    .architecture-rows,
+    .layers-list {
+      display: block;
+    }
+  }
+}
+
+/* Unlayered, to win over the controls' own utilities (`block`, `flex`). */
+@media (width < 40rem) {
+  .architecture-diagram,
+  .layers-diagram {
+    display: none;
+  }
+
+  .architecture-runtime {
+    width: 100%;
+  }
+
+  .architecture-runtime [data-slot='segmented-control'] {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .architecture-runtime [data-slot='segmented-control-option'] {
+    padding-inline: 0.6rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+}
+
+/* The line a scenario's step travels, moving (`HexagonDiagram`). */
+@keyframes hexagon-flow {
+  to {
+    stroke-dashoffset: -11;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .architecture-chip {
+    transition: none;
+  }
+}
