@@ -1,0 +1,296 @@
+[
+  {
+    "id": "myself-app-entities",
+    "project": "myself-app",
+    "label": "Entities",
+    "ring": "domain",
+    "angle": -90,
+    "text": {
+      "en": "Technology, Post, Project and the rest: classes that describe their members, their links and what can be filtered.",
+      "es": "Technology, Post, Project y las demás: clases que describen sus miembros, sus vínculos y por qué se puede filtrar."
+    },
+    "path": "packages/domain/"
+  },
+  {
+    "id": "myself-app-use-cases",
+    "project": "myself-app",
+    "label": "Use cases",
+    "ring": "domain",
+    "angle": 90,
+    "text": {
+      "en": "loadCvSheet, loadRadarPlacements, loadProjectPage: each a request to entifix’s load over the site’s content, the same at build and in the browser.",
+      "es": "loadCvSheet, loadRadarPlacements, loadProjectPage: cada uno una petición al load de entifix sobre el contenido del sitio, igual al compilar que en el navegador."
+    },
+    "path": "packages/domain/",
+    "connects": ["myself-app-entities", "myself-app-content-port"]
+  },
+  {
+    "id": "myself-app-content-port",
+    "project": "myself-app",
+    "label": "StaticContent",
+    "ring": "ports",
+    "angle": 90,
+    "text": {
+      "en": "What a use case reads from: every entity’s records, validated, behind one load. It never says where they come from.",
+      "es": "De donde lee un caso de uso: los registros de cada entidad, validados, detrás de un solo load. Nunca dice de dónde vienen."
+    },
+    "path": "packages/entifix-incubator/static-adapter/"
+  },
+  {
+    "id": "myself-app-query-port",
+    "project": "myself-app",
+    "label": "URL query",
+    "ring": "ports",
+    "angle": 0,
+    "text": {
+      "en": "A filter in the address bar, declared once with defineUrlQuery: the page shared is the page seen.",
+      "es": "Un filtro en la barra de direcciones, declarado una vez con defineUrlQuery: la página que se comparte es la que se ve."
+    },
+    "path": "packages/entifix-incubator/browser/"
+  },
+  {
+    "id": "myself-app-route",
+    "project": "myself-app",
+    "label": "Next route",
+    "ring": "adapters",
+    "angle": -150,
+    "runtime": "myself-app-build",
+    "text": {
+      "en": "A page under app/[locale]/: it runs once, during next build, loads through a use case and renders a template.",
+      "es": "Una página bajo app/[locale]/: corre una vez, durante next build, carga a través de un caso de uso y renderiza una plantilla."
+    },
+    "path": "apps/myself-app/",
+    "connects": ["myself-app-use-cases", "myself-app-html"]
+  },
+  {
+    "id": "myself-app-static-adapter",
+    "project": "myself-app",
+    "label": "Static adapter",
+    "ring": "adapters",
+    "angle": 120,
+    "runtime": "myself-app-build",
+    "text": {
+      "en": "defineStaticContent: validates every JSON file against its entity, then serves it through entifix’s load.",
+      "es": "defineStaticContent: valida cada archivo JSON contra su entidad y luego lo sirve a través del load de entifix."
+    },
+    "path": "packages/implementation/adapters/",
+    "connects": ["myself-app-content-port", "myself-app-json"]
+  },
+  {
+    "id": "myself-app-json",
+    "project": "myself-app",
+    "label": "Content JSON",
+    "ring": "adapters",
+    "angle": 155,
+    "runtime": "myself-app-build",
+    "text": {
+      "en": "One file per entity, and the Markdown bodies. Imports nothing.",
+      "es": "Un archivo por entidad, y los cuerpos en Markdown. No importa nada."
+    },
+    "path": "packages/content/"
+  },
+  {
+    "id": "myself-app-data-files",
+    "project": "myself-app",
+    "label": "/data/*.json",
+    "ring": "adapters",
+    "angle": 50,
+    "runtime": "myself-app-browser",
+    "text": {
+      "en": "Every entity, written by the build as a file beside the pages, trimmed to what is published.",
+      "es": "Cada entidad, escrita por el build como un archivo junto a las páginas, recortada a lo que se publica."
+    },
+    "path": "packages/implementation/adapters/",
+    "connects": ["myself-app-content-port"]
+  },
+  {
+    "id": "myself-app-url-filter",
+    "project": "myself-app",
+    "label": "useUrlFilter",
+    "ring": "adapters",
+    "angle": -30,
+    "runtime": "myself-app-browser",
+    "text": {
+      "en": "Keeps the query string, answers it through load, and hands back the ids kept.",
+      "es": "Guarda la query string, la responde con load y devuelve los ids que quedan."
+    },
+    "path": "packages/entifix-incubator/browser/",
+    "connects": ["myself-app-query-port", "myself-app-use-cases"]
+  },
+  {
+    "id": "myself-app-explorer",
+    "project": "myself-app",
+    "label": "React explorer",
+    "ring": "adapters",
+    "angle": -90,
+    "runtime": "myself-app-browser",
+    "text": {
+      "en": "The radar, the blog and the decisions: each renders the whole page at build, then filters it in place.",
+      "es": "El radar, el blog y las decisiones: cada uno renderiza la página entera al compilar y luego la filtra en su lugar."
+    },
+    "path": "packages/implementation/ui/",
+    "connects": ["myself-app-url-filter"]
+  },
+  {
+    "id": "myself-app-html",
+    "project": "myself-app",
+    "label": "HTML export",
+    "ring": "adapters",
+    "angle": 180,
+    "runtime": "myself-app-build",
+    "text": {
+      "en": "The pages as files, served from S3 behind CloudFront. Always the unfiltered page.",
+      "es": "Las páginas como archivos, servidas desde S3 detrás de CloudFront. Siempre la página sin filtrar."
+    },
+    "path": "apps/myself-app/"
+  },
+  {
+    "id": "entifix-entity",
+    "project": "entifix",
+    "label": "Entity",
+    "ring": "domain",
+    "angle": -90,
+    "text": {
+      "en": "A class that describes itself: its members, their types, its links and its rules. The code is the model.",
+      "es": "Una clase que se describe a sí misma: sus miembros, sus tipos, sus vínculos y sus reglas. El código es el modelo."
+    },
+    "path": "packages/ts/core/"
+  },
+  {
+    "id": "entifix-use-cases",
+    "project": "entifix",
+    "label": "Use cases",
+    "ring": "domain",
+    "angle": 90,
+    "text": {
+      "en": "load, get, save and delete: Effect programs over entities, written once and run wherever they are composed.",
+      "es": "load, get, save y delete: programas de Effect sobre entidades, escritos una vez y ejecutados donde se compongan."
+    },
+    "connects": ["entifix-entity", "entifix-repository", "entifix-tokens"]
+  },
+  {
+    "id": "entifix-repository",
+    "project": "entifix",
+    "label": "EntityRepository",
+    "ring": "ports",
+    "angle": 150,
+    "text": {
+      "en": "What a use case asks for. Never a database: whatever stands behind it is chosen where the app is composed.",
+      "es": "Lo que pide un caso de uso. Nunca una base de datos: lo que haya detrás se elige donde se compone la aplicación."
+    }
+  },
+  {
+    "id": "entifix-tokens",
+    "project": "entifix",
+    "label": "TokenService",
+    "ring": "ports",
+    "angle": 0,
+    "text": {
+      "en": "Who is asking, as a value the host configures. The framework reads no cookie of its own.",
+      "es": "Quién pregunta, como un valor que configura el host. El framework no lee ninguna cookie propia."
+    }
+  },
+  {
+    "id": "entifix-translator",
+    "project": "entifix",
+    "label": "Translator",
+    "ring": "ports",
+    "angle": -60,
+    "text": {
+      "en": "The words the controls show, declared by react-controls and bound by an adapter.",
+      "es": "Las palabras que muestran los controles, declaradas por react-controls y enlazadas por un adaptador."
+    }
+  },
+  {
+    "id": "entifix-react",
+    "project": "entifix",
+    "label": "React controls",
+    "ring": "adapters",
+    "angle": -110,
+    "runtime": "entifix-browser",
+    "text": {
+      "en": "The table and the form, drawn from the entity’s own description. The UI is an adapter too.",
+      "es": "La tabla y el formulario, dibujados a partir de la propia descripción de la entidad. La interfaz también es un adaptador."
+    },
+    "path": "packages/react/",
+    "connects": ["entifix-use-cases", "entifix-translator"]
+  },
+  {
+    "id": "entifix-i18n",
+    "project": "entifix",
+    "label": "i18n",
+    "ring": "adapters",
+    "angle": -50,
+    "text": {
+      "en": "The i18next binding of the translator port.",
+      "es": "El enlace con i18next del puerto de traducción."
+    },
+    "connects": ["entifix-translator"]
+  },
+  {
+    "id": "entifix-rest",
+    "project": "entifix",
+    "label": "REST",
+    "ring": "adapters",
+    "angle": 125,
+    "runtime": "entifix-browser",
+    "text": {
+      "en": "A repository over HTTP: the browser’s use case reaches the server’s.",
+      "es": "Un repositorio sobre HTTP: el caso de uso del navegador llega al del servidor."
+    },
+    "connects": ["entifix-repository", "entifix-shell"]
+  },
+  {
+    "id": "entifix-shell",
+    "project": "entifix",
+    "label": "Service shell",
+    "ring": "adapters",
+    "angle": 90,
+    "runtime": "entifix-server",
+    "text": {
+      "en": "Serves entities over HTTP as Effect programs, running the same use cases.",
+      "es": "Sirve entidades sobre HTTP como programas de Effect, ejecutando los mismos casos de uso."
+    },
+    "path": "packages/effect/service-shell/",
+    "connects": ["entifix-use-cases"]
+  },
+  {
+    "id": "entifix-mongo",
+    "project": "entifix",
+    "label": "Mongo",
+    "ring": "adapters",
+    "angle": -150,
+    "runtime": "entifix-server",
+    "text": {
+      "en": "A repository over MongoDB.",
+      "es": "Un repositorio sobre MongoDB."
+    },
+    "connects": ["entifix-repository"]
+  },
+  {
+    "id": "entifix-sql",
+    "project": "entifix",
+    "label": "SQL",
+    "ring": "adapters",
+    "angle": 180,
+    "runtime": "entifix-server",
+    "text": {
+      "en": "A repository over PostgreSQL: the same port, another store.",
+      "es": "Un repositorio sobre PostgreSQL: el mismo puerto, otro almacén."
+    },
+    "connects": ["entifix-repository"]
+  },
+  {
+    "id": "entifix-jwt",
+    "project": "entifix",
+    "label": "JWT · Zitadel",
+    "ring": "adapters",
+    "angle": 20,
+    "runtime": "entifix-server",
+    "text": {
+      "en": "Token checks and sign-in behind the token service.",
+      "es": "Comprobación de tokens e inicio de sesión detrás del servicio de tokens."
+    },
+    "connects": ["entifix-tokens"]
+  }
+]

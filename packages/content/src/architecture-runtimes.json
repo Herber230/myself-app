@@ -1,0 +1,38 @@
+[
+  {
+    "id": "myself-app-build",
+    "project": "myself-app",
+    "label": {
+      "en": "At build",
+      "es": "Al compilar"
+    },
+    "order": 0
+  },
+  {
+    "id": "myself-app-browser",
+    "project": "myself-app",
+    "label": {
+      "en": "In the browser",
+      "es": "En el navegador"
+    },
+    "order": 1
+  },
+  {
+    "id": "entifix-browser",
+    "project": "entifix",
+    "label": {
+      "en": "In the browser",
+      "es": "En el navegador"
+    },
+    "order": 0
+  },
+  {
+    "id": "entifix-server",
+    "project": "entifix",
+    "label": {
+      "en": "On a server",
+      "es": "En un servidor"
+    },
+    "order": 1
+  }
+]

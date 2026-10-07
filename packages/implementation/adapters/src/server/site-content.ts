@@ -12,7 +12,11 @@
  */
 import {
   ArchitectureDecision,
+  ArchitectureNode,
+  ArchitectureRuntime,
+  ArchitectureScenario,
   Certificate,
+  connectsOthers,
   ContactChannel,
   CvFocus,
   CvVariant,
@@ -20,10 +24,13 @@ import {
   Employer,
   EmploymentHighlight,
   EmploymentPeriod,
+  folderOrNote,
   Interest,
   InterestMedia,
+  LayerPackage,
   localizedMembersOf,
   oneChannelPerType,
+  PackageLayer,
   Post,
   Profile,
   Project,
@@ -31,7 +38,10 @@ import {
   ProjectPattern,
   Quadrant,
   RadarEdition,
+  RefusedImport,
+  refusesOthers,
   Ring,
+  ScenarioStep,
   SITE_LOCALES,
   statusMatchesSupersession,
   supersedesWithinProject,
@@ -39,6 +49,7 @@ import {
   Technology,
   TechnologyArea,
   TechnologyUsePeriod,
+  travelsBothEnds,
   variantIdNotReserved,
 } from '@myself-app/domain';
 import {
@@ -99,6 +110,36 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
   }),
   defineSource({ entity: ProjectPattern, file: 'project-patterns.json' }),
   defineSource({ entity: ProjectPath, file: 'project-paths.json' }),
+  // A project's hexagon and its layers (ADR 0022): read at build only.
+  defineSource({
+    entity: ArchitectureRuntime,
+    file: 'architecture-runtimes.json',
+  }),
+  defineSource({
+    entity: ArchitectureNode,
+    file: 'architecture-nodes.json',
+    rules: [connectsOthers],
+  }),
+  defineSource({
+    entity: ArchitectureScenario,
+    file: 'architecture-scenarios.json',
+  }),
+  defineSource({
+    entity: ScenarioStep,
+    file: 'scenario-steps.json',
+    rules: [travelsBothEnds],
+  }),
+  defineSource({ entity: PackageLayer, file: 'package-layers.json' }),
+  defineSource({
+    entity: LayerPackage,
+    file: 'layer-packages.json',
+    rules: [folderOrNote],
+  }),
+  defineSource({
+    entity: RefusedImport,
+    file: 'refused-imports.json',
+    rules: [refusesOthers],
+  }),
   defineSource({
     entity: ArchitectureDecision,
     file: 'adrs.json',

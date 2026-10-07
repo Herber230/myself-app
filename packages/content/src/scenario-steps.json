@@ -1,0 +1,413 @@
+[
+  {
+    "id": "myself-app-build-cv-1",
+    "scenario": "myself-app-build-cv",
+    "order": 0,
+    "nodes": ["myself-app-route"],
+    "runtime": "myself-app-build",
+    "title": {
+      "en": "next build runs the page",
+      "es": "next build ejecuta la página"
+    },
+    "text": {
+      "en": "Once, at build: there is no server to run it again. The route checks its locale and asks a use case for the sheet.",
+      "es": "Una vez, al compilar: no hay servidor que la vuelva a ejecutar. La ruta comprueba su idioma y pide la hoja a un caso de uso."
+    },
+    "code": "loadCvSheet(SITE_CONTENT, variantId)"
+  },
+  {
+    "id": "myself-app-build-cv-2",
+    "scenario": "myself-app-build-cv",
+    "order": 1,
+    "nodes": ["myself-app-use-cases"],
+    "from": "myself-app-route",
+    "to": "myself-app-use-cases",
+    "runtime": "myself-app-build",
+    "title": {
+      "en": "The use case asks for entities",
+      "es": "El caso de uso pide entidades"
+    },
+    "text": {
+      "en": "It names the entity and the links to resolve, never a file.",
+      "es": "Nombra la entidad y los vínculos que resolver, nunca un archivo."
+    },
+    "code": "content.loadAll(CvVariant, request, { resolve: ['technologies', 'employments'] })"
+  },
+  {
+    "id": "myself-app-build-cv-3",
+    "scenario": "myself-app-build-cv",
+    "order": 2,
+    "nodes": ["myself-app-content-port"],
+    "from": "myself-app-use-cases",
+    "to": "myself-app-content-port",
+    "runtime": "myself-app-build",
+    "title": {
+      "en": "Through the port",
+      "es": "A través del puerto"
+    },
+    "text": {
+      "en": "StaticContent answers. Which adapter stands behind it was decided once, in the composition root.",
+      "es": "Responde StaticContent. Qué adaptador hay detrás se decidió una vez, en la raíz de composición."
+    }
+  },
+  {
+    "id": "myself-app-build-cv-4",
+    "scenario": "myself-app-build-cv",
+    "order": 3,
+    "nodes": ["myself-app-static-adapter"],
+    "from": "myself-app-static-adapter",
+    "to": "myself-app-content-port",
+    "runtime": "myself-app-build",
+    "title": {
+      "en": "The static adapter validates",
+      "es": "El adaptador estático valida"
+    },
+    "text": {
+      "en": "Every record is checked against its entity’s metadata before anything renders.",
+      "es": "Cada registro se comprueba contra los metadatos de su entidad antes de renderizar nada."
+    },
+    "code": "defineStaticContent(records, CONTENT_SOURCES, { locales, localizedMembersOf })"
+  },
+  {
+    "id": "myself-app-build-cv-5",
+    "scenario": "myself-app-build-cv",
+    "order": 4,
+    "nodes": ["myself-app-json"],
+    "from": "myself-app-static-adapter",
+    "to": "myself-app-json",
+    "runtime": "myself-app-build",
+    "title": {
+      "en": "The records",
+      "es": "Los registros"
+    },
+    "text": {
+      "en": "cv-variants.json, its links resolved to employment-periods.json and technologies.json.",
+      "es": "cv-variants.json, con sus vínculos resueltos a employment-periods.json y technologies.json."
+    }
+  },
+  {
+    "id": "myself-app-build-cv-6",
+    "scenario": "myself-app-build-cv",
+    "order": 5,
+    "nodes": ["myself-app-html"],
+    "from": "myself-app-route",
+    "to": "myself-app-html",
+    "runtime": "myself-app-build",
+    "title": {
+      "en": "One HTML file",
+      "es": "Un archivo HTML"
+    },
+    "text": {
+      "en": "en/cv/index.html, written once and served as it is.",
+      "es": "en/cv/index.html, escrito una vez y servido tal cual."
+    }
+  },
+  {
+    "id": "myself-app-filter-radar-1",
+    "scenario": "myself-app-filter-radar",
+    "order": 0,
+    "nodes": ["myself-app-explorer"],
+    "runtime": "myself-app-browser",
+    "title": {
+      "en": "A chip is pressed",
+      "es": "Se pulsa un chip"
+    },
+    "text": {
+      "en": "The radar was rendered whole at build. Pressing Adopt changes the address, not the page.",
+      "es": "El radar se renderizó entero al compilar. Pulsar Adoptar cambia la dirección, no la página."
+    },
+    "code": "/en/tech-radar/?ring=adopt"
+  },
+  {
+    "id": "myself-app-filter-radar-2",
+    "scenario": "myself-app-filter-radar",
+    "order": 1,
+    "nodes": ["myself-app-url-filter", "myself-app-query-port"],
+    "from": "myself-app-explorer",
+    "to": "myself-app-url-filter",
+    "runtime": "myself-app-browser",
+    "title": {
+      "en": "The query is read",
+      "es": "Se lee la query"
+    },
+    "text": {
+      "en": "useUrlFilter decodes it through the query the radar declared.",
+      "es": "useUrlFilter la decodifica a través de la query que declaró el radar."
+    },
+    "code": "ring: { allowed: vocabulary.rings, condition: anyOf('ring') }"
+  },
+  {
+    "id": "myself-app-filter-radar-3",
+    "scenario": "myself-app-filter-radar",
+    "order": 2,
+    "nodes": ["myself-app-use-cases"],
+    "from": "myself-app-url-filter",
+    "to": "myself-app-use-cases",
+    "runtime": "myself-app-browser",
+    "title": {
+      "en": "The same use case",
+      "es": "El mismo caso de uso"
+    },
+    "text": {
+      "en": "entifix’s load, the one the build ran, now in the browser.",
+      "es": "El load de entifix, el mismo que ejecutó el build, ahora en el navegador."
+    },
+    "code": "loadThroughUseCase(repository, request)"
+  },
+  {
+    "id": "myself-app-filter-radar-4",
+    "scenario": "myself-app-filter-radar",
+    "order": 3,
+    "nodes": ["myself-app-content-port"],
+    "from": "myself-app-use-cases",
+    "to": "myself-app-content-port",
+    "runtime": "myself-app-browser",
+    "title": {
+      "en": "Through the same port",
+      "es": "A través del mismo puerto"
+    },
+    "text": {
+      "en": "The same contract again; only the adapter behind it has changed.",
+      "es": "El mismo contrato otra vez; solo ha cambiado el adaptador que hay detrás."
+    }
+  },
+  {
+    "id": "myself-app-filter-radar-5",
+    "scenario": "myself-app-filter-radar",
+    "order": 4,
+    "nodes": ["myself-app-data-files"],
+    "from": "myself-app-data-files",
+    "to": "myself-app-content-port",
+    "runtime": "myself-app-browser",
+    "title": {
+      "en": "The file the build wrote",
+      "es": "El archivo que escribió el build"
+    },
+    "text": {
+      "en": "/data/technology.json, fetched once and kept.",
+      "es": "/data/technology.json, descargado una vez y guardado."
+    }
+  },
+  {
+    "id": "myself-app-filter-radar-6",
+    "scenario": "myself-app-filter-radar",
+    "order": 5,
+    "nodes": ["myself-app-explorer"],
+    "from": "myself-app-explorer",
+    "to": "myself-app-url-filter",
+    "runtime": "myself-app-browser",
+    "title": {
+      "en": "The ids kept",
+      "es": "Los ids que quedan"
+    },
+    "text": {
+      "en": "The explorer hides the rest. The link can be shared, and opens filtered.",
+      "es": "El explorador oculta el resto. El enlace se puede compartir y se abre filtrado."
+    }
+  },
+  {
+    "id": "myself-app-broken-record-1",
+    "scenario": "myself-app-broken-record",
+    "order": 0,
+    "nodes": ["myself-app-json"],
+    "runtime": "myself-app-build",
+    "title": {
+      "en": "A record is wrong",
+      "es": "Un registro está mal"
+    },
+    "text": {
+      "en": "A technology names a ring that does not exist.",
+      "es": "Una tecnología nombra un anillo que no existe."
+    },
+    "code": "{ \"id\": \"react\", \"ring\": \"adpot\" }"
+  },
+  {
+    "id": "myself-app-broken-record-2",
+    "scenario": "myself-app-broken-record",
+    "order": 1,
+    "nodes": ["myself-app-route", "myself-app-use-cases"],
+    "from": "myself-app-route",
+    "to": "myself-app-use-cases",
+    "runtime": "myself-app-build",
+    "title": {
+      "en": "A page asks for it",
+      "es": "Una página lo pide"
+    },
+    "text": {
+      "en": "The radar’s route loads the technologies, as on every build.",
+      "es": "La ruta del radar carga las tecnologías, como en cada build."
+    }
+  },
+  {
+    "id": "myself-app-broken-record-3",
+    "scenario": "myself-app-broken-record",
+    "order": 2,
+    "nodes": ["myself-app-static-adapter"],
+    "from": "myself-app-static-adapter",
+    "to": "myself-app-json",
+    "runtime": "myself-app-build",
+    "title": {
+      "en": "Validation refuses it",
+      "es": "La validación lo rechaza"
+    },
+    "text": {
+      "en": "The link points nowhere, so next build stops with the record’s path. Nothing is published.",
+      "es": "El vínculo no apunta a nada, así que next build se detiene con la ruta del registro. No se publica nada."
+    },
+    "code": "technologies.json › react › ring points at \"adpot\", which does not exist",
+    "fails": true
+  },
+  {
+    "id": "entifix-load-list-1",
+    "scenario": "entifix-load-list",
+    "order": 0,
+    "nodes": ["entifix-react"],
+    "runtime": "entifix-browser",
+    "title": {
+      "en": "A table asks",
+      "es": "Una tabla pide"
+    },
+    "text": {
+      "en": "Its columns come from the entity — an Order, in this example. It asks for a page of rows.",
+      "es": "Sus columnas salen de la entidad —un Order, en este ejemplo—. Pide una página de filas."
+    }
+  },
+  {
+    "id": "entifix-load-list-2",
+    "scenario": "entifix-load-list",
+    "order": 1,
+    "nodes": ["entifix-use-cases"],
+    "from": "entifix-react",
+    "to": "entifix-use-cases",
+    "runtime": "entifix-browser",
+    "title": {
+      "en": "The load use case, in the browser",
+      "es": "El caso de uso load, en el navegador"
+    },
+    "text": {
+      "en": "An Effect program that needs a repository and a request; here it is composed over REST.",
+      "es": "Un programa de Effect que necesita un repositorio y una petición; aquí se compone sobre REST."
+    },
+    "code": "loadUCFactory<Order>()"
+  },
+  {
+    "id": "entifix-load-list-3",
+    "scenario": "entifix-load-list",
+    "order": 2,
+    "nodes": ["entifix-repository", "entifix-rest"],
+    "from": "entifix-rest",
+    "to": "entifix-repository",
+    "runtime": "entifix-browser",
+    "title": {
+      "en": "The repository is REST",
+      "es": "El repositorio es REST"
+    },
+    "text": {
+      "en": "Behind the port, an HTTP call. The use case cannot tell.",
+      "es": "Detrás del puerto, una llamada HTTP. El caso de uso no lo nota."
+    }
+  },
+  {
+    "id": "entifix-load-list-4",
+    "scenario": "entifix-load-list",
+    "order": 3,
+    "nodes": ["entifix-shell", "entifix-use-cases"],
+    "from": "entifix-shell",
+    "to": "entifix-use-cases",
+    "runtime": "entifix-server",
+    "title": {
+      "en": "The same use case, on the server",
+      "es": "El mismo caso de uso, en el servidor"
+    },
+    "text": {
+      "en": "The service shell receives the request and runs load again, composed over a database.",
+      "es": "El service shell recibe la petición y vuelve a ejecutar load, compuesto sobre una base de datos."
+    },
+    "code": "loadUCFactory<Order>()"
+  },
+  {
+    "id": "entifix-load-list-5",
+    "scenario": "entifix-load-list",
+    "order": 4,
+    "nodes": ["entifix-repository", "entifix-mongo"],
+    "from": "entifix-mongo",
+    "to": "entifix-repository",
+    "runtime": "entifix-server",
+    "title": {
+      "en": "The repository is Mongo",
+      "es": "El repositorio es Mongo"
+    },
+    "text": {
+      "en": "Or SQL: swap the adapter where the server is composed, and nothing above it changes.",
+      "es": "O SQL: cambia el adaptador donde se compone el servidor y nada por encima cambia."
+    }
+  },
+  {
+    "id": "entifix-rejected-save-1",
+    "scenario": "entifix-rejected-save",
+    "order": 0,
+    "nodes": ["entifix-react"],
+    "runtime": "entifix-browser",
+    "title": {
+      "en": "A form is sent",
+      "es": "Se envía un formulario"
+    },
+    "text": {
+      "en": "The form was drawn from the entity, so it already knows the members.",
+      "es": "El formulario se dibujó a partir de la entidad, así que ya conoce sus miembros."
+    }
+  },
+  {
+    "id": "entifix-rejected-save-2",
+    "scenario": "entifix-rejected-save",
+    "order": 1,
+    "nodes": ["entifix-use-cases"],
+    "from": "entifix-react",
+    "to": "entifix-use-cases",
+    "runtime": "entifix-browser",
+    "title": {
+      "en": "The save use case",
+      "es": "El caso de uso save"
+    },
+    "text": {
+      "en": "It checks the entity before it writes through any port.",
+      "es": "Comprueba la entidad antes de escribir a través de ningún puerto."
+    },
+    "code": "saveUCFactory<Order>()"
+  },
+  {
+    "id": "entifix-rejected-save-3",
+    "scenario": "entifix-rejected-save",
+    "order": 2,
+    "nodes": ["entifix-entity"],
+    "from": "entifix-use-cases",
+    "to": "entifix-entity",
+    "runtime": "entifix-browser",
+    "title": {
+      "en": "The entity refuses",
+      "es": "La entidad lo rechaza"
+    },
+    "text": {
+      "en": "A required member is missing. The failure is an EntifixError in the program’s error channel, typed in its signature; no repository was written to.",
+      "es": "Falta un miembro obligatorio. El fallo es un EntifixError en el canal de error del programa, tipado en su firma; no se escribió en ningún repositorio."
+    },
+    "fails": true
+  },
+  {
+    "id": "entifix-rejected-save-4",
+    "scenario": "entifix-rejected-save",
+    "order": 3,
+    "nodes": ["entifix-react"],
+    "from": "entifix-react",
+    "to": "entifix-use-cases",
+    "runtime": "entifix-browser",
+    "title": {
+      "en": "The form shows it",
+      "es": "El formulario lo muestra"
+    },
+    "text": {
+      "en": "The control reads the error by member, and marks the field.",
+      "es": "El control lee el error por miembro y marca el campo."
+    }
+  }
+]
