@@ -17,7 +17,6 @@ describe("a project's page", () => {
   it('is written for every featured project, and no other', async () => {
     expect(await generateStaticParams()).toEqual([
       { project: 'entifix' },
-      { project: 'r10c' },
       { project: 'myself-app' },
     ]);
     expect(dynamicParams).toBe(false);
@@ -34,6 +33,13 @@ describe("a project's page", () => {
     expect(
       document.querySelectorAll('[data-slot="split-row"]').length,
     ).toBeGreaterThan(10);
+    // Its repository is this one: the release decision reads its release.
+    expect(screen.getByText('¿Qué publicaría este commit?')).toBeTruthy();
+  }, 30_000);
+
+  it('gives the release decision only to the project whose repository it is', async () => {
+    await renderPage(ProjectPage(propsOf('en', 'entifix')), 'en');
+    expect(screen.queryByText('What would this commit release?')).toBeNull();
   }, 30_000);
 
   it('names itself, and its other language', async () => {
