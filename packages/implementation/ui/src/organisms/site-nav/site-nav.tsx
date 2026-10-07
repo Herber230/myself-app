@@ -27,6 +27,7 @@ import {
   type SiteLocale,
 } from '../../routing/site-locales.js';
 import { NavMenus } from './nav-menus.js';
+import { NavReveal } from './nav-reveal.js';
 
 const linkClass =
   'rounded-sm text-content underline-offset-4 hover:text-primary hover:underline focus-ring aria-[current]:text-primary aria-[current]:underline';
@@ -43,7 +44,8 @@ const linkClass =
  * tracking and the language switch's fragment.
  *
  * `reveal` is the landing page's variant: fixed to the top, hidden over the
- * hero and faded in by the page's scroll, in CSS only (`global.css`). Every
+ * hero and faded in by the page's scroll: in CSS (`global.css`) where scroll
+ * timelines exist, through `NavReveal` where they do not. Every
  * other page shows the bar as it is.
  */
 export function SiteNav({
@@ -217,6 +219,7 @@ export function SiteNav({
       <NavMenus />
       {reveal && (
         <>
+          <NavReveal />
           <ActiveSection sections={LANDING_SECTIONS} />
           <KeepSection />
         </>
