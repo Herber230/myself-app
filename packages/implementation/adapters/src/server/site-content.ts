@@ -27,10 +27,15 @@ import {
   folderOrNote,
   Interest,
   InterestMedia,
+  jobInItsWorkflow,
   LayerPackage,
   localizedMembersOf,
   oneChannelPerType,
   PackageLayer,
+  PipelineJob,
+  PipelineScenario,
+  PipelineStage,
+  PipelineStep,
   Post,
   Profile,
   Project,
@@ -140,6 +145,16 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
     file: 'refused-imports.json',
     rules: [refusesOthers],
   }),
+  // A project's delivery pipeline (ADR 0023): read at build only. The
+  // conventions spec holds its jobs to the workflow files.
+  defineSource({ entity: PipelineStage, file: 'pipeline-stages.json' }),
+  defineSource({
+    entity: PipelineJob,
+    file: 'pipeline-jobs.json',
+    rules: [jobInItsWorkflow],
+  }),
+  defineSource({ entity: PipelineScenario, file: 'pipeline-scenarios.json' }),
+  defineSource({ entity: PipelineStep, file: 'pipeline-steps.json' }),
   defineSource({
     entity: ArchitectureDecision,
     file: 'adrs.json',

@@ -1,0 +1,211 @@
+[
+  {
+    "id": "myself-app-pre-commit",
+    "stage": "myself-app-machine",
+    "label": "pre-commit",
+    "workflow": ".husky/pre-commit",
+    "text": {
+      "en": "Formats the staged files, then lints, typechecks, tests (coverage at 100%) and builds every project the branch changed against origin/main.",
+      "es": "Formatea los archivos preparados y luego pasa lint, typecheck, pruebas (cobertura al 100%) y build a cada proyecto que la rama cambió respecto a origin/main."
+    },
+    "order": 0,
+    "needs": []
+  },
+  {
+    "id": "myself-app-commit-msg",
+    "stage": "myself-app-machine",
+    "label": "commit-msg",
+    "workflow": ".husky/commit-msg",
+    "text": {
+      "en": "commitlint: a Conventional Commit, a scope that is an Nx project, and no AI or tool attribution.",
+      "es": "commitlint: un Conventional Commit, un scope que es un proyecto de Nx, y ninguna atribución a una IA o herramienta."
+    },
+    "order": 1,
+    "needs": ["myself-app-pre-commit"]
+  },
+  {
+    "id": "myself-app-initialize",
+    "stage": "myself-app-setup",
+    "label": "Initialize",
+    "workflow": ".github/workflows/pull_request_check.yml",
+    "job": "initialize",
+    "text": {
+      "en": "Installs once, caches it, and works out which projects each target must run on: the affected ones on a pull request, all of them on main.",
+      "es": "Instala una vez, lo guarda en caché y calcula en qué proyectos debe correr cada target: los afectados en un pull request, todos en main."
+    },
+    "order": 2,
+    "needs": ["myself-app-commit-msg"]
+  },
+  {
+    "id": "myself-app-lint",
+    "stage": "myself-app-checks",
+    "label": "Lint",
+    "workflow": ".github/workflows/pull_request_check.yml",
+    "job": "lint",
+    "text": {
+      "en": "ESLint, with the module boundaries that hold each layer to what it may import.",
+      "es": "ESLint, con los límites de módulo que mantienen cada capa dentro de lo que puede importar."
+    },
+    "order": 3,
+    "needs": ["myself-app-initialize"],
+    "decisions": ["myself-app-0019"]
+  },
+  {
+    "id": "myself-app-build",
+    "stage": "myself-app-checks",
+    "label": "Build & typecheck",
+    "workflow": ".github/workflows/pull_request_check.yml",
+    "job": "build",
+    "text": {
+      "en": "Every package to dist with SWC, the static export, then TypeScript over all of it.",
+      "es": "Cada paquete a dist con SWC, la exportación estática, y luego TypeScript sobre todo ello."
+    },
+    "order": 4,
+    "needs": ["myself-app-initialize"],
+    "decisions": ["myself-app-0010"]
+  },
+  {
+    "id": "myself-app-test",
+    "stage": "myself-app-checks",
+    "label": "Test",
+    "workflow": ".github/workflows/pull_request_check.yml",
+    "job": "test",
+    "text": {
+      "en": "Vitest with coverage gated at 100% for statements, branches, functions and lines.",
+      "es": "Vitest con la cobertura exigida al 100% en sentencias, ramas, funciones y líneas."
+    },
+    "order": 5,
+    "needs": ["myself-app-initialize"]
+  },
+  {
+    "id": "myself-app-e2e",
+    "stage": "myself-app-checks",
+    "label": "E2E",
+    "workflow": ".github/workflows/pull_request_check.yml",
+    "job": "e2e",
+    "text": {
+      "en": "Playwright against the exported files, served as S3 would serve them, and the CV rendered to PDF.",
+      "es": "Playwright contra los archivos exportados, servidos como los serviría S3, y el CV renderizado a PDF."
+    },
+    "order": 6,
+    "needs": ["myself-app-initialize"],
+    "decisions": ["myself-app-0001"]
+  },
+  {
+    "id": "myself-app-infra-preview",
+    "stage": "myself-app-checks",
+    "label": "Infra preview",
+    "workflow": ".github/workflows/pull_request_check.yml",
+    "job": "infra-preview",
+    "text": {
+      "en": "pulumi preview of production under a read-only role, when the infrastructure changed.",
+      "es": "pulumi preview de producción con un rol de solo lectura, cuando la infraestructura cambió."
+    },
+    "order": 7,
+    "needs": ["myself-app-initialize"],
+    "decisions": ["myself-app-0013"]
+  },
+  {
+    "id": "myself-app-conventions",
+    "stage": "myself-app-checks",
+    "label": "Conventions",
+    "workflow": ".github/workflows/pull_request_check.yml",
+    "job": "conventions",
+    "text": {
+      "en": "Prettier, and the repository’s conventions asserted: layers tagged, CI Gate complete, ADR copies in step, versions exact.",
+      "es": "Prettier, y las convenciones del repositorio comprobadas: capas etiquetadas, CI Gate completo, copias de ADR al día, versiones exactas."
+    },
+    "order": 8,
+    "needs": ["myself-app-initialize"]
+  },
+  {
+    "id": "myself-app-commits",
+    "stage": "myself-app-checks",
+    "label": "Commits",
+    "workflow": ".github/workflows/pull_request_check.yml",
+    "job": "commits",
+    "text": {
+      "en": "commitlint again over every commit and the pull request’s title, which becomes the squash commit; the body carries no attribution.",
+      "es": "commitlint otra vez sobre cada commit y el título del pull request, que se convierte en el commit squash; el cuerpo no lleva atribución."
+    },
+    "order": 9,
+    "needs": ["myself-app-initialize"]
+  },
+  {
+    "id": "myself-app-ci-gate",
+    "stage": "myself-app-gate",
+    "label": "CI Gate",
+    "workflow": ".github/workflows/pull_request_check.yml",
+    "job": "ci-gate",
+    "text": {
+      "en": "The one required check. It runs whatever the others did, and fails if any failed or was cancelled; a job skipped as unaffected passes.",
+      "es": "La única comprobación obligatoria. Corre pase lo que pase con las demás, y falla si alguna falló o se canceló; un job omitido por no estar afectado pasa."
+    },
+    "order": 10,
+    "needs": [
+      "myself-app-initialize",
+      "myself-app-lint",
+      "myself-app-build",
+      "myself-app-test",
+      "myself-app-e2e",
+      "myself-app-infra-preview",
+      "myself-app-conventions",
+      "myself-app-commits"
+    ],
+    "decisions": ["myself-app-0013"]
+  },
+  {
+    "id": "myself-app-merge",
+    "stage": "myself-app-merge",
+    "label": "Squash merge",
+    "text": {
+      "en": "One commit per pull request, its message the title. Its type is the release decision: feat a minor, fix or perf a patch, a ! a major, anything else nothing.",
+      "es": "Un commit por pull request, con el título como mensaje. Su tipo es la decisión de release: feat una minor, fix o perf un patch, un ! una major, cualquier otro nada."
+    },
+    "order": 11,
+    "needs": ["myself-app-ci-gate"],
+    "decisions": ["myself-app-0013"]
+  },
+  {
+    "id": "myself-app-release",
+    "stage": "myself-app-deploy",
+    "label": "Release",
+    "workflow": ".github/workflows/deploy.yml",
+    "job": "release",
+    "text": {
+      "en": "semantic-release reads the commits since the last tag, writes CHANGELOG.md, commits it to main as the release App, tags it and publishes the GitHub Release.",
+      "es": "semantic-release lee los commits desde la última etiqueta, escribe CHANGELOG.md, lo commitea a main como la App de release, lo etiqueta y publica la GitHub Release."
+    },
+    "order": 12,
+    "needs": ["myself-app-merge"],
+    "decisions": ["myself-app-0021", "myself-app-0013"]
+  },
+  {
+    "id": "myself-app-infra",
+    "stage": "myself-app-deploy",
+    "label": "Infrastructure",
+    "workflow": ".github/workflows/deploy.yml",
+    "job": "infra",
+    "text": {
+      "en": "pulumi up on the tagged commit, through GitHub OIDC in the production environment: no stored AWS keys.",
+      "es": "pulumi up sobre el commit etiquetado, mediante GitHub OIDC en el entorno de producción: sin claves de AWS guardadas."
+    },
+    "order": 13,
+    "needs": ["myself-app-release"],
+    "decisions": ["myself-app-0013"]
+  },
+  {
+    "id": "myself-app-site",
+    "stage": "myself-app-deploy",
+    "label": "Site",
+    "workflow": ".github/workflows/deploy.yml",
+    "job": "site",
+    "text": {
+      "en": "Builds the export and the CV PDFs, syncs them to the private bucket and invalidates CloudFront.",
+      "es": "Compila la exportación y los PDF del CV, los sincroniza al bucket privado e invalida CloudFront."
+    },
+    "order": 14,
+    "needs": ["myself-app-release", "myself-app-infra"],
+    "decisions": ["myself-app-0013", "myself-app-0001"]
+  }
+]

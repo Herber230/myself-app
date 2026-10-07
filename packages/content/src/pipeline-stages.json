@@ -1,0 +1,56 @@
+[
+  {
+    "id": "myself-app-machine",
+    "project": "myself-app",
+    "name": {
+      "en": "Your machine",
+      "es": "Tu máquina"
+    },
+    "order": 0
+  },
+  {
+    "id": "myself-app-setup",
+    "project": "myself-app",
+    "name": {
+      "en": "Pull request",
+      "es": "Pull request"
+    },
+    "order": 1
+  },
+  {
+    "id": "myself-app-checks",
+    "project": "myself-app",
+    "name": {
+      "en": "Checks",
+      "es": "Comprobaciones"
+    },
+    "order": 2
+  },
+  {
+    "id": "myself-app-gate",
+    "project": "myself-app",
+    "name": {
+      "en": "Gate",
+      "es": "Puerta"
+    },
+    "order": 3
+  },
+  {
+    "id": "myself-app-merge",
+    "project": "myself-app",
+    "name": {
+      "en": "Merge",
+      "es": "Merge"
+    },
+    "order": 4
+  },
+  {
+    "id": "myself-app-deploy",
+    "project": "myself-app",
+    "name": {
+      "en": "Deploy",
+      "es": "Despliegue"
+    },
+    "order": 5
+  }
+]

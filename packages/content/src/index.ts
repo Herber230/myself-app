@@ -32,6 +32,10 @@ import interestMedia from './interest-media.json';
 import interests from './interests.json';
 import layerPackages from './layer-packages.json';
 import packageLayers from './package-layers.json';
+import pipelineJobs from './pipeline-jobs.json';
+import pipelineScenarios from './pipeline-scenarios.json';
+import pipelineStages from './pipeline-stages.json';
+import pipelineSteps from './pipeline-steps.json';
 import posts from './posts.json';
 import profile from './profile.json';
 import projectPaths from './project-paths.json';
@@ -65,6 +69,10 @@ export const CONTENT: Readonly<Record<string, readonly unknown[]>> = {
   'interests.json': interests,
   'layer-packages.json': layerPackages,
   'package-layers.json': packageLayers,
+  'pipeline-jobs.json': pipelineJobs,
+  'pipeline-scenarios.json': pipelineScenarios,
+  'pipeline-stages.json': pipelineStages,
+  'pipeline-steps.json': pipelineSteps,
   'posts.json': posts,
   'profile.json': profile,
   'project-paths.json': projectPaths,
