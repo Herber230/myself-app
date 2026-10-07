@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.11.0](https://github.com/Herber230/myself-app/compare/v1.10.0...v1.11.0) (2026-10-07)
+
+### Features
+
+* architecture, structure and delivery views on project pages, and polish ([#83](https://github.com/Herber230/myself-app/issues/83)) ([d0182df](https://github.com/Herber230/myself-app/commit/d0182df6c0c542209e4a09bcfa4b006f4a157e75))
+
 ## [1.10.0](https://github.com/Herber230/myself-app/compare/v1.9.0...v1.10.0) (2026-10-07)
 
 ### Features
