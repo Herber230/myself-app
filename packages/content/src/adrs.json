@@ -273,6 +273,19 @@
     "supersedes": []
   },
   {
+    "id": "myself-app-0022",
+    "number": 22,
+    "title": "A project's architecture and layers, drawn from content",
+    "status": "accepted",
+    "date": "2026-10-07",
+    "area": "ui",
+    "revisions": 0,
+    "readWhen": "a project's Architecture or Structure section shows a part, a line, a step or a package its repository does not have, a scenario lights a line the hexagon does not draw, a package's box has an empty panel, `next build` fails on `architecture-nodes.json`, `scenario-steps.json` or `layer-packages.json`, a project page throws \"Entity not found\", or someone asks why a project's file tree is gone",
+    "summary": "Two sections replace the file tree.\nBoth are content. Seven entities: `ArchitectureRuntime`, `ArchitectureNode` (its ring, its angle, its `connects`), `ArchitectureScenario` and `ScenarioStep`…\nThe folders stay `ProjectPath`s.\nAn optional link is read by its id.\nThe drawings are the incubator's.",
+    "project": "myself-app",
+    "supersedes": []
+  },
+  {
     "id": "entifix-0001",
     "number": 1,
     "title": "The tier contract, and the seam a host configures across",
