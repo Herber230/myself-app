@@ -20,8 +20,9 @@ function ofProject(id: string) {
 
 /**
  * A project's hexagon (ADR 0022): its runtimes and its parts, each part's
- * lines and runtime resolved, and its scenarios in order, each with its steps
- * in order and every part a step names resolved. Nothing for a project with
+ * lines resolved (its runtime, optional, is read by id), and its scenarios in order, each with its steps
+ * in order and the parts each lights resolved (`from`, `to` and `runtime`,
+ * optional, are read by id). Nothing for a project with
  * no parts.
  */
 export async function loadProjectArchitecture(
@@ -36,7 +37,8 @@ export async function loadProjectArchitecture(
     content.loadAll(
       ArchitectureNode,
       { filtering: [ofProject(id)] },
-      { resolve: ['connects', 'runtime'] },
+      // An optional link is read by its id: resolving an empty one fails.
+      { resolve: ['connects'] },
     ),
     content.loadAll(ArchitectureScenario, {
       filtering: [ofProject(id)],
@@ -59,7 +61,7 @@ export async function loadProjectArchitecture(
             ],
             sorting: [...BY_ORDER],
           },
-          { resolve: ['nodes', 'from', 'to', 'runtime'] },
+          { resolve: ['nodes'] },
         );
   return {
     runtimes,
@@ -73,7 +75,7 @@ export async function loadProjectArchitecture(
 
 /**
  * A project's dependency layers (ADR 0022): its bands top to bottom, their
- * packages with folder and imports resolved, and the imports lint refuses.
+ * packages with imports resolved (the folder, optional, is read by id), and the imports lint refuses.
  * Nothing for a project with no bands.
  */
 export async function loadProjectLayers(
@@ -96,7 +98,7 @@ export async function loadProjectLayers(
         },
       ],
     },
-    { resolve: ['folder', 'imports'] },
+    { resolve: ['imports'] },
   );
   const refused = await content.loadAll(RefusedImport, {
     filtering: [

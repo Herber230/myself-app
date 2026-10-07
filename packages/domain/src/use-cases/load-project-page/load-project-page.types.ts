@@ -15,9 +15,9 @@ import type { Technology } from '../../entities/technology.entity.js';
 export interface ProjectArchitecture {
   /** In their own order. */
   readonly runtimes: readonly ArchitectureRuntime[];
-  /** Each with `connects` and `runtime` resolved. */
+  /** Each with `connects` resolved; `runtime` is read by id. */
   readonly nodes: readonly ArchitectureNode[];
-  /** In their own order, each with its steps in theirs, links resolved. */
+  /** In their own order, each with its steps in theirs, `nodes` resolved. */
   readonly scenarios: readonly {
     readonly scenario: ArchitectureScenario;
     readonly steps: readonly ScenarioStep[];
@@ -28,7 +28,7 @@ export interface ProjectArchitecture {
 export interface ProjectLayers {
   /** Top band first. */
   readonly layers: readonly PackageLayer[];
-  /** Each with `folder` and `imports` resolved. */
+  /** Each with `imports` resolved; `folder` is read by id. */
   readonly packages: readonly LayerPackage[];
   readonly refused: readonly RefusedImport[];
 }
