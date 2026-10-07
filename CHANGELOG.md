@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.11.1](https://github.com/Herber230/myself-app/compare/v1.11.0...v1.11.1) (2026-10-07)
+
+### Bug Fixes
+
+* **implementation-ui:** say once that the archive's records are copies ([#84](https://github.com/Herber230/myself-app/issues/84)) ([82e3ab8](https://github.com/Herber230/myself-app/commit/82e3ab8fe264f5c5f66d840cb67202dd31abdbf5))
+
 ## [1.11.0](https://github.com/Herber230/myself-app/compare/v1.10.0...v1.11.0) (2026-10-07)
 
 ### Features
