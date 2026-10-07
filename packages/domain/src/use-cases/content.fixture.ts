@@ -20,6 +20,10 @@ import { Interest } from '../entities/interest.entity.js';
 import { InterestMedia } from '../entities/interest-media.entity.js';
 import { LayerPackage } from '../entities/layer-package.entity.js';
 import { PackageLayer } from '../entities/package-layer.entity.js';
+import { PipelineJob } from '../entities/pipeline-job.entity.js';
+import { PipelineScenario } from '../entities/pipeline-scenario.entity.js';
+import { PipelineStage } from '../entities/pipeline-stage.entity.js';
+import { PipelineStep } from '../entities/pipeline-step.entity.js';
 import { Post } from '../entities/post.entity.js';
 import { Profile } from '../entities/profile.entity.js';
 import { Project } from '../entities/project.entity.js';
@@ -347,6 +351,11 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
   'package-layers.json': [],
   'layer-packages.json': [],
   'refused-imports.json': [],
+  // The delivery pipeline (ADR 0023).
+  'pipeline-stages.json': [],
+  'pipeline-jobs.json': [],
+  'pipeline-scenarios.json': [],
+  'pipeline-steps.json': [],
   'project-paths.json': [
     {
       id: 'engine-src',
@@ -525,6 +534,10 @@ const SOURCES = [
   defineSource({ entity: PackageLayer, file: 'package-layers.json' }),
   defineSource({ entity: LayerPackage, file: 'layer-packages.json' }),
   defineSource({ entity: RefusedImport, file: 'refused-imports.json' }),
+  defineSource({ entity: PipelineStage, file: 'pipeline-stages.json' }),
+  defineSource({ entity: PipelineJob, file: 'pipeline-jobs.json' }),
+  defineSource({ entity: PipelineScenario, file: 'pipeline-scenarios.json' }),
+  defineSource({ entity: PipelineStep, file: 'pipeline-steps.json' }),
   defineSource({
     entity: ArchitectureDecision,
     file: 'adrs.json',

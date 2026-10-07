@@ -119,3 +119,15 @@ export const refusesOthers: EntityRule = (records, report) => {
     }
   });
 };
+
+/**
+ * A pipeline job names its workflow's job only with the workflow (ADR 0023):
+ * a `job` key alone points into no file.
+ */
+export const jobInItsWorkflow: EntityRule = (records, report) => {
+  records.forEach((record, index) => {
+    if (record.job !== undefined && record.workflow === undefined) {
+      report(index, 'workflow', 'is missing, while job names a key in it');
+    }
+  });
+};

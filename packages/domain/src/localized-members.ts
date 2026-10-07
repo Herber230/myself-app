@@ -16,6 +16,10 @@ import { Interest } from './entities/interest.entity.js';
 import { InterestMedia } from './entities/interest-media.entity.js';
 import { LayerPackage } from './entities/layer-package.entity.js';
 import { PackageLayer } from './entities/package-layer.entity.js';
+import { PipelineJob } from './entities/pipeline-job.entity.js';
+import { PipelineScenario } from './entities/pipeline-scenario.entity.js';
+import { PipelineStage } from './entities/pipeline-stage.entity.js';
+import { PipelineStep } from './entities/pipeline-step.entity.js';
 import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
@@ -67,6 +71,10 @@ export const LOCALIZED_MEMBERS = new Map<
   [PackageLayer, ['name']],
   [LayerPackage, ['note']],
   [RefusedImport, ['reason']],
+  [PipelineStage, ['name']],
+  [PipelineJob, ['text']],
+  [PipelineScenario, ['label']],
+  [PipelineStep, ['title', 'text']],
   // Written in English only (ADR 0020).
   [ArchitectureDecision, []],
   [CvVariant, ['title', 'summary']],

@@ -4,6 +4,10 @@ import type { ArchitectureRuntime } from '../../entities/architecture-runtime.en
 import type { ArchitectureScenario } from '../../entities/architecture-scenario.entity.js';
 import type { LayerPackage } from '../../entities/layer-package.entity.js';
 import type { PackageLayer } from '../../entities/package-layer.entity.js';
+import type { PipelineJob } from '../../entities/pipeline-job.entity.js';
+import type { PipelineScenario } from '../../entities/pipeline-scenario.entity.js';
+import type { PipelineStage } from '../../entities/pipeline-stage.entity.js';
+import type { PipelineStep } from '../../entities/pipeline-step.entity.js';
 import type { Project } from '../../entities/project.entity.js';
 import type { ProjectPath } from '../../entities/project-path.entity.js';
 import type { ProjectPattern } from '../../entities/project-pattern.entity.js';
@@ -33,6 +37,19 @@ export interface ProjectLayers {
   readonly refused: readonly RefusedImport[];
 }
 
+/** A project's delivery pipeline and its scenarios (ADR 0023). */
+export interface ProjectPipeline {
+  /** Left to right. */
+  readonly stages: readonly PipelineStage[];
+  /** In their own order, each with `needs` and `decisions` resolved. */
+  readonly jobs: readonly PipelineJob[];
+  /** In their own order, each with its steps, `jobs` and `skips` resolved. */
+  readonly scenarios: readonly {
+    readonly scenario: PipelineScenario;
+    readonly steps: readonly PipelineStep[];
+  }[];
+}
+
 /** Everything a project's page shows (#77). */
 export interface ProjectPage {
   readonly project: Project;
@@ -48,4 +65,6 @@ export interface ProjectPage {
   readonly architecture?: ProjectArchitecture;
   /** Its layers, when it has them; its file tree stands in otherwise. */
   readonly layers?: ProjectLayers;
+  /** Its delivery pipeline, when it has one. */
+  readonly pipeline?: ProjectPipeline;
 }
