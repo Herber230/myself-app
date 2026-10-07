@@ -63,7 +63,9 @@
           },
           {
             "env": "NEXT_PUBLIC_SITE_URL"
-          }
+          },
+          "{workspaceRoot}/CHANGELOG.md",
+          "{workspaceRoot}/.releaserc.json"
         ],
         "outputs": [
           "{projectRoot}/.next",

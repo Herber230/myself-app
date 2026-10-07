@@ -16,6 +16,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { SITE_CONTENT } from '../../../../composition';
+import { readReleasePolicy } from '../../../../content/release-policy';
 import { loadSitePaths } from '../../../../content/site-paths';
 import { BrowserSources } from '../../../../providers/browser-sources';
 
@@ -68,9 +69,19 @@ export default async function ProjectPage({
     // The build runs from the app's folder, whose `public/` the export serves.
     publicDirectory: join(process.cwd(), 'public'),
   });
+  // The release decision is this repository's, so only the project whose
+  // repository it is gets one (ADR 0023).
+  const policy = page.pipeline ? readReleasePolicy() : undefined;
+  const release =
+    policy?.repositoryUrl === page.project.repositoryUrl ? policy : undefined;
   return (
     <BrowserSources>
-      <ProjectPageView locale={locale} page={page} overview={overview} />
+      <ProjectPageView
+        locale={locale}
+        page={page}
+        overview={overview}
+        release={release}
+      />
     </BrowserSources>
   );
 }
