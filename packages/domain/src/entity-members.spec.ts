@@ -21,6 +21,9 @@ import {
 import { describe, expect, it } from 'vitest';
 
 import { ArchitectureDecision } from './entities/architecture-decision.entity.js';
+import { ArchitectureNode } from './entities/architecture-node.entity.js';
+import { ArchitectureRuntime } from './entities/architecture-runtime.entity.js';
+import { ArchitectureScenario } from './entities/architecture-scenario.entity.js';
 import { Certificate } from './entities/certificate.entity.js';
 import { ContactChannel } from './entities/contact-channel.entity.js';
 import { CvFocus } from './entities/cv-focus.entity.js';
@@ -31,6 +34,12 @@ import { EmploymentHighlight } from './entities/employment-highlight.entity.js';
 import { EmploymentPeriod } from './entities/employment-period.entity.js';
 import { Interest } from './entities/interest.entity.js';
 import { InterestMedia } from './entities/interest-media.entity.js';
+import { LayerPackage } from './entities/layer-package.entity.js';
+import { PackageLayer } from './entities/package-layer.entity.js';
+import { PipelineJob } from './entities/pipeline-job.entity.js';
+import { PipelineScenario } from './entities/pipeline-scenario.entity.js';
+import { PipelineStage } from './entities/pipeline-stage.entity.js';
+import { PipelineStep } from './entities/pipeline-step.entity.js';
 import { Post } from './entities/post.entity.js';
 import { Profile } from './entities/profile.entity.js';
 import { Project } from './entities/project.entity.js';
@@ -38,7 +47,9 @@ import { ProjectPath } from './entities/project-path.entity.js';
 import { ProjectPattern } from './entities/project-pattern.entity.js';
 import { Quadrant } from './entities/quadrant.entity.js';
 import { RadarEdition } from './entities/radar-edition.entity.js';
+import { RefusedImport } from './entities/refused-import.entity.js';
 import { Ring } from './entities/ring.entity.js';
+import { ScenarioStep } from './entities/scenario-step.entity.js';
 import { Tag } from './entities/tag.entity.js';
 import { Technology } from './entities/technology.entity.js';
 import { TechnologyArea } from './entities/technology-area.entity.js';
@@ -71,6 +82,17 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['ArchitectureDecision', ArchitectureDecision],
   ['Interest', Interest],
   ['InterestMedia', InterestMedia],
+  ['ArchitectureRuntime', ArchitectureRuntime],
+  ['ArchitectureNode', ArchitectureNode],
+  ['ArchitectureScenario', ArchitectureScenario],
+  ['ScenarioStep', ScenarioStep],
+  ['PackageLayer', PackageLayer],
+  ['LayerPackage', LayerPackage],
+  ['RefusedImport', RefusedImport],
+  ['PipelineStage', PipelineStage],
+  ['PipelineJob', PipelineJob],
+  ['PipelineScenario', PipelineScenario],
+  ['PipelineStep', PipelineStep],
 ];
 
 const SAMPLE_DATE = new Date('2024-03-01T00:00:00.000Z');
