@@ -52,6 +52,11 @@ pictures are too.
   site's `ArchitectureExplorer` and `PackageLayers` keep what is chosen and
   translate at build, as the decision explorer does. On a phone the diagrams
   give way to rows of the same parts and a list of the packages.
+- **The diagrams have an entry of their own**,
+  `@myself-app/entifix-incubator-react-controls/diagrams`. A page that imports
+  any control from the main entry shares its client chunk, so in it the
+  diagrams rode along on the CV (+2.6 KB gzipped, over its budget) though only
+  a project's page draws them.
 - **A code line is real, or says it is an example.** Each is copied from the
   code it names; entifix's scenarios use an `Order` entity and say so.
 

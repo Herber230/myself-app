@@ -106,7 +106,7 @@ packages/content                       one JSON file per entity, and the posts' 
 packages/entifix-incubator/            code meant for entifix, knowing no entity, locale or page of the site (layer:incubator)
   static-adapter                       the content definition: validation, repositories, loads, links, data files
   browser                              a JSON-file source, a URL query codec, hooks (useUrlFilter) at ./react
-  react-controls                       agnostic atomic controls: filter row/chips/summary, nav menu, ring key, radar chart
+  react-controls                       agnostic atomic controls: filter row/chips/summary, nav menu, ring key, radar chart; ./diagrams (hexagon, layers, pipeline, step player) apart, so no other page ships them
 packages/implementation/               the domain wired to a delivery mechanism (layer:implementation)
   adapters                             where content is read from: ./server (siteContent(), sources, post bodies) and ./browser
   ui                                   the site's UI: atoms, molecules, organisms, templates, i18n, routing, theme, providers, sources, styles
