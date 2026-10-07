@@ -456,3 +456,101 @@ describe('the decision records the site shows', () => {
     ).not.toThrow();
   });
 });
+
+/**
+ * The delivery pipeline a project's page draws (ADR 0023) is content written
+ * by hand, so it is held to the files it describes: every file it names
+ * exists, every job it keys is a job of that workflow and every job of the
+ * workflow is drawn, and what a job needs within one workflow is what the
+ * workflow says. Change a workflow and this fails until the drawing follows.
+ */
+describe('the pipeline drawn on the project page', () => {
+  interface DrawnJob {
+    readonly id: string;
+    readonly workflow?: string;
+    readonly job?: string;
+    readonly needs?: readonly string[];
+  }
+
+  const drawn: DrawnJob[] = JSON.parse(
+    readFileSync(
+      join(REPO_ROOT, 'packages/content/src/pipeline-jobs.json'),
+      'utf8',
+    ),
+  );
+
+  /** A workflow's jobs, by key, each with what it needs. */
+  function jobsOf(workflow: string): Map<string, string[]> {
+    const text = readFileSync(join(REPO_ROOT, workflow), 'utf8');
+    const block = text.slice(text.indexOf('\njobs:\n'));
+    const keys = [...block.matchAll(/^ {2}([a-z][a-z0-9-]*):\s*$/gm)];
+    return new Map(
+      keys.map((match, index) => {
+        const body = block.slice(
+          match.index,
+          keys[index + 1]?.index ?? block.length,
+        );
+        // `needs: a`, `needs: [a, b]`, or the list wrapped onto the next line.
+        const needs = /^ {4}needs:\s*(\[[^\]]*\]|[a-z][a-z0-9-]*)/m.exec(
+          body.replace(/needs:\s*\n\s*\[/, 'needs: ['),
+        )?.[1];
+        return [
+          match[1] as string,
+          needs === undefined
+            ? []
+            : needs
+                .replace(/[[\]]/g, '')
+                .split(',')
+                .map(each => each.trim())
+                .filter(Boolean),
+        ];
+      }),
+    );
+  }
+
+  const workflows = [
+    ...new Set(
+      drawn.flatMap(job =>
+        job.workflow?.startsWith('.github/workflows/') ? [job.workflow] : [],
+      ),
+    ),
+  ];
+
+  it('draws the workflows it should', () => {
+    // Pinned: a filter that stops matching would pass every check vacuously.
+    expect(workflows.sort()).toEqual([
+      '.github/workflows/deploy.yml',
+      '.github/workflows/pull_request_check.yml',
+    ]);
+  });
+
+  it('names only files that exist', () => {
+    for (const job of drawn) {
+      if (job.workflow !== undefined) {
+        expect(existsSync(join(REPO_ROOT, job.workflow)), job.id).toBe(true);
+      }
+    }
+  });
+
+  it.each(workflows)('draws every job of %s, and only those', workflow => {
+    const keys = drawn
+      .filter(job => job.workflow === workflow)
+      .map(job => job.job);
+    expect(keys.every(key => key !== undefined)).toBe(true);
+    expect([...keys].sort()).toEqual([...jobsOf(workflow).keys()].sort());
+  });
+
+  it.each(workflows)('draws what each job of %s needs', workflow => {
+    const jobs = jobsOf(workflow);
+    const byId = new Map(drawn.map(job => [job.id, job]));
+    for (const job of drawn.filter(each => each.workflow === workflow)) {
+      const needs = (job.needs ?? [])
+        .map(id => byId.get(id))
+        .filter(need => need?.workflow === workflow)
+        .map(need => need?.job);
+      expect([...needs].sort(), job.id).toEqual(
+        [...(jobs.get(job.job as string) ?? [])].sort(),
+      );
+    }
+  });
+});
