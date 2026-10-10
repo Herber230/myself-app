@@ -46,8 +46,8 @@
       "es": "A través del puerto"
     },
     "text": {
-      "en": "StaticContent answers. Which adapter stands behind it was decided once, in the composition root.",
-      "es": "Responde StaticContent. Qué adaptador hay detrás se decidió una vez, en la raíz de composición."
+      "en": "ContentReader answers. Which repositories stand behind it was decided once, in the composition root.",
+      "es": "Responde ContentReader. Qué repositorios hay detrás se decidió una vez, en la raíz de composición."
     }
   },
   {
@@ -149,10 +149,10 @@
       "es": "El mismo caso de uso"
     },
     "text": {
-      "en": "entifix’s load, the one the build ran, now in the browser.",
-      "es": "El load de entifix, el mismo que ejecutó el build, ahora en el navegador."
+      "en": "entifix’s loadAll, the one the build ran, now in the browser.",
+      "es": "El loadAll de entifix, el mismo que ejecutó el build, ahora en el navegador."
     },
-    "code": "loadThroughUseCase(repository, request)"
+    "code": "loadAllUCFactory() over the repository"
   },
   {
     "id": "myself-app-filter-radar-4",

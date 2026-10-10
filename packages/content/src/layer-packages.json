@@ -32,8 +32,7 @@
     "layer": "myself-app-domain",
     "label": "domain",
     "column": 1.5,
-    "folder": "myself-app-packages-domain",
-    "imports": ["myself-app-incubator"]
+    "folder": "myself-app-packages-domain"
   },
   {
     "id": "myself-app-incubator",

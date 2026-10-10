@@ -123,12 +123,12 @@ describe("a project's architecture explorer", () => {
     render(<ArchitectureExplorer view={VIEW} copy={COPY} />);
     const rows = document.querySelector('.architecture-rows') as HTMLElement;
     fireEvent.click(
-      within(rows).getByRole('button', { name: 'StaticContent' }),
+      within(rows).getByRole('button', { name: 'ContentReader' }),
     );
     expect(within(panel()).getByText('Ports')).toBeTruthy();
     expect(
       within(rows)
-        .getByRole('button', { name: 'StaticContent' })
+        .getByRole('button', { name: 'ContentReader' })
         .getAttribute('aria-pressed'),
     ).toBe('true');
   });

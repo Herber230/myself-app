@@ -1,3 +1,4 @@
+- Revised: 2026-10-10 by [ADR 0024](/projects/myself-app/adr/0024/) — the read half is entifix's now: use cases take the domain's `ContentReader` over the repositories `StaticContent` hands over; `load`, `loadAll`, `resolve`, `ids`, `loadThroughUseCase`, `targetOf`/`targetsOf` and the static link resolver left the static adapter, and `useUrlFilter` is `@entifix/react-integration/url`'s
 - Revised: 2026-09-28 by [ADR 0019](/projects/myself-app/adr/0019/) — the sources and the posts' reader are `implementation/adapters`' (`siteContent()`), the loaders are the domain's use cases, and the app keeps its composition root in `src/composition.ts`
 
 Continues [ADR 0016](/projects/myself-app/adr/0016/), which

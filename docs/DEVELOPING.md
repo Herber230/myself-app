@@ -53,9 +53,9 @@ What the pages say about me lives in `packages/content/src/`, one JSON file per 
 
 - **Ids are readable slugs** (`next-js`, `adopt`), because they appear in URLs and in the links between files. A link is the id it names: `"ring": "adopt"`, `"areas": ["css"]`.
 - **Text that a reader sees is `{ "en": …, "es": … }`**, for the members `LOCALIZED_MEMBERS` lists. A locale missing, empty or not text stops `next build`, with the path: `rings.json › adopt › name is missing "es"`.
-- **Every problem is reported at once.** `packages/implementation/adapters/src/server/site-content.ts` declares one `defineSource` per file, and the static adapter validates every file against its entity's metadata before any page renders — required members, dates, enum values, links that point at something — plus each source's rules. A link's target comes from the entity, so a source never declares one. A generic rule is one of the adapter's factories (`exactly(1)`, `nonEmpty('tags')`, `notBefore('end', 'start')`…); a rule only this site has is an `EntityRule` in the domain's `rules.ts`, never in the adapter (ADR 0018, 0019).
+- **Every problem is reported at once.** `packages/implementation/adapters/src/server/site-content.ts` declares one `defineSource` per file, and the static adapter validates every file against its entity's metadata before any page renders — required members, dates, enum values, links that point at something — plus each source's rules. A link's target comes from the entity, so a source never declares one. A generic rule is one of the adapter's factories (`exactly(1)`, `nonEmpty('tags')`, `notBefore('end', 'start')`…); a rule only this site has is a `ContentRule` in the domain's `rules.ts`, never in the adapter (ADR 0018, 0019).
 - **A placeholder value carries `TODO(#<issue>)`**, naming the issue that decides it. `packages/implementation/adapters/src/server/pending-content.ts` lists what is left to write, and holds the blog's placeholder posts today: add a path there before shipping a placeholder, and remove it when the value is written, or the build stops.
-- Routes read content through the domain's use cases (`@myself-app/domain/use-cases`) over `SITE_CONTENT` (`src/composition.ts`); a use case's `loadAll(Entity, request, { resolve: ['links'] })` runs entifix's `load` use case and resolves the links asked for, which `targetOf`/`targetsOf` then read — no id maps, no casts. The radar's and the blog's filters run the same use case in the browser, over `/data/*.json`, through `useUrlFilter`, reading their source from the UI's `useSources()`, which the app mounts around those two pages only (ADR 0016, 0018, 0019).
+- Routes read content through the domain's use cases (`@myself-app/domain/use-cases`) over `SITE_CONTENT` (`src/composition.ts`); a use case's `loadAll(Entity, request, { resolve: ['links'] })` runs entifix's `loadAll` use case through the domain's `ContentReader` and resolves the links asked for, which `targetOf`/`targetsOf` (`@entifix/core`) then read — no id maps, no casts. The reader only knows entifix's `EntityRepository`, so content from another source is other repositories handed to `makeContentReader` in `implementation/adapters` (ADR 0024). The radar's and the blog's filters run the same use case in the browser, over `/data/*.json`, through `useUrlFilter` (`@entifix/react-integration/url`), reading their source from the UI's `useSources()`, which the app mounts around those two pages only (ADR 0016, 0018, 0019).
 
 ## Writing a post
 
@@ -123,7 +123,7 @@ app                      ──►  implementation, domain, incubator
 implementation:ui        ──►  domain, incubator (never adapters or content; specs may reach adapters)
 implementation:adapters  ──►  domain, content, incubator (never ui)
 incubator                ──►  incubator, @entifix/*, effect, react (never domain)
-domain                   ──►  the static adapter, @entifix/*, effect
+domain                   ──►  @entifix/*, effect (its fixture: the static adapter)
 content          ──►  nothing
 infra            ──►  @pulumi/*
 ```
@@ -142,7 +142,7 @@ The packages under `packages/` are the models; copy the one closest to what you 
 
 ## Moving code into entifix
 
-The `layer:incubator` packages (`static-adapter`, `browser`, `react-controls`, under `packages/entifix-incubator/`) know no entity of this site, so moving one into entifix is a copy: take its `src/` and specs into the entifix package it belongs in, release entifix, bump the catalog here, then replace the imports and delete the package. ADR 0016 and 0018 list what each would close in entifix (entifix#38–41).
+The `layer:incubator` packages (`static-adapter`, `browser`, `react-controls`, under `packages/entifix-incubator/`) know no entity of this site, so moving one into entifix is a copy: take its `src/` and specs into the entifix package it belongs in, release entifix, bump the catalog here, then replace the imports and delete the package. ADR 0016 and 0018 list what each would close in entifix (entifix#34–41); ADR 0024 records the first round that moved: the unpaged load and link resolution, the read contract, the URL filter, the presentational controls, `ThemeScript`, `fill` and `CatalogShape`. What is left — the static adapter itself (entifix#37), the filter and sort controls, the radar and the diagrams — waits for its own round.
 
 ## Working on entifix from here
 
