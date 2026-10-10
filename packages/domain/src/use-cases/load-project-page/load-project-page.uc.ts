@@ -1,8 +1,6 @@
-import {
-  type StaticContent,
-  targetsOf,
-} from '@myself-app/entifix-incubator-static-adapter';
+import { targetsOf } from '@entifix/core';
 
+import type { ContentReader } from '../../content-reader.js';
 import { ArchitectureDecision } from '../../entities/architecture-decision.entity.js';
 import { Project } from '../../entities/project.entity.js';
 import { ProjectPath } from '../../entities/project-path.entity.js';
@@ -22,7 +20,7 @@ const FEATURED = {
 
 /** The projects with a page of their own: the featured ones, in order. */
 export async function loadProjectIds(
-  content: StaticContent,
+  content: ContentReader,
 ): Promise<string[]> {
   const projects = await content.loadAll(Project, {
     filtering: [FEATURED],
@@ -39,7 +37,7 @@ export async function loadProjectIds(
  * Nothing for an id that names no featured project.
  */
 export async function loadProjectPage(
-  content: StaticContent,
+  content: ContentReader,
   id: string,
 ): Promise<ProjectPage | undefined> {
   const ofProject = { property: 'project', operator: 'eq', value: id } as const;

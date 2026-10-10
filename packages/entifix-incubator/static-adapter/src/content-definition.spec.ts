@@ -68,6 +68,16 @@ describe('a content definition', () => {
     expect(define().sources).toBe(SOURCES);
   });
 
+  it('hands over each entity with the repository serving it, in source order', () => {
+    const content = define();
+    expect(content.repositories.map(([entity]) => entity)).toEqual(
+      content.sources.map(source => source.entity),
+    );
+    expect(content.repositories[0]?.[1]).toBe(
+      content.repositoryOf(content.sources[0]!.entity),
+    );
+  });
+
   it('serves each entity through the use case, filtered and sorted', async () => {
     const content = define();
     const page = await content.load(Book, {

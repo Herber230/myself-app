@@ -10,7 +10,7 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 //
 //   app              ──►  domain, content, incubator
 //   incubator        ──►  incubator, @entifix/*, effect, react (never domain)
-//   domain           ──►  @entifix/*, effect
+//   domain           ──►  @entifix/*, effect (its specs: the static adapter too)
 //   content          ──►  nothing
 //   infra            ──►  @pulumi/*                            (ADR 0013)
 //
@@ -70,10 +70,10 @@ const layerConstraints = [
     ],
   },
   {
-    // The domain reads content through the static adapter's `StaticContent`,
-    // the port entifix will own once the incubator moves there (#75).
+    // The domain reads content through entifix's own ports (ADR 0024): it
+    // knows no source, so swapping one never touches it.
     sourceTag: 'layer:domain',
-    onlyDependOnLibsWithTags: ['layer:incubator'],
+    onlyDependOnLibsWithTags: [],
     allowedExternalImports: entifixOnly,
   },
   {
@@ -127,7 +127,12 @@ export default [
     // adapters build (#75). Specs only: the UI's own code never loads content,
     // the app's pages do. The one edge a spec gets that its file does not, as
     // r10c gives its specs the `type:testing` libraries.
-    files: ['**/*.spec.ts', '**/*.spec.tsx', '**/src/test/**/*.ts'],
+    files: [
+      '**/*.spec.ts',
+      '**/*.spec.tsx',
+      '**/*.fixture.ts',
+      '**/src/test/**/*.ts',
+    ],
     rules: {
       '@nx/enforce-module-boundaries': [
         'error',
@@ -138,6 +143,13 @@ export default [
             if (constraint.sourceTag === 'implementation:ui') {
               // The adapters it reaches read the content: that edge is theirs.
               return { ...constraint, notDependOnLibsWithTags: [] };
+            }
+            if (constraint.sourceTag === 'layer:domain') {
+              // The domain's fixture site is static content, as the real one.
+              return {
+                ...constraint,
+                onlyDependOnLibsWithTags: ['layer:incubator'],
+              };
             }
             if (constraint.sourceTag === 'layer:implementation') {
               return {

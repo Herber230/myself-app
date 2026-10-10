@@ -1,3 +1,4 @@
+export * from './content-reader.js';
 export * from './entities/architecture-decision.entity.js';
 export * from './entities/architecture-node.entity.js';
 export * from './entities/architecture-runtime.entity.js';

@@ -117,6 +117,13 @@ export interface StaticContent {
   readonly sources: readonly ContentSource[];
   /** The records as validated: the files, with every sidecar attached. */
   readonly records: Readonly<Record<string, readonly unknown[]>>;
+  /**
+   * Every entity with the repository serving it, in source order: what a
+   * reader over entifix's ports is built from.
+   */
+  readonly repositories: ReadonlyArray<
+    readonly [EntityConstructor<Entity>, EntityRepository]
+  >;
   /** The repository an entity is served from; throws for one with no source. */
   repositoryOf(entity: EntityConstructor<Entity>): EntityRepository;
   /** One page of records, as the use case returns it. */
@@ -350,6 +357,7 @@ export function defineStaticContent(
   return {
     sources,
     records: content,
+    repositories: [...repositories],
     repositoryOf,
     load,
     loadAll,

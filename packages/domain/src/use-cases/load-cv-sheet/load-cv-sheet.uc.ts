@@ -1,10 +1,7 @@
 import type { EntityId } from '@entifix/core';
-import {
-  type StaticContent,
-  targetOf,
-  targetsOf,
-} from '@myself-app/entifix-incubator-static-adapter';
+import { targetOf, targetsOf } from '@entifix/core';
 
+import type { ContentReader } from '../../content-reader.js';
 import { Certificate } from '../../entities/certificate.entity.js';
 import { CvVariant } from '../../entities/cv-variant.entity.js';
 import { Education } from '../../entities/education.entity.js';
@@ -22,7 +19,7 @@ import type { CvSheet } from './load-cv-sheet.types.js';
  * were used rather than everything it touched.
  */
 export async function loadCvSheet(
-  content: StaticContent,
+  content: ContentReader,
   variantId: string,
 ): Promise<CvSheet | undefined> {
   const [[variant], profile, channels, highlights, education, certificates] =

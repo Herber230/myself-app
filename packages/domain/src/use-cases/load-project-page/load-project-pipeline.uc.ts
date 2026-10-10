@@ -1,5 +1,4 @@
-import { type StaticContent } from '@myself-app/entifix-incubator-static-adapter';
-
+import type { ContentReader } from '../../content-reader.js';
 import { PipelineJob } from '../../entities/pipeline-job.entity.js';
 import { PipelineScenario } from '../../entities/pipeline-scenario.entity.js';
 import { PipelineStage } from '../../entities/pipeline-stage.entity.js';
@@ -15,7 +14,7 @@ const BY_ORDER = [{ 0: { property: 'order', type: 'asc' } }] as const;
  * skips. Nothing for a project with no stages.
  */
 export async function loadProjectPipeline(
-  content: StaticContent,
+  content: ContentReader,
   id: string,
 ): Promise<ProjectPipeline | undefined> {
   const ofProject = { property: 'project', operator: 'eq', value: id } as const;
