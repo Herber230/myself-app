@@ -1,8 +1,9 @@
 /**
  * The content definition over a small library: sources in, validated
- * repositories and reads out, and link targets found from the entities.
+ * repositories and data files out, and link targets found from the entities.
  */
 import { entity } from '@entifix/core';
+import { runRepository } from '@entifix/testing-unit';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -20,7 +21,6 @@ import {
   Reprint,
   Shelf,
 } from './library.fixture.js';
-import { targetOf, targetsOf } from './resolved-links.js';
 import { nonEmpty } from './rules.js';
 import { ContentValidationError } from './validation.js';
 
@@ -78,87 +78,31 @@ describe('a content definition', () => {
     );
   });
 
-  it('serves each entity through the use case, filtered and sorted', async () => {
+  it('serves each entity from a repository, filtered and sorted', async () => {
     const content = define();
-    const page = await content.load(Book, {
-      filtering: [{ property: 'draft', operator: 'eq', value: false }],
-      sorting: [{ 0: { property: 'publishedAt', type: 'desc' } }],
-      pageSize: 1,
-    });
+    const page = await runRepository(
+      content.repositoryOf(Book).load<Book>({
+        filtering: [{ property: 'draft', operator: 'eq', value: false }],
+        sorting: [{ 0: { property: 'publishedAt', type: 'desc' } }],
+        pageSize: 1,
+      }),
+    );
     expect(page.items.map(book => book.id)).toEqual(['compiler']);
     expect(page.total).toBe(2);
-    expect((await content.load(Author)).items).toHaveLength(2);
-  });
-
-  it('loads every record a request keeps, past one page', async () => {
-    const content = define({
-      ...LIBRARY,
-      'shelves.json': Array.from({ length: 12 }, (_, index) => ({
-        id: `s${index}`,
-      })),
-      'books.json': [],
-    });
-    expect(await content.loadAll(Shelf)).toHaveLength(12);
-    expect(
-      await content.loadAll(Shelf, {
-        filtering: [{ property: 'id', operator: 'in', values: ['s1', 's2'] }],
-      }),
-    ).toHaveLength(2);
-  });
-
-  it('lists the ids a request keeps, as text', async () => {
-    const content = define();
-    expect(await content.ids(Author)).toEqual(['ada', 'grace']);
-    expect(
-      await content.ids(Book, {
-        filtering: [{ property: 'draft', operator: 'eq', value: true }],
-      }),
-    ).toEqual(['cobol']);
   });
 
   it('parses dates and keeps links as ids', async () => {
-    const [engine] = await define().loadAll(Book, {
-      filtering: [{ property: 'id', operator: 'eq', value: 'engine' }],
-    });
-    expect(engine?.publishedAt).toEqual(new Date('1843-10-01'));
-    expect(engine?.author.id).toBe('ada');
-    expect(engine?.shelves.ids).toEqual(['maths', 'machines']);
+    const engine = await runRepository(
+      define().repositoryOf(Book).get<Book>('engine'),
+    );
+    expect(engine.publishedAt).toEqual(new Date('1843-10-01'));
+    expect(engine.author.id).toBe('ada');
+    expect(engine.shelves.ids).toEqual(['maths', 'machines']);
   });
 
-  it('resolves the links it is asked to, and leaves the rest as ids', async () => {
-    const [engine] = (await define().loadAll(
-      Book,
-      { filtering: [{ property: 'id', operator: 'eq', value: 'engine' }] },
-      { resolve: ['shelves'] },
-    )) as [Book];
-    expect(targetsOf(engine.shelves).map(shelf => shelf.id)).toEqual([
-      'maths',
-      'machines',
-    ]);
-    expect(engine.author.isLoaded).toBe(false);
-  });
-
-  it('resolves links of records already loaded', async () => {
-    const content = define();
-    const books = await content.loadAll(Book);
-    const resolved = await content.resolve(books, ['author']);
-    expect(resolved.map(book => targetOf(book.author).name)).toEqual([
-      'Ada',
-      'Grace',
-      'Grace',
-    ]);
-  });
-
-  it('refuses an entity it has no source for', async () => {
-    const content = define();
-    expect(() => content.repositoryOf(Publisher)).toThrow(
+  it('refuses an entity it has no source for', () => {
+    expect(() => define().repositoryOf(Publisher)).toThrow(
       new ContentDefinitionError('No source is defined for Publisher'),
-    );
-    await expect(content.load(Publisher)).rejects.toThrow(
-      ContentDefinitionError,
-    );
-    await expect(content.loadAll(Publisher)).rejects.toThrow(
-      ContentDefinitionError,
     );
   });
 });

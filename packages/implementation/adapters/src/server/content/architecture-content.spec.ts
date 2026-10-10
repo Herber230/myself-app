@@ -1,5 +1,5 @@
+import { targetsOf } from '@entifix/core';
 import { loadProjectIds, loadProjectPage } from '@myself-app/domain/use-cases';
-import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
 import { describe, expect, it } from 'vitest';
 
 import { SITE_CONTENT } from '../shipped-content.fixture.js';

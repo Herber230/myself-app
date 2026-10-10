@@ -1,8 +1,13 @@
 import {
-  EntityLinkResolverTag,
+  ConfigurationRepositoryTag,
+  EntityLoadRequestTag,
   type EntityRepository,
+  EntityRepositoryTag,
+  loadAllUCFactory,
+  type UnpagedRequest,
 } from '@entifix/business';
 import {
+  ConfigurationClientInMemory,
   describeEntityColumns,
   deserializeEntityCollection,
   EntifixBuildError,
@@ -10,15 +15,11 @@ import {
   type EntityConstructor,
   type EntityId,
   type EntityLoadRequest,
-  type EntityPage,
   extractMetaEntity,
   serializeEntityCollection,
 } from '@entifix/core';
 import { Context, Effect } from 'effect';
 
-import { makeStaticLinkResolver } from './link-resolver.js';
-import { loadThroughUseCase } from './load-through-use-case.js';
-import { type LinkMember, resolveLinks } from './resolved-links.js';
 import { makeStaticRepository } from './static-repository.js';
 import {
   ContentValidationError,
@@ -30,17 +31,12 @@ import {
 /**
  * A site's content, defined once (ADR 0018): which entity each file holds, the
  * rules it must pass, and what the browser's copy of it carries. The
- * definition validates every file, builds a repository per entity, and answers
- * reads through entifix's `load` use case.
+ * definition validates every file and builds an entifix `EntityRepository` per
+ * entity; reading them is entifix's `loadAll` and `resolveLinks` use cases',
+ * over whatever repositories a reader is handed (ADR 0024).
  *
  * It knows no entity of any site: the sources name them.
  */
-
-/** A request for every record it keeps: paging is the definition's to set. */
-export type UnpagedRequest<TEntity extends Entity> = Omit<
-  EntityLoadRequest<TEntity>,
-  'page' | 'pageSize'
->;
 
 /**
  * A member of an entity by name: any name for a source whose entity is no
@@ -126,36 +122,6 @@ export interface StaticContent {
   >;
   /** The repository an entity is served from; throws for one with no source. */
   repositoryOf(entity: EntityConstructor<Entity>): EntityRepository;
-  /** One page of records, as the use case returns it. */
-  load<TEntity extends Entity>(
-    entity: EntityConstructor<TEntity>,
-    request?: EntityLoadRequest<TEntity>,
-  ): Promise<EntityPage<TEntity>>;
-  /**
-   * Every record a request keeps, filtered and sorted as asked, with the
-   * links named in `resolve` read as the records they point at.
-   */
-  loadAll<TEntity extends Entity>(
-    entity: EntityConstructor<TEntity>,
-    request?: UnpagedRequest<TEntity>,
-    options?: LoadAllOptions<TEntity>,
-  ): Promise<TEntity[]>;
-  /**
-   * Resolves links of records already loaded — the second step from a
-   * record, as a CV's employments to their employers.
-   */
-  resolve<TEntity extends Entity>(
-    records: readonly TEntity[],
-    members: readonly LinkMember<TEntity>[],
-  ): Promise<TEntity[]>;
-  /**
-   * The ids of every record a request keeps, as text: what a page's static
-   * params and a sitemap are made of.
-   */
-  ids<TEntity extends Entity>(
-    entity: EntityConstructor<TEntity>,
-    request?: UnpagedRequest<TEntity>,
-  ): Promise<string[]>;
   /** Every file the browser may read, one per source, by `dataFileOf`. */
   readonly dataFiles: readonly string[];
   /**
@@ -163,11 +129,6 @@ export interface StaticContent {
    * links as ids, dates as ISO strings — through its source's published view.
    */
   dataFile(name: string): Promise<unknown[]>;
-}
-
-export interface LoadAllOptions<TEntity extends Entity> {
-  /** The link members to resolve on every record loaded. */
-  readonly resolve?: readonly LinkMember<TEntity>[];
 }
 
 /** The data file an entity is written to, from its metadata key. */
@@ -315,57 +276,35 @@ export function defineStaticContent(
     return repository;
   };
 
-  const load = <TEntity extends Entity>(
-    entity: EntityConstructor<TEntity>,
-    request: EntityLoadRequest<TEntity> = {},
-  ): Promise<EntityPage<TEntity>> => {
-    try {
-      return loadThroughUseCase(
-        repositoryOf(entity as EntityConstructor<Entity>),
-        request,
-      );
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-
-  // entifix's own link resolver, over the same repositories.
-  const resolver = Context.get(
-    makeStaticLinkResolver([...repositories]),
-    EntityLinkResolverTag,
-  );
-  const resolve = <TEntity extends Entity>(
-    records: readonly TEntity[],
-    members: readonly LinkMember<TEntity>[],
-  ) => resolveLinks(records, members, resolver);
-
-  const loadAll = async <TEntity extends Entity>(
+  // Every record a data file's view keeps, through entifix's loadAll use case.
+  const loadAll = <TEntity extends Entity>(
     entity: EntityConstructor<TEntity>,
     request: UnpagedRequest<TEntity> = {},
-    { resolve: members = [] }: LoadAllOptions<TEntity> = {},
-  ): Promise<TEntity[]> => {
-    // A site's files hold a few dozen records each, so one page as large as
-    // can be counted is all of them.
-    const page = await load(entity, {
-      ...request,
-      page: 1,
-      pageSize: Number.MAX_SAFE_INTEGER,
-    });
-    return resolve(page.items, members);
-  };
+  ): Promise<TEntity[]> =>
+    Effect.runPromise(
+      Effect.provide(
+        loadAllUCFactory<TEntity>(),
+        Context.make(
+          EntityRepositoryTag,
+          repositoryOf(entity as EntityConstructor<Entity>),
+        ).pipe(
+          Context.add(
+            ConfigurationRepositoryTag,
+            new ConfigurationClientInMemory({}),
+          ),
+          Context.add(
+            EntityLoadRequestTag,
+            request as unknown as EntityLoadRequest,
+          ),
+        ),
+      ),
+    );
 
   return {
     sources,
     records: content,
     repositories: [...repositories],
     repositoryOf,
-    load,
-    loadAll,
-    resolve,
-    async ids(entity, request) {
-      const records = await loadAll(entity, request);
-      return records.map(record => String(record.id));
-    },
     dataFiles: sources.map(source => dataFileOf(source.entity)),
     async dataFile(name) {
       const source = sources.find(each => dataFileOf(each.entity) === name);
