@@ -9,7 +9,9 @@
  * shown or not by the answer's ids, as a timeline beside the filter. The static
  * HTML lists every post, which is also what a visitor without scripting gets.
  */
+import { fill } from '@entifix/i18n';
 import { Stack, Text } from '@entifix/react-controls/primitives';
+import { useMediaQuery } from '@entifix/react-controls/primitives';
 import { useUrlFilter } from '@entifix/react-integration/url';
 import { Post } from '@myself-app/domain/entities/post';
 import {
@@ -19,12 +21,10 @@ import {
   FilterPanel,
   FilterSummary,
   ToggleGroup,
-  useMediaQuery,
 } from '@myself-app/entifix-incubator-react-controls';
 import { useMemo } from 'react';
 
 import { FeedIcon, SlidersIcon } from '../../atoms/icons/icons.js';
-import { fill } from '../../i18n/fill.js';
 import { FilterLinks } from '../../molecules/filter-links/filter-links.js';
 import { PageHeader } from '../../molecules/page-header/page-header.js';
 import type { PostCardData } from '../../molecules/post-card/post-card.js';

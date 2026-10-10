@@ -1,4 +1,5 @@
 import { Card, Center, Stack } from '@entifix/react-controls/primitives';
+import { FoldScript } from '@entifix/react-controls/primitives';
 import {
   localize,
   type LocalizedText,
@@ -6,10 +7,7 @@ import {
   type Ring,
   type TechnologyArea,
 } from '@myself-app/domain';
-import {
-  FoldScript,
-  type RadarLayout,
-} from '@myself-app/entifix-incubator-react-controls';
+import { type RadarLayout } from '@myself-app/entifix-incubator-react-controls';
 
 import { siteT } from '../../i18n/server.js';
 import { PageHeader } from '../../molecules/page-header/page-header.js';

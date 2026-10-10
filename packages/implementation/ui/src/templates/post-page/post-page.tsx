@@ -4,9 +4,9 @@ import {
   Stack,
   Text,
 } from '@entifix/react-controls/primitives';
+import { FoldScript } from '@entifix/react-controls/primitives';
 import type { Post } from '@myself-app/domain';
 import type { PostPreview } from '@myself-app/domain/use-cases';
-import { FoldScript } from '@myself-app/entifix-incubator-react-controls';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 

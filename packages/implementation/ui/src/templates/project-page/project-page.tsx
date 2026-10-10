@@ -1,3 +1,4 @@
+import { targetsOf } from '@entifix/core';
 import {
   button,
   Center,
@@ -5,10 +6,9 @@ import {
   Stack,
   Text,
 } from '@entifix/react-controls/primitives';
+import { ExternalLink } from '@entifix/react-controls/primitives';
 import { localize, type LocalizedText } from '@myself-app/domain';
 import { decisionNumber, type ProjectPage } from '@myself-app/domain/use-cases';
-import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
-import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 

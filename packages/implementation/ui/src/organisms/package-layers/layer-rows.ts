@@ -2,13 +2,13 @@
  * What the layers diagram shows of a project's packages, translated at build
  * (ADR 0022).
  */
+import { targetsOf } from '@entifix/core';
 import {
   localize,
   type LocalizedText,
   type ProjectPath,
 } from '@myself-app/domain';
 import type { ProjectLayers } from '@myself-app/domain/use-cases';
-import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
 
 import type { siteT } from '../../i18n/server.js';
 import type { SiteLocale } from '../../routing/site-locales.js';

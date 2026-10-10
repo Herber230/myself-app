@@ -1,4 +1,4 @@
-import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
+import { ExternalLink } from '@entifix/react-controls/primitives';
 import type { CSSProperties } from 'react';
 
 import { buildTree, type TreeNode, type TreeRow } from './tree.js';

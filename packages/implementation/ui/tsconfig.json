@@ -11,9 +11,6 @@
   "exclude": ["dist", "out-tsc", "test-output"],
   "references": [
     {
-      "path": "../../entifix-incubator/static-adapter"
-    },
-    {
       "path": "../../entifix-incubator/react-controls"
     },
     {

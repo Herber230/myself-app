@@ -6,9 +6,9 @@ import {
   Stack,
   Text,
 } from '@entifix/react-controls/primitives';
+import { ExternalLink } from '@entifix/react-controls/primitives';
 import type { Post } from '@myself-app/domain';
 import type { TechnologyDetail } from '@myself-app/domain/use-cases';
-import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 import Link from 'next/link';
 
 import { siteT } from '../../i18n/server.js';

@@ -1,5 +1,5 @@
+import { ExternalLink } from '@entifix/react-controls/primitives';
 import type { ContactChannelType } from '@myself-app/domain';
-import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
 
 import { ChannelMark } from '../../atoms/icons/icons.js';
 

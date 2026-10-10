@@ -3,7 +3,7 @@
 import {
   ExternalLink,
   SegmentedControl,
-} from '@myself-app/entifix-incubator-react-controls';
+} from '@entifix/react-controls/primitives';
 import {
   HexagonDiagram,
   type HexagonEdge,

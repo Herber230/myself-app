@@ -1,11 +1,11 @@
 'use client';
 
+import { fill } from '@entifix/i18n';
 import { button } from '@entifix/react-controls/primitives';
-import { Switch } from '@myself-app/entifix-incubator-react-controls';
+import { Switch } from '@entifix/react-controls/primitives';
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 
 import { SlidersIcon } from '../../atoms/icons/icons.js';
-import { fill } from '../../i18n/fill.js';
 import { applyHidden, parseHidden, withHidden } from './cv-hidden.js';
 
 /** Tells the customizer the query string changed under it. */
