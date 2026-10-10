@@ -50,6 +50,7 @@
   "dependencies": {
     "@entifix/business": "catalog:",
     "@entifix/core": "catalog:",
+    "@entifix/react-integration": "catalog:",
     "@myself-app/entifix-incubator-static-adapter": "workspace:*",
     "@swc/helpers": "0.5.23",
     "effect": "catalog:"

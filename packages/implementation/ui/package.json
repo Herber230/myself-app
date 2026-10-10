@@ -120,6 +120,7 @@
     "@entifix/core": "catalog:",
     "@entifix/i18n": "catalog:",
     "@entifix/react-controls": "catalog:",
+    "@entifix/react-integration": "catalog:",
     "@myself-app/domain": "workspace:*",
     "@myself-app/entifix-incubator-browser": "workspace:*",
     "@myself-app/entifix-incubator-react-controls": "workspace:*",
