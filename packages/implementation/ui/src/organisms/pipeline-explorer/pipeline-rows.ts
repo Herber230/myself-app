@@ -2,12 +2,12 @@
  * What the pipeline explorer shows of a project's delivery pipeline,
  * translated at build (ADR 0023).
  */
+import { targetsOf } from '@entifix/core';
 import { localize, type LocalizedText } from '@myself-app/domain';
 import {
   decisionNumber,
   type ProjectPipeline,
 } from '@myself-app/domain/use-cases';
-import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
 
 import type { siteT } from '../../i18n/server.js';
 import { decisionPath } from '../../routing/project-paths.js';

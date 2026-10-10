@@ -1,8 +1,6 @@
-import {
-  type StaticContent,
-  targetsOf,
-} from '@myself-app/entifix-incubator-static-adapter';
+import { targetsOf } from '@entifix/core';
 
+import type { ContentReader } from '../../content-reader.js';
 import { Interest } from '../../entities/interest.entity.js';
 import { InterestMedia } from '../../entities/interest-media.entity.js';
 import type { Post } from '../../entities/post.entity.js';
@@ -24,7 +22,7 @@ const BY_ORDER = [{ 0: { property: 'order', type: 'asc' } }] as const;
  * link itself (ADR 0018).
  */
 export async function loadBeyondCode(
-  content: StaticContent,
+  content: ContentReader,
 ): Promise<InterestSection[]> {
   const [interests, media] = await Promise.all([
     content.loadAll(
@@ -48,7 +46,7 @@ export interface BeyondCodeTeaser {
 }
 
 export async function loadBeyondCodeTeaser(
-  content: StaticContent,
+  content: ContentReader,
 ): Promise<BeyondCodeTeaser> {
   const [interests, media] = await Promise.all([
     content.loadAll(Interest, { sorting: [...BY_ORDER] }),

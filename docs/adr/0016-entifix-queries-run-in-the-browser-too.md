@@ -6,6 +6,7 @@
 - Read when: a filter or a list in the browser needs data, a page's scripts grew past its budget, a filtered view disagrees with the page it filters, or code is about to move into entifix
 - Revised: 2026-09-27 by [ADR 0018](0018-the-incubator-owns-content-mechanics.md) — the gaps below are filed as entifix#38–41; `loadThroughUseCase` moved to the static adapter, and a filter is `useUrlFilter`
 - Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — the incubator's packages live under `packages/entifix-incubator/`, named after it, and its React controls are a package of their own
+- Revised: 2026-10-10 by [ADR 0024](0024-content-read-through-entifix-ports.md) — the browser's query (`defineUrlQuery`, `useUrlFilter`, `useEntityLoad`) and the read contract are entifix's (entifix#34, #41); the incubator keeps `staticJsonSource`
 
 Decides the browser half of #70. Supersedes the gate of
 [ADR 0003](0003-build-time-pages-and-browser-queries.md), which measured path C

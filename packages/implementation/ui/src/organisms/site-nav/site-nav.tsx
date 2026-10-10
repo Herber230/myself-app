@@ -1,14 +1,8 @@
-import {
-  NavMenu,
-  NavMenuCheck,
-} from '@myself-app/entifix-incubator-react-controls';
-import {
-  ActiveSection,
-  KeepSection,
-} from '@myself-app/entifix-incubator-react-controls';
+import { NavMenu, NavMenuCheck } from '@entifix/react-controls/primitives';
 import Link from 'next/link';
 
 import { NavIcon } from '../../atoms/nav-icon/nav-icon.js';
+import { ActiveSection, KeepSection } from '../../client-controls.js';
 import { siteT } from '../../i18n/server.js';
 import { SiteThemeMenu } from '../../molecules/site-theme-menu/site-theme-menu.js';
 import {

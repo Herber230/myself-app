@@ -1,6 +1,6 @@
 'use client';
 
-import { SplitButton } from '@myself-app/entifix-incubator-react-controls';
+import { SplitButton } from '@entifix/react-controls/primitives';
 import {
   type ReactNode,
   useEffect,

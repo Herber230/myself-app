@@ -1,8 +1,6 @@
-import {
-  type StaticContent,
-  targetOf,
-} from '@myself-app/entifix-incubator-static-adapter';
+import { targetOf } from '@entifix/core';
 
+import type { ContentReader } from '../../content-reader.js';
 import { RadarEdition } from '../../entities/radar-edition.entity.js';
 import { Technology } from '../../entities/technology.entity.js';
 import { TechnologyUsePeriod } from '../../entities/technology-use-period.entity.js';
@@ -19,7 +17,7 @@ import type {
  * rather than taken from the build's clock, so the same content always draws
  * the same radar.
  */
-export async function loadEditionDate(content: StaticContent): Promise<Date> {
+export async function loadEditionDate(content: ContentReader): Promise<Date> {
   const editions = await content.loadAll(RadarEdition, {
     sorting: [{ 0: { property: 'date', type: 'desc' } }],
   });
@@ -53,7 +51,7 @@ export function movementOf(
  * moved — in no particular order: the chart's layout numbers them.
  */
 export async function loadRadarPlacements(
-  content: StaticContent,
+  content: ContentReader,
 ): Promise<RadarPlacement[]> {
   const [technologies, periods, edition] = await Promise.all([
     content.loadAll(Technology, {}, { resolve: ['quadrant', 'ring'] }),

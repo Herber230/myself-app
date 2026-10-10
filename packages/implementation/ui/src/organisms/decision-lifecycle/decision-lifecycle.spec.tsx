@@ -82,9 +82,9 @@ describe("a project's decision lifecycle", () => {
     render(<DecisionLifecycle locale="en" decisions={decisions} />);
     expect(
       within(panel('superseded-in-part'))
-        .getByRole('link', { name: /^ADR 0008/ })
+        .getByRole('link', { name: /^ADR 0018/ })
         .getAttribute('href'),
-    ).toBe('?adr=0008#decisions');
+    ).toBe('?adr=0018#decisions');
     expect(
       within(panel('accepted'))
         .getByRole('link', { name: /^See all/ })

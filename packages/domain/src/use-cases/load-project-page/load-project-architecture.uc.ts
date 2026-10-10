@@ -1,5 +1,4 @@
-import { type StaticContent } from '@myself-app/entifix-incubator-static-adapter';
-
+import type { ContentReader } from '../../content-reader.js';
 import { ArchitectureNode } from '../../entities/architecture-node.entity.js';
 import { ArchitectureRuntime } from '../../entities/architecture-runtime.entity.js';
 import { ArchitectureScenario } from '../../entities/architecture-scenario.entity.js';
@@ -26,7 +25,7 @@ function ofProject(id: string) {
  * no parts.
  */
 export async function loadProjectArchitecture(
-  content: StaticContent,
+  content: ContentReader,
   id: string,
 ): Promise<ProjectArchitecture | undefined> {
   const [runtimes, nodes, scenarios] = await Promise.all([
@@ -79,7 +78,7 @@ export async function loadProjectArchitecture(
  * Nothing for a project with no bands.
  */
 export async function loadProjectLayers(
-  content: StaticContent,
+  content: ContentReader,
   id: string,
 ): Promise<ProjectLayers | undefined> {
   const layers = await content.loadAll(PackageLayer, {

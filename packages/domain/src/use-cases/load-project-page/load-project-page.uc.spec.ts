@@ -1,4 +1,4 @@
-import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
+import { targetsOf } from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
 import { fixtureContent } from '../content.fixture.js';

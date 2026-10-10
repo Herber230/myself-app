@@ -1,11 +1,11 @@
 import { button } from '@entifix/react-controls/primitives';
+import { SegmentedNav } from '@entifix/react-controls/primitives';
 import {
   type CvVariant,
   localize,
   type LocalizedText,
 } from '@myself-app/domain';
 import type { CvSheet as CvSheetContent } from '@myself-app/domain/use-cases';
-import { SegmentedNav } from '@myself-app/entifix-incubator-react-controls';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 

@@ -11,9 +11,14 @@
  * also what a visitor without scripting gets, with no controls that could not
  * work.
  */
+import { fill } from '@entifix/i18n';
 import { Stack, Text } from '@entifix/react-controls/primitives';
+import {
+  SegmentedControl,
+  useMediaQuery,
+} from '@entifix/react-controls/primitives';
+import { useUrlFilter } from '@entifix/react-integration/url';
 import { Technology } from '@myself-app/domain/entities/technology';
-import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
 import {
   ActiveFilters,
   activeFiltersOf,
@@ -22,14 +27,11 @@ import {
   FilterSummary,
   RadarChart,
   type RadarLayout,
-  SegmentedControl,
   ToggleGroup,
-  useMediaQuery,
 } from '@myself-app/entifix-incubator-react-controls';
 import { type ReactNode, useMemo, useState } from 'react';
 
 import { SlidersIcon } from '../../atoms/icons/icons.js';
-import { fill } from '../../i18n/fill.js';
 import { technologyPath } from '../../routing/radar-paths.js';
 import type { SiteLocale } from '../../routing/site-locales.js';
 import { useSources } from '../../sources/sources.js';

@@ -1,5 +1,6 @@
+import type { CatalogShape } from '@entifix/i18n';
+
 import type { en } from './en.js';
-import type { CatalogShape } from './shape.js';
 
 /** The site's UI copy in Spanish: the English keys, no more and no fewer. */
 export const es = {

@@ -5,7 +5,7 @@
  * declares what it needs; the app mounts it with the adapters' sources — only
  * on the pages that filter, so no other page ships entifix-browser and Effect.
  */
-import type { EntitySource } from '@myself-app/entifix-incubator-browser';
+import type { EntitySource } from '@entifix/react-integration/url';
 import { createContext, type ReactNode, useContext } from 'react';
 
 export interface BrowserSources {

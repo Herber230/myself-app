@@ -18,8 +18,8 @@
     "ring": "domain",
     "angle": 90,
     "text": {
-      "en": "loadCvSheet, loadRadarPlacements, loadProjectPage: each a request to entifix’s load over the site’s content, the same at build and in the browser.",
-      "es": "loadCvSheet, loadRadarPlacements, loadProjectPage: cada uno una petición al load de entifix sobre el contenido del sitio, igual al compilar que en el navegador."
+      "en": "loadCvSheet, loadRadarPlacements, loadProjectPage: each a request to entifix’s loadAll over the site’s content, the same at build and in the browser.",
+      "es": "loadCvSheet, loadRadarPlacements, loadProjectPage: cada uno una petición al loadAll de entifix sobre el contenido del sitio, igual al compilar que en el navegador."
     },
     "path": "packages/domain/",
     "connects": ["myself-app-entities", "myself-app-content-port"]
@@ -27,14 +27,14 @@
   {
     "id": "myself-app-content-port",
     "project": "myself-app",
-    "label": "StaticContent",
+    "label": "ContentReader",
     "ring": "ports",
     "angle": 90,
     "text": {
-      "en": "What a use case reads from: every entity’s records, validated, behind one load. It never says where they come from.",
-      "es": "De donde lee un caso de uso: los registros de cada entidad, validados, detrás de un solo load. Nunca dice de dónde vienen."
+      "en": "What a use case reads from: every entity’s records, links resolved, through entifix’s loadAll over a repository per entity. It never says where they come from.",
+      "es": "De donde lee un caso de uso: los registros de cada entidad, con sus vínculos resueltos, a través del loadAll de entifix sobre un repositorio por entidad. Nunca dice de dónde vienen."
     },
-    "path": "packages/entifix-incubator/static-adapter/"
+    "path": "packages/domain/"
   },
   {
     "id": "myself-app-query-port",
@@ -46,7 +46,7 @@
       "en": "A filter in the address bar, declared once with defineUrlQuery: the page shared is the page seen.",
       "es": "Un filtro en la barra de direcciones, declarado una vez con defineUrlQuery: la página que se comparte es la que se ve."
     },
-    "path": "packages/entifix-incubator/browser/"
+    "path": "packages/implementation/ui/"
   },
   {
     "id": "myself-app-route",
@@ -70,8 +70,8 @@
     "angle": 120,
     "runtime": "myself-app-build",
     "text": {
-      "en": "defineStaticContent: validates every JSON file against its entity, then serves it through entifix’s load.",
-      "es": "defineStaticContent: valida cada archivo JSON contra su entidad y luego lo sirve a través del load de entifix."
+      "en": "defineStaticContent: validates every JSON file against its entity, then hands over an entifix repository per entity.",
+      "es": "defineStaticContent: valida cada archivo JSON contra su entidad y luego entrega un repositorio de entifix por entidad."
     },
     "path": "packages/implementation/adapters/",
     "connects": ["myself-app-content-port", "myself-app-json"]
@@ -111,10 +111,10 @@
     "angle": -30,
     "runtime": "myself-app-browser",
     "text": {
-      "en": "Keeps the query string, answers it through load, and hands back the ids kept.",
-      "es": "Guarda la query string, la responde con load y devuelve los ids que quedan."
+      "en": "entifix’s hook: keeps the query string, answers it through loadAll, and hands back the ids kept.",
+      "es": "El hook de entifix: guarda la query string, la responde con loadAll y devuelve los ids que quedan."
     },
-    "path": "packages/entifix-incubator/browser/",
+    "path": "packages/implementation/ui/",
     "connects": ["myself-app-query-port", "myself-app-use-cases"]
   },
   {

@@ -1,4 +1,4 @@
-import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
+import { ExternalLink } from '@entifix/react-controls/primitives';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 

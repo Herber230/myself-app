@@ -1,9 +1,6 @@
-import {
-  type StaticContent,
-  targetOf,
-  targetsOf,
-} from '@myself-app/entifix-incubator-static-adapter';
+import { targetOf, targetsOf } from '@entifix/core';
 
+import type { ContentReader } from '../../content-reader.js';
 import { ArchitectureDecision } from '../../entities/architecture-decision.entity.js';
 import type {
   DecisionPage,
@@ -19,7 +16,7 @@ export function decisionNumber(decision: ArchitectureDecision): string {
 
 /** Every decision record's route, project by project, by number. */
 export async function loadDecisionRoutes(
-  content: StaticContent,
+  content: ContentReader,
 ): Promise<DecisionRoute[]> {
   const decisions = await content.loadAll(ArchitectureDecision, {
     sorting: [...BY_NUMBER],
@@ -36,7 +33,7 @@ export async function loadDecisionRoutes(
  * Nothing for a route that names no record.
  */
 export async function loadArchitectureDecision(
-  content: StaticContent,
+  content: ContentReader,
   { project, number }: DecisionRoute,
 ): Promise<DecisionPage | undefined> {
   const id = `${project}-${number}`;

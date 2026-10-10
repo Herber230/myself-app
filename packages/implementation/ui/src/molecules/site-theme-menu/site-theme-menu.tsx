@@ -1,10 +1,7 @@
 'use client';
 
 import { useTheme } from '@entifix/react-controls/primitives';
-import {
-  NavMenu,
-  NavMenuCheck,
-} from '@myself-app/entifix-incubator-react-controls';
+import { NavMenu, NavMenuCheck } from '@entifix/react-controls/primitives';
 import { useSyncExternalStore } from 'react';
 
 import { NavIcon } from '../../atoms/nav-icon/nav-icon.js';

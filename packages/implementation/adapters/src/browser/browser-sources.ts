@@ -1,10 +1,8 @@
+import type { EntitySource } from '@entifix/react-integration/url';
 import { ArchitectureDecision } from '@myself-app/domain/entities/architecture-decision';
 import { Post } from '@myself-app/domain/entities/post';
 import { Technology } from '@myself-app/domain/entities/technology';
-import {
-  type EntitySource,
-  staticJsonSource,
-} from '@myself-app/entifix-incubator-browser';
+import { staticJsonSource } from '@myself-app/entifix-incubator-browser';
 
 /**
  * Where the browser reads each entity the pages filter (ADR 0016): the files

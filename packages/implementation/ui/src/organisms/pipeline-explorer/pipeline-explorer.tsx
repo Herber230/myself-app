@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink } from '@myself-app/entifix-incubator-react-controls';
+import { ExternalLink } from '@entifix/react-controls/primitives';
 import {
   PipelineGraph,
   type PipelineGraphJob,

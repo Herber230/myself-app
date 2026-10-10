@@ -3,13 +3,13 @@
  * build (ADR 0022).
  */
 import type { Entity, EntityLink } from '@entifix/core';
+import { targetsOf } from '@entifix/core';
 import {
   ARCHITECTURE_RINGS,
   localize,
   type LocalizedText,
 } from '@myself-app/domain';
 import type { ProjectArchitecture } from '@myself-app/domain/use-cases';
-import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
 
 import type { siteT } from '../../i18n/server.js';
 import type { SiteLocale } from '../../routing/site-locales.js';

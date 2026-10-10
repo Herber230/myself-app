@@ -23,9 +23,6 @@
   ],
   "references": [
     {
-      "path": "../../entifix-incubator/static-adapter/tsconfig.lib.json"
-    },
-    {
       "path": "../../entifix-incubator/react-controls/tsconfig.lib.json"
     },
     {

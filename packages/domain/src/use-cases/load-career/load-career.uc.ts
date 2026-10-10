@@ -1,8 +1,6 @@
-import {
-  type StaticContent,
-  targetOf,
-} from '@myself-app/entifix-incubator-static-adapter';
+import { targetOf } from '@entifix/core';
 
+import type { ContentReader } from '../../content-reader.js';
 import type { Employer } from '../../entities/employer.entity.js';
 import { EmploymentPeriod } from '../../entities/employment-period.entity.js';
 
@@ -21,7 +19,7 @@ export interface Career {
  * The facts beside the bio: how long, and where now. Read from the
  * employments rather than written in the bio, so they never go stale.
  */
-export async function loadCareer(content: StaticContent): Promise<Career> {
+export async function loadCareer(content: ContentReader): Promise<Career> {
   const periods = await content.loadAll(
     EmploymentPeriod,
     { sorting: [{ 0: { property: 'start', type: 'asc' } }] },

@@ -1,8 +1,7 @@
-import type { StaticContent } from '@myself-app/entifix-incubator-static-adapter';
-
+import type { ContentReader } from '../../content-reader.js';
 import { ContactChannel } from '../../entities/contact-channel.entity.js';
 
-function loadInOrder(content: StaticContent): Promise<ContactChannel[]> {
+function loadInOrder(content: ContentReader): Promise<ContactChannel[]> {
   return content.loadAll(ContactChannel, {
     sorting: [{ 0: { property: 'order', type: 'asc' } }],
   });
@@ -13,14 +12,14 @@ function loadInOrder(content: StaticContent): Promise<ContactChannel[]> {
  * landing's contact section. A personal channel is never one of them.
  */
 export async function loadContactChannels(
-  content: StaticContent,
+  content: ContentReader,
 ): Promise<ContactChannel[]> {
   return (await loadInOrder(content)).filter(channel => !channel.personal);
 }
 
 /** The personal links, in their order: "Beyond the code" shows them. */
 export async function loadPersonalChannels(
-  content: StaticContent,
+  content: ContentReader,
 ): Promise<ContactChannel[]> {
   return (await loadInOrder(content)).filter(channel => channel.personal);
 }

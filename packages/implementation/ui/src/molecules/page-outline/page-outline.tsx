@@ -7,7 +7,7 @@
  * A column of links where it has room; where its container lays the list out
  * in a row (`OutlineLayout` on a phone), the marked one is kept in view.
  */
-import { ActiveHeading } from '@myself-app/entifix-incubator-react-controls';
+import { ActiveHeading } from '../../client-controls.js';
 
 /** One heading of the page. */
 export interface OutlineEntry {

@@ -12,8 +12,10 @@
  * static HTML lists every record by number, each a link to its page, which
  * is also what a visitor without scripting gets.
  */
+import { fill } from '@entifix/i18n';
+import { SplitView, useMediaQuery } from '@entifix/react-controls/primitives';
+import { useUrlFilter } from '@entifix/react-integration/url';
 import { ArchitectureDecision } from '@myself-app/domain/entities/architecture-decision';
-import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
 import {
   ActiveFilters,
   activeFiltersOf,
@@ -21,9 +23,7 @@ import {
   FilterPanel,
   FilterSummary,
   SortControl,
-  SplitView,
   ToggleGroup,
-  useMediaQuery,
 } from '@myself-app/entifix-incubator-react-controls';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -31,7 +31,6 @@ import { useMemo } from 'react';
 import { SlidersIcon } from '../../atoms/icons/icons.js';
 import { InlineCode } from '../../atoms/inline-code/inline-code.js';
 import { StatusBadge } from '../../atoms/status-badge/status-badge.js';
-import { fill } from '../../i18n/fill.js';
 import {
   DecisionLineage,
   type LineageLink,

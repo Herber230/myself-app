@@ -2,12 +2,12 @@
  * What the decision explorer shows of each record and offers to filter by,
  * translated at build (#77).
  */
+import { targetsOf } from '@entifix/core';
 import {
   type ArchitectureDecision,
   DECISION_STATUSES,
 } from '@myself-app/domain';
 import { decisionNumber } from '@myself-app/domain/use-cases';
-import { targetsOf } from '@myself-app/entifix-incubator-static-adapter';
 
 import type { siteT } from '../../i18n/server.js';
 import { formatDay } from '../../molecules/post-card/post-cards.js';

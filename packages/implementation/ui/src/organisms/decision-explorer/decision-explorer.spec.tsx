@@ -86,8 +86,10 @@ describe('a project’s decision records', () => {
       '/en/projects/myself-app/?status=superseded-in-part',
     );
     render(explorer());
-    await waitFor(() => expect(shownRecords()).toEqual(['myself-app-0008']));
-    expect(screen.getByText(`Showing 1 of ${numbers.length}`)).toBeTruthy();
+    await waitFor(() =>
+      expect(shownRecords()).toEqual(['myself-app-0008', 'myself-app-0018']),
+    );
+    expect(screen.getByText(`Showing 2 of ${numbers.length}`)).toBeTruthy();
   });
 
   it('are ordered by a sort chosen, which clearing the filters keeps', async () => {

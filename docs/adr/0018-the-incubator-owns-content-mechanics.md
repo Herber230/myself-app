@@ -1,9 +1,10 @@
 # 18. The incubator owns content mechanics; the app declares sources and rules
 
-- Status: Accepted
+- Status: Accepted; superseded in part by [ADR 0024](0024-content-read-through-entifix-ports.md) — the reads are entifix's use cases over the repositories the static adapter hands over, through the domain's `ContentReader`
 - Date: 2026-09-27
 - Area: data
 - Read when: a loader builds an id → record map or casts a link, a new entity needs a source, a content rule is about to be written by hand, a page's filter is about to be wired again, or code is about to move into entifix
+- Revised: 2026-10-10 by [ADR 0024](0024-content-read-through-entifix-ports.md) — the read half is entifix's now: use cases take the domain's `ContentReader` over the repositories `StaticContent` hands over; `load`, `loadAll`, `resolve`, `ids`, `loadThroughUseCase`, `targetOf`/`targetsOf` and the static link resolver left the static adapter, and `useUrlFilter` is `@entifix/react-integration/url`'s
 - Revised: 2026-09-28 by [ADR 0019](0019-layered-packages-domain-content-incubator-implementation.md) — the sources and the posts' reader are `implementation/adapters`' (`siteContent()`), the loaders are the domain's use cases, and the app keeps its composition root in `src/composition.ts`
 
 Continues [ADR 0016](0016-entifix-queries-run-in-the-browser-too.md), which

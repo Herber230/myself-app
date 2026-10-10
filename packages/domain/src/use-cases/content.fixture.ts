@@ -1,9 +1,9 @@
 import {
   defineSource,
   defineStaticContent,
-  type StaticContent,
 } from '@myself-app/entifix-incubator-static-adapter';
 
+import { type ContentReader, makeContentReader } from '../content-reader.js';
 import { ArchitectureDecision } from '../entities/architecture-decision.entity.js';
 import { ArchitectureNode } from '../entities/architecture-node.entity.js';
 import { ArchitectureRuntime } from '../entities/architecture-runtime.entity.js';
@@ -687,9 +687,11 @@ const SOURCES = [
 /** The fixture site, with any file replaced by `overrides`. */
 export function fixtureContent(
   overrides: Readonly<Record<string, Records>> = {},
-): StaticContent {
-  return defineStaticContent({ ...FIXTURE_RECORDS, ...overrides }, SOURCES, {
-    locales: SITE_LOCALES,
-    localizedMembersOf,
-  });
+): ContentReader {
+  const files = defineStaticContent(
+    { ...FIXTURE_RECORDS, ...overrides },
+    SOURCES,
+    { locales: SITE_LOCALES, localizedMembersOf },
+  );
+  return makeContentReader(files.repositories);
 }

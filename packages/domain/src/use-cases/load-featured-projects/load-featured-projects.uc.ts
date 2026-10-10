@@ -1,8 +1,6 @@
-import {
-  type StaticContent,
-  targetsOf,
-} from '@myself-app/entifix-incubator-static-adapter';
+import { targetsOf } from '@entifix/core';
 
+import type { ContentReader } from '../../content-reader.js';
 import { Project } from '../../entities/project.entity.js';
 import type { Technology } from '../../entities/technology.entity.js';
 
@@ -18,7 +16,7 @@ export interface FeaturedProject {
  * their technologies resolved, so no page reads a link itself (ADR 0018).
  */
 export async function loadFeaturedProjects(
-  content: StaticContent,
+  content: ContentReader,
 ): Promise<FeaturedProject[]> {
   const projects = await content.loadAll(
     Project,

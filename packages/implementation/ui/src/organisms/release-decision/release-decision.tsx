@@ -1,6 +1,6 @@
 'use client';
 
-import { Switch } from '@myself-app/entifix-incubator-react-controls';
+import { Switch } from '@entifix/react-controls/primitives';
 import { useEffect, useId, useState } from 'react';
 
 import {

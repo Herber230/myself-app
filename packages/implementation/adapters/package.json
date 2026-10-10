@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@entifix/core": "catalog:",
+    "@entifix/react-integration": "catalog:",
     "@myself-app/content": "workspace:*",
     "@myself-app/domain": "workspace:*",
     "@myself-app/entifix-incubator-browser": "workspace:*",

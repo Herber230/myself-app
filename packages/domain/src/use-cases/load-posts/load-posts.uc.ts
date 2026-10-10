@@ -1,10 +1,8 @@
+import type { UnpagedRequest } from '@entifix/business';
 import type { EntityFilter } from '@entifix/core';
-import {
-  type StaticContent,
-  targetsOf,
-  type UnpagedRequest,
-} from '@myself-app/entifix-incubator-static-adapter';
+import { targetsOf } from '@entifix/core';
 
+import type { ContentReader } from '../../content-reader.js';
 import { Post } from '../../entities/post.entity.js';
 import { Tag } from '../../entities/tag.entity.js';
 import { SITE_LOCALES, type SiteLocale } from '../../locales.js';
@@ -44,7 +42,7 @@ function postsRequest(
 
 /** Every post a filter keeps, newest first. */
 export function loadPosts(
-  content: StaticContent,
+  content: ContentReader,
   options: BlogReadOptions = {},
   filtering: readonly EntityFilter<Post>[] = [],
 ): Promise<Post[]> {
@@ -53,7 +51,7 @@ export function loadPosts(
 
 /** Every post's id, newest first: its page's slug. */
 export function loadPostIds(
-  content: StaticContent,
+  content: ContentReader,
   options: BlogReadOptions = {},
 ): Promise<string[]> {
   return content.ids(Post, postsRequest(options));
@@ -61,7 +59,7 @@ export function loadPostIds(
 
 /** One post, or `undefined` when there is none by that id to show. */
 export async function loadPost(
-  content: StaticContent,
+  content: ContentReader,
   id: string,
   options: BlogReadOptions = {},
 ): Promise<Post | undefined> {
@@ -70,13 +68,13 @@ export async function loadPost(
 }
 
 /** Every tag, as the filter lists them. */
-export function loadTags(content: StaticContent): Promise<Tag[]> {
+export function loadTags(content: ContentReader): Promise<Tag[]> {
   return content.loadAll(Tag);
 }
 
 /** The posts about a technology, newest first. */
 export function loadPostsForTechnology(
-  content: StaticContent,
+  content: ContentReader,
   technology: string,
   options: BlogReadOptions = {},
 ): Promise<Post[]> {
@@ -98,7 +96,7 @@ function perLocale<T>(
 
 /** The previews of these posts, in the order given. */
 export async function previewsOf(
-  content: StaticContent,
+  content: ContentReader,
   posts: readonly Post[],
 ): Promise<PostPreview[]> {
   const resolved = await content.resolve(posts, ['tags', 'technologies']);
@@ -124,7 +122,7 @@ export async function previewsOf(
 
 /** Every post's preview, newest first. */
 export async function loadPostPreviews(
-  content: StaticContent,
+  content: ContentReader,
   options: BlogReadOptions = {},
 ): Promise<PostPreview[]> {
   return previewsOf(content, await loadPosts(content, options));

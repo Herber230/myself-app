@@ -1,9 +1,6 @@
-import {
-  type StaticContent,
-  targetOf,
-  targetsOf,
-} from '@myself-app/entifix-incubator-static-adapter';
+import { targetOf, targetsOf } from '@entifix/core';
 
+import type { ContentReader } from '../../content-reader.js';
 import { EmploymentPeriod } from '../../entities/employment-period.entity.js';
 import { Project } from '../../entities/project.entity.js';
 import { Technology } from '../../entities/technology.entity.js';
@@ -21,7 +18,7 @@ import type { TechnologyDetail } from './load-technology-detail.types.js';
  * and projects are filtered on their links to it, which the static adapter compares by id.
  */
 export async function loadTechnologyDetail(
-  content: StaticContent,
+  content: ContentReader,
   id: string,
 ): Promise<TechnologyDetail | undefined> {
   const [[technology], periods, employments, projects] = await Promise.all([

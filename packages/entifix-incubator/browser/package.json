@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "The browser's side of an entifix query: a repository read from a static JSON file, the load use case, and a query kept in the URL. Knows no entity of this site.",
+  "description": "The browser's side of a static site's content: a repository read from a static JSON file the build wrote. Knows no entity of this site.",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,12 +14,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
-    },
-    "./react": {
-      "@myself-app/source": "./src/react.ts",
-      "types": "./dist/react.d.ts",
-      "import": "./dist/react.js",
-      "default": "./dist/react.js"
     }
   },
   "nx": {
@@ -50,6 +44,7 @@
   "dependencies": {
     "@entifix/business": "catalog:",
     "@entifix/core": "catalog:",
+    "@entifix/react-integration": "catalog:",
     "@myself-app/entifix-incubator-static-adapter": "workspace:*",
     "@swc/helpers": "0.5.23",
     "effect": "catalog:"

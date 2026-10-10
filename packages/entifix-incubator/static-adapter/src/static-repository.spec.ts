@@ -1,24 +1,23 @@
 /**
  * The adapter, against entifix's own fixture.
  *
- * The contract below is the read half; what this file adds is the half no
- * contract covers: the two write verbs refusing, and array membership, which
- * entifix's in-memory double gets wrong (entifix#34) and which is the radar's
- * first query.
+ * The contract below is entifix's read half, array membership included
+ * (entifix#34); what this file adds is what no contract covers: the two
+ * write verbs refusing.
  */
 import { EntifixLogicError } from '@entifix/core';
 import { runRepository, runRepositoryExit } from '@entifix/testing-unit';
 import {
   ContractWidget,
+  describeEntityRepositoryReadContract,
   makeContractWidget,
 } from '@entifix/testing-unit/contracts';
 import { Cause, Exit } from 'effect';
 import { describe, expect, it } from 'vitest';
 
-import { describeReadOnlyEntityRepositoryContract } from './contracts/read-only-repository.contract.js';
 import { makeStaticRepository } from './static-repository.js';
 
-describeReadOnlyEntityRepositoryContract('the static adapter', {
+describeEntityRepositoryReadContract('the static adapter', {
   makeRepository: seed => makeStaticRepository(ContractWidget, seed),
 });
 
