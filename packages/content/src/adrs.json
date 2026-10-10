@@ -224,7 +224,7 @@
     "id": "myself-app-0018",
     "number": 18,
     "title": "The incubator owns content mechanics; the app declares sources and rules",
-    "status": "accepted",
+    "status": "superseded-in-part",
     "date": "2026-09-27",
     "area": "data",
     "revisions": 2,
@@ -309,7 +309,7 @@
     "readWhen": "a use case is about to take the static adapter's types, content is about to come from somewhere other than the JSON files, `loadAll` asks a repository for a page of `Number.MAX_SAFE_INTEGER` records, a filter in the browser answers differently from the page it filters, or code is about to move into entifix",
     "summary": "The domain reads content through a `ContentReader`.\nThe static adapter serves repositories, not reads.\n`implementation/adapters` composes the two.\nAn unpaged load pages.\nEvery repository is held to entifix's read contract.",
     "project": "myself-app",
-    "supersedes": []
+    "supersedes": ["myself-app-0018"]
   },
   {
     "id": "entifix-0001",

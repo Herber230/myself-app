@@ -1,5 +1,7 @@
-Continues [ADR 0018](/projects/myself-app/adr/0018/), whose read
-half it replaces, and [ADR 0016](/projects/myself-app/adr/0016/).
+Supersedes, in part, [ADR 0018](/projects/myself-app/adr/0018/):
+its read half — `StaticContent`'s `load`, `loadAll`, `resolve` and `ids`, the
+static link resolver, `loadThroughUseCase` in the static adapter, the URL
+filter in the incubator. Continues [ADR 0016](/projects/myself-app/adr/0016/).
 Nothing a visitor sees changes.
 
 ## Context

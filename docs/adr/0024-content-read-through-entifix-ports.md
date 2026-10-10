@@ -5,8 +5,10 @@
 - Area: data
 - Read when: a use case is about to take the static adapter's types, content is about to come from somewhere other than the JSON files, `loadAll` asks a repository for a page of `Number.MAX_SAFE_INTEGER` records, a filter in the browser answers differently from the page it filters, or code is about to move into entifix
 
-Continues [ADR 0018](0018-the-incubator-owns-content-mechanics.md), whose read
-half it replaces, and [ADR 0016](0016-entifix-queries-run-in-the-browser-too.md).
+Supersedes, in part, [ADR 0018](0018-the-incubator-owns-content-mechanics.md):
+its read half — `StaticContent`'s `load`, `loadAll`, `resolve` and `ids`, the
+static link resolver, `loadThroughUseCase` in the static adapter, the URL
+filter in the incubator. Continues [ADR 0016](0016-entifix-queries-run-in-the-browser-too.md).
 Nothing a visitor sees changes.
 
 ## Context

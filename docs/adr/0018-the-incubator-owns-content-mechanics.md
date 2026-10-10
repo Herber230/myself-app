@@ -1,6 +1,6 @@
 # 18. The incubator owns content mechanics; the app declares sources and rules
 
-- Status: Accepted
+- Status: Accepted; superseded in part by [ADR 0024](0024-content-read-through-entifix-ports.md) — the reads are entifix's use cases over the repositories the static adapter hands over, through the domain's `ContentReader`
 - Date: 2026-09-27
 - Area: data
 - Read when: a loader builds an id → record map or casts a link, a new entity needs a source, a content rule is about to be written by hand, a page's filter is about to be wired again, or code is about to move into entifix

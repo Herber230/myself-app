@@ -34,7 +34,7 @@ test('a project’s page shows its patterns, its views and every record', async 
   await expect(
     page.getByRole('heading', { level: 2, name: 'Decision archive' }),
   ).toBeVisible();
-  await expect(records(page)).toHaveCount(23);
+  await expect(records(page)).toHaveCount(24);
   // A technology leads to its page on the radar.
   await page.getByRole('link', { name: 'Pulumi', exact: true }).click();
   await page.waitForURL('/en/tech-radar/pulumi/');
@@ -47,7 +47,7 @@ test('the records filter and sort in the URL, through a reload', async ({
   await page
     .getByRole('button', { name: 'Superseded in part', exact: true })
     .click();
-  await expect(records(page)).toHaveCount(1);
+  await expect(records(page)).toHaveCount(2);
   await expect(page).toHaveURL(/\?status=superseded-in-part$/);
 
   await page.getByRole('button', { name: 'Clear filters' }).click();
@@ -59,7 +59,7 @@ test('the records filter and sort in the URL, through a reload', async ({
   ).toHaveAttribute('aria-pressed', 'true');
   await expect(records(page).first()).toHaveAttribute(
     'data-adr',
-    'myself-app-0022',
+    'myself-app-0024',
   );
 });
 
