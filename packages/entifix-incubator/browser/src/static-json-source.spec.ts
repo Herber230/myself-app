@@ -1,14 +1,37 @@
-import { loadThroughUseCase } from '@myself-app/entifix-incubator-static-adapter';
+import {
+  ConfigurationRepositoryTag,
+  type EntityRepository,
+} from '@entifix/business';
+import {
+  ConfigurationClientInMemory,
+  type EntityLoadRequest,
+} from '@entifix/core';
+import { Context, Effect } from 'effect';
 import { describe, expect, it } from 'vitest';
 
 import { fetchServing, Note, NOTES_FILE } from './note.fixture.js';
 import { staticJsonSource } from './static-json-source.js';
 
+/** One page, as the repository answers it. */
+const loadFrom = (
+  repository: EntityRepository,
+  request: EntityLoadRequest<Note>,
+) =>
+  Effect.runPromise(
+    Effect.provide(
+      repository.load<Note>(request),
+      Context.make(
+        ConfigurationRepositoryTag,
+        new ConfigurationClientInMemory({}),
+      ),
+    ),
+  );
+
 describe('staticJsonSource', () => {
   it('builds a repository from the records the file holds', async () => {
     const { fetchFile } = fetchServing('/data/note.json', NOTES_FILE);
     const source = staticJsonSource(Note, '/data/note.json', fetchFile);
-    const page = await loadThroughUseCase<Note>(await source(), {
+    const page = await loadFrom(await source(), {
       filtering: [
         {
           property: 'title.es' as keyof Note,

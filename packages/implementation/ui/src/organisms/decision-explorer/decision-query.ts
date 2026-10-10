@@ -12,7 +12,7 @@ import {
   type Condition,
   defineUrlQuery,
   type UrlQuery,
-} from '@myself-app/entifix-incubator-browser';
+} from '@entifix/react-integration/url';
 import type { SortChoice } from '@myself-app/entifix-incubator-react-controls';
 
 export type DecisionParam =

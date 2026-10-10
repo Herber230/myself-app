@@ -12,8 +12,8 @@
  * work.
  */
 import { Stack, Text } from '@entifix/react-controls/primitives';
+import { useUrlFilter } from '@entifix/react-integration/url';
 import { Technology } from '@myself-app/domain/entities/technology';
-import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
 import {
   ActiveFilters,
   activeFiltersOf,

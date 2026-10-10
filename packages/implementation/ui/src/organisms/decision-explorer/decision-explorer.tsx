@@ -12,8 +12,8 @@
  * static HTML lists every record by number, each a link to its page, which
  * is also what a visitor without scripting gets.
  */
+import { useUrlFilter } from '@entifix/react-integration/url';
 import { ArchitectureDecision } from '@myself-app/domain/entities/architecture-decision';
-import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
 import {
   ActiveFilters,
   activeFiltersOf,

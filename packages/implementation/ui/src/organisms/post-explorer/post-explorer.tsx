@@ -10,8 +10,8 @@
  * HTML lists every post, which is also what a visitor without scripting gets.
  */
 import { Stack, Text } from '@entifix/react-controls/primitives';
+import { useUrlFilter } from '@entifix/react-integration/url';
 import { Post } from '@myself-app/domain/entities/post';
-import { useUrlFilter } from '@myself-app/entifix-incubator-browser/react';
 import {
   ActiveFilters,
   activeFiltersOf,

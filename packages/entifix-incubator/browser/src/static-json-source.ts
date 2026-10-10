@@ -4,14 +4,12 @@ import {
   type Entity,
   type EntityConstructor,
 } from '@entifix/core';
+import type { EntitySource } from '@entifix/react-integration/url';
 import {
   makeStaticRepository,
   withDatesParsed,
 } from '@myself-app/entifix-incubator-static-adapter';
 import { Effect } from 'effect';
-
-/** Where a repository comes from: asked for once, answered once. */
-export type EntitySource = () => Promise<EntityRepository>;
 
 /**
  * A read-only repository over the records a static JSON file holds, as

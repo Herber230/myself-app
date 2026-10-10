@@ -4,10 +4,8 @@
  * same use case. Both must keep the same posts.
  */
 import { Post } from '@myself-app/domain';
-import {
-  loadThroughUseCase,
-  staticJsonSource,
-} from '@myself-app/entifix-incubator-browser';
+import { makeContentReader } from '@myself-app/domain';
+import { staticJsonSource } from '@myself-app/entifix-incubator-browser';
 import { describe, expect, it } from 'vitest';
 
 import { SITE_CONTENT } from '../../test/shipped-content.js';
@@ -51,12 +49,10 @@ describe('the blog filter', () => {
               ...(request.filtering ?? []),
             ],
           }),
-          loadThroughUseCase<Post>(repository, {
-            ...request,
-            pageSize: Number.MAX_SAFE_INTEGER,
-          }),
+          // What `useEntityLoad` asks: the loadAll use case over the file.
+          makeContentReader([[Post, repository]]).loadAll(Post, request),
         ]);
-        expect(idsOf(inBrowser.items), `${search} (${locale})`).toEqual(
+        expect(idsOf(inBrowser), `${search} (${locale})`).toEqual(
           idsOf(atBuild),
         );
       }

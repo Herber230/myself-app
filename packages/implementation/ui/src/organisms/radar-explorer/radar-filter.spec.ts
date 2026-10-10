@@ -7,10 +7,8 @@
  * combined, and a search — so the file and the pages cannot drift apart.
  */
 import { Quadrant, Ring, Technology, TechnologyArea } from '@myself-app/domain';
-import {
-  loadThroughUseCase,
-  staticJsonSource,
-} from '@myself-app/entifix-incubator-browser';
+import { makeContentReader } from '@myself-app/domain';
+import { staticJsonSource } from '@myself-app/entifix-incubator-browser';
 import { describe, expect, it } from 'vitest';
 
 import { SITE_CONTENT } from '../../test/shipped-content.js';
@@ -64,12 +62,13 @@ describe('the radar filter', () => {
         const request = query.request<Technology>(query.parse(search), locale);
         const [atBuild, inBrowser] = await Promise.all([
           SITE_CONTENT.loadAll(Technology, request),
-          loadThroughUseCase<Technology>(repository, {
-            ...request,
-            pageSize: Number.MAX_SAFE_INTEGER,
-          }),
+          // What `useEntityLoad` asks: the loadAll use case over the file.
+          makeContentReader([[Technology, repository]]).loadAll(
+            Technology,
+            request,
+          ),
         ]);
-        expect(idsOf(inBrowser.items), `${search} (${locale})`).toEqual(
+        expect(idsOf(inBrowser), `${search} (${locale})`).toEqual(
           idsOf(atBuild),
         );
       }
