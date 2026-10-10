@@ -3,6 +3,7 @@
  * the fixed ones, and those listed from the content. The sitemap lists them,
  * and a post may only link to one of them (ADR 0017).
  */
+import type { ContentReader as SiteContent } from '@myself-app/domain';
 import { Technology } from '@myself-app/domain';
 import {
   loadDecisionRoutes,
@@ -10,7 +11,6 @@ import {
   loadProjectIds,
 } from '@myself-app/domain/use-cases';
 import { cvVariantParams } from '@myself-app/domain/use-cases';
-import type { StaticContent as SiteContent } from '@myself-app/entifix-incubator-static-adapter';
 import { SITE_PATHS } from '@myself-app/implementation-ui/routing';
 
 import { BLOG_READS } from './blog-reads';

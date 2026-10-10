@@ -16,7 +16,6 @@
     "@myself-app/domain": "workspace:*",
     "@myself-app/entifix-incubator-browser": "workspace:*",
     "@myself-app/entifix-incubator-react-controls": "workspace:*",
-    "@myself-app/entifix-incubator-static-adapter": "workspace:*",
     "@myself-app/implementation-adapters": "workspace:*",
     "@myself-app/implementation-ui": "workspace:*",
     "@shikijs/rehype": "4.4.3",

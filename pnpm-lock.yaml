@@ -262,9 +262,6 @@ importers:
       '@myself-app/entifix-incubator-react-controls':
         specifier: workspace:*
         version: link:../../packages/entifix-incubator/react-controls
-      '@myself-app/entifix-incubator-static-adapter':
-        specifier: workspace:*
-        version: link:../../packages/entifix-incubator/static-adapter
       '@myself-app/implementation-adapters':
         specifier: workspace:*
         version: link:../../packages/implementation/adapters

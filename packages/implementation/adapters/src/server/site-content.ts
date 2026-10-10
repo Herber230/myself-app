@@ -18,6 +18,7 @@ import {
   Certificate,
   connectsOthers,
   ContactChannel,
+  type ContentReader,
   CvFocus,
   CvVariant,
   Education,
@@ -30,6 +31,7 @@ import {
   jobInItsWorkflow,
   LayerPackage,
   localizedMembersOf,
+  makeContentReader,
   oneChannelPerType,
   PackageLayer,
   PipelineJob,
@@ -66,7 +68,6 @@ import {
   nonEmpty,
   notBefore,
   present,
-  type StaticContent,
 } from '@myself-app/entifix-incubator-static-adapter';
 
 import {
@@ -220,8 +221,19 @@ export const CONTENT_SOURCES: readonly ContentSource[] = [
   }),
 ];
 
-/** The site's content, validated and served. */
-export type SiteContent = StaticContent;
+/**
+ * The site's content, validated and served: the domain's `ContentReader`
+ * over the static repositories (ADR 0024), with what only the static files
+ * have — the records as validated, and the data files the browser reads.
+ */
+export interface SiteContent extends ContentReader {
+  /** The records as validated: the files, with every sidecar attached. */
+  readonly records: Readonly<Record<string, readonly unknown[]>>;
+  /** Every file the browser may read, one per source. */
+  readonly dataFiles: readonly string[];
+  /** The records one data file carries, through its source's published view. */
+  dataFile(name: string): Promise<unknown[]>;
+}
 
 /**
  * Validates every file, then serves each entity from its own repository.
@@ -231,8 +243,14 @@ export function buildSiteContent(
   records: Readonly<Record<string, readonly unknown[]>>,
   sources: readonly ContentSource[] = CONTENT_SOURCES,
 ): SiteContent {
-  return defineStaticContent(records, sources, {
+  const files = defineStaticContent(records, sources, {
     locales: SITE_LOCALES,
     localizedMembersOf,
   });
+  return {
+    ...makeContentReader(files.repositories),
+    records: files.records,
+    dataFiles: files.dataFiles,
+    dataFile: name => files.dataFile(name),
+  };
 }

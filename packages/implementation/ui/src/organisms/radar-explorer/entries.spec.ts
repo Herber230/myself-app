@@ -3,12 +3,12 @@
  * the wrong place because its order was read wrongly, and a movement arrow
  * that points the wrong way — neither of which any other check would notice.
  */
+import type { ContentReader } from '@myself-app/domain';
 import {
   loadEditionDate,
   loadRadarPlacements,
 } from '@myself-app/domain/use-cases';
 import { layoutRadar } from '@myself-app/entifix-incubator-react-controls';
-import type { StaticContent } from '@myself-app/entifix-incubator-static-adapter';
 import { buildSiteContent } from '@myself-app/implementation-adapters/server';
 import { describe, expect, it } from 'vitest';
 
@@ -18,7 +18,7 @@ import { radarEntriesOf } from './entries.js';
 
 const at = (iso: string) => new Date(`${iso}T00:00:00.000Z`);
 
-const loadRadarEntries = async (content: StaticContent) =>
+const loadRadarEntries = async (content: ContentReader) =>
   radarEntriesOf(await loadRadarPlacements(content));
 
 describe('the edition compared against', () => {
