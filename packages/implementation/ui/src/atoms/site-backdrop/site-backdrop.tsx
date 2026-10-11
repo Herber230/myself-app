@@ -6,6 +6,8 @@
  * and still under reduced motion.
  */
 
+import { BackdropLag } from './backdrop-lag.js';
+
 /**
  * One tile, in SVG user units, a whole number of grid squares so the grid
  * has no seam. The layer is wider than the page by a tile each side
@@ -141,6 +143,7 @@ const RINGS = [40, 80, 120, 160] as const;
 export function SiteBackdrop() {
   return (
     <div aria-hidden="true" className="site-backdrop">
+      <BackdropLag />
       <div className="site-backdrop-track">
         <svg className="site-backdrop-layer" width="100%" height="100%">
           <defs>
