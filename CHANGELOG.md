@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.11.2](https://github.com/Herber230/myself-app/compare/v1.11.1...v1.11.2) (2026-10-11)
+
+### Bug Fixes
+
+* **implementation-ui:** lag the backdrop in Firefox too ([#86](https://github.com/Herber230/myself-app/issues/86)) ([f8671cd](https://github.com/Herber230/myself-app/commit/f8671cd0d91ba85a0120d17c2961f68fc9781262))
+
 ## [1.11.1](https://github.com/Herber230/myself-app/compare/v1.11.0...v1.11.1) (2026-10-07)
 
 ### Bug Fixes
