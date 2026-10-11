@@ -684,6 +684,17 @@
       translate: 0 -100%;
     }
   }
+
+  /* `BackdropLag` writes how far the backdrop has crossed the viewport, and
+     the track moves as the animation would move it. */
+  @media (prefers-reduced-motion: no-preference) {
+    .site-backdrop-track {
+      translate: 0
+        calc(
+          var(--backdrop-progress, 0) * var(--backdrop-lag) * (100% + 100dvh)
+        );
+    }
+  }
 }
 
 @keyframes hero-enter {
