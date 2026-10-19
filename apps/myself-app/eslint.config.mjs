@@ -28,6 +28,30 @@ const config = [
     },
   },
   {
+    // A shared page is reached by its link alone: only its own route, under
+    // `app/(shared)/`, imports it. `@typescript-eslint/`'s copy of the rule, so
+    // the root config's `no-restricted-imports` keeps its own options.
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/app/(shared)/**'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@myself-app/implementation-ui/shared-pages',
+                '@myself-app/implementation-ui/shared-pages/*',
+              ],
+              message:
+                'A shared page is reached by its link alone; only its route under app/(shared)/ imports it.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     // A spec builds the markup it drives, and is not a page: its strings are
     // fixtures no visitor reads, and its anchors are not routes to prefetch.
     files: ['src/**/*.spec.tsx', 'src/test/**/*.tsx'],

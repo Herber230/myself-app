@@ -1,0 +1,1054 @@
+/*
+ * `/for/spooky/`'s own look: a night sky, pumpkins and friendly ghosts.
+ * Imported by that page alone, and every rule sits under `.spooky-page` (or
+ * the body that holds it), so nothing here reaches the site. The palette is
+ * fixed — a shared page follows no site theme — and every size is a Utopia
+ * step from `@entifix/style/tokens.css`.
+ */
+
+body:has(.spooky-page) {
+  background: #0d0a1c;
+}
+
+.spooky-page {
+  --spooky-night: #0d0a1c;
+  --spooky-dusk: #1e1540;
+  --spooky-ink: #ffffff;
+  --spooky-muted: #f1eff5;
+  /* A dark halo behind the words, so a motif passing under them never blurs them. */
+  --spooky-legible:
+    0 1px 2px rgb(13 10 28 / 0.95), 0 0 12px rgb(13 10 28 / 0.9);
+  --spooky-pumpkin: #ff8a1f;
+  --spooky-pumpkin-deep: #e0600b;
+  --spooky-ember: #ffd27a;
+  --spooky-ghost: #f6f3ff;
+  --spooky-moon: #b9a4ff;
+  --spooky-blush: #ff9fc2;
+  --spooky-measure: 3.2s;
+
+  position: relative;
+  isolation: isolate;
+  min-block-size: 100svh;
+  /* Both ways: the lagging backdrop reaches below the page's end. */
+  overflow: clip;
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% 0%,
+      var(--spooky-dusk),
+      transparent 70%
+    ),
+    var(--spooky-night);
+  color: var(--spooky-ink);
+  text-shadow: var(--spooky-legible);
+  font-family: var(--font-sans);
+  font-size: var(--text-step-0);
+  line-height: 1.6;
+}
+
+/* — The sky: two layers of stars, twinkling out of step. — */
+
+.spooky-page .spooky-stars,
+.spooky-page .spooky-stars::after {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 70% 10%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 40% 80%, #ddd4ff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 85% 60%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 10% 70%, #fff 50%, transparent 51%);
+  background-size: 17rem 17rem;
+  animation: spooky-twinkle 5s ease-in-out infinite alternate;
+}
+
+.spooky-page .spooky-stars::after {
+  content: '';
+  background-size: 11rem 11rem;
+  background-position: 3rem 5rem;
+  animation-delay: -2.5s;
+}
+
+/* — The backdrop: two layers of silhouettes, lagging behind the scroll — */
+
+.spooky-page .spooky-parallax {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* Quieter under the reading column, fuller in the margins. */
+  mask-image: linear-gradient(
+    90deg,
+    #000 0%,
+    rgb(0 0 0 / 0.18) 25%,
+    rgb(0 0 0 / 0.18) 75%,
+    #000 100%
+  );
+}
+
+/* Each layer moves down by its lag's share of the scroll, so it falls behind
+   the page: 0 would move with it, 1 would stand still. */
+.spooky-page .spooky-parallax-layer {
+  position: absolute;
+  inset: 0;
+  animation: spooky-lag linear both;
+  animation-timeline: scroll(root);
+}
+
+.spooky-page .spooky-parallax-layer[data-depth='far'] {
+  --spooky-lag: 0.4;
+  opacity: 0.6;
+}
+
+.spooky-page .spooky-parallax-layer[data-depth='near'] {
+  --spooky-lag: 0.2;
+  opacity: 0.95;
+}
+
+@supports not (animation-timeline: scroll()) {
+  .spooky-page .spooky-parallax-layer {
+    translate: 0
+      calc(var(--spooky-progress, 0) * var(--spooky-lag) * (100% - 100svh));
+  }
+}
+
+.spooky-page .spooky-motif {
+  position: absolute;
+  overflow: visible;
+}
+
+/* On a phone the column takes the whole width: the motifs stay small, at
+   its edges. */
+@media (width < 40rem) {
+  .spooky-page .spooky-motif {
+    scale: 0.6;
+  }
+}
+
+.spooky-page .spooky-shade {
+  fill: #3a2c6c;
+}
+
+.spooky-page .spooky-outline {
+  stroke: #6250a8;
+  stroke-width: 1.5;
+}
+
+.spooky-page .spooky-curl {
+  fill: none;
+  stroke: #54439a;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.spooky-page .spooky-curl-bold {
+  stroke-width: 4;
+}
+
+.spooky-page .spooky-glint {
+  fill: var(--spooky-ember);
+  opacity: 0.75;
+}
+
+.spooky-page .spooky-eye {
+  fill: #c6f26a;
+}
+
+.spooky-page .spooky-stitches {
+  fill: none;
+  stroke: #3a2c6c;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.spooky-page .spooky-wing {
+  fill: var(--spooky-moon);
+  opacity: 0.4;
+}
+
+.spooky-page .spooky-moonlet {
+  fill: #f6ecc9;
+  opacity: 0.7;
+}
+
+/* — The hero — */
+
+.spooky-page .spooky-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  min-block-size: 100svh;
+  padding: var(--spacing-xl) var(--spacing-s);
+  text-align: center;
+}
+
+.spooky-page .spooky-hero-ghost {
+  inline-size: clamp(6rem, 22vw, 9rem);
+  filter: drop-shadow(0 0 1.5rem rgb(185 164 255 / 0.45));
+  animation: spooky-float 4.5s ease-in-out infinite;
+}
+
+.spooky-page .spooky-greeting {
+  margin: 0;
+  color: var(--spooky-ink);
+  font-size: var(--text-step-3);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.spooky-page .spooky-intro {
+  max-inline-size: 30ch;
+  margin: 0 0 var(--spacing-xs);
+  color: var(--spooky-muted);
+  font-size: var(--text-step-1);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.spooky-page .spooky-question {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  margin: 0;
+}
+
+.spooky-page .spooky-title {
+  text-shadow: none;
+  display: block;
+  font-size: clamp(3.5rem, 14vw, 7rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  background: linear-gradient(
+    180deg,
+    var(--spooky-ember),
+    var(--spooky-pumpkin) 55%,
+    var(--spooky-pumpkin-deep)
+  );
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 1.25rem rgb(255 138 31 / 0.35));
+}
+
+.spooky-page .spooky-ask {
+  display: block;
+  max-inline-size: 22ch;
+  color: var(--spooky-ember);
+  font-size: var(--text-step-2);
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: balance;
+  text-shadow: 0 0 1.25rem rgb(255 138 31 / 0.45);
+  animation: spooky-glow 3s ease-in-out infinite alternate;
+}
+
+.spooky-page .spooky-cue {
+  margin-block-start: var(--spacing-m);
+  padding: var(--spacing-2xs) var(--spacing-s);
+  border: 1px solid rgb(185 164 255 / 0.4);
+  border-radius: 999px;
+  color: var(--spooky-moon);
+  font-size: var(--text-step-sm);
+  text-decoration: none;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.spooky-page .spooky-cue:hover {
+  background: rgb(185 164 255 / 0.12);
+  color: var(--spooky-ink);
+}
+
+/* Pumpkins rising past the hero, behind the words. */
+
+.spooky-page .spooky-drift {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.spooky-page .spooky-drifter {
+  position: absolute;
+  inset-block-end: -4rem;
+  inline-size: 2.75rem;
+  opacity: 0;
+  animation: spooky-rise 18s linear infinite;
+}
+
+.spooky-page .spooky-drifter[data-size='s'] {
+  inline-size: 1.75rem;
+  animation-duration: 24s;
+}
+
+/* — The sections — */
+
+.spooky-page .spooky-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+  max-inline-size: 40rem;
+  margin-inline: auto;
+  padding: 0 var(--spacing-s) var(--spacing-3xl);
+}
+
+.spooky-page .spooky-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-s);
+  scroll-margin-block-start: var(--spacing-l);
+}
+
+.spooky-page .spooky-section p {
+  margin: 0;
+  color: var(--spooky-muted);
+}
+
+.spooky-page .spooky-heading {
+  margin: 0;
+  color: var(--spooky-ink);
+  font-size: var(--text-step-2);
+  font-weight: 700;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.spooky-page .spooky-heading::before {
+  content: '';
+  display: block;
+  inline-size: 2.5rem;
+  block-size: 3px;
+  margin-block-end: var(--spacing-xs);
+  border-radius: 3px;
+  background: var(--spooky-pumpkin);
+}
+
+.spooky-page .spooky-quote {
+  margin: 0;
+  padding: var(--spacing-s) var(--spacing-m);
+  border-inline-start: 3px solid var(--spooky-moon);
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: rgb(185 164 255 / 0.08);
+}
+
+.spooky-page .spooky-quote p {
+  color: var(--spooky-ink);
+  font-size: var(--text-step-2);
+  font-style: italic;
+  font-weight: 600;
+}
+
+.spooky-page .spooky-quote footer {
+  color: var(--spooky-moon);
+  font-size: var(--text-step-sm);
+}
+
+/* — The ending: two ghosts on one thread, and the question again — */
+
+.spooky-page .spooky-finale {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-s);
+  padding: var(--spacing-xl) var(--spacing-s);
+  border-radius: 1.5rem;
+  background: radial-gradient(
+    closest-side at 50% 35%,
+    rgb(255 138 31 / 0.14),
+    transparent
+  );
+  text-align: center;
+}
+
+.spooky-page .spooky-finale p {
+  max-inline-size: 30ch;
+  margin: 0;
+  color: var(--spooky-ink);
+  font-size: var(--text-step-1);
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+.spooky-page .spooky-finale p + p {
+  color: var(--spooky-muted);
+  font-size: var(--text-step-0);
+}
+
+.spooky-page .spooky-finale-art {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  margin-block-end: var(--spacing-xs);
+}
+
+.spooky-page .spooky-finale-ghost {
+  inline-size: 3.5rem;
+  filter: drop-shadow(0 0 1rem rgb(185 164 255 / 0.4));
+  animation: spooky-float 4s ease-in-out infinite;
+}
+
+.spooky-page .spooky-finale-ghost:last-child {
+  transform: scaleX(-1);
+  animation-name: spooky-float-mirrored;
+  animation-delay: -2s;
+}
+
+.spooky-page .spooky-finale-thread {
+  inline-size: 5rem;
+  block-size: 1.25rem;
+  overflow: visible;
+}
+
+.spooky-page .spooky-finale-thread .spooky-seam {
+  fill: none;
+  stroke: var(--spooky-ember);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.6;
+}
+
+.spooky-page .spooky-finale-thread .spooky-stitch {
+  fill: none;
+  stroke: var(--spooky-ember);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 3px var(--spooky-ember));
+  animation: spooky-heartbeat 2.4s ease-in-out infinite;
+}
+
+.spooky-page .spooky-finale-ask {
+  text-shadow: none;
+  margin: var(--spacing-xs) 0 0;
+  font-size: clamp(2.25rem, 9vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  background: linear-gradient(
+    180deg,
+    var(--spooky-ember),
+    var(--spooky-pumpkin) 55%,
+    var(--spooky-pumpkin-deep)
+  );
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 1.25rem rgb(255 138 31 / 0.35));
+}
+
+/* Three buttons, sewn between the story and its ending. */
+.spooky-page .spooky-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-s);
+}
+
+.spooky-page .spooky-buttons .spooky-button {
+  inline-size: 1.75rem;
+}
+
+.spooky-page .spooky-buttons .spooky-button:nth-child(2) {
+  transform: rotate(25deg);
+}
+
+.spooky-page .spooky-button-face {
+  fill: #2c2150;
+}
+
+.spooky-page .spooky-button-rim {
+  fill: none;
+  stroke: #463775;
+  stroke-width: 1.5;
+}
+
+.spooky-page .spooky-button-hole {
+  fill: var(--spooky-night);
+}
+
+.spooky-page .spooky-button-thread {
+  fill: none;
+  stroke: var(--spooky-moon);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+/* — The night scene closing the page — */
+
+.spooky-page .spooky-scene {
+  display: block;
+  inline-size: 100%;
+  block-size: clamp(14rem, 30vw, 40rem);
+  /* The moon's glow and the falling snow reach past the picture's top. */
+  overflow: visible;
+  margin-block-start: calc(-1 * var(--spacing-2xl));
+}
+
+.spooky-page .spooky-scene-halo {
+  fill: rgb(255 226 160 / 0.12);
+  filter: blur(18px);
+}
+
+.spooky-page .spooky-scene-moon {
+  fill: #f6ecc9;
+  filter: drop-shadow(0 0 24px rgb(255 226 160 / 0.5));
+}
+
+.spooky-page .spooky-scene-land {
+  fill: #06040d;
+}
+
+.spooky-page .spooky-scene-curl {
+  fill: none;
+  stroke: #06040d;
+  stroke-width: 22;
+  stroke-linecap: round;
+}
+
+.spooky-page .spooky-cat-tail {
+  fill: none;
+  stroke: #06040d;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.spooky-page .spooky-cat-eye {
+  fill: #c6f26a;
+  filter: drop-shadow(0 0 3px #c6f26a);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spooky-blink 6s ease-in-out infinite;
+}
+
+.spooky-page .spooky-key {
+  fill: #c9a24b;
+  stroke: #c9a24b;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.spooky-page .spooky-key .spooky-key-hole {
+  fill: #06040d;
+  stroke: none;
+}
+
+.spooky-page .spooky-flake {
+  animation: spooky-snow 14s linear infinite;
+}
+
+.spooky-page .spooky-flake-shape line {
+  stroke: #e9e4ff;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+
+.spooky-page .spooky-bat {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spooky-flap 0.5s ease-in-out infinite alternate;
+}
+
+.spooky-page .spooky-bat-shape {
+  fill: #06040d;
+}
+
+/* — The drawings — */
+
+.spooky-page .spooky-heart {
+  fill: var(--spooky-blush);
+  filter: drop-shadow(0 0 6px rgb(255 159 194 / 0.6));
+}
+
+.spooky-page .spooky-ghost-body {
+  fill: var(--spooky-ghost);
+}
+
+.spooky-page .spooky-ghost-eye {
+  fill: #241a4a;
+}
+
+.spooky-page .spooky-ghost-cheek {
+  fill: var(--spooky-blush);
+  opacity: 0.6;
+}
+
+.spooky-page .spooky-ghost-mouth {
+  fill: none;
+  stroke: #241a4a;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.spooky-page .spooky-pumpkin-body {
+  fill: var(--spooky-pumpkin);
+}
+
+.spooky-page .spooky-pumpkin-rib {
+  fill: var(--spooky-pumpkin-deep);
+}
+
+.spooky-page .spooky-pumpkin-stem {
+  fill: #5d8a3a;
+}
+
+.spooky-page .spooky-pumpkin-face {
+  fill: var(--spooky-ember);
+}
+
+/* — The demo: two particles and the thread between them — */
+
+.spooky-page .spooky-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-s);
+  padding: var(--spacing-m) var(--spacing-s);
+  border: 1px solid rgb(185 164 255 / 0.2);
+  border-radius: 1.25rem;
+  background: rgb(30 21 64 / 0.6);
+  text-align: center;
+}
+
+.spooky-page .spooky-tap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  margin: 0;
+  padding: var(--spacing-3xs) var(--spacing-s);
+  border-radius: 999px;
+  background: rgb(255 138 31 / 0.16);
+  color: var(--spooky-ember);
+  font-size: var(--text-step-sm);
+  font-weight: 700;
+  transition: opacity 0.3s;
+}
+
+.spooky-page .spooky-section .spooky-tap {
+  color: var(--spooky-ember);
+}
+
+.spooky-page .spooky-tap[data-used] {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.spooky-page .spooky-tap-hand {
+  inline-size: 1.25em;
+  block-size: 1.25em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: spooky-tap 1.4s ease-in-out infinite;
+}
+
+.spooky-page .spooky-pair {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  inline-size: 100%;
+  max-inline-size: 26rem;
+}
+
+.spooky-page .spooky-thread {
+  position: absolute;
+  inset-block-start: 2.75rem;
+  inset-inline: 25%;
+  z-index: 0;
+  inline-size: 50%;
+  block-size: 1rem;
+  overflow: visible;
+}
+
+.spooky-page .spooky-thread path {
+  fill: none;
+  stroke: var(--spooky-moon);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 4;
+  vector-effect: non-scaling-stroke;
+  animation: spooky-flow 1.2s linear infinite;
+}
+
+.spooky-page .spooky-pair[data-measured] .spooky-thread path {
+  stroke: var(--spooky-ember);
+  stroke-dasharray: none;
+  filter: drop-shadow(0 0 4px var(--spooky-ember));
+  animation: spooky-flash 0.9s ease-out;
+}
+
+.spooky-page .spooky-particle {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  inline-size: 8.5rem;
+  padding: var(--spacing-2xs);
+  border: 0;
+  border-radius: 1rem;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.spooky-page .spooky-particle:hover:not(:disabled),
+.spooky-page .spooky-particle:focus-visible {
+  background: rgb(185 164 255 / 0.1);
+}
+
+.spooky-page .spooky-particle:focus-visible,
+.spooky-page .spooky-again:focus-visible,
+.spooky-page .spooky-cue:focus-visible {
+  outline: 2px solid var(--spooky-ember);
+  outline-offset: 3px;
+}
+
+.spooky-page .spooky-particle:disabled {
+  cursor: default;
+}
+
+.spooky-page .spooky-particle-figure {
+  position: relative;
+  display: grid;
+  inline-size: 5.5rem;
+  block-size: 5.5rem;
+}
+
+.spooky-page .spooky-particle-figure > svg {
+  grid-area: 1 / 1;
+  inline-size: 100%;
+  block-size: 100%;
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
+}
+
+/* Undecided: a ring that pulses out from each ghost, asking to be tapped. */
+.spooky-page
+  .spooky-particle[data-state='both']
+  .spooky-particle-figure::after {
+  content: '';
+  position: absolute;
+  inset: -0.4rem;
+  border: 2px solid var(--spooky-ember);
+  border-radius: 50%;
+  opacity: 0;
+  animation: spooky-ping 2s ease-out infinite;
+}
+
+.spooky-page
+  .spooky-particle[data-state='both']:nth-of-type(2)
+  .spooky-particle-figure::after {
+  animation-delay: 1s;
+}
+
+/* Both at once: each drawing fades into the other, never settling. */
+.spooky-page .spooky-particle[data-state='both'] .spooky-particle-figure {
+  animation: spooky-wobble 2.4s ease-in-out infinite;
+}
+
+.spooky-page .spooky-particle[data-state='both'] .spooky-particle-pumpkin {
+  animation: spooky-superpose var(--spooky-measure) ease-in-out infinite;
+}
+
+.spooky-page .spooky-particle[data-state='both'] .spooky-particle-ghost {
+  animation: spooky-superpose var(--spooky-measure) ease-in-out infinite reverse;
+}
+
+.spooky-page .spooky-particle[data-state='pumpkin'] .spooky-particle-ghost,
+.spooky-page .spooky-particle[data-state='ghost'] .spooky-particle-pumpkin {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.spooky-page .spooky-particle[data-state='pumpkin'] .spooky-particle-figure,
+.spooky-page .spooky-particle[data-state='ghost'] .spooky-particle-figure {
+  animation: spooky-settle 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.spooky-page .spooky-particle-name {
+  margin-block-start: var(--spacing-3xs);
+  color: var(--spooky-ink);
+  font-weight: 700;
+}
+
+.spooky-page .spooky-particle-place {
+  color: var(--spooky-muted);
+  white-space: nowrap;
+  font-size: var(--text-step-xs);
+}
+
+.spooky-page .spooky-particle-state {
+  margin-block-start: var(--spacing-3xs);
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(185 164 255 / 0.15);
+  color: var(--spooky-moon);
+  font-size: var(--text-step-xs);
+  font-weight: 600;
+}
+
+.spooky-page .spooky-particle[data-state='pumpkin'] .spooky-particle-state {
+  background: rgb(255 138 31 / 0.18);
+  color: var(--spooky-ember);
+}
+
+.spooky-page .spooky-particle[data-state='ghost'] .spooky-particle-state {
+  background: rgb(246 243 255 / 0.15);
+  color: var(--spooky-ghost);
+}
+
+.spooky-page .spooky-section .spooky-demo-result {
+  min-block-size: 3.2em;
+  color: var(--spooky-ink);
+}
+
+.spooky-page .spooky-section .spooky-demo-tally {
+  color: var(--spooky-muted);
+  font-size: var(--text-step-sm);
+}
+
+.spooky-page .spooky-again {
+  text-shadow: none;
+  padding: var(--spacing-2xs) var(--spacing-m);
+  border: 0;
+  border-radius: 999px;
+  background: var(--spooky-pumpkin);
+  color: #1b1030;
+  font: inherit;
+  font-size: var(--text-step-sm);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.spooky-page .spooky-again:hover {
+  background: var(--spooky-ember);
+}
+
+/* — Motion — */
+
+@keyframes spooky-glow {
+  to {
+    text-shadow: 0 0 2rem rgb(255 138 31 / 0.75);
+  }
+}
+
+@keyframes spooky-tap {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(0.2em) scale(0.92);
+  }
+}
+
+@keyframes spooky-ping {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes spooky-twinkle {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spooky-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-0.75rem) rotate(2deg);
+  }
+}
+
+@keyframes spooky-float-mirrored {
+  0%,
+  100% {
+    transform: scaleX(-1) translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: scaleX(-1) translateY(-0.75rem) rotate(2deg);
+  }
+}
+
+@keyframes spooky-heartbeat {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  15%,
+  45% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.75;
+  }
+}
+
+@keyframes spooky-lag {
+  to {
+    translate: 0 calc(var(--spooky-lag) * (100% - 100svh));
+  }
+}
+
+@keyframes spooky-blink {
+  0%,
+  46%,
+  50%,
+  100% {
+    transform: scaleY(1);
+  }
+  48% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes spooky-snow {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 12px 300px;
+  }
+}
+
+@keyframes spooky-flap {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.55);
+  }
+}
+
+@keyframes spooky-rise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  10%,
+  80% {
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(1.5rem, -55svh) rotate(20deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-1rem, -110svh) rotate(-10deg);
+  }
+}
+
+@keyframes spooky-superpose {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+  50% {
+    opacity: 0;
+    transform: scale(0.85);
+    filter: blur(3px);
+  }
+}
+
+@keyframes spooky-wobble {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-3px) rotate(-3deg);
+  }
+  75% {
+    transform: translateX(3px) rotate(3deg);
+  }
+}
+
+@keyframes spooky-settle {
+  from {
+    transform: scale(0.7);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes spooky-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+@keyframes spooky-flash {
+  from {
+    filter: drop-shadow(0 0 12px var(--spooky-ember));
+  }
+}
+
+/* Still, for anyone who asks for less motion: the undecided particle shows
+   both drawings at once, half-faded, instead of trading between them. */
+@media (prefers-reduced-motion: reduce) {
+  .spooky-page *,
+  .spooky-page *::before,
+  .spooky-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .spooky-page .spooky-drift {
+    display: none;
+  }
+
+  .spooky-page .spooky-parallax-layer {
+    translate: none;
+  }
+
+  .spooky-page
+    .spooky-particle[data-state='both']
+    .spooky-particle-figure::after {
+    opacity: 0.6;
+    border-style: dashed;
+  }
+
+  .spooky-page
+    .spooky-particle[data-state='both']
+    .spooky-particle-figure
+    > svg {
+    opacity: 0.55;
+  }
+
+  .spooky-page .spooky-particle[data-state='both'] .spooky-particle-pumpkin {
+    transform: translate(-18%, 8%) scale(0.8);
+  }
+
+  .spooky-page .spooky-particle[data-state='both'] .spooky-particle-ghost {
+    transform: translate(18%, -8%) scale(0.8);
+  }
+}
