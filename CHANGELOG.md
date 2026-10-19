@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.12.0](https://github.com/Herber230/myself-app/compare/v1.11.2...v1.12.0) (2026-10-19)
+
+### Features
+
+* **myself-app:** add an unlisted entanglement explainer at /for/spooky/ ([#87](https://github.com/Herber230/myself-app/issues/87)) ([2a3b72e](https://github.com/Herber230/myself-app/commit/2a3b72ec6066f1bf93582623969100e4780279c3))
+
 ## [1.11.2](https://github.com/Herber230/myself-app/compare/v1.11.1...v1.11.2) (2026-10-11)
 
 ### Bug Fixes
