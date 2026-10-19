@@ -24,6 +24,46 @@ export default [
     },
   },
   {
+    // A shared page (`src/shared-pages/`) is reached by its link alone, so the
+    // site never imports one. `@typescript-eslint/`'s copy of the rule, so the
+    // root config's `no-restricted-imports` keeps its own options.
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/shared-pages/**'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/shared-pages', '**/shared-pages/**'],
+              message:
+                'A shared page is reached by its link alone; the site never imports one.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // …and a shared page imports nothing of the site, nor entifix: it is
+    // React and its own folder, so deleting the folder deletes the page.
+    files: ['src/shared-pages/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../../**', '@entifix/*', '@myself-app/*'],
+              message:
+                'A shared page stands alone: React and the files of its own folder.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     // A spec builds the markup it drives: its strings are fixtures no visitor
     // reads.
     files: ['src/**/*.spec.tsx', 'src/test/**/*.tsx'],

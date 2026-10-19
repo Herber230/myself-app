@@ -84,11 +84,19 @@
       "import": "./dist/social/index.js",
       "default": "./dist/social/index.js"
     },
+    "./shared-pages": {
+      "@myself-app/source": "./src/shared-pages/index.ts",
+      "types": "./dist/shared-pages/index.d.ts",
+      "import": "./dist/shared-pages/index.js",
+      "default": "./dist/shared-pages/index.js"
+    },
+    "./shared-pages/*.css": "./src/shared-pages/*.css",
     "./styles/*": "./src/styles/*"
   },
   "sideEffects": [
     "./src/i18n/install.ts",
-    "./dist/i18n/install.js"
+    "./dist/i18n/install.js",
+    "./src/shared-pages/**/*.css"
   ],
   "nx": {
     "tags": [
