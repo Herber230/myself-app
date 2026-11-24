@@ -34,7 +34,7 @@ export class ProjectPattern implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -47,7 +47,7 @@ export class ProjectPattern implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,

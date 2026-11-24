@@ -24,26 +24,26 @@ const KB = 1024;
 /** Measured 178.6 KB on 2026-09-18, rounded up, plus 15 KB for the leaves. */
 const LANDING_SCRIPT_BUDGET = (179 + 15) * KB;
 /**
- * Measured 249.1 KB on 2026-10-04, rounded up, plus 10 KB of room. Since ADR
+ * Measured 288.4 KB on 2026-11-24, rounded up, plus 10 KB of room. Since ADR
  * 0016 the filter runs entifix's `load` use case in the browser: +76 KB over
- * the 161.2 KB of filtering props (ADR 0014). The filter card, its active
- * chips, the List | Chart switch and the quadrant zoom added 11.7 KB to the
- * 237.4 KB of 2026-09-27.
+ * the 161.2 KB of filtering props (ADR 0014). entifix 0.23 added 39.3 KB to
+ * the 249.1 KB of 2026-10-04 (ADR 0025): a repository's failures are typed
+ * values built on Effect's `Schema`, and the static repository raises them.
  */
-const RADAR_SCRIPT_BUDGET = (250 + 10) * KB;
+const RADAR_SCRIPT_BUDGET = (289 + 10) * KB;
 /**
  * After the first filter: the same scripts, and `/data/technology.json`.
- * Measured 253.2 KB on 2026-10-04, rounded up, plus 10 KB of room.
+ * Measured 297.5 KB on 2026-11-24, rounded up, plus 10 KB of room.
  */
-const RADAR_FILTERED_BUDGET = (254 + 10) * KB;
+const RADAR_FILTERED_BUDGET = (298 + 10) * KB;
 /**
  * The blog's home, filtering as the radar does (ADR 0016, 0017). Measured
- * 247.6 KB on 2026-10-04, and 249.8 KB after the first filter with
- * `/data/post.json`, each rounded up, plus 10 KB of room: the filter card and
- * its active chips added 9.6 KB to the 238.0 KB of 2026-09-27.
+ * 286.7 KB on 2026-11-24, and 288.2 KB after the first filter with
+ * `/data/post.json`, each rounded up, plus 10 KB of room: entifix 0.23's typed
+ * failures added 39.1 KB to the 247.6 KB of 2026-10-04 (ADR 0025).
  */
-const BLOG_SCRIPT_BUDGET = (248 + 10) * KB;
-const BLOG_FILTERED_BUDGET = (250 + 10) * KB;
+const BLOG_SCRIPT_BUDGET = (287 + 10) * KB;
+const BLOG_FILTERED_BUDGET = (289 + 10) * KB;
 
 /**
  * Measured 159.6 KB on 2026-09-25, rounded up, plus 10 KB of room: the
@@ -112,7 +112,7 @@ test("the landing page's scripts stay within the budget, and carry no entifix", 
 }) => {
   // Attached, not visible: the bar is hidden until the page scrolls.
   const { loaded, total } = await scriptsOf(page, '/en/', each =>
-    each.getByRole('banner').getByLabel('Theme', { exact: true }),
+    each.getByRole('banner').getByTitle('Theme', { exact: true }),
   );
   report('landing', total, loaded.length, LANDING_SCRIPT_BUDGET);
   expect(loaded.length).toBeGreaterThan(0);

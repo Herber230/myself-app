@@ -13,5 +13,10 @@ export type SiteTheme = (typeof SITE_THEMES)[number];
  */
 export const DEFAULT_THEME = 'blue' satisfies SiteTheme;
 
-/** Namespaced, so another app on the same origin cannot clobber it. */
-export const THEME_STORAGE_KEY = 'myself-app-theme';
+/**
+ * The cookie the chosen theme is kept in (entifix keeps a theme in a cookie,
+ * so a server could render it; this site has none, and `ThemeScript` reads it
+ * before the first paint). Namespaced, so another app on the same origin
+ * cannot clobber it.
+ */
+export const THEME_COOKIE = 'myself-app-theme';

@@ -18,9 +18,5 @@
     "out-tsc",
     "test-output"
   ],
-  "references": [
-    {
-      "path": "../static-adapter/tsconfig.lib.json"
-    }
-  ]
+  "references": []
 }

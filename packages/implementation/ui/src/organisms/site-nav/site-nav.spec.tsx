@@ -51,7 +51,7 @@ describe('the site nav', () => {
       name: 'Secciones',
       hidden: true,
     }) as [HTMLElement, HTMLElement];
-    const menu = within(inline).getByLabelText('Proyectos');
+    const menu = within(inline).getByTitle('Proyectos');
     expect(menu.closest('details')?.className).toContain('site-nav-projects');
     expect(
       within(inline)
@@ -80,7 +80,7 @@ describe('the site nav', () => {
 
   it('offers the other language for the same page, and marks its own', () => {
     renderNav({ locale: 'es', path: '/tech-radar' });
-    const menu = screen.getByLabelText('Idioma').parentElement as HTMLElement;
+    const menu = screen.getByTitle('Idioma').parentElement as HTMLElement;
     const other = within(menu).getByRole('link', {
       name: 'English',
       hidden: true,

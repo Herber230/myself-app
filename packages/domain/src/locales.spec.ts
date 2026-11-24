@@ -1,5 +1,5 @@
-import { LOCALES } from '@entifix/core';
-import { describe, expect, it } from 'vitest';
+import type { Locale } from '@entifix/core';
+import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import { isSiteLocale, SITE_LOCALES } from './locales.js';
 
@@ -8,16 +8,8 @@ describe('the site locales', () => {
     expect(SITE_LOCALES).toEqual(['en', 'es']);
   });
 
-  it('are all locales entifix knows', () => {
-    for (const locale of SITE_LOCALES) {
-      expect(LOCALES).toContain(locale);
-    }
-  });
-
-  it('do not take entifix order, which starts with the other one', () => {
-    // entifix#35: its own list is r10c's, `es` first. The site starts with
-    // English, which is why the list is declared here at all.
-    expect(SITE_LOCALES[0]).not.toBe(LOCALES[0]);
+  it("are entifix's Locale, through LocaleRegister", () => {
+    expectTypeOf<Locale>().toEqualTypeOf<(typeof SITE_LOCALES)[number]>();
   });
 
   it('recognises a site locale and nothing else', () => {

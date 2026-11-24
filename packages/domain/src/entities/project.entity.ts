@@ -17,7 +17,12 @@ import { Technology } from './technology.entity.js';
  * carrying a picture nothing renders would only rot. Its card's glyph is the
  * UI's, keyed by its id.
  */
-@entity({ key: 'project', domain: 'profile' })
+@entity({
+  key: 'project',
+  domain: 'profile',
+  // The browser's copy (`/data/project.json`) carries no overview.
+  views: { published: { omit: ['overview'] } },
+})
 export class Project implements Entity {
   #id?: EntityId;
   #name = '';
@@ -51,7 +56,7 @@ export class Project implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -65,10 +70,15 @@ export class Project implements Entity {
 
   /**
    * What its page says first (#77): Markdown per locale, read from
-   * `projects/<id>.<locale>.md` like a post's body, and optional for the same
-   * reason — the browser's copy of the projects leaves it out.
+   * `projects/<id>.<locale>.md` like a post's body. Required of the content;
+   * the `published` view leaves it out of the browser's copy.
    */
-  @accessor({ type: 'string', filterable: false, sortable: false })
+  @accessor({
+    type: 'localized',
+    required: true,
+    filterable: false,
+    sortable: false,
+  })
   get overview(): LocalizedText | undefined {
     return this.#overview;
   }

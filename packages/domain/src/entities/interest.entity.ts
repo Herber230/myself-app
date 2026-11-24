@@ -15,7 +15,11 @@ import { Post } from './post.entity.js';
  * landing page's teaser. Part of the profile, like a project. Its glyph is
  * the UI's, keyed by its id.
  */
-@entity({ key: 'interest', domain: 'profile' })
+@entity({
+  key: 'interest',
+  domain: 'profile',
+  views: { published: { omit: ['body'] } },
+})
 export class Interest implements Entity {
   #id?: EntityId;
   #name?: LocalizedText;
@@ -33,7 +37,7 @@ export class Interest implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -47,7 +51,7 @@ export class Interest implements Entity {
 
   /** One sentence: the teaser's line, and the section's lead. */
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -61,10 +65,15 @@ export class Interest implements Entity {
 
   /**
    * What its section says: Markdown per locale, read from
-   * `interests/<id>.<locale>.md` like a project's overview, and optional for
-   * the same reason — the browser's copy leaves it out.
+   * `interests/<id>.<locale>.md` like a project's overview. Required of the
+   * content; the `published` view leaves it out of the browser's copy.
    */
-  @accessor({ type: 'string', filterable: false, sortable: false })
+  @accessor({
+    type: 'localized',
+    required: true,
+    filterable: false,
+    sortable: false,
+  })
   get body(): LocalizedText | undefined {
     return this.#body;
   }

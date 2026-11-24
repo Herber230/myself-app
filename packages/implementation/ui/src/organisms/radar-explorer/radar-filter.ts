@@ -13,7 +13,7 @@ import {
   defineUrlQuery,
   type UrlQuery,
   type UrlState,
-} from '@entifix/react-integration/url';
+} from '@entifix/react-integration/url-query';
 
 import type { SiteLocale } from '../../routing/site-locales.js';
 

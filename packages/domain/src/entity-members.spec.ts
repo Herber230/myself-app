@@ -55,8 +55,6 @@ import { Technology } from './entities/technology.entity.js';
 import { TechnologyArea } from './entities/technology-area.entity.js';
 import { TechnologyUsePeriod } from './entities/technology-use-period.entity.js';
 import { SITE_LOCALES } from './locales.js';
-import { localizedMembersOf } from './localized-members.js';
-import { isLocalizedText } from './localized-text.js';
 
 const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['Profile', Profile],
@@ -98,16 +96,12 @@ const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
 const SAMPLE_DATE = new Date('2024-03-01T00:00:00.000Z');
 
 /** A value the member's declared type admits. */
-function sampleFor(
-  column: EntityFieldDescriptor,
-  localized: readonly string[],
-): unknown {
-  if (localized.includes(column.name)) {
-    return Object.fromEntries(
-      SITE_LOCALES.map(locale => [locale, `${column.name} in ${locale}`]),
-    );
-  }
+function sampleFor(column: EntityFieldDescriptor): unknown {
   switch (column.type) {
+    case 'localized':
+      return Object.fromEntries(
+        SITE_LOCALES.map(locale => [locale, `${column.name} in ${locale}`]),
+      );
     case 'id':
       return `${column.name}-1`;
     case 'number':
@@ -129,7 +123,6 @@ describe.each(ENTITIES)('%s', (name, entityConstructor) => {
     unknown
   >;
   const columns = describeEntityColumns(entityConstructor);
-  const localized = localizedMembersOf(entityConstructor);
 
   it('describes at least its id and one member of its own', () => {
     // Pinned: a `describeEntityColumns` that reported nothing would make every
@@ -144,12 +137,9 @@ describe.each(ENTITIES)('%s', (name, entityConstructor) => {
   it.each(scalars.map(column => [column.name, column] as const))(
     'reads back the %s it was given',
     (member, column) => {
-      const value = sampleFor(column, localized);
+      const value = sampleFor(column);
       instance[member] = value;
       expect(instance[member], member).toEqual(value);
-      if (localized.includes(member)) {
-        expect(isLocalizedText(instance[member]), member).toBe(true);
-      }
     },
   );
 

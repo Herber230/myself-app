@@ -4,16 +4,16 @@
  *
  * - a class that lost its `@entity()` — `extractMetaEntity` throws at the
  *   moment a page asks for it, during `next build`;
- * - a localized member marked `filterable` or `sortable`, which would have a
- *   generic comparison match an object against text and find nothing;
- * - a member listed in `LOCALIZED_MEMBERS` that no longer exists, which would
- *   make validation check a locale on nothing at all.
+ * - a localized member marked `filterable` or `sortable`: entifix queries one
+ *   locale of it (`title.en`), and no page of this site asks it to;
+ * - a text the pages render in the reader's language declared as plain text,
+ *   which validation would then never check for a missing locale.
  */
 import {
   describeEntityColumns,
   type Entity,
   type EntityConstructor,
-  type EntityId,
+  extractEntityView,
   extractMetaEntity,
   SCALAR_TYPES,
 } from '@entifix/core';
@@ -53,7 +53,6 @@ import { Tag } from './entities/tag.entity.js';
 import { Technology } from './entities/technology.entity.js';
 import { TechnologyArea } from './entities/technology-area.entity.js';
 import { TechnologyUsePeriod } from './entities/technology-use-period.entity.js';
-import { LOCALIZED_MEMBERS, localizedMembersOf } from './localized-members.js';
 
 const ENTITIES: ReadonlyArray<[string, EntityConstructor<Entity>]> = [
   ['Profile', Profile],
@@ -134,28 +133,13 @@ describe('every entity the pages read', () => {
   );
 });
 
+/** The members an entity holds a text per locale in. */
+const localizedMembersOf = (entityConstructor: EntityConstructor<Entity>) =>
+  describeEntityColumns(entityConstructor)
+    .filter(column => column.type === 'localized')
+    .map(column => column.name);
+
 describe('a localized member', () => {
-  it('is declared for every entity, so none is forgotten', () => {
-    expect(LOCALIZED_MEMBERS.size).toBe(ENTITIES.length);
-    for (const [, entityConstructor] of ENTITIES) {
-      expect(LOCALIZED_MEMBERS.has(entityConstructor)).toBe(true);
-    }
-  });
-
-  it.each(ENTITIES)(
-    '%s localizes members it really has',
-    (name, entityConstructor) => {
-      const columns = columnsOf(entityConstructor);
-      for (const member of localizedMembersOf(entityConstructor)) {
-        const column = columns.get(member);
-        expect(column, `${name}.${member}`).toBeDefined();
-        // It rides on `type: 'string'`, which is what makes it survive entifix's
-        // mapping untouched (entifix#36).
-        expect(column?.type, `${name}.${member}`).toBe('string');
-      }
-    },
-  );
-
   it.each(ENTITIES)(
     '%s never lets one be filtered or sorted',
     (name, entityConstructor) => {
@@ -184,16 +168,27 @@ describe('a localized member', () => {
     // A certificate's name and issuer are proper names.
     expect(localizedMembersOf(Certificate)).toEqual([]);
   });
+});
 
-  it('claims none for an entity the list has never heard of', () => {
-    // The adapter is generic and is handed this function, so it is asked about
-    // entities from elsewhere — entifix's own contract fixture among them.
-    // Answering "none localized" is what lets validation skip them rather than
-    // fail on them.
-    class Elsewhere implements Entity {
-      id: EntityId = 'elsewhere';
+describe('what the content must hold', () => {
+  it('is one profile, and at least one radar edition', () => {
+    expect(extractMetaEntity(Profile).cardinality).toEqual({ min: 1, max: 1 });
+    expect(extractMetaEntity(RadarEdition).cardinality).toEqual({ min: 1 });
+  });
+
+  it('ends no period before it starts', () => {
+    for (const entityConstructor of [
+      EmploymentPeriod,
+      TechnologyUsePeriod,
+      Education,
+    ]) {
+      expect(columnsOf(entityConstructor).get('end')?.notBefore).toBe('start');
     }
-    expect(localizedMembersOf(Elsewhere)).toEqual([]);
+  });
+
+  it('relates every post to a tag, and every variant to a focus', () => {
+    expect(columnsOf(Post).get('tags')?.minItems).toBe(1);
+    expect(columnsOf(CvVariant).get('focuses')?.minItems).toBe(1);
   });
 });
 
@@ -229,14 +224,31 @@ describe('the links between entities', () => {
   it('write an architecture decision in one language only', () => {
     // Records are English, translated around rather than within (ADR 0020).
     expect(localizedMembersOf(ArchitectureDecision)).toEqual([]);
-    expect(columnsOf(ArchitectureDecision).get('body')?.required).toBeFalsy();
+    expect(columnsOf(ArchitectureDecision).get('body')?.required).toBe(true);
     expect(columnsOf(ArchitectureDecision).get('summary')?.type).toBe('string');
-    expect(columnsOf(Project).get('overview')?.required).toBeFalsy();
+    expect(columnsOf(ArchitectureDecision).get('summary')?.required).toBe(true);
   });
 
-  it("leave a post's body out of what a record must hold", () => {
-    // The browser's copy of the posts carries no bodies (ADR 0017).
-    expect(columnsOf(Post).get('body')?.required).toBeFalsy();
+  it("publish the browser's copy without the Markdown bodies", () => {
+    // Required of the content, and left out of `/data/*.json` (ADR 0017).
+    for (const [entityConstructor, member] of [
+      [Post, 'body'],
+      [Project, 'overview'],
+      [Interest, 'body'],
+      [ArchitectureDecision, 'body'],
+    ] as const) {
+      const entity = entityConstructor as EntityConstructor<Entity>;
+      expect(columnsOf(entity).get(member)?.required).toBe(true);
+      expect(
+        extractEntityView(entity, 'published').omitted.map(
+          column => column.name,
+        ),
+      ).toEqual([member]);
+    }
+    // And a draft is never exported.
+    expect(extractEntityView(Post, 'published').filtering).toEqual([
+      { property: 'draft', operator: 'eq', value: false },
+    ]);
     expect(columnsOf(Post).get('title')?.required).toBe(true);
   });
 });

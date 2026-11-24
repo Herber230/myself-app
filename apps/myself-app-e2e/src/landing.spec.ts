@@ -93,7 +93,7 @@ test('a dropdown closes on Escape and on a click elsewhere', async ({
   page,
 }) => {
   await page.goto('/en/cv/');
-  const trigger = page.getByRole('banner').getByLabel('Theme', { exact: true });
+  const trigger = page.getByRole('banner').getByTitle('Theme', { exact: true });
   const menu = trigger.locator('xpath=..');
   await trigger.click();
   await expect(menu).toHaveAttribute('open');
@@ -128,7 +128,7 @@ test('the section in view is marked, and the language switch keeps it', async ({
   );
 
   const banner = page.getByRole('banner');
-  await banner.getByLabel('Language', { exact: true }).click();
+  await banner.getByTitle('Language', { exact: true }).click();
   await banner.getByRole('link', { name: 'Español' }).click();
   await page.waitForURL('/es/#projects');
 });
@@ -136,10 +136,10 @@ test('the section in view is marked, and the language switch keeps it', async ({
 test('the projects menu leads to each project’s page', async ({ page }) => {
   await page.goto('/en/cv/');
   const nav = page.getByRole('navigation', { name: 'Sections' });
-  await nav.getByLabel('Projects', { exact: true }).click();
+  await nav.getByTitle('Projects', { exact: true }).click();
   await nav.getByRole('link', { name: 'entifix' }).click();
   await page.waitForURL('/en/projects/entifix/');
-  await nav.getByLabel('Projects', { exact: true }).click();
+  await nav.getByTitle('Projects', { exact: true }).click();
   await expect(nav.getByRole('link', { name: 'entifix' })).toHaveAttribute(
     'aria-current',
     'page',
@@ -162,7 +162,7 @@ test.describe('on a phone', () => {
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(375);
 
-    const trigger = banner.getByLabel('Menu', { exact: true });
+    const trigger = banner.getByTitle('Menu', { exact: true });
     await trigger.click();
     const menu = banner.getByRole('navigation', { name: 'Sections' });
     await expect(menu.getByRole('link')).toHaveCount(8);
@@ -210,7 +210,7 @@ test.describe('with scripting off', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/en/cv/');
     const banner = page.getByRole('banner');
-    await banner.getByLabel('Language', { exact: true }).click();
+    await banner.getByTitle('Language', { exact: true }).click();
     await banner.getByRole('link', { name: 'Español' }).click();
     await page.waitForURL('/es/cv/');
     await expect(page.locator('html')).toHaveAttribute('lang', 'es');

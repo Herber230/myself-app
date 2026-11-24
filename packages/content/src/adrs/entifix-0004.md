@@ -1,4 +1,5 @@
 - Revised: 2026-09-16 by [#2](https://github.com/r10c-technologies/entifix/issues/2) — all three examples built; the engines swapped, compose chosen, mock profiles joined the pull request check
+- Revised: 2026-11-05 by [ADR 0023](/projects/entifix/adr/0023/) — the check is `change_validation.yml`, and the Playwright suite is its `E2E browser` job
 
 ## Context
 
@@ -26,7 +27,7 @@ All three are built.
 `example-workspace` needs nothing outside the page. Its repositories are
 `@entifix/testing-unit`'s in-memory double, its metadata document is answered
 locally, and its one server call — record search — is its own route. So its
-Playwright suite runs in `pull_request_check.yml` as the `e2e` job, which is in
+Playwright suite runs in `change_validation.yml` as the `E2E browser` job, which is in
 `Done`'s `needs`: a change that breaks the UI tier fails the pull request that
 made it.
 

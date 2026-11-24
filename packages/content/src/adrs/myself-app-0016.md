@@ -1,6 +1,7 @@
 - Revised: 2026-09-27 by [ADR 0018](/projects/myself-app/adr/0018/) — the gaps below are filed as entifix#38–41; `loadThroughUseCase` moved to the static adapter, and a filter is `useUrlFilter`
 - Revised: 2026-09-28 by [ADR 0019](/projects/myself-app/adr/0019/) — the incubator's packages live under `packages/entifix-incubator/`, named after it, and its React controls are a package of their own
 - Revised: 2026-10-10 by [ADR 0024](/projects/myself-app/adr/0024/) — the browser's query (`defineUrlQuery`, `useUrlFilter`, `useEntityLoad`) and the read contract are entifix's (entifix#34, #41); the incubator keeps `staticJsonSource`
+- Revised: 2026-11-24 by [ADR 0025](/projects/myself-app/adr/0025/) — `staticJsonSource` reads a data file through `staticRepositoryFromRecords` and the entity's `published` view; the radar and the blog carry entifix 0.23's typed failures, +39 KB gzipped each, in their budgets
 
 Decides the browser half of #70. Supersedes the gate of
 [ADR 0003](/projects/myself-app/adr/0003/), which measured path C

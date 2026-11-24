@@ -1,5 +1,4 @@
 import {
-  ConfigurationRepositoryTag,
   createEntityLinkResolver,
   EntityLoadRequestTag,
   type EntityRepository,
@@ -10,8 +9,6 @@ import {
   type UnpagedRequest,
 } from '@entifix/business';
 import {
-  ConfigurationClientInMemory,
-  EntifixLogicError,
   type Entity,
   type EntityConstructor,
   type EntityLoadRequest,
@@ -68,15 +65,8 @@ export type EntityRepositories = ReadonlyArray<
 export function makeContentReader(
   repositories: EntityRepositories,
 ): ContentReader {
-  // No repository here reads configuration, but the port leaves
-  // `ConfigurationRepositoryTag` on every method's requirement channel.
-  const configuration = Context.make(
-    ConfigurationRepositoryTag,
-    new ConfigurationClientInMemory({}),
-  );
   const byEntity = new Map(repositories);
   const resolver = createEntityLinkResolver(
-    configuration,
     repositories.map(
       ([entity, repository]) =>
         [entity, Context.make(EntityRepositoryTag, repository)] as const,
@@ -98,10 +88,9 @@ export function makeContentReader(
   ): Promise<TEntity[]> => {
     const repository = byEntity.get(entity as EntityConstructor<Entity>);
     if (repository === undefined) {
-      throw new EntifixLogicError(`No repository serves ${entity.name}`);
+      throw new Error(`No repository serves ${entity.name}`);
     }
     const context = Context.make(EntityRepositoryTag, repository).pipe(
-      Context.merge(configuration),
       Context.add(
         EntityLoadRequestTag,
         request as unknown as EntityLoadRequest,

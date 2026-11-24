@@ -6,29 +6,21 @@ import '../i18n/install.js';
 
 import { I18nProvider } from '@entifix/react-controls/i18next';
 import { ThemeProvider } from '@entifix/react-controls/primitives';
-import { type ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
 
 import type { SiteLocale } from '../routing/site-locales.js';
 import {
+  DEFAULT_THEME,
   SITE_THEMES,
   type SiteTheme,
-  THEME_STORAGE_KEY,
+  THEME_COOKIE,
 } from '../theme/theme.js';
 
 /**
- * The theme a page is already painted in: `ThemeScript` wrote it before
- * hydration. `ThemeProvider` writes its starting theme to <html> on mount, so
- * starting from anything else would flip the palette for a frame.
- *
- * `undefined` on the server, where nothing renders from it: the one component
- * that does, the theme menu, mounts on the client only (`SiteThemeMenu`).
+ * The site's providers. `ThemeProvider` starts from `DEFAULT_THEME` and adopts
+ * the stored choice after mount without reflecting the default first, so the
+ * palette `ThemeScript` painted before hydration is never flipped for a frame.
  */
-function paintedTheme(): string | undefined {
-  return typeof document === 'undefined'
-    ? undefined
-    : document.documentElement.dataset['theme'];
-}
-
 export function Providers({
   children,
   locale,
@@ -39,14 +31,13 @@ export function Providers({
   /** Translated by the layout, so the provider needs no catalog lookup. */
   themeLabels: Record<SiteTheme, string>;
 }) {
-  const [defaultTheme] = useState(paintedTheme);
   const themes = SITE_THEMES.map(id => ({ id, label: themeLabels[id] }));
   return (
     <I18nProvider locale={locale}>
       <ThemeProvider
         themes={themes}
-        defaultTheme={defaultTheme}
-        storageKey={THEME_STORAGE_KEY}
+        defaultTheme={DEFAULT_THEME}
+        storageKey={THEME_COOKIE}
       >
         {children}
       </ThemeProvider>

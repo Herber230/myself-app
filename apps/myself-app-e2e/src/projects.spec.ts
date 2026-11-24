@@ -1,4 +1,29 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+import { workspaceRoot } from '@nx/devkit';
 import { expect, type Page, test } from '@playwright/test';
+
+/**
+ * The decision records as the export's data file holds them: each project's
+ * `docs/adr`, synced, so every count below moves with the records.
+ */
+const RECORDS = JSON.parse(
+  readFileSync(
+    join(workspaceRoot, 'apps/myself-app/out/data/adr.json'),
+    'utf8',
+  ),
+) as { id: string; project: string; status: string; date: string }[];
+const recordsOf = (project: string, status?: string) =>
+  RECORDS.filter(
+    record =>
+      record.project === project &&
+      (status === undefined || record.status === status),
+  );
+/** The record a newest-first sort puts on top: the latest date, highest id. */
+const NEWEST_OF_THE_SITE = [...recordsOf('myself-app')]
+  .sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id))
+  .at(0)?.id;
 
 /**
  * A project's page and its decision records (#77, ADR 0020).
@@ -34,7 +59,7 @@ test('a project’s page shows its patterns, its views and every record', async 
   await expect(
     page.getByRole('heading', { level: 2, name: 'Decision archive' }),
   ).toBeVisible();
-  await expect(records(page)).toHaveCount(24);
+  await expect(records(page)).toHaveCount(recordsOf('myself-app').length);
   // A technology leads to its page on the radar.
   await page.getByRole('link', { name: 'Pulumi', exact: true }).click();
   await page.waitForURL('/en/tech-radar/pulumi/');
@@ -47,7 +72,9 @@ test('the records filter and sort in the URL, through a reload', async ({
   await page
     .getByRole('button', { name: 'Superseded in part', exact: true })
     .click();
-  await expect(records(page)).toHaveCount(2);
+  await expect(records(page)).toHaveCount(
+    recordsOf('myself-app', 'superseded-in-part').length,
+  );
   await expect(page).toHaveURL(/\?status=superseded-in-part$/);
 
   await page.getByRole('button', { name: 'Clear filters' }).click();
@@ -59,7 +86,7 @@ test('the records filter and sort in the URL, through a reload', async ({
   ).toHaveAttribute('aria-pressed', 'true');
   await expect(records(page).first()).toHaveAttribute(
     'data-adr',
-    'myself-app-0024',
+    NEWEST_OF_THE_SITE ?? '',
   );
 });
 
@@ -133,7 +160,11 @@ test('the lifecycle opens on request, stays open, and drives the explorer in pla
   await page.evaluate(() => ((window as { stayed?: boolean }).stayed = true));
   await shown.getByRole('link', { name: /^See all/ }).click();
   await expect(page).toHaveURL(/\?status=accepted#decisions$/);
-  await expect(page.getByText('Showing 4 of 4')).toBeVisible();
+  await expect(
+    page.getByText(
+      `Showing ${recordsOf('entifix', 'accepted').length} of ${recordsOf('entifix').length}`,
+    ),
+  ).toBeVisible();
   expect(
     await page.evaluate(() => (window as { stayed?: boolean }).stayed),
   ).toBe(true);

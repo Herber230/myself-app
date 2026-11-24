@@ -84,7 +84,7 @@ export class InterestMedia implements Entity {
 
   /** What it shows, for a reader who cannot see it. */
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,

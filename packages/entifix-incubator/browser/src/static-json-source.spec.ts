@@ -1,12 +1,12 @@
+import type { EntityRepository } from '@entifix/business';
 import {
-  ConfigurationRepositoryTag,
-  type EntityRepository,
-} from '@entifix/business';
-import {
-  ConfigurationClientInMemory,
+  accessor,
+  type Entity,
+  entity,
+  type EntityId,
   type EntityLoadRequest,
 } from '@entifix/core';
-import { Context, Effect } from 'effect';
+import { Effect } from 'effect';
 import { describe, expect, it } from 'vitest';
 
 import { fetchServing, Note, NOTES_FILE } from './note.fixture.js';
@@ -16,16 +16,7 @@ import { staticJsonSource } from './static-json-source.js';
 const loadFrom = (
   repository: EntityRepository,
   request: EntityLoadRequest<Note>,
-) =>
-  Effect.runPromise(
-    Effect.provide(
-      repository.load<Note>(request),
-      Context.make(
-        ConfigurationRepositoryTag,
-        new ConfigurationClientInMemory({}),
-      ),
-    ),
-  );
+) => Effect.runPromise(repository.load<Note>(request));
 
 describe('staticJsonSource', () => {
   it('builds a repository from the records the file holds', async () => {
@@ -62,6 +53,37 @@ describe('staticJsonSource', () => {
     );
     await expect(source()).rejects.toThrow();
     expect(calls).toHaveLength(2);
+  });
+
+  it('asks a record for what its view leaves out only when read whole', async () => {
+    const { fetchFile } = fetchServing('/data/note.json', NOTES_FILE);
+    expect(NOTES_FILE[0]).not.toHaveProperty('body');
+    const whole = staticJsonSource(Note, '/data/note.json', fetchFile, 'all');
+    await expect(whole()).rejects.toThrow(
+      '/data/note.json › static › body is required, and is missing',
+    );
+  });
+
+  it('reads an entity that declares no view whole', async () => {
+    @entity({ key: 'plain' })
+    class Plain implements Entity {
+      #id?: EntityId;
+      @accessor({ type: 'id' })
+      get id(): EntityId {
+        return this.#id;
+      }
+      set id(value: EntityId) {
+        this.#id = value;
+      }
+    }
+    const { fetchFile } = fetchServing('/data/plain.json', [{ id: 'one' }]);
+    const repository = await staticJsonSource(
+      Plain,
+      '/data/plain.json',
+      fetchFile,
+    )();
+    const page = await Effect.runPromise(repository.load<Plain>({}));
+    expect(page.items.map(each => each.id)).toEqual(['one']);
   });
 
   it('fails on a file that holds no list', async () => {

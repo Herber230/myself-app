@@ -1,39 +1,34 @@
+import type { EntityRepository } from '@entifix/business';
 import {
-  ConfigurationRepositoryTag,
-  EntityLoadRequestTag,
-  type EntityRepository,
-  EntityRepositoryTag,
-  loadAllUCFactory,
-  type UnpagedRequest,
-} from '@entifix/business';
-import {
-  ConfigurationClientInMemory,
   describeEntityColumns,
   deserializeEntityCollection,
-  EntifixBuildError,
   type Entity,
   type EntityConstructor,
   type EntityId,
-  type EntityLoadRequest,
+  type EntityRecordRule,
   extractMetaEntity,
+  InvalidRecords,
+  recordFieldProblems,
+  type RecordProblem,
   serializeEntityCollection,
-} from '@entifix/core';
-import { Context, Effect } from 'effect';
-
-import { makeStaticRepository } from './static-repository.js';
-import {
-  ContentValidationError,
-  type EntityRule,
   validateRecords,
-  type ValidationProblem,
-} from './validation.js';
+} from '@entifix/core';
+import { makeStaticRepository } from '@entifix/static';
+import { Effect } from 'effect';
 
 /**
- * A site's content, defined once (ADR 0018): which entity each file holds, the
- * rules it must pass, and what the browser's copy of it carries. The
- * definition validates every file and builds an entifix `EntityRepository` per
- * entity; reading them is entifix's `loadAll` and `resolveLinks` use cases',
- * over whatever repositories a reader is handed (ADR 0024).
+ * A site's content, defined once (ADR 0018, 0025): which entity each file
+ * holds, what else is read beside it, and the rules only the site knows. What
+ * a record must hold — types, required members, links, a text in every
+ * locale, counts, orders of dates — and what the browser's copy of it carries
+ * (a `published` view) are the entity's metadata, checked by entifix's
+ * `validateRecords`. The definition validates every file and builds an
+ * `@entifix/static` repository per entity; reading them is entifix's `loadAll`
+ * and `resolveLinks` use cases', over whatever repositories a reader is handed
+ * (ADR 0024).
+ *
+ * What stays here is what entifix does not ship yet: files composed into one
+ * content, links checked across them, sidecars, and the data files.
  *
  * It knows no entity of any site: the sources name them.
  */
@@ -45,15 +40,6 @@ import {
 export type MemberOf<TEntity extends Entity> = Entity extends TEntity
   ? string
   : keyof TEntity & string;
-
-/**
- * What `/data/<key>.json` carries of an entity, when not every record whole:
- * the records a request keeps, and the members left out (entifix#40).
- */
-export interface PublishedView<TEntity extends Entity> {
-  readonly request?: UnpagedRequest<TEntity>;
-  readonly omit?: readonly MemberOf<TEntity>[];
-}
 
 /**
  * The text of one localized member of one record, kept in a file beside the
@@ -73,8 +59,8 @@ export type ReadPlainSidecar = (id: string) => string | undefined;
 export interface ContentSource<TEntity extends Entity = Entity> {
   readonly entity: EntityConstructor<TEntity>;
   readonly file: string;
-  readonly rules?: readonly EntityRule[];
-  readonly published?: PublishedView<TEntity>;
+  /** The checks only the site knows, run after the metadata's own. */
+  readonly rules?: readonly EntityRecordRule[];
   /**
    * Members read from files beside the records, attached per locale before
    * validation, so a missing locale fails with its path.
@@ -89,8 +75,8 @@ export interface ContentSource<TEntity extends Entity = Entity> {
 /**
  * A source, typed for its own entity and then kept beside every other.
  *
- * A request over `Post` names `Post`'s members, which a list of sources for
- * any entity cannot check; this is the one place that forgets which entity a
+ * A sidecar of `Post` names `Post`'s members, which a list of sources for any
+ * entity cannot check; this is the one place that forgets which entity a
  * source was written for, after checking it.
  */
 export function defineSource<TEntity extends Entity>(
@@ -102,10 +88,11 @@ export function defineSource<TEntity extends Entity>(
 export interface StaticContentOptions {
   /** Every locale a localized member must carry. */
   readonly locales: readonly string[];
-  /** Which `type: 'string'` members of an entity hold a text per locale. */
-  readonly localizedMembersOf?: (
-    entity: EntityConstructor<Entity>,
-  ) => readonly string[];
+  /**
+   * The view a data file is written through, where its entity declares one;
+   * an entity that declares none is written whole. `published` by default.
+   */
+  readonly dataView?: string;
 }
 
 /** The content, validated and served. */
@@ -126,7 +113,7 @@ export interface StaticContent {
   readonly dataFiles: readonly string[];
   /**
    * The records one data file carries, serialized as entifix writes them —
-   * links as ids, dates as ISO strings — through its source's published view.
+   * links as ids, dates as ISO strings — through the entity's data view.
    */
   dataFile(name: string): Promise<unknown[]>;
 }
@@ -138,7 +125,9 @@ export function dataFileOf(entity: EntityConstructor<Entity>): string {
 }
 
 /** Thrown when the sources themselves are wrong, whatever the content. */
-export class ContentDefinitionError extends EntifixBuildError {}
+export class ContentDefinitionError extends Error {
+  override readonly name = 'ContentDefinitionError';
+}
 
 /** The ids a file declares, so a link into it can be checked. */
 function idsOf(records: readonly unknown[] = []): ReadonlySet<EntityId> {
@@ -227,20 +216,20 @@ function withSidecars(
  * Validates every file, then builds a repository over each.
  *
  * Every problem in every file is collected before anything throws, so one
- * build reports all of what is wrong with the content, not the first thing.
+ * build reports all of what is wrong with the content, not the first thing:
+ * entifix's `InvalidRecords`, naming each as `<file> › <id> › <member>`.
  */
 export function defineStaticContent(
   files: Readonly<Record<string, readonly unknown[]>>,
   sources: readonly ContentSource[],
-  { locales, localizedMembersOf = () => [] }: StaticContentOptions,
+  { locales, dataView = 'published' }: StaticContentOptions,
 ): StaticContent {
   const content = withSidecars(files, sources, locales);
-  const problems: ValidationProblem[] = [];
+  const problems: RecordProblem[] = [];
   const validated = sources.map(source => {
     const result = validateRecords(source.entity, content[source.file] ?? [], {
       source: source.file,
       locales,
-      localizedMembers: localizedMembersOf(source.entity),
       linkTargets: Object.fromEntries(
         Object.entries(linkedSources(source, sources)).map(
           ([member, target]) => [member, idsOf(content[target.file])],
@@ -252,18 +241,24 @@ export function defineStaticContent(
     return { source, records: result.records };
   });
 
-  if (problems.length > 0) throw new ContentValidationError(problems);
+  if (problems.length > 0) {
+    throw new InvalidRecords({ errors: recordFieldProblems(problems) });
+  }
 
+  const served = validated.map(({ source, records }) => {
+    const instances = Effect.runSync(
+      deserializeEntityCollection(source.entity, records),
+    ) as Entity[];
+    return {
+      source,
+      instances,
+      repository: makeStaticRepository(source.entity, instances),
+    };
+  });
   const repositories = new Map(
-    validated.map(({ source, records }) => {
-      const instances = Effect.runSync(
-        deserializeEntityCollection(source.entity, records),
-      ) as Entity[];
-      return [
-        source.entity,
-        makeStaticRepository(source.entity, instances),
-      ] as const;
-    }),
+    served.map(
+      ({ source, repository }) => [source.entity, repository] as const,
+    ),
   );
 
   const repositoryOf = (entity: EntityConstructor<Entity>) => {
@@ -276,30 +271,6 @@ export function defineStaticContent(
     return repository;
   };
 
-  // Every record a data file's view keeps, through entifix's loadAll use case.
-  const loadAll = <TEntity extends Entity>(
-    entity: EntityConstructor<TEntity>,
-    request: UnpagedRequest<TEntity> = {},
-  ): Promise<TEntity[]> =>
-    Effect.runPromise(
-      Effect.provide(
-        loadAllUCFactory<TEntity>(),
-        Context.make(
-          EntityRepositoryTag,
-          repositoryOf(entity as EntityConstructor<Entity>),
-        ).pipe(
-          Context.add(
-            ConfigurationRepositoryTag,
-            new ConfigurationClientInMemory({}),
-          ),
-          Context.add(
-            EntityLoadRequestTag,
-            request as unknown as EntityLoadRequest,
-          ),
-        ),
-      ),
-    );
-
   return {
     sources,
     records: content,
@@ -307,18 +278,18 @@ export function defineStaticContent(
     repositoryOf,
     dataFiles: sources.map(source => dataFileOf(source.entity)),
     async dataFile(name) {
-      const source = sources.find(each => dataFileOf(each.entity) === name);
-      if (source === undefined) {
+      const found = served.find(
+        ({ source }) => dataFileOf(source.entity) === name,
+      );
+      if (found === undefined) {
         throw new RangeError(`No entity is written to /data/${name}`);
       }
-      const records = await loadAll(source.entity, source.published?.request);
-      const omitted: readonly string[] = source.published?.omit ?? [];
-      return serializeEntityCollection(source.entity, records).map(record =>
-        Object.fromEntries(
-          Object.entries(record).filter(
-            ([member]) => !omitted.includes(member),
-          ),
-        ),
+      const { entity } = found.source;
+      const declared = extractMetaEntity(entity).views ?? {};
+      return serializeEntityCollection(
+        entity,
+        found.instances,
+        dataView in declared ? { view: dataView } : {},
       );
     },
   };

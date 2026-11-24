@@ -1,3 +1,5 @@
+- Revised: 2026-11-24 by [ADR 0025](/projects/myself-app/adr/0025/) — a choice is kept in a cookie (`myself-app-theme`), and `ThemeScript` stores nothing on a first visit: only a choice is stored
+
 Supersedes, in part, [ADR 0008](/projects/myself-app/adr/0008/):
 its "the hero does not move" decision and its layout of two navigation bars.
 Everything else in 0008 holds: the five sections, anchors first, the two client

@@ -1,6 +1,6 @@
 /**
- * In `node`, as `next build` renders it: no `document`, so the painted theme is
- * unknown and the children render as they are.
+ * In `node`, as `next build` renders it: no `document` and no cookie, so the
+ * children render as they are.
  */
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';

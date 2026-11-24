@@ -49,6 +49,7 @@ describe('the decision records', () => {
           status: 'superseded',
           date: '2025-01-01',
           area: 'a',
+          summary: 'A decision.',
           project: 'engine',
         },
         {
@@ -58,6 +59,7 @@ describe('the decision records', () => {
           status: 'superseded',
           date: '2025-01-02',
           area: 'a',
+          summary: 'A decision.',
           project: 'engine',
         },
         {
@@ -67,8 +69,10 @@ describe('the decision records', () => {
           status: 'accepted',
           date: '2025-01-03',
           area: 'a',
+          summary: 'A decision.',
           project: 'engine',
           supersedes: ['engine-0002', 'engine-0001'],
+          body: '## Context\n\nA third one.',
         },
       ],
     });

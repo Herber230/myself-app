@@ -1,6 +1,6 @@
 # 10. Content is checked from entity metadata, and every package ships `dist`
 
-- Status: Accepted
+- Status: Accepted; superseded in part by [ADR 0025](0025-entifix-0-23-takes-the-content-mechanics-back.md) — a text per locale is a `localized` member, and what a record must hold is checked by entifix's `validateRecords`
 - Date: 2026-09-18
 - Revised: 2026-09-24 — the app's `build` depends on `^typecheck` too, since Next 16.3 type-checks against the packages' `out-tsc/` declarations
 - Area: data

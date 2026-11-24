@@ -40,7 +40,7 @@ export class CvVariant implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -53,7 +53,7 @@ export class CvVariant implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -75,8 +75,11 @@ export class CvVariant implements Entity {
     return this.#employments;
   }
 
-  /** Which highlights of each employment it shows: those sharing a focus. */
-  @accessor({ type: 'linkCollection' })
+  /**
+   * Which highlights of each employment it shows: those sharing a focus. At
+   * least one, or the variant shows no highlight.
+   */
+  @accessor({ type: 'linkCollection', required: true, minItems: 1 })
   get focuses(): EntityCollectionLink<CvFocus> {
     return this.#focuses;
   }

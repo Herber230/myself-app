@@ -21,7 +21,7 @@ export class Tag implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,

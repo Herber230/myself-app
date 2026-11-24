@@ -4,6 +4,7 @@
 - Date: 2026-09-23
 - Area: ui
 - Read when: the hero's motion or the nav's reveal misbehaves with scripting off or reduced motion, a first visit paints a theme you did not expect, or a printed CV comes out dark
+- Revised: 2026-11-24 by [ADR 0025](0025-entifix-0-23-takes-the-content-mechanics-back.md) — a choice is kept in a cookie (`myself-app-theme`), and `ThemeScript` stores nothing on a first visit: only a choice is stored
 
 Supersedes, in part, [ADR 0008](0008-a-landing-page-of-five-static-sections.md):
 its "the hero does not move" decision and its layout of two navigation bars.

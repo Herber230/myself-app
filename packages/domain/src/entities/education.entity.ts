@@ -24,7 +24,7 @@ export class Education implements Entity {
 
   /** The level: "Master's degree", "Licenciatura". */
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -38,7 +38,7 @@ export class Education implements Entity {
 
   /** What it was in. */
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -67,7 +67,7 @@ export class Education implements Entity {
     this.#start = value;
   }
 
-  @accessor({ type: 'date', sortable: true })
+  @accessor({ type: 'date', sortable: true, notBefore: 'start' })
   get end(): Date | undefined {
     return this.#end;
   }

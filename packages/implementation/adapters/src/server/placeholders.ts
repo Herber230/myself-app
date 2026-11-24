@@ -8,9 +8,10 @@
  * nothing on the site is placeholder, and any new `TODO(#` fails outright.
  */
 import {
-  ContentValidationError,
-  type ValidationProblem,
-} from '@myself-app/entifix-incubator-static-adapter';
+  InvalidRecords,
+  recordFieldProblems,
+  type RecordProblem,
+} from '@entifix/core';
 
 import { PENDING_CONTENT } from './pending-content.js';
 
@@ -65,7 +66,7 @@ export function placeholderPaths(
 export function placeholderProblems(
   content: Readonly<Record<string, readonly unknown[]>>,
   pending: readonly string[] = PENDING_CONTENT,
-): ValidationProblem[] {
+): RecordProblem[] {
   const found = placeholderPaths(content);
   const unlisted = found
     .filter(path => !pending.includes(path))
@@ -84,11 +85,16 @@ export function placeholderProblems(
   return [...unlisted, ...written];
 }
 
-/** Throws a `ContentValidationError` naming every problem, if there is one. */
+/**
+ * Throws entifix's `InvalidRecords` naming every problem, if there is one: the
+ * failure a record that is wrong throws, so the build reports both alike.
+ */
 export function assertNoUnlistedPlaceholders(
   content: Readonly<Record<string, readonly unknown[]>>,
   pending: readonly string[] = PENDING_CONTENT,
 ): void {
   const problems = placeholderProblems(content, pending);
-  if (problems.length > 0) throw new ContentValidationError(problems);
+  if (problems.length > 0) {
+    throw new InvalidRecords({ errors: recordFieldProblems(problems) });
+  }
 }

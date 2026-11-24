@@ -2,8 +2,8 @@
  * The content definition over a small library: sources in, validated
  * repositories and data files out, and link targets found from the entities.
  */
-import { entity } from '@entifix/core';
-import { runRepository } from '@entifix/testing-unit';
+import { entity, type EntityRecordRule, InvalidRecords } from '@entifix/core';
+import { run } from '@entifix/testing-unit';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -21,8 +21,6 @@ import {
   Reprint,
   Shelf,
 } from './library.fixture.js';
-import { nonEmpty } from './rules.js';
-import { ContentValidationError } from './validation.js';
 
 const LOCALES = ['en', 'es'];
 
@@ -32,11 +30,7 @@ const SOURCES: readonly ContentSource[] = [
   defineSource({ entity: Book, file: 'books.json' }),
 ];
 
-const OPTIONS = {
-  locales: LOCALES,
-  localizedMembersOf: (entity: unknown) =>
-    entity === Book ? ['title', 'body'] : [],
-};
+const OPTIONS = { locales: LOCALES };
 
 const define = (
   content = LIBRARY,
@@ -49,9 +43,9 @@ function problemsIn(...args: Parameters<typeof define>): string[] {
   try {
     define(...args);
   } catch (error) {
-    expect(error).toBeInstanceOf(ContentValidationError);
-    return (error as ContentValidationError).problems.map(
-      problem => `${problem.path} ${problem.message}`,
+    expect(error).toBeInstanceOf(InvalidRecords);
+    return (error as InvalidRecords).errors.map(
+      problem => `${problem.pointer} ${problem.detail}`,
     );
   }
   return [];
@@ -80,7 +74,7 @@ describe('a content definition', () => {
 
   it('serves each entity from a repository, filtered and sorted', async () => {
     const content = define();
-    const page = await runRepository(
+    const page = await run(
       content.repositoryOf(Book).load<Book>({
         filtering: [{ property: 'draft', operator: 'eq', value: false }],
         sorting: [{ 0: { property: 'publishedAt', type: 'desc' } }],
@@ -92,9 +86,7 @@ describe('a content definition', () => {
   });
 
   it('parses dates and keeps links as ids', async () => {
-    const engine = await runRepository(
-      define().repositoryOf(Book).get<Book>('engine'),
-    );
+    const engine = await run(define().repositoryOf(Book).get<Book>('engine'));
     expect(engine.publishedAt).toEqual(new Date('1843-10-01'));
     expect(engine.author.id).toBe('ada');
     expect(engine.shelves.ids).toEqual(['maths', 'machines']);
@@ -149,14 +141,16 @@ describe('what the definition checks', () => {
   it('checks localized members in every locale, and runs each rule', () => {
     const records = books();
     records[1] = { ...records[1], title: { en: 'The compiler' } };
+    const shelved: EntityRecordRule = (held, report) =>
+      held.forEach((book, index) => {
+        if ((book.shelves as unknown[]).length === 0) {
+          report(index, 'shelves', 'is empty');
+        }
+      });
     expect(
       problemsIn({ ...LIBRARY, 'books.json': records }, [
         ...SOURCES.slice(0, 2),
-        defineSource({
-          entity: Book,
-          file: 'books.json',
-          rules: [nonEmpty('shelves')],
-        }),
+        defineSource({ entity: Book, file: 'books.json', rules: [shelved] }),
       ]),
     ).toEqual([
       'books.json › compiler › title is missing "es"',
@@ -164,9 +158,9 @@ describe('what the definition checks', () => {
     ]);
   });
 
-  it('treats no member as localized unless told', () => {
-    expect(problemsIn(LIBRARY, SOURCES, { locales: LOCALES })).toContain(
-      'books.json › engine › title holds a object, not text',
+  it('checks the locales it is given, and no other', () => {
+    expect(problemsIn(LIBRARY, SOURCES, { locales: ['en', 'pt'] })).toContain(
+      'books.json › engine › title is missing "pt"',
     );
   });
 
@@ -199,8 +193,9 @@ describe('the data files', () => {
     expect(dataFileOf(Keyless)).toBe('Keyless.json');
   });
 
-  it('carry every record whole, as entifix serializes it', async () => {
-    const [engine] = (await define().dataFile('book.json')) as Record<
+  it('carry every record whole where the entity declares no such view', async () => {
+    const content = define(LIBRARY, SOURCES, { ...OPTIONS, dataView: 'shelf' });
+    const [engine] = (await content.dataFile('book.json')) as Record<
       string,
       unknown
     >[];
@@ -212,21 +207,14 @@ describe('the data files', () => {
     });
   });
 
-  it('carry only what a published view keeps', async () => {
-    const content = define(LIBRARY, [
-      ...SOURCES.slice(0, 2),
-      defineSource({
-        entity: Book,
-        file: 'books.json',
-        published: {
-          request: {
-            filtering: [{ property: 'draft', operator: 'eq', value: false }],
-          },
-          omit: ['body'],
-        },
-      }),
-    ]);
-    const written = (await content.dataFile('book.json')) as Record<
+  it('carry an entity that declares no view whole', async () => {
+    expect(await define().dataFile('author.json')).toEqual(
+      LIBRARY['authors.json'],
+    );
+  });
+
+  it('carry only what the entity’s published view keeps', async () => {
+    const written = (await define().dataFile('book.json')) as Record<
       string,
       unknown
     >[];
@@ -276,8 +264,8 @@ describe('a sidecar member', () => {
       withBodies(withoutBodies());
     } catch (error) {
       problems.push(
-        ...(error as ContentValidationError).problems.map(
-          problem => `${problem.path} ${problem.message}`,
+        ...(error as InvalidRecords).errors.map(
+          problem => `${problem.pointer} ${problem.detail}`,
         ),
       );
     }

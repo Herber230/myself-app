@@ -47,7 +47,7 @@ export class Technology implements Entity {
    * for others. The radar numbers blips by the default locale's name.
    */
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -60,7 +60,7 @@ export class Technology implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,

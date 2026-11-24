@@ -38,7 +38,7 @@ describe('the theme menu', () => {
 
   it('lists the themes once hydrated, the painted one pressed', () => {
     render(withTheme(<SiteThemeMenu label="Theme" />, 'dark'));
-    expect(screen.getByLabelText('Theme')).toBeTruthy();
+    expect(screen.getByTitle('Theme')).toBeTruthy();
     expect(pressed('Dark')).toBe('true');
     expect(pressed('Blue')).toBe('false');
     expect(document.querySelector('.nav-icon path')?.getAttribute('d')).toMatch(

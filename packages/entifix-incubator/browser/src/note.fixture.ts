@@ -6,13 +6,17 @@ import {
   serializeEntityCollection,
 } from '@entifix/core';
 
-/** A fixture entity: an id, a localized title, tags and a date. */
-@entity({ key: 'note' })
+/**
+ * A fixture entity: an id, a localized title, tags, a date and a body its
+ * data file leaves out.
+ */
+@entity({ key: 'note', views: { published: { omit: ['body'] } } })
 export class Note implements Entity {
   #id?: EntityId;
   #title?: { en: string; es: string };
   #tags: string[] = [];
   #writtenAt?: Date;
+  #body?: string;
 
   @accessor({ type: 'id' })
   get id(): EntityId {
@@ -22,7 +26,7 @@ export class Note implements Entity {
     this.#id = value;
   }
 
-  @accessor({ type: 'string' })
+  @accessor({ type: 'localized' })
   get title(): { en: string; es: string } | undefined {
     return this.#title;
   }
@@ -45,6 +49,14 @@ export class Note implements Entity {
   set writtenAt(value: Date | undefined) {
     this.#writtenAt = value;
   }
+
+  @accessor({ type: 'string', required: true })
+  get body(): string | undefined {
+    return this.#body;
+  }
+  set body(value: string | undefined) {
+    this.#body = value;
+  }
 }
 
 function note(
@@ -59,6 +71,7 @@ function note(
   record.title = { en, es };
   record.tags = tags;
   record.writtenAt = new Date(writtenAt);
+  record.body = `All about ${en}.`;
   return record;
 }
 
@@ -69,7 +82,9 @@ export const NOTES = [
 ];
 
 /** The file a build writes for the notes, as `/data/note.json` would hold. */
-export const NOTES_FILE = serializeEntityCollection(Note, NOTES);
+export const NOTES_FILE = serializeEntityCollection(Note, NOTES, {
+  view: 'published',
+});
 
 /** A `fetch` answering one URL with a JSON body, and 404 for any other. */
 export function fetchServing(url: string, body: unknown) {

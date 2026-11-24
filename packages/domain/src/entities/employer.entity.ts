@@ -49,7 +49,7 @@ export class Employer implements Entity {
     this.#logoUrl = value;
   }
 
-  @accessor({ type: 'string', filterable: false, sortable: false })
+  @accessor({ type: 'localized', filterable: false, sortable: false })
   get logoAlt(): LocalizedText | undefined {
     return this.#logoAlt;
   }

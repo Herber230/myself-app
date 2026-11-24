@@ -6,11 +6,12 @@
  * in `packages/content/src/adrs/<project>-<number>.md`.
  *
  *   node tools/sync-adrs.mjs            write the copies
- *   node tools/sync-adrs.mjs --check    fail if this repository's copies drift
+ *   node tools/sync-adrs.mjs --check    fail if any copy drifts
  *
- * entifix is read from `$ENTIFIX_REPO` (default `../../r10c/entifix`, beside
- * this checkout). When it is not there, its copies are kept as they are: only
- * this repository's records are checked, since only they are always at hand.
+ * entifix's records are read from `@entifix/docs` (#88), which carries them as
+ * they stood at the installed release: the site shows the decisions of the
+ * entifix it is built on, and needs no clone of it. Both projects' records are
+ * always at hand, so both are checked.
  *
  * What a record's header says becomes its fields:
  *
@@ -30,8 +31,10 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
+  rmSync,
   writeFileSync,
 } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, join, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -41,6 +44,12 @@ const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = join(REPO_ROOT, 'packages/content/src');
 const RECORDS_FILE = join(CONTENT, 'adrs.json');
 const BODIES = join(CONTENT, 'adrs');
+
+/** `@entifix/docs/records`: entifix's `docs/adr`, at the installed release. */
+const ENTIFIX_RECORDS = join(
+  dirname(createRequire(import.meta.url).resolve('@entifix/docs/package.json')),
+  'records',
+);
 
 /** The repositories whose records the site shows, and where each lives. */
 export const PROJECTS = [
@@ -52,10 +61,7 @@ export const PROJECTS = [
   {
     id: 'entifix',
     github: 'r10c-technologies/entifix',
-    directory: join(
-      resolve(REPO_ROOT, process.env.ENTIFIX_REPO ?? '../../r10c/entifix'),
-      'docs/adr',
-    ),
+    directory: ENTIFIX_RECORDS,
   },
 ];
 
@@ -252,23 +258,11 @@ const formatted = async (text, path) =>
     embeddedLanguageFormatting: 'off',
   });
 
-/**
- * Every project's records as they should be written: read from its repository
- * when it is at hand, else as already copied.
- */
+/** Every project's records as they should be written. */
 async function expected() {
-  const existing = existsSync(RECORDS_FILE)
-    ? JSON.parse(readFileSync(RECORDS_FILE, 'utf8'))
-    : [];
   const records = [];
   const bodies = new Map();
-  const skipped = [];
   for (const project of PROJECTS) {
-    if (!existsSync(project.directory)) {
-      skipped.push(project.id);
-      records.push(...existing.filter(record => record.project === project.id));
-      continue;
-    }
     for (const { record, body } of readProject(project)) {
       records.push(record);
       bodies.set(
@@ -281,31 +275,36 @@ async function expected() {
     json: await formatted(JSON.stringify(records), RECORDS_FILE),
     records,
     bodies,
-    skipped,
   };
 }
 
-/** The differences between this repository's copies and its records. */
-export async function drift(project = 'myself-app') {
+/**
+ * The differences between the copies and the records: this repository's
+ * `docs/adr` and the installed `@entifix/docs`, record by record, plus any
+ * copy left behind by a record that is gone.
+ */
+export async function drift() {
   const { records, bodies } = await expected();
   const problems = [];
   const written = existsSync(RECORDS_FILE)
-    ? JSON.parse(readFileSync(RECORDS_FILE, 'utf8')).filter(
-        record => record.project === project,
-      )
+    ? JSON.parse(readFileSync(RECORDS_FILE, 'utf8'))
     : [];
-  const wanted = records.filter(record => record.project === project);
-  if (JSON.stringify(written) !== JSON.stringify(wanted)) {
-    problems.push(
-      `adrs.json does not hold ${project}'s records as docs/adr has them`,
-    );
+  for (const { id: project } of PROJECTS) {
+    const mine = list => list.filter(record => record.project === project);
+    if (JSON.stringify(mine(written)) !== JSON.stringify(mine(records))) {
+      problems.push(`adrs.json does not hold ${project}'s records as they are`);
+    }
   }
-  for (const record of wanted) {
+  for (const record of records) {
     const path = join(BODIES, `${record.id}.md`);
     const copy = existsSync(path) ? readFileSync(path, 'utf8') : undefined;
     if (copy !== bodies.get(record.id))
       problems.push(`adrs/${record.id}.md is out of date`);
   }
+  const left = readdirSync(BODIES).filter(
+    file => !bodies.has(file.replace(/\.md$/, '')),
+  );
+  for (const file of left) problems.push(`adrs/${file} names no record`);
   return problems;
 }
 
@@ -318,14 +317,15 @@ async function main() {
     }
     return;
   }
-  const { json, records, bodies, skipped } = await expected();
+  const { json, records, bodies } = await expected();
   mkdirSync(BODIES, { recursive: true });
+  for (const file of readdirSync(BODIES)) {
+    if (!bodies.has(file.replace(/\.md$/, ''))) rmSync(join(BODIES, file));
+  }
   writeFileSync(RECORDS_FILE, json);
   for (const [id, body] of bodies)
     writeFileSync(join(BODIES, `${id}.md`), body);
-  console.log(
-    `${records.length} records written${skipped.length > 0 ? `; kept the copies of ${skipped.join(', ')}, not found` : ''}`,
-  );
+  console.log(`${records.length} records written`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) await main();

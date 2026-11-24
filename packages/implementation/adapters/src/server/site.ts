@@ -5,7 +5,7 @@ import { buildSiteContent, type SiteContent } from './site-content.js';
 
 /**
  * The site's content, built from the content package and validated: a record
- * that is wrong throws a `ContentValidationError`, and so does placeholder
+ * that is wrong throws a `InvalidRecords`, and so does placeholder
  * text not listed in `pending-content.ts` (#26). The app builds it once per
  * bundle, in its composition root, so `next build` stops on either.
  */

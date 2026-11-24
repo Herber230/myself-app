@@ -41,9 +41,14 @@
   }
 
   /* One row: the brand, then the tools. On a narrow screen the links live in
-     the menu panel; on a wide one they sit inline between the two. */
+     the menu panel; on a wide one they sit inline between the two.
+
+     Its menus drop over the page, so the bar stacks one step above what sticks
+     in the page (the CV's toolbar, at entifix's `--z-sticky`): a panel's own
+     `--z-dropdown` only orders it inside the bar. */
   .site-nav {
     position: relative;
+    z-index: calc(var(--z-sticky) + 1);
   }
 
   .site-nav-bar {
@@ -232,7 +237,7 @@
     position: fixed;
     inset-inline: 0;
     top: 0;
-    z-index: 50;
+    z-index: calc(var(--z-sticky) + 1);
     background-color: color-mix(
       in srgb,
       var(--color-surface-elevated) 82%,
@@ -975,7 +980,7 @@
   .cv-toolbar {
     position: sticky;
     top: var(--spacing-xs);
-    z-index: 50;
+    z-index: var(--z-sticky);
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
@@ -3622,7 +3627,7 @@
     .outline-layout-aside {
       position: sticky;
       top: 0;
-      z-index: 20;
+      z-index: var(--z-sticky);
       margin-inline: calc(-1 * var(--spacing-s));
       padding-inline: var(--spacing-s);
       border-bottom: 1px solid var(--color-border);

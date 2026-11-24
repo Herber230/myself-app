@@ -3,7 +3,11 @@ import { accessor, type Entity, entity, type EntityId } from '@entifix/core';
 import type { LocalizedText } from '../localized-text.js';
 
 /** Who the site is about. Exactly one record. */
-@entity({ key: 'profile', domain: 'profile' })
+@entity({
+  key: 'profile',
+  domain: 'profile',
+  cardinality: { min: 1, max: 1 },
+})
 export class Profile implements Entity {
   #id?: EntityId;
   #firstName = '';
@@ -49,7 +53,7 @@ export class Profile implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -63,7 +67,7 @@ export class Profile implements Entity {
 
   /** One line under the name in the hero (ADR 0008), when there is one. */
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: false,
     filterable: false,
     sortable: false,
@@ -76,7 +80,7 @@ export class Profile implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -98,7 +102,7 @@ export class Profile implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -112,7 +116,7 @@ export class Profile implements Entity {
 
   /** Where Herber works from, as the CV's header states it: a recruiter filters on it. */
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,

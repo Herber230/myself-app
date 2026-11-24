@@ -1,7 +1,7 @@
 /**
  * Placeholder text is listed, and the list only shrinks (#26).
  */
-import { ContentValidationError } from '@myself-app/entifix-incubator-static-adapter';
+import { InvalidRecords } from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
 import { PENDING_CONTENT } from './pending-content.js';
@@ -110,7 +110,7 @@ describe('the pending list', () => {
 
   it('fails the build with every problem', () => {
     expect(() => assertNoUnlistedPlaceholders(content, [])).toThrow(
-      ContentValidationError,
+      InvalidRecords,
     );
   });
 });
