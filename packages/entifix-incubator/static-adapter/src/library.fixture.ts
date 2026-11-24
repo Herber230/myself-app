@@ -64,7 +64,16 @@ export class Publisher implements Entity {
   }
 }
 
-@entity({ key: 'book' })
+@entity({
+  key: 'book',
+  // What a data file carries of the books: no draft, and no body.
+  views: {
+    published: {
+      filtering: [{ property: 'draft', operator: 'eq', value: false }],
+      omit: ['body'],
+    },
+  },
+})
 export class Book implements Entity {
   #id?: EntityId;
   #title?: Localized;
@@ -82,7 +91,7 @@ export class Book implements Entity {
     this.#id = value;
   }
 
-  @accessor({ type: 'string', filterable: false, sortable: false })
+  @accessor({ type: 'localized' })
   get title(): Localized | undefined {
     return this.#title;
   }
@@ -90,7 +99,7 @@ export class Book implements Entity {
     this.#title = value;
   }
 
-  @accessor({ type: 'string', filterable: false, sortable: false })
+  @accessor({ type: 'localized' })
   get body(): Localized | undefined {
     return this.#body;
   }

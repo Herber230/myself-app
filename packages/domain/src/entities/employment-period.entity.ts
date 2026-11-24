@@ -40,7 +40,7 @@ export class EmploymentPeriod implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -53,7 +53,7 @@ export class EmploymentPeriod implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -74,7 +74,7 @@ export class EmploymentPeriod implements Entity {
   }
 
   /** Absent while it is the current role. */
-  @accessor({ type: 'date', sortable: true })
+  @accessor({ type: 'date', sortable: true, notBefore: 'start' })
   get end(): Date | undefined {
     return this.#end;
   }

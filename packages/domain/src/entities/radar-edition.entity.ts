@@ -4,8 +4,9 @@ import { accessor, type Entity, entity, type EntityId } from '@entifix/core';
  * A redraw of the radar (#39). A blip's movement — new, moved in, moved out —
  * is measured against the latest edition's `date`, so the radar only changes
  * shape when an edition is added, never merely because a build ran later.
+ * So there is at least one.
  */
-@entity({ key: 'radar-edition', domain: 'radar' })
+@entity({ key: 'radar-edition', domain: 'radar', cardinality: { min: 1 } })
 export class RadarEdition implements Entity {
   #id?: EntityId;
   #date?: Date;

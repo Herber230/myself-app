@@ -7,9 +7,5 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["dist", "out-tsc", "test-output"],
-  "references": [
-    {
-      "path": "../static-adapter"
-    }
-  ]
+  "references": []
 }

@@ -39,7 +39,6 @@ import { Technology } from '../entities/technology.entity.js';
 import { TechnologyArea } from '../entities/technology-area.entity.js';
 import { TechnologyUsePeriod } from '../entities/technology-use-period.entity.js';
 import { SITE_LOCALES } from '../locales.js';
-import { localizedMembersOf } from '../localized-members.js';
 import {
   statusMatchesSupersession,
   supersedesWithinProject,
@@ -71,6 +70,7 @@ const BODIES: Record<string, { en: string; es: string }> = {
 const DECISION_BODIES: Record<string, string> = {
   'engine-0001': '## Context\n\nA first decision.',
   'engine-0002': '## Context\n\nA second one.',
+  'library-0001': '## Context\n\nShelves.',
 };
 
 export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
@@ -516,6 +516,7 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
       status: 'superseded-in-part',
       date: '2025-01-01',
       area: 'platform',
+      summary: 'One adapter for everything.',
       project: 'engine',
       supersedes: [],
     },
@@ -526,6 +527,7 @@ export const FIXTURE_RECORDS: Readonly<Record<string, Records>> = {
       status: 'proposed',
       date: '2025-03-01',
       area: 'data',
+      summary: 'Shelves follow subjects.',
       project: 'library',
       supersedes: [],
     },
@@ -639,8 +641,7 @@ const SOURCES = [
     entity: Project,
     file: 'projects.json',
     sidecars: {
-      overview: (id, locale) =>
-        id === 'engine' ? `The engine, in ${locale}.` : undefined,
+      overview: (id, locale) => `The ${id}, in ${locale}.`,
     },
   }),
   defineSource({ entity: ProjectPattern, file: 'project-patterns.json' }),
@@ -691,7 +692,7 @@ export function fixtureContent(
   const files = defineStaticContent(
     { ...FIXTURE_RECORDS, ...overrides },
     SOURCES,
-    { locales: SITE_LOCALES, localizedMembersOf },
+    { locales: SITE_LOCALES },
   );
   return makeContentReader(files.repositories);
 }

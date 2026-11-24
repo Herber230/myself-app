@@ -49,7 +49,7 @@ export class TechnologyUsePeriod implements Entity {
   }
 
   /** Absent while this is where the technology still sits. */
-  @accessor({ type: 'date', sortable: true })
+  @accessor({ type: 'date', sortable: true, notBefore: 'start' })
   get end(): Date | undefined {
     return this.#end;
   }

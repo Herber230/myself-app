@@ -3,7 +3,7 @@
  * built, once per bundle, from `@myself-app/implementation-adapters`.
  *
  * Importing this module is what validates the content: a record that is wrong
- * throws a `ContentValidationError` here, and `next build` stops on it. So does
+ * throws a `InvalidRecords` here, and `next build` stops on it. So does
  * placeholder text not listed in the adapters' `pending-content.ts` (#26).
  */
 import { siteContent } from '@myself-app/implementation-adapters/server';

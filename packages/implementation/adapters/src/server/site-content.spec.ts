@@ -5,6 +5,7 @@
  * rest break it on purpose, one rule at a time, and check the build would stop
  * with the path to what is wrong.
  */
+import { InvalidRecords } from '@entifix/core';
 import { CONTENT as PACKAGE_CONTENT } from '@myself-app/content';
 import {
   ContactChannel,
@@ -15,7 +16,6 @@ import {
 } from '@myself-app/domain';
 import {
   type ContentSource,
-  ContentValidationError,
   defineSource,
   type ReadSidecar,
 } from '@myself-app/entifix-incubator-static-adapter';
@@ -42,9 +42,9 @@ function problemsIn(
   try {
     buildSiteContent(content, sources);
   } catch (error) {
-    expect(error).toBeInstanceOf(ContentValidationError);
-    return (error as ContentValidationError).problems.map(
-      problem => `${problem.path} ${problem.message}`,
+    expect(error).toBeInstanceOf(InvalidRecords);
+    return (error as InvalidRecords).errors.map(
+      problem => `${problem.pointer} ${problem.detail}`,
     );
   }
   return [];
@@ -80,7 +80,7 @@ describe('the content the site ships', () => {
   });
 });
 
-describe('a rule only this site knows', () => {
+describe('a rule of the content', () => {
   it('stops a second channel of the same type', () => {
     const channels = records('contact-channels.json');
     channels.push({ ...channels[0], id: 'email-again' });
@@ -103,17 +103,15 @@ describe('a rule only this site knows', () => {
       problemsIn(
         withFile('profile.json', [...profile, { ...profile[0], id: 'twin' }]),
       ),
-    ).toEqual([
-      'profile.json › herber-colop holds 2 records, where one is expected',
-    ]);
+    ).toEqual(['profile.json › Profile has 2 records, and takes at most 1']);
     expect(problemsIn(withFile('profile.json', []))).toEqual([
-      'profile.json › #0 holds 0 records, where one is expected',
+      'profile.json › Profile has 0 records, and needs at least 1',
     ]);
   });
 
   it('stops a radar with no edition to measure movement against', () => {
     expect(problemsIn(withFile('radar-editions.json', []))).toEqual([
-      'radar-editions.json › #0 holds no record, where at least one is expected',
+      'radar-editions.json › RadarEdition has 0 records, and needs at least 1',
     ]);
   });
 });
@@ -133,8 +131,8 @@ describe('a rule for the CV (ADR 0012)', () => {
     const { focuses: _focuses, ...withoutFocuses } = variants[1];
     variants[1] = withoutFocuses;
     expect(problemsIn(withFile('cv-variants.json', variants))).toEqual([
-      `cv-variants.json › ${String(variants[0].id)} › focuses is empty, so the variant shows no highlight`,
-      `cv-variants.json › ${String(variants[1].id)} › focuses is empty, so the variant shows no highlight`,
+      `cv-variants.json › ${String(variants[0].id)} › focuses holds 0 items, and needs at least 1`,
+      `cv-variants.json › ${String(variants[1].id)} › focuses is required, and is missing`,
     ]);
   });
 
@@ -246,7 +244,7 @@ describe('a post', () => {
     posts[1] = { ...posts[1], tags: ['nowhere'], technologies: ['cobol'] };
     const problems = problemsIn(withFile('posts.json', posts));
     expect(problems).toContain(
-      'posts.json › entifix-in-the-browser › tags is empty, so the post relates to nothing',
+      'posts.json › entifix-in-the-browser › tags holds 0 items, and needs at least 1',
     );
     expect(problems.join('\n')).toContain('a-static-site-on-s3 › tags');
     expect(problems.join('\n')).toContain('a-static-site-on-s3 › technologies');

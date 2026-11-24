@@ -52,7 +52,7 @@ export class LayerPackage implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: false,
     filterable: false,
     sortable: false,

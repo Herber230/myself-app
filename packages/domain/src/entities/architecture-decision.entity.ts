@@ -36,7 +36,12 @@ export type DecisionStatus = (typeof DECISION_STATUSES)[number];
  * `supersedes` names the records this one replaces, in whole or in part. What
  * supersedes a record is the other side of the same link, found by a filter.
  */
-@entity({ key: 'adr', domain: 'engineering' })
+@entity({
+  key: 'adr',
+  domain: 'engineering',
+  // The explorer filters and sorts; it reads no body.
+  views: { published: { omit: ['body'] } },
+})
 export class ArchitectureDecision implements Entity {
   #id?: EntityId;
   #number = 0;
@@ -147,7 +152,7 @@ export class ArchitectureDecision implements Entity {
    * Its decision in a few lines, one point per line: the lead of each bullet
    * of its `Decision` section, as the sync script reads it.
    */
-  @accessor({ type: 'string' })
+  @accessor({ type: 'string', required: true })
   get summary(): string | undefined {
     return this.#summary;
   }
@@ -155,7 +160,8 @@ export class ArchitectureDecision implements Entity {
     this.#summary = value;
   }
 
-  @accessor({ type: 'string' })
+  /** Its Markdown, copied from its repository's `docs/adr` (ADR 0020). */
+  @accessor({ type: 'string', required: true })
   get body(): string | undefined {
     return this.#body;
   }

@@ -14,16 +14,24 @@ import { Technology } from './technology.entity.js';
  * One blog post (ADR 0017). Its id is its slug: `/[locale]/blog/<id>/`.
  *
  * `body` is Markdown per locale, read from `posts/<id>.<locale>.md` by the
- * composition root rather than written into `posts.json`. It is **not**
- * `required` here: the browser's copy of the posts (`/data/post.json`) leaves
- * the bodies out, and a record read back from it must still be a post. The
- * build requires it instead, as a rule of the site.
+ * composition root rather than written into `posts.json`. The `published`
+ * view — the browser's copy, `/data/post.json` — leaves the bodies out and
+ * keeps no draft, and a record read through it need not carry what it omits.
  *
  * `tags` and `technologies` are collections, so neither may be `filterable`
  * (entifix#34, #36): the blog's filter builds its `in` over them in code, as
  * the radar does over `areas`.
  */
-@entity({ key: 'post', domain: 'blog' })
+@entity({
+  key: 'post',
+  domain: 'blog',
+  views: {
+    published: {
+      filtering: [{ property: 'draft', operator: 'eq', value: false }],
+      omit: ['body'],
+    },
+  },
+})
 export class Post implements Entity {
   #id?: EntityId;
   #title?: LocalizedText;
@@ -44,7 +52,7 @@ export class Post implements Entity {
   }
 
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -58,7 +66,7 @@ export class Post implements Entity {
 
   /** What a preview shows: written, never cut from the body. */
   @accessor({
-    type: 'string',
+    type: 'localized',
     required: true,
     filterable: false,
     sortable: false,
@@ -70,7 +78,12 @@ export class Post implements Entity {
     this.#summary = value;
   }
 
-  @accessor({ type: 'string', filterable: false, sortable: false })
+  @accessor({
+    type: 'localized',
+    required: true,
+    filterable: false,
+    sortable: false,
+  })
   get body(): LocalizedText | undefined {
     return this.#body;
   }
@@ -108,7 +121,8 @@ export class Post implements Entity {
     this.#draft = value;
   }
 
-  @accessor({ type: 'linkCollection' })
+  /** At least one: tags are what relate posts to each other. */
+  @accessor({ type: 'linkCollection', required: true, minItems: 1 })
   get tags(): EntityCollectionLink<Tag> {
     return this.#tags;
   }

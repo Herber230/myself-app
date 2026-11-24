@@ -1,20 +1,19 @@
+import type { EntityRecordRule } from '@entifix/core';
+
 /**
- * The content rules only this site knows (ADR 0018), which neither entity
- * metadata nor the static adapter's factories can express. The domain says
- * what is valid; `implementation/adapters` applies them when content loads.
+ * The content rules only this site knows (ADR 0018), which entity metadata
+ * cannot express — a count, a required member, an order of dates and a
+ * minimum of items are metadata (ADR 0025). The domain says what is valid;
+ * `implementation/adapters` applies them when content loads.
  */
 
 /**
  * A check over every record of one entity, reporting each problem against a
- * record and, when it has one, a member. Whatever validates content runs it:
- * the static adapter accepts any function of this shape as a source's rule.
+ * record and, when it has one, a member: entifix's `EntityRecordRule`, run by
+ * `validateRecords` after the metadata's own checks.
  */
-export type ContentRule = (
-  records: ReadonlyArray<Readonly<Record<string, unknown>>>,
-  report: (index: number, member: string | undefined, message: string) => void,
-) => void;
+export type ContentRule = EntityRecordRule;
 
-/** At most one `ContactChannel` per type: the keys the reference app had. */
 export const oneChannelPerType: ContentRule = (records, report) => {
   const seen = new Set<unknown>();
   records.forEach((record, index) => {
