@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.13.0](https://github.com/Herber230/myself-app/compare/v1.12.0...v1.13.0) (2026-11-24)
+
+### Features
+
+* **myself-app:** add an unlisted one-month page at /for/spooky/one-month/ ([#90](https://github.com/Herber230/myself-app/issues/90)) ([f095073](https://github.com/Herber230/myself-app/commit/f0950735f788fef766deaa791c4505a85f6a0f55))
+
 ## [1.12.0](https://github.com/Herber230/myself-app/compare/v1.11.2...v1.12.0) (2026-10-19)
 
 ### Features
