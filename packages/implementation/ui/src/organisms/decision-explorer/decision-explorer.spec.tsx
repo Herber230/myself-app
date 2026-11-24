@@ -31,6 +31,8 @@ import {
 
 let explorer: () => React.JSX.Element;
 let numbers: string[];
+/** The records superseded in part, in number order: from the content. */
+let supersededInPart: string[];
 
 beforeAll(async () => {
   const page = await loadProjectPage(SITE_CONTENT, 'myself-app');
@@ -38,6 +40,10 @@ beforeAll(async () => {
   const t = siteT('en');
   const rows = decisionRowsOf(decisions, 'en', t);
   numbers = rows.map(row => row.number);
+  supersededInPart = decisions
+    .filter(decision => decision.status === 'superseded-in-part')
+    .map(decision => String(decision.id))
+    .sort();
   const options = decisionOptionsOf(decisions, t);
   explorer = () => (
     <SourcesProvider sources={browserSources}>
@@ -86,10 +92,14 @@ describe('a project’s decision records', () => {
       '/en/projects/myself-app/?status=superseded-in-part',
     );
     render(explorer());
-    await waitFor(() =>
-      expect(shownRecords()).toEqual(['myself-app-0008', 'myself-app-0018']),
-    );
-    expect(screen.getByText(`Showing 2 of ${numbers.length}`)).toBeTruthy();
+    // Pinned: a status no record holds would filter nothing.
+    expect(supersededInPart).toContain('myself-app-0018');
+    await waitFor(() => expect(shownRecords()).toEqual(supersededInPart));
+    expect(
+      screen.getByText(
+        `Showing ${supersededInPart.length} of ${numbers.length}`,
+      ),
+    ).toBeTruthy();
   });
 
   it('are ordered by a sort chosen, which clearing the filters keeps', async () => {

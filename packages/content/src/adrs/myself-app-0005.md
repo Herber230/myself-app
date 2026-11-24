@@ -1,5 +1,6 @@
 - Revised: 2026-09-18 by #23 — the locale list lives in `@myself-app/domain`, and `site-locales.ts` re-exports it
 - Revised: 2026-09-28 by [ADR 0019](/projects/myself-app/adr/0019/) — the default locale is routing, declared in `@myself-app/implementation-ui/routing`; the list stays in the domain
+- Revised: 2026-11-24 by [ADR 0025](/projects/myself-app/adr/0025/) — entifix declares no locale of its own: the domain narrows its `Locale` through `LocaleRegister`, and the UI declares `SITE_LOCALES` and the English default to entifix as it installs the catalogs
 
 ## Context
 

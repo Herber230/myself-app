@@ -4,6 +4,7 @@
 - Date: 2026-10-10
 - Area: data
 - Read when: a use case is about to take the static adapter's types, content is about to come from somewhere other than the JSON files, `loadAll` asks a repository for a page of `Number.MAX_SAFE_INTEGER` records, a filter in the browser answers differently from the page it filters, or code is about to move into entifix
+- Revised: 2026-11-24 by [ADR 0025](0025-entifix-0-23-takes-the-content-mechanics-back.md) — the hand-off it lists happened: the static repository, metadata constraints and named views are entifix's (entifix#37, #39, #40)
 
 Supersedes, in part, [ADR 0018](0018-the-incubator-owns-content-mechanics.md):
 its read half — `StaticContent`'s `load`, `loadAll`, `resolve` and `ids`, the

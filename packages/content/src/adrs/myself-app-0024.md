@@ -1,3 +1,5 @@
+- Revised: 2026-11-24 by [ADR 0025](/projects/myself-app/adr/0025/) — the hand-off it lists happened: the static repository, metadata constraints and named views are entifix's (entifix#37, #39, #40)
+
 Supersedes, in part, [ADR 0018](/projects/myself-app/adr/0018/):
 its read half — `StaticContent`'s `load`, `loadAll`, `resolve` and `ids`, the
 static link resolver, `loadThroughUseCase` in the static adapter, the URL
