@@ -1,0 +1,671 @@
+/*
+ * `/for/spooky/one-month/`'s own look: Spooky's night, warming into a salsa
+ * night. Imported by that page alone, and every rule sits under `.month-page`
+ * (or the body that holds it), so nothing here reaches the site. The palette
+ * is fixed: a shared page follows no site theme.
+ */
+
+body:has(.month-page) {
+  background: #0d0a1c;
+  overflow: hidden;
+}
+
+.month-page {
+  --month-night: #0d0a1c;
+  --month-dusk: #1e1540;
+  --month-ink: #ffffff;
+  --month-muted: #e6e1f2;
+  --month-ghost: #f6f3ff;
+  --month-moon: #b9a4ff;
+  --month-blush: #ff9fc2;
+  --month-ember: #ffd27a;
+  --month-salsa: #ff5a5f;
+  --month-conga: #c8683f;
+  --month-conga-shine: rgb(255 255 255 / 0.16);
+  --month-skin: #f3dcc0;
+  --month-eye: #1b1530;
+  --month-rim: #8a3f22;
+  --month-big: clamp(2rem, 1.7rem + 1.6vw, 2.6rem);
+  --month-legible:
+    0 1px 2px rgb(13 10 28 / 0.95), 0 0 12px rgb(13 10 28 / 0.85);
+
+  color: var(--month-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-step-0);
+  line-height: 1.55;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.month-page :where(h1, p) {
+  margin: 0;
+}
+
+/* — The stage: a fixed screen, one card at a time — */
+
+.month-page .month-stage {
+  position: fixed;
+  inset: 0;
+  isolation: isolate;
+  display: grid;
+  padding: calc(env(safe-area-inset-top) + 28px) 16px
+    calc(env(safe-area-inset-bottom) + 24px);
+}
+
+.month-page .month-symbols {
+  position: absolute;
+}
+
+/* — The sky, and the warm room it turns into — */
+
+.month-page .month-sky,
+.month-page .month-room {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.month-page .month-sky {
+  background:
+    radial-gradient(1.5px 1.5px at 20% 30%, #fff 50%, transparent 51%) 0 0 /
+      17rem 17rem,
+    radial-gradient(1px 1px at 70% 10%, #fff 50%, transparent 51%) 0 0 / 17rem
+      17rem,
+    radial-gradient(1px 1px at 40% 80%, #ddd4ff 50%, transparent 51%) 0 0 /
+      11rem 11rem,
+    radial-gradient(
+      ellipse 90% 55% at 50% 0%,
+      var(--month-dusk),
+      transparent 70%
+    ),
+    var(--month-night);
+}
+
+.month-page .month-room {
+  opacity: 0;
+  transition: opacity 1.6s ease;
+  background:
+    radial-gradient(
+      ellipse 70% 45% at 50% 100%,
+      rgb(255 90 95 / 0.45),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 50% 0%,
+      rgb(255 138 31 / 0.35),
+      transparent 70%
+    ),
+    linear-gradient(#2a0f22, #3a1420);
+}
+
+.month-page .month-lights {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: -1;
+  inline-size: 100%;
+  block-size: 64px;
+  opacity: 0;
+  transition: opacity 1.6s ease;
+  pointer-events: none;
+}
+
+.month-page .month-lights path {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.25);
+  stroke-width: 1;
+}
+
+.month-page .month-lights circle {
+  fill: var(--month-ember);
+  filter: drop-shadow(0 0 6px var(--month-ember));
+  animation: month-glow 2.4s ease-in-out infinite alternate;
+}
+
+.month-page .month-lights circle:nth-of-type(odd) {
+  fill: var(--month-salsa);
+  filter: drop-shadow(0 0 6px var(--month-salsa));
+  animation-delay: -1.2s;
+}
+
+.month-page [data-mood='warm'] .month-room,
+.month-page [data-mood='warm'] .month-lights {
+  opacity: 1;
+}
+
+/* — Progress — */
+
+.month-page .month-progress {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 10px);
+  inset-inline: 16px;
+  z-index: 1;
+  display: flex;
+  gap: 4px;
+}
+
+.month-page .month-progress span {
+  flex: 1;
+  block-size: 3px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.22);
+  overflow: hidden;
+}
+
+.month-page .month-progress span::after {
+  content: '';
+  display: block;
+  block-size: 100%;
+  inline-size: 0;
+  background: var(--month-ink);
+  transition: inline-size 0.35s ease;
+}
+
+.month-page .month-progress span[data-done]::after {
+  inline-size: 100%;
+}
+
+/* — Cards — */
+
+.month-page .month-card {
+  grid-area: 1 / 1;
+  align-self: center;
+  justify-self: center;
+  inline-size: min(100%, 26rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: center;
+  text-shadow: var(--month-legible);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease,
+    visibility 0s 0.45s;
+}
+
+.month-page .month-card[data-active] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease,
+    visibility 0s;
+}
+
+.month-page .month-card p {
+  color: var(--month-muted);
+}
+
+.month-page .month-card .month-lead {
+  color: var(--month-ink);
+  font-size: var(--text-step-2);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.month-page .month-card .month-big {
+  color: var(--month-ink);
+  font-size: var(--month-big);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.month-page .month-card .month-last {
+  font-size: var(--text-step-3);
+}
+
+.month-page .month-card .month-soft {
+  font-style: italic;
+  color: var(--month-blush);
+}
+
+/* Lines come in one after another; `--n` is each line's turn. */
+.month-page .month-card[data-active] .month-line {
+  animation: month-rise 0.7s ease both;
+  animation-delay: calc(var(--n, 0) * 0.7s + 0.15s);
+}
+
+.month-page .month-cue {
+  margin-block-start: 1.2rem;
+  font-size: var(--text-step-sm);
+  color: var(--month-moon);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.month-page .month-card[data-active] .month-cue {
+  animation:
+    month-rise 0.7s ease both 1.55s,
+    month-breathe 2s ease-in-out infinite 2.3s;
+}
+
+/* The tap cue: at the bottom of every card but the count (which has its own)
+   and the last, once the card's lines are in, breathing so it reads as an
+   invitation. */
+.month-page .month-hint {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 18px);
+  inset-inline: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-step-sm);
+  letter-spacing: 0.04em;
+  color: var(--month-moon);
+  text-shadow: var(--month-legible);
+  pointer-events: none;
+  animation:
+    month-rise 0.6s ease both var(--delay, 0s),
+    month-breathe 2.2s ease-in-out infinite calc(var(--delay, 0s) + 0.6s);
+}
+
+/* A small chevron that nudges to the right. */
+.month-page .month-hint-arrow {
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-block-start: 2px solid currentColor;
+  border-inline-end: 2px solid currentColor;
+  transform: rotate(45deg);
+  animation: month-nudge 1.2s ease-in-out infinite;
+}
+
+/* Card 8's explanation of the count. */
+.month-page .month-card .month-explain {
+  max-inline-size: 22rem;
+}
+
+.month-page .month-card .month-sound {
+  font-size: var(--text-step-xs);
+  color: var(--month-moon);
+}
+
+.month-page .month-card .month-legend {
+  font-size: var(--text-step-xs);
+  color: var(--month-ember);
+  letter-spacing: 0.02em;
+}
+
+.month-page .month-card .month-tap-cue {
+  font-size: var(--text-step-sm);
+  color: var(--month-moon);
+  animation: month-breathe 2.2s ease-in-out infinite;
+}
+
+.month-page .month-pad[data-waiting] {
+  animation: month-invite 1.6s ease-in-out infinite;
+}
+
+@keyframes month-nudge {
+  50% {
+    transform: translateX(4px) rotate(45deg);
+  }
+}
+
+@keyframes month-invite {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+/* — Art — */
+
+.month-page .month-art {
+  inline-size: min(60vw, 12rem);
+  block-size: auto;
+  overflow: visible;
+}
+
+.month-page .month-art.month-wide {
+  inline-size: min(86vw, 20rem);
+}
+
+.month-page .month-floaty {
+  animation: month-float 4s ease-in-out infinite;
+}
+
+.month-page .month-floaty-late {
+  animation-delay: -2s;
+}
+
+.month-page .month-card[data-active] .month-pop {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: month-pop 0.8s cubic-bezier(0.3, 1.6, 0.5, 1) both 0.6s;
+}
+
+.month-page .month-card[data-active] .month-pop-late {
+  animation-delay: 2.6s;
+}
+
+/* The thread: knotted on card 3, coming loose on card 6. */
+.month-page .month-thread {
+  fill: none;
+  stroke: var(--month-blush);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.month-page .month-card[data-active] .month-knot-draw {
+  --len: 600;
+  stroke-dasharray: 600;
+  animation: month-draw 2.2s ease both 0.4s;
+}
+
+.month-page .month-card[data-active] .month-loose-knot {
+  animation: month-fade-out 1s ease both 1.2s;
+}
+
+.month-page .month-card[data-active] .month-loose-straight {
+  --len: 300;
+  stroke-dasharray: 300;
+  animation: month-draw 1.4s ease both 1.6s;
+}
+
+/* Card 5: drafts, written and crossed out. */
+.month-page .month-drafts {
+  display: grid;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-step-sm);
+}
+
+.month-page .month-draft {
+  position: relative;
+  justify-self: center;
+  opacity: 0;
+  color: var(--month-muted);
+  text-decoration: none;
+}
+
+.month-page s.month-draft::after {
+  content: '';
+  position: absolute;
+  inset-inline: -2px;
+  top: 52%;
+  block-size: 2px;
+  background: var(--month-salsa);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.month-page .month-card[data-active] .month-draft {
+  animation: month-rise 0.5s ease both;
+}
+
+.month-page .month-card[data-active] .month-draft:nth-child(1) {
+  animation-delay: 0.3s;
+}
+
+.month-page .month-card[data-active] .month-draft:nth-child(1)::after {
+  animation: month-strike 0.4s ease both 1.4s;
+}
+
+.month-page .month-card[data-active] .month-draft:nth-child(2) {
+  animation-delay: 1.9s;
+}
+
+.month-page .month-card[data-active] .month-draft:nth-child(2)::after {
+  animation: month-strike 0.4s ease both 3s;
+}
+
+.month-page .month-card .month-final {
+  color: var(--month-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-step-3);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.month-page .month-card[data-active] .month-final {
+  animation-delay: 3.6s;
+}
+
+.month-page .month-after-drafts {
+  opacity: 0;
+}
+
+.month-page .month-card[data-active] .month-after-drafts {
+  animation: month-rise 0.7s ease both 4.6s;
+}
+
+/* Card 7: two ghosts, dancing between the congas. */
+.month-page .month-dance-a,
+.month-page .month-dance-b {
+  transform-origin: 50% 100%;
+  transform-box: fill-box;
+  animation: month-sway 1.6s ease-in-out infinite;
+}
+
+.month-page .month-dance-b {
+  animation-direction: reverse;
+}
+
+/* Card 8: the count. */
+.month-page .month-beats {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  inline-size: min(100%, 20rem);
+}
+
+.month-page .month-beat {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: var(--text-step-sm);
+  border: 2px solid rgb(255 255 255 / 0.3);
+  color: rgb(255 255 255 / 0.55);
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    transform 0.2s;
+}
+
+.month-page .month-beat[data-pause] {
+  border-style: dashed;
+}
+
+.month-page .month-beat[data-on] {
+  background: var(--month-salsa);
+  border-color: var(--month-salsa);
+  color: #fff;
+  transform: scale(1.12);
+}
+
+.month-page .month-beat[data-on][data-pause] {
+  background: transparent;
+  border-color: var(--month-ember);
+  color: var(--month-ember);
+  transform: none;
+}
+
+.month-page .month-pad {
+  margin-block-start: 0.4rem;
+  inline-size: 8.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  background: radial-gradient(
+    circle at 50% 40%,
+    var(--month-skin),
+    #d9b48a 70%
+  );
+  box-shadow:
+    0 0 0 6px var(--month-conga),
+    0 0 0 8px var(--month-ember),
+    0 10px 30px rgb(0 0 0 / 0.45);
+  color: #4a2614;
+  font: inherit;
+  font-weight: 800;
+  font-size: var(--text-step-1);
+  text-shadow: none;
+  touch-action: manipulation;
+  transition: transform 0.1s;
+}
+
+.month-page .month-pad:active {
+  transform: scale(0.94);
+}
+
+.month-page .month-pad[data-rest] {
+  box-shadow:
+    0 0 0 6px var(--month-conga),
+    0 0 0 8px var(--month-ember),
+    0 0 26px 10px rgb(255 210 122 / 0.35);
+}
+
+.month-page .month-count-end,
+.month-page .month-next {
+  animation: month-rise 0.7s ease both;
+}
+
+.month-page .month-next {
+  animation-delay: 0.5s;
+}
+
+.month-page :is(.month-next, .month-again) {
+  margin-block-start: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.4);
+  background: transparent;
+  color: var(--month-ink);
+  font: inherit;
+  font-size: var(--text-step-sm);
+  cursor: pointer;
+}
+
+/* Card 9: stitched together. */
+.month-page .month-seam {
+  fill: none;
+  stroke: var(--month-blush);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.month-page .month-stitch {
+  fill: none;
+  stroke: var(--month-ember);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.month-page .month-card[data-active] .month-seam {
+  --len: 200;
+  stroke-dasharray: 200;
+  animation: month-draw 1.4s ease both 0.4s;
+}
+
+.month-page .month-card[data-active] .month-stitch {
+  --len: 20;
+  stroke-dasharray: 20;
+  animation: month-draw 0.4s ease both 1.4s;
+}
+
+.month-page .month-card[data-active] .month-stitch:nth-of-type(3) {
+  animation-delay: 1.6s;
+}
+
+.month-page .month-card[data-active] .month-stitch:nth-of-type(4) {
+  animation-delay: 1.8s;
+}
+
+.month-page .month-card[data-active] .month-stitch:nth-of-type(5) {
+  animation-delay: 2s;
+}
+
+.month-page .month-card[data-active] .month-stitch:nth-of-type(6) {
+  animation-delay: 2.2s;
+}
+
+@keyframes month-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes month-draw {
+  from {
+    stroke-dashoffset: var(--len, 600);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes month-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes month-strike {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes month-pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes month-float {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes month-breathe {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes month-glow {
+  to {
+    opacity: 0.55;
+  }
+}
+
+@keyframes month-sway {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg) translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .month-page *,
+  .month-page *::before,
+  .month-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
