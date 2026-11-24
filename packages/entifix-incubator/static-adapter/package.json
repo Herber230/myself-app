@@ -39,11 +39,12 @@
   "dependencies": {
     "@entifix/business": "catalog:",
     "@entifix/core": "catalog:",
+    "@entifix/static": "catalog:",
     "@swc/helpers": "0.5.23",
     "effect": "catalog:"
   },
   "devDependencies": {
-    "@effect/vitest": "0.30.0",
+    "@effect/vitest": "4.0.7",
     "@entifix/testing-unit": "catalog:"
   }
 }

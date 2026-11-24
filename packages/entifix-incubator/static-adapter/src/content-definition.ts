@@ -1,5 +1,4 @@
 import {
-  ConfigurationRepositoryTag,
   EntityLoadRequestTag,
   type EntityRepository,
   EntityRepositoryTag,
@@ -7,10 +6,8 @@ import {
   type UnpagedRequest,
 } from '@entifix/business';
 import {
-  ConfigurationClientInMemory,
   describeEntityColumns,
   deserializeEntityCollection,
-  EntifixBuildError,
   type Entity,
   type EntityConstructor,
   type EntityId,
@@ -18,9 +15,9 @@ import {
   extractMetaEntity,
   serializeEntityCollection,
 } from '@entifix/core';
+import { makeStaticRepository } from '@entifix/static';
 import { Context, Effect } from 'effect';
 
-import { makeStaticRepository } from './static-repository.js';
 import {
   ContentValidationError,
   type EntityRule,
@@ -138,7 +135,9 @@ export function dataFileOf(entity: EntityConstructor<Entity>): string {
 }
 
 /** Thrown when the sources themselves are wrong, whatever the content. */
-export class ContentDefinitionError extends EntifixBuildError {}
+export class ContentDefinitionError extends Error {
+  override readonly name = 'ContentDefinitionError';
+}
 
 /** The ids a file declares, so a link into it can be checked. */
 function idsOf(records: readonly unknown[] = []): ReadonlySet<EntityId> {
@@ -288,10 +287,6 @@ export function defineStaticContent(
           EntityRepositoryTag,
           repositoryOf(entity as EntityConstructor<Entity>),
         ).pipe(
-          Context.add(
-            ConfigurationRepositoryTag,
-            new ConfigurationClientInMemory({}),
-          ),
           Context.add(
             EntityLoadRequestTag,
             request as unknown as EntityLoadRequest,

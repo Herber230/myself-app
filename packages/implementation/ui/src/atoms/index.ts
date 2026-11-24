@@ -1,5 +1,4 @@
 export * from './copy-button/index.js';
-export * from './cv-print-button/index.js';
 export * from './explorer-link/index.js';
 export * from './hero-backdrop/index.js';
 export * from './icons/index.js';

@@ -31,7 +31,7 @@ test('the switcher and the toggle keep each other, and the language switch keeps
   await page.waitForURL('/en/cv/devops/ats/');
 
   const nav = page.getByRole('banner');
-  await nav.getByLabel('Language', { exact: true }).click();
+  await nav.getByTitle('Language', { exact: true }).click();
   await nav.getByRole('link', { name: 'Español' }).click();
   await page.waitForURL('/es/cv/devops/ats/');
   await expect(

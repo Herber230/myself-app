@@ -1,23 +1,13 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { renderToString } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { CvPrintButton } from './cv-print-button.js';
-
-const button = (
-  <CvPrintButton fileName="Herber Colop — CV">Print</CvPrintButton>
-);
+import { printSheet } from './print-sheet.js';
 
 afterEach(() => {
   vi.restoreAllMocks();
   document.title = '';
 });
 
-describe('the print button', () => {
-  it('is not in the static HTML, where there is no script to run it', () => {
-    expect(renderToString(button)).toBe('');
-  });
-
+describe('printing the sheet', () => {
   it('names the file, waits for the fonts, prints, then puts the title back', async () => {
     document.title = 'CV: the page';
     Object.defineProperty(document, 'fonts', {
@@ -29,10 +19,9 @@ describe('the print button', () => {
       .spyOn(window, 'print')
       .mockImplementation(() => titleWhenPrinted.push(document.title));
 
-    render(button);
-    fireEvent.click(screen.getByRole('button', { name: 'Print' }));
+    await printSheet('Herber Colop — CV');
 
-    await waitFor(() => expect(print).toHaveBeenCalledOnce());
+    expect(print).toHaveBeenCalledOnce();
     expect(titleWhenPrinted).toEqual(['Herber Colop — CV']);
     expect(document.title).toBe('Herber Colop — CV');
 

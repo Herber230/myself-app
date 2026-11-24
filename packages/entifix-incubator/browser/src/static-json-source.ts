@@ -5,10 +5,8 @@ import {
   type EntityConstructor,
 } from '@entifix/core';
 import type { EntitySource } from '@entifix/react-integration/url';
-import {
-  makeStaticRepository,
-  withDatesParsed,
-} from '@myself-app/entifix-incubator-static-adapter';
+import { makeStaticRepository } from '@entifix/static';
+import { withDatesParsed } from '@myself-app/entifix-incubator-static-adapter';
 import { Effect } from 'effect';
 
 /**

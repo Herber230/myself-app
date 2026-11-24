@@ -72,7 +72,7 @@ test.describe('each locale renders its own pages', () => {
       ).toBeVisible();
 
       // The language switch keeps the page.
-      await nav.getByLabel(language, { exact: true }).click();
+      await nav.getByTitle(language, { exact: true }).click();
       await nav.getByRole('link', { name: other }).click();
       await page.waitForURL(`/${otherLocale}/tech-radar/`);
       await expect(page.locator('html')).toHaveAttribute('lang', otherLocale);

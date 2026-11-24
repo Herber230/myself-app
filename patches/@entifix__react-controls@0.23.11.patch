@@ -1,0 +1,41 @@
+diff --git a/dist/theme/theme-context.js b/dist/theme/theme-context.js
+index 1b6ee7f2c8b6fbc77211dbbc3e609c0e65613a6b..6376146366cd0960e312b44d1cde236a9f866156 100644
+--- a/dist/theme/theme-context.js
++++ b/dist/theme/theme-context.js
+@@ -1,8 +1,6 @@
+ 'use client';
+ import { jsx as _jsx } from "react/jsx-runtime";
+-import { Effect } from 'effect';
+ import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+-import { useUiPreferencesState } from '../preferences/ui-preferences-context.js';
+ import { densityCookie, THEME_COOKIE } from './theme-cookie.js';
+ const ThemeContext = /*#__PURE__*/ createContext(null);
+ const DENSITIES = [
+@@ -51,7 +49,6 @@ function writeCookie(name, value) {
+     // `undefined` until a density is stored, chosen or defaulted: the document's
+     // own `data-density` stands until then.
+     const [density, setDensityState] = useState(initialDensity != null ? initialDensity : defaultDensity);
+-    const preferences = useUiPreferencesState();
+     const isKnown = useCallback((value)=>typeof value === 'string' && themes.some((t)=>t.id === value), [
+         themes
+     ]);
+@@ -126,14 +123,12 @@ function writeCookie(name, value) {
+     }, [
+         density
+     ]);
+-    // The cookie is what the next page is rendered in; the UI-preferences port
+-    // gets a copy, so a host that keeps preferences server-side has them too.
+-    const remember = useCallback((cookie, key, value)=>{
++    // The cookie is what the next page is rendered in. Patched by myself-app:
++    // no copy to the UI-preferences port, whose default store pulls Effect
++    // into every page of a static site that keeps no preferences.
++    const remember = useCallback((cookie, _key, value)=>{
+         writeCookie(cookie, value);
+-        void Effect.runPromise(preferences.write(key, value)).catch(()=>undefined);
+-    }, [
+-        preferences
+-    ]);
++    }, []);
+     const setTheme = useCallback((next)=>{
+         setThemeState(next);
+         remember(storageKey, 'theme', next);

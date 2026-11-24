@@ -3,7 +3,7 @@
  * repositories and data files out, and link targets found from the entities.
  */
 import { entity } from '@entifix/core';
-import { runRepository } from '@entifix/testing-unit';
+import { run } from '@entifix/testing-unit';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -80,7 +80,7 @@ describe('a content definition', () => {
 
   it('serves each entity from a repository, filtered and sorted', async () => {
     const content = define();
-    const page = await runRepository(
+    const page = await run(
       content.repositoryOf(Book).load<Book>({
         filtering: [{ property: 'draft', operator: 'eq', value: false }],
         sorting: [{ 0: { property: 'publishedAt', type: 'desc' } }],
@@ -92,9 +92,7 @@ describe('a content definition', () => {
   });
 
   it('parses dates and keeps links as ids', async () => {
-    const engine = await runRepository(
-      define().repositoryOf(Book).get<Book>('engine'),
-    );
+    const engine = await run(define().repositoryOf(Book).get<Book>('engine'));
     expect(engine.publishedAt).toEqual(new Date('1843-10-01'));
     expect(engine.author.id).toBe('ada');
     expect(engine.shelves.ids).toEqual(['maths', 'machines']);

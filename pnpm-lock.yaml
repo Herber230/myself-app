@@ -7,29 +7,32 @@ settings:
 catalogs:
   default:
     '@entifix/business':
-      specifier: 0.1.3
-      version: 0.1.3
+      specifier: 0.23.11
+      version: 0.23.11
     '@entifix/core':
-      specifier: 0.1.3
-      version: 0.1.3
+      specifier: 0.23.11
+      version: 0.23.11
     '@entifix/i18n':
-      specifier: 0.1.3
-      version: 0.1.3
+      specifier: 0.23.11
+      version: 0.23.11
     '@entifix/react-controls':
-      specifier: 0.1.3
-      version: 0.1.3
+      specifier: 0.23.11
+      version: 0.23.11
     '@entifix/react-integration':
-      specifier: 0.1.3
-      version: 0.1.3
+      specifier: 0.23.11
+      version: 0.23.11
+    '@entifix/static':
+      specifier: 0.23.11
+      version: 0.23.11
     '@entifix/style':
-      specifier: 0.1.3
-      version: 0.1.3
+      specifier: 0.23.11
+      version: 0.23.11
     '@entifix/testing-unit':
-      specifier: 0.1.3
-      version: 0.1.3
+      specifier: 0.23.11
+      version: 0.23.11
     effect:
-      specifier: 3.22.2
-      version: 3.22.2
+      specifier: 4.0.7
+      version: 4.0.7
     next:
       specifier: 16.3.6
       version: 16.3.6
@@ -41,6 +44,9 @@ catalogs:
       version: 19.3.0
 
 packageExtensionsChecksum: sha256-gsjjiSOuPvQL1LfEhPIKY8Z5fubnmPTZZuD1JcCbZZ0=
+
+patchedDependencies:
+  '@entifix/react-controls@0.23.11': c7c1baf334730e114cf4ea1c5a8d2a42eae8f3aead8a1ab84623810131faa50e
 
 importers:
 
@@ -228,19 +234,19 @@ importers:
     dependencies:
       '@entifix/business':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)
+        version: 0.23.11(effect@4.0.7)
       '@entifix/core':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)
+        version: 0.23.11(effect@4.0.7)
       '@entifix/i18n':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))
+        version: 0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))
       '@entifix/react-controls':
         specifier: 'catalog:'
-        version: 0.1.3(@entifix/i18n@0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3)))(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)
+        version: 0.23.11(patch_hash=c7c1baf334730e114cf4ea1c5a8d2a42eae8f3aead8a1ab84623810131faa50e)(@entifix/i18n@0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3)))(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)
       '@entifix/style':
         specifier: 'catalog:'
-        version: 0.1.3
+        version: 0.23.11
       '@fontsource-variable/inter':
         specifier: 5.3.0
         version: 5.3.0
@@ -273,7 +279,7 @@ importers:
         version: 4.4.3
       effect:
         specifier: 'catalog:'
-        version: 3.22.2
+        version: 4.0.7
       hast-util-to-jsx-runtime:
         specifier: 2.3.6
         version: 2.3.6
@@ -347,16 +353,16 @@ importers:
     dependencies:
       '@entifix/business':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)
+        version: 0.23.11(effect@4.0.7)
       '@entifix/core':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)
+        version: 0.23.11(effect@4.0.7)
       '@swc/helpers':
         specifier: 0.5.23
         version: 0.5.23
       effect:
         specifier: 'catalog:'
-        version: 3.22.2
+        version: 4.0.7
     devDependencies:
       '@myself-app/entifix-incubator-static-adapter':
         specifier: workspace:*
@@ -366,13 +372,16 @@ importers:
     dependencies:
       '@entifix/business':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)
+        version: 0.23.11(effect@4.0.7)
       '@entifix/core':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)
+        version: 0.23.11(effect@4.0.7)
       '@entifix/react-integration':
         specifier: 'catalog:'
-        version: 0.1.3(@tanstack/react-form@1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tanstack/react-query@5.104.1(react@19.3.0))(effect@3.22.2)(react@19.3.0)
+        version: 0.23.11(@tanstack/react-form@1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tanstack/react-query@5.104.1(react@19.3.0))(effect@4.0.7)(react@19.3.0)
+      '@entifix/static':
+        specifier: 'catalog:'
+        version: 0.23.11(effect@4.0.7)
       '@myself-app/entifix-incubator-static-adapter':
         specifier: workspace:*
         version: link:../static-adapter
@@ -381,7 +390,7 @@ importers:
         version: 0.5.23
       effect:
         specifier: 'catalog:'
-        version: 3.22.2
+        version: 4.0.7
     devDependencies:
       react:
         specifier: 'catalog:'
@@ -394,7 +403,7 @@ importers:
     dependencies:
       '@entifix/react-controls':
         specifier: 'catalog:'
-        version: 0.1.3(@entifix/i18n@0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3)))(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)
+        version: 0.23.11(patch_hash=c7c1baf334730e114cf4ea1c5a8d2a42eae8f3aead8a1ab84623810131faa50e)(@entifix/i18n@0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3)))(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)
       '@swc/helpers':
         specifier: 0.5.23
         version: 0.5.23
@@ -410,32 +419,35 @@ importers:
     dependencies:
       '@entifix/business':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)
+        version: 0.23.11(effect@4.0.7)
       '@entifix/core':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)
+        version: 0.23.11(effect@4.0.7)
+      '@entifix/static':
+        specifier: 'catalog:'
+        version: 0.23.11(effect@4.0.7)
       '@swc/helpers':
         specifier: 0.5.23
         version: 0.5.23
       effect:
         specifier: 'catalog:'
-        version: 3.22.2
+        version: 4.0.7
     devDependencies:
       '@effect/vitest':
-        specifier: 0.30.0
-        version: 0.30.0(effect@3.22.2)(vitest@5.0.1)
+        specifier: 4.0.7
+        version: 4.0.7(effect@4.0.7)(vitest@5.0.1)
       '@entifix/testing-unit':
         specifier: 'catalog:'
-        version: 0.1.3(@effect/experimental@0.61.1(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2))(@effect/platform@0.97.2(effect@3.22.2))(@effect/vitest@0.30.0(effect@3.22.2)(vitest@5.0.1))(@entifix/react-controls@0.1.3(@entifix/i18n@0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3)))(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(effect@3.22.2)(react@19.3.0)(vitest@5.0.1)
+        version: 0.23.11(@entifix/react-controls@0.23.11(patch_hash=c7c1baf334730e114cf4ea1c5a8d2a42eae8f3aead8a1ab84623810131faa50e)(@entifix/i18n@0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3)))(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(effect@4.0.7)(react@19.3.0)(vitest@5.0.1)
 
   packages/implementation/adapters:
     dependencies:
       '@entifix/core':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)
+        version: 0.23.11(effect@4.0.7)
       '@entifix/react-integration':
         specifier: 'catalog:'
-        version: 0.1.3(@tanstack/react-form@1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tanstack/react-query@5.104.1(react@19.3.0))(effect@3.22.2)(react@19.3.0)
+        version: 0.23.11(@tanstack/react-form@1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tanstack/react-query@5.104.1(react@19.3.0))(effect@4.0.7)(react@19.3.0)
       '@myself-app/content':
         specifier: workspace:*
         version: link:../../content
@@ -456,16 +468,16 @@ importers:
     dependencies:
       '@entifix/core':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)
+        version: 0.23.11(effect@4.0.7)
       '@entifix/i18n':
         specifier: 'catalog:'
-        version: 0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))
+        version: 0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))
       '@entifix/react-controls':
         specifier: 'catalog:'
-        version: 0.1.3(@entifix/i18n@0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3)))(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)
+        version: 0.23.11(patch_hash=c7c1baf334730e114cf4ea1c5a8d2a42eae8f3aead8a1ab84623810131faa50e)(@entifix/i18n@0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3)))(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)
       '@entifix/react-integration':
         specifier: 'catalog:'
-        version: 0.1.3(@tanstack/react-form@1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tanstack/react-query@5.104.1(react@19.3.0))(effect@3.22.2)(react@19.3.0)
+        version: 0.23.11(@tanstack/react-form@1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tanstack/react-query@5.104.1(react@19.3.0))(effect@4.0.7)(react@19.3.0)
       '@myself-app/domain':
         specifier: workspace:*
         version: link:../../domain
@@ -521,6 +533,9 @@ importers:
         specifier: 5.1.0
         version: 5.1.0
     devDependencies:
+      '@entifix/style':
+        specifier: 'catalog:'
+        version: 0.23.11
       '@fontsource/inter':
         specifier: 5.3.0
         version: 5.3.0
@@ -1309,36 +1324,11 @@ packages:
     resolution: {integrity: sha512-bPlN9S9O1A0euCpEWE4qnvB5YDuyYVsUTrxSgmAM1Is0j4tICHoVyOVAXfWMP/kS9ZrjvyIXWV2PmomiAXXqOw==}
     engines: {node: '>=20.19.0'}
 
-  '@effect/experimental@0.61.1':
-    resolution: {integrity: sha512-+P+PgGQeE2fXmsm63YoyENNcQIc7OiCkY4/HLkEdTvq93syfGIpwDfQD8u3xODMHJhZ5ZtRZHH4+UedFO0tLiA==}
+  '@effect/vitest@4.0.7':
+    resolution: {integrity: sha512-WdF1w9K65ZyjeDAUfUxDOCBSEgVjUtJfM+G83KAE3mKoZcO6aGgrRoKgwiDKsACAmVWT3zG5hDhwNH3GQg++FQ==}
     peerDependencies:
-      '@effect/platform': ^0.97.1
-      effect: ^3.22.1
-      ioredis: ^5
-      lmdb: ^3
-    peerDependenciesMeta:
-      ioredis:
-        optional: true
-      lmdb:
-        optional: true
-
-  '@effect/platform@0.97.2':
-    resolution: {integrity: sha512-fof9J+pId374/b1WAt0P1H8QmvulzpHTjS6SUHiG20U/sFjkBUS5vGMy1/XfdTAVKX1IY+Z87dFhi/RFDfgBPQ==}
-    peerDependencies:
-      effect: ^3.22.2
-
-  '@effect/sql@0.52.1':
-    resolution: {integrity: sha512-dUVPjlUgpga6sDa/MtYipHAqzHx2St41hxI00nXTBt4IBBJaf2lTGaOvlEoBg/q6PHVAgSoKnxe19pWUvabC9g==}
-    peerDependencies:
-      '@effect/experimental': ^0.61.1
-      '@effect/platform': ^0.97.1
-      effect: ^3.22.1
-
-  '@effect/vitest@0.30.0':
-    resolution: {integrity: sha512-2qcK7F4XSwOn7Ye9vgEkrndHiiHVf9Nl+U5jvvLBKeYx4+8++O5Y8RFezaQzs/rWx8GkdlStv/s+HYMHZ/2/AQ==}
-    peerDependencies:
-      effect: ^3.22.0
-      vitest: ^3.2.0
+      effect: ^4.0.7
+      vitest: '>=5.0.0 <6.0.0'
 
   '@emnapi/core@1.10.0':
     resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
@@ -1376,29 +1366,29 @@ packages:
   '@emnapi/wasi-threads@1.2.3':
     resolution: {integrity: sha512-ELEBe8PsLvvJ6QMr0zLt8ffvOHW/dc1m3CEzNMg7aJUv3bMaoDtw2TXyDAwkYBuroxxuHEwhRTLJSe5sya547g==}
 
-  '@entifix/business@0.1.3':
-    resolution: {integrity: sha512-IkyyHR5B889Xy3TPtsNrG3V52SVkHlLn7gejdHZKTS8fe0DYS8L3B5kt25gPp69U+njtQzly9ZQ4B+qQQ+F5/A==}
+  '@entifix/business@0.23.11':
+    resolution: {integrity: sha512-3T41XqAO3zX/ECyx0tCGy9HPLoJtpq5BJmCn9AksNy348cBK73gaQrZzy8UsOQGPrXSyHEogcwPY60q0eML5MA==}
     peerDependencies:
-      effect: '>=3.22 <4'
+      effect: ^4.0.7
 
-  '@entifix/core@0.1.3':
-    resolution: {integrity: sha512-9cQApoXy/6z55xp0IdMr5kxEMLKvvq5etCG3z+EF8xadk5114v9rcQ431J91kLNOHQoGT4md7pVvjpf9YMjyww==}
+  '@entifix/core@0.23.11':
+    resolution: {integrity: sha512-Px1tGndVISxFK2AHy95kaTl7+iahUWimLYorVOvqvidE0i3+Hc/Ii3D07lNxVfftxPVq1TbMm75LRfFLeccdzw==}
     peerDependencies:
-      effect: '>=3.22 <4'
+      effect: ^4.0.7
 
-  '@entifix/i18n@0.1.3':
-    resolution: {integrity: sha512-lI/KXTEBWtBEDQSX19TSkH1jRgBnmkwlkYJVGGEnsNU33l8Q6fSbuEKBW9lH4aruLWbCsI81XXIzSF5vm0q+/A==}
+  '@entifix/i18n@0.23.11':
+    resolution: {integrity: sha512-/+uKhHUZXNNrp25QEXqPXHmZe7TByd0cFwFdL7dsT/3AHeE4BKzsD0L8HZ7ETRDz8sRjSpgrkCvvGleVeKeCaw==}
     peerDependencies:
-      i18next: '>=26 <27'
+      i18next: '>=26 <28'
 
-  '@entifix/react-controls@0.1.3':
-    resolution: {integrity: sha512-yTxvqjmDUoScNfZtcHyyGh+LPNGrdt2HYxV2vV4HoaHXi4zg2me764XwABqC0isRZ1RmbN+S5CD33NcYKKCnPA==}
+  '@entifix/react-controls@0.23.11':
+    resolution: {integrity: sha512-JmWwHruH3dmEegoH8zS+mkTU33KNlrF0fkYxUCHf5r21nK2rOuvO6+NO62GisUwHv52D60JI/sC9RJ+4smK7ew==}
     peerDependencies:
-      '@entifix/i18n': 0.1.3
-      effect: '>=3.22 <4'
-      i18next: '>=26 <27'
+      '@entifix/i18n': 0.23.11
+      effect: ^4.0.7
+      i18next: '>=26 <28'
       react: '>=19 <20'
-      react-i18next: '>=17 <18'
+      react-i18next: '>=17 <19'
     peerDependenciesMeta:
       '@entifix/i18n':
         optional: true
@@ -1407,31 +1397,33 @@ packages:
       react-i18next:
         optional: true
 
-  '@entifix/react-integration@0.1.3':
-    resolution: {integrity: sha512-zd1P+J2BULAqY9vUMNzrocnFSRHSgK6UhPwU/s3DOcoX43GukRYZ9Uu2U49HQfIQ3QdUfWlpC1gYAEJ5kfej+A==}
+  '@entifix/react-integration@0.23.11':
+    resolution: {integrity: sha512-RJHaubgW3onLUxeklxmU8WPfomEP1p0HyC1NCAznmb3H5by3HQYLGgz7Q9HRij6ItxO939KBID/Xu5kF2Cunew==}
     peerDependencies:
       '@tanstack/react-form': '>=1.33 <2'
       '@tanstack/react-query': '>=5.101 <6'
-      effect: '>=3.22 <4'
+      effect: ^4.0.7
       react: '>=19 <20'
 
-  '@entifix/style@0.1.3':
-    resolution: {integrity: sha512-e7iF1oNq/3RMjLRT4eRlu+XQV14LN5XqBECnK5y3hJL2B+ug3gAU4Pj9fHn7vUuy9ZuMXPveh6s/W5YChIrk8A==}
-
-  '@entifix/testing-unit@0.1.3':
-    resolution: {integrity: sha512-lgTP5eBfMmVQN/lrTG8fv+TixRYRj1YnpLrRl8X9AyK4UvMyGGtF0VzCcag90P/JI1DeSZ0c8GirNJaOLx63pg==}
+  '@entifix/static@0.23.11':
+    resolution: {integrity: sha512-AxFBMzbuUa1SuNhUWd4N/k0gLkXb22vOu/je4A1ADpK2xMvJX0MshDjKHBuZG1D2ZlbSnGbaPwA5+J+Kyr64Xg==}
     peerDependencies:
-      '@effect/vitest': '>=0.30 <1'
-      '@entifix/react-controls': 0.1.3
+      effect: ^4.0.7
+
+  '@entifix/style@0.23.11':
+    resolution: {integrity: sha512-UImQZ2CExG59HnAhzt+6vuUDhA4oqaqTKIA5JZFv6hAP2+Bod7aEidh4bvqpEc2fAvSTty3vg8k+Vbsm6f/oDg==}
+
+  '@entifix/testing-unit@0.23.11':
+    resolution: {integrity: sha512-3yBpnWTwABhXY2yOGQuxpZV9wEs1WM43yBFfbiQokkeJ4HQl66EfzN18f6r46QPGNgxQ7mDRSb1YxfZJ0ffnHg==}
+    peerDependencies:
+      '@entifix/react-controls': 0.23.11
       '@testing-library/react': '*'
       '@testing-library/user-event': '*'
-      effect: '>=3.22 <4'
-      msw: '*'
+      effect: ^4.0.7
+      msw: '>=3'
       react: '*'
       vitest: '*'
     peerDependenciesMeta:
-      '@effect/vitest':
-        optional: true
       '@entifix/react-controls':
         optional: true
       '@testing-library/react':
@@ -1445,10 +1437,10 @@ packages:
       vitest:
         optional: true
 
-  '@entifix/transactions@0.1.3':
-    resolution: {integrity: sha512-ppKws1VmVrYlDDoJkbzw0YsVcn2QdHx91pQDN0QMuwCJZf1gHsSe5T56twl+OF6Fn8qCBF9pYzomMMtJxFtAlQ==}
+  '@entifix/transactions@0.23.11':
+    resolution: {integrity: sha512-u4gSyQec1q6bSmQ6PHHNBdZHf3JCZkDyx2dxHQUrp1F+0UKfF7dtGOGvzJpPcdW1fgTjipz8lDXI7ZIcEB1mQQ==}
     peerDependencies:
-      effect: '>=3.22 <4'
+      effect: ^4.0.7
 
   '@eslint-community/eslint-utils@4.10.1':
     resolution: {integrity: sha512-cuadcxVFE8sDK6iWJbs8Sn0av2Nrh2QSGQhVlBW9AaAHqHwjWsZHT8LJ4hFGPh7ASBV2deFdM7H/DPjulmh8rg==}
@@ -1811,36 +1803,6 @@ packages:
 
   '@module-federation/webpack-bundler-runtime@0.21.6':
     resolution: {integrity: sha512-7zIp3LrcWbhGuFDTUMLJ2FJvcwjlddqhWGxi/MW3ur1a+HaO8v5tF2nl+vElKmbG1DFLU/52l3PElVcWf/YcsQ==}
-
-  '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
-    resolution: {integrity: sha512-LCkGo6JDfaBhgST7UpPWgNgLINpcpabaHfyz5OBx75nUYxBsaEPxjnyNjWpeb/xBup/682QnBfRBy2/LvPutZQ==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.4':
-    resolution: {integrity: sha512-zExlW9zUJKZH/tOtVMttwjKa4Xm/3KcNjnE3dPN92uCktwavMxpgCA3MoJK/DOnTWsQgo224OaST27/mPNAf+w==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.4':
-    resolution: {integrity: sha512-dgX0P/9wGPJeHFBG+ZmhgE6bmtMt7NP5CRBGyyktpopdk/mW4POnrpQsSLtKI1dwpc+pPLuXHDh6vvskyQE/sw==}
-    cpu: [arm64]
-    os: [linux]
-
-  '@msgpackr-extract/msgpackr-extract-linux-arm@3.0.4':
-    resolution: {integrity: sha512-Tg3yX65f5GbtXLkrYEHE5oibZG9epyYWas7FogTTEJeDEF9JlXJzKgXaNhT3UXlTOeA+AfZpYZYZ0uPj7Cfquw==}
-    cpu: [arm]
-    os: [linux]
-
-  '@msgpackr-extract/msgpackr-extract-linux-x64@3.0.4':
-    resolution: {integrity: sha512-8TNXMEjJc3QEy7R/x1INhgiU+XakDAFUzBhaz7+Rbrs8NH5UQeHQxxmzsSBJGyV6I1jW79undiQm8tOI+D+8FQ==}
-    cpu: [x64]
-    os: [linux]
-
-  '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.4':
-    resolution: {integrity: sha512-CmCXPQrkbwExx3j946/PtHWHbYJiCRBRDl4BlkRQcJB/YOwQxJRTpoo7aTsortjgoJ1x7opzTSxn7C+ASSLVjQ==}
-    cpu: [x64]
-    os: [win32]
 
   '@napi-rs/canvas-android-arm64@1.0.9':
     resolution: {integrity: sha512-4LGXk2/0HVzE29K8SzML5WubgCp++B1FH3qgl35XmSZE+lLdr6P9VRQEnZ0MCLZMTSuJP41yyhtoiVNEuvrTIA==}
@@ -2584,12 +2546,14 @@ packages:
   '@opentelemetry/sdk-trace-base@2.11.0':
     resolution: {integrity: sha512-H19x/TX/LZdqiYOjM7fqtSxwlplC5pgelavqbQdHbhdq0q/AI/TGkM2dfGuuynTXmJPeF2HoZVoPDu+TGoW78A==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-node@2.11.0':
     resolution: {integrity: sha512-CuvCMJmZxswhNLlM2LfuLOW3h3fZujA4hsG4B+Sz4dX2zvaXO8Ng74cnDHWD64gLszTlhiG3c0iNUjj4g+0/sA==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
@@ -3188,9 +3152,6 @@ packages:
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
-
-  '@standard-schema/spec@1.1.0':
-    resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
   '@swc-node/core@1.15.0':
     resolution: {integrity: sha512-WAerrrl087WgenB92XG4Th2t0NQFfMNLYSe0sW2cEMMqM/LQmP4rozsDJl0vuzTrbewjpKQryxFXI+aYig/dBg==}
@@ -4692,8 +4653,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  effect@3.22.2:
-    resolution: {integrity: sha512-fm1CQXCs7GTMwpadZxwU5rnAb2bN6mbQpknq/pXBGCzSKkosNYb9k0wsoL0TfB10rSa5xOEZJjo77u/KLXSANg==}
+  effect@4.0.7:
+    resolution: {integrity: sha512-47CiUzNAmeLr40pDT9vKMxxtB8o3bdpZEKU4IUM3fVxsK2GYzPsV7fQoZP0I41A308BZd71nMxqJ0KRh3s9u2g==}
 
   ejs@5.0.1:
     resolution: {integrity: sha512-COqBPFMxuPTPspXl2DkVYaDS3HtrD1GpzOGkNTJ1IYkifq/r9h8SVEFrjA3D9/VJGOEoMQcrlhpntcSUrM8k6A==}
@@ -5023,10 +4984,6 @@ packages:
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
 
-  fast-check@3.23.2:
-    resolution: {integrity: sha512-h5+1OzzfCC3Ef7VbtKdcv7zsstUQwUDlYpUTvjeUsJAssPgLn7QzbboPtL5ro04Mq0rPOsMzl7q5hIbRs2wD1A==}
-    engines: {node: '>=8.0.0'}
-
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
@@ -5101,9 +5058,6 @@ packages:
   finalhandler@1.3.2:
     resolution: {integrity: sha512-aA4RyPcd3badbdABGDuTXCMTtOneUCAYH/gxoYRTZlIJdF0YPWuGqiAsIrhNnnqdXGswYk6dGujem4w80UJFhg==}
     engines: {node: '>= 0.8'}
-
-  find-my-way-ts@0.1.6:
-    resolution: {integrity: sha512-a85L9ZoXtNAey3Y6Z+eBWW658kO/MwR7zIafkIUPUMf3isZG0NCs2pjW2wtjxAKuJPxMAsHUIP4ZPGv0o5gyTA==}
 
   find-up-simple@1.0.1:
     resolution: {integrity: sha512-afd4O7zpqHeRyg4PfDQsXmlDe2PfdHtJt6Akt8jOWaApLOZk5JXs6VMR29lz03pRe9mpykrRCYIYxaJYcfpncQ==}
@@ -5471,8 +5425,8 @@ packages:
     resolution: {integrity: sha512-IKXpvIzjnC9XTAUbVBcMfGS0EPaIXtW6v+zr+RRp+hqULEpo0owZax6wyRwPOJbWbzjYspQwusTsfVr0ifh4uQ==}
     engines: {node: '>=0.10.0'}
 
-  idb@8.0.3:
-    resolution: {integrity: sha512-LtwtVyVYO5BqRvcsKuB2iUMnHwPVByPCXFXOpuU96IZPPoPN6xjOGxZQ74pgSVVLQWtUOYgyeL4GE98BY5D3wg==}
+  idb@8.0.4:
+    resolution: {integrity: sha512-jd0ITCrN+Zah4J7R/Z2jnR3W7A4BXDAjmo62MwWuSjxCiueUAf7X5rbodEdidWzeknwXHmLpdZkoiiCppNi30Q==}
 
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -5496,6 +5450,7 @@ packages:
   image-size@0.5.5:
     resolution: {integrity: sha512-6TDAlDPZxUFCv+fuOkIoXT/V/f3Qbq8e37p+YOiYrUv3v9cc3/6x78VdfPgFVaB9dZYeLUfKgHRebpkm/oP2VQ==}
     engines: {node: '>=0.10.0'}
+    deprecated: Please migrate to image-size@2.x
     hasBin: true
 
   image-size@2.0.4:
@@ -6441,16 +6396,6 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  msgpackr-extract@3.0.4:
-    resolution: {integrity: sha512-4kmO/MdyUIkLIvTPr8VHLil4AtoKIoniWPIEk5+CDy0xnWC84azhSFmuJ7PxZdsYtiP5kEeQsORAVIeMgxT+Hw==}
-    hasBin: true
-
-  msgpackr@1.12.1:
-    resolution: {integrity: sha512-4EUH9tQHnMmEgzW/MdAP0KIfa1T9AF+htl0ffe2n5vb2EKn9y2co8ccpgWko6S52Jy1PQZKwRnx5/KkYjtd9MQ==}
-
-  multipasta@0.2.8:
-    resolution: {integrity: sha512-ZPWuMKyv0cSO29f7hozp+k6+crZbQijV8ipMvxNxRf2SwtYGTX1ZX89Kd20VV4H9Znonx+EQn+iy1wGQsJ+b+Q==}
-
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
 
@@ -6517,10 +6462,6 @@ packages:
   node-exports-info@1.6.2:
     resolution: {integrity: sha512-kXs9Go0cah0qHVV2v389IXQLdLCeE1xfFtjOAF+iobu0OIoG1pje8At2vMHyaPMiPMnG/LWP50twML21eMcAag==}
     engines: {node: '>= 0.4'}
-
-  node-gyp-build-optional-packages@5.2.2:
-    resolution: {integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw==}
-    hasBin: true
 
   node-gyp@12.4.0:
     resolution: {integrity: sha512-OMcPNvqTCFUnNaBlmdgq+lfNqY7gTiSmNRDjY3uAXRyudeKZEZxu3CLtjMQrx4zZxCX2b/mpNqTtwuCJgXhHkw==}
@@ -7036,9 +6977,6 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
-
-  pure-rand@6.1.0:
-    resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
 
   qified@0.10.1:
     resolution: {integrity: sha512-+Owyggi9IxT1ePKGafcI87ubSmxol6smwJ+RAHDQlx9+9cPwFWDiKFFCPuWhr9ignlGpZ9vDQLw67N4dcTVFEA==}
@@ -8215,10 +8153,6 @@ packages:
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
-
-  uuid@11.1.1:
-    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
-    hasBin: true
 
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
@@ -9521,29 +9455,9 @@ snapshots:
 
   '@csstools/css-tokenizer@4.0.1': {}
 
-  '@effect/experimental@0.61.1(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2)':
+  '@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.1)':
     dependencies:
-      '@effect/platform': 0.97.2(effect@3.22.2)
-      effect: 3.22.2
-      uuid: 11.1.1
-
-  '@effect/platform@0.97.2(effect@3.22.2)':
-    dependencies:
-      effect: 3.22.2
-      find-my-way-ts: 0.1.6
-      msgpackr: 1.12.1
-      multipasta: 0.2.8
-
-  '@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2))(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2)':
-    dependencies:
-      '@effect/experimental': 0.61.1(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2)
-      '@effect/platform': 0.97.2(effect@3.22.2)
-      effect: 3.22.2
-      uuid: 11.1.1
-
-  '@effect/vitest@0.30.0(effect@3.22.2)(vitest@5.0.1)':
-    dependencies:
-      effect: 3.22.2
+      effect: 4.0.7
       vitest: 5.0.1(@opentelemetry/api@1.9.1)(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(jsdom@30.1.1)(vite@8.3.0(@types/node@26.6.2)(jiti@2.7.0)(less@4.5.1)(sass-embedded@1.104.1)(sass@1.104.1)(terser@5.51.2)(yaml@2.9.1))
 
   '@emnapi/core@1.10.0':
@@ -9604,76 +9518,80 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@entifix/business@0.1.3(effect@3.22.2)':
+  '@entifix/business@0.23.11(effect@4.0.7)':
     dependencies:
-      '@entifix/core': 0.1.3(effect@3.22.2)
+      '@entifix/core': 0.23.11(effect@4.0.7)
       '@swc/helpers': 0.5.23
-      effect: 3.22.2
+      effect: 4.0.7
 
-  '@entifix/core@0.1.3(effect@3.22.2)':
+  '@entifix/core@0.23.11(effect@4.0.7)':
     dependencies:
       '@swc/helpers': 0.5.23
-      effect: 3.22.2
+      effect: 4.0.7
 
-  '@entifix/i18n@0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))':
+  '@entifix/i18n@0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))':
     dependencies:
-      '@entifix/core': 0.1.3(effect@3.22.2)
+      '@entifix/core': 0.23.11(effect@4.0.7)
       '@swc/helpers': 0.5.23
       i18next: 26.4.2(typescript@6.0.3)
     transitivePeerDependencies:
       - effect
 
-  '@entifix/react-controls@0.1.3(@entifix/i18n@0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3)))(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)':
+  '@entifix/react-controls@0.23.11(patch_hash=c7c1baf334730e114cf4ea1c5a8d2a42eae8f3aead8a1ab84623810131faa50e)(@entifix/i18n@0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3)))(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)':
     dependencies:
-      '@entifix/core': 0.1.3(effect@3.22.2)
+      '@entifix/core': 0.23.11(effect@4.0.7)
       '@headlessui/react': 2.2.10(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       class-variance-authority: 0.7.1
-      effect: 3.22.2
-      idb: 8.0.3
+      effect: 4.0.7
+      idb: 8.0.4
       react: 19.3.0
     optionalDependencies:
-      '@entifix/i18n': 0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))
+      '@entifix/i18n': 0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))
       i18next: 26.4.2(typescript@6.0.3)
       react-i18next: 17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
     transitivePeerDependencies:
       - react-dom
 
-  '@entifix/react-integration@0.1.3(@tanstack/react-form@1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tanstack/react-query@5.104.1(react@19.3.0))(effect@3.22.2)(react@19.3.0)':
+  '@entifix/react-integration@0.23.11(@tanstack/react-form@1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tanstack/react-query@5.104.1(react@19.3.0))(effect@4.0.7)(react@19.3.0)':
     dependencies:
-      '@entifix/business': 0.1.3(effect@3.22.2)
-      '@entifix/core': 0.1.3(effect@3.22.2)
-      '@entifix/transactions': 0.1.3(effect@3.22.2)
+      '@entifix/business': 0.23.11(effect@4.0.7)
+      '@entifix/core': 0.23.11(effect@4.0.7)
+      '@entifix/transactions': 0.23.11(effect@4.0.7)
       '@tanstack/react-form': 1.33.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@tanstack/react-query': 5.104.1(react@19.3.0)
-      effect: 3.22.2
+      effect: 4.0.7
       react: 19.3.0
 
-  '@entifix/style@0.1.3': {}
-
-  '@entifix/testing-unit@0.1.3(@effect/experimental@0.61.1(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2))(@effect/platform@0.97.2(effect@3.22.2))(@effect/vitest@0.30.0(effect@3.22.2)(vitest@5.0.1))(@entifix/react-controls@0.1.3(@entifix/i18n@0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3)))(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(effect@3.22.2)(react@19.3.0)(vitest@5.0.1)':
+  '@entifix/static@0.23.11(effect@4.0.7)':
     dependencies:
-      '@effect/sql': 0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2))(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2)
-      '@entifix/business': 0.1.3(effect@3.22.2)
-      '@entifix/core': 0.1.3(effect@3.22.2)
-      '@entifix/transactions': 0.1.3(effect@3.22.2)
+      '@entifix/business': 0.23.11(effect@4.0.7)
+      '@entifix/core': 0.23.11(effect@4.0.7)
       '@swc/helpers': 0.5.23
-      effect: 3.22.2
+      effect: 4.0.7
+
+  '@entifix/style@0.23.11':
+    dependencies:
+      '@swc/helpers': 0.5.23
+
+  '@entifix/testing-unit@0.23.11(@entifix/react-controls@0.23.11(patch_hash=c7c1baf334730e114cf4ea1c5a8d2a42eae8f3aead8a1ab84623810131faa50e)(@entifix/i18n@0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3)))(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(effect@4.0.7)(react@19.3.0)(vitest@5.0.1)':
+    dependencies:
+      '@entifix/business': 0.23.11(effect@4.0.7)
+      '@entifix/core': 0.23.11(effect@4.0.7)
+      '@entifix/transactions': 0.23.11(effect@4.0.7)
+      '@swc/helpers': 0.5.23
+      effect: 4.0.7
     optionalDependencies:
-      '@effect/vitest': 0.30.0(effect@3.22.2)(vitest@5.0.1)
-      '@entifix/react-controls': 0.1.3(@entifix/i18n@0.1.3(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3)))(effect@3.22.2)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)
+      '@entifix/react-controls': 0.23.11(patch_hash=c7c1baf334730e114cf4ea1c5a8d2a42eae8f3aead8a1ab84623810131faa50e)(@entifix/i18n@0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3)))(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react-i18next@17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(react@19.3.0)
       '@testing-library/react': 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react: 19.3.0
       vitest: 5.0.1(@opentelemetry/api@1.9.1)(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(jsdom@30.1.1)(vite@8.3.0(@types/node@26.6.2)(jiti@2.7.0)(less@4.5.1)(sass-embedded@1.104.1)(sass@1.104.1)(terser@5.51.2)(yaml@2.9.1))
-    transitivePeerDependencies:
-      - '@effect/experimental'
-      - '@effect/platform'
 
-  '@entifix/transactions@0.1.3(effect@3.22.2)':
+  '@entifix/transactions@0.23.11(effect@4.0.7)':
     dependencies:
-      '@entifix/business': 0.1.3(effect@3.22.2)
-      '@entifix/core': 0.1.3(effect@3.22.2)
+      '@entifix/business': 0.23.11(effect@4.0.7)
+      '@entifix/core': 0.23.11(effect@4.0.7)
       '@swc/helpers': 0.5.23
-      effect: 3.22.2
+      effect: 4.0.7
 
   '@eslint-community/eslint-utils@4.10.1(eslint@10.11.0(jiti@2.7.0))':
     dependencies:
@@ -9981,24 +9899,6 @@ snapshots:
     dependencies:
       '@module-federation/runtime': 0.21.6
       '@module-federation/sdk': 0.21.6
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.4':
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.4':
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-linux-arm@3.0.4':
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-linux-x64@3.0.4':
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.4':
     optional: true
 
   '@napi-rs/canvas-android-arm64@1.0.9':
@@ -11413,8 +11313,6 @@ snapshots:
   '@sindresorhus/is@7.2.0': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
-
-  '@standard-schema/spec@1.1.0': {}
 
   '@swc-node/core@1.15.0(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)':
     dependencies:
@@ -12969,10 +12867,7 @@ snapshots:
   ee-first@1.1.1:
     optional: true
 
-  effect@3.22.2:
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      fast-check: 3.23.2
+  effect@4.0.7: {}
 
   ejs@5.0.1: {}
 
@@ -13504,10 +13399,6 @@ snapshots:
 
   extend@3.0.2: {}
 
-  fast-check@3.23.2:
-    dependencies:
-      pure-rand: 6.1.0
-
   fast-deep-equal@3.1.3: {}
 
   fast-fifo@1.3.2: {}
@@ -13591,8 +13482,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
     optional: true
-
-  find-my-way-ts@0.1.6: {}
 
   find-up-simple@1.0.1: {}
 
@@ -14036,7 +13925,7 @@ snapshots:
       safer-buffer: 2.1.2
     optional: true
 
-  idb@8.0.3: {}
+  idb@8.0.4: {}
 
   ieee754@1.2.1: {}
 
@@ -15142,24 +15031,6 @@ snapshots:
 
   ms@2.1.3: {}
 
-  msgpackr-extract@3.0.4:
-    dependencies:
-      node-gyp-build-optional-packages: 5.2.2
-    optionalDependencies:
-      '@msgpackr-extract/msgpackr-extract-darwin-arm64': 3.0.4
-      '@msgpackr-extract/msgpackr-extract-darwin-x64': 3.0.4
-      '@msgpackr-extract/msgpackr-extract-linux-arm': 3.0.4
-      '@msgpackr-extract/msgpackr-extract-linux-arm64': 3.0.4
-      '@msgpackr-extract/msgpackr-extract-linux-x64': 3.0.4
-      '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.4
-    optional: true
-
-  msgpackr@1.12.1:
-    optionalDependencies:
-      msgpackr-extract: 3.0.4
-
-  multipasta@0.2.8: {}
-
   mz@2.7.0:
     dependencies:
       any-promise: 1.3.0
@@ -15233,11 +15104,6 @@ snapshots:
       es-errors: 1.3.0
       object.entries: 1.1.9
       semver: 6.3.1
-
-  node-gyp-build-optional-packages@5.2.2:
-    dependencies:
-      detect-libc: 2.1.2
-    optional: true
 
   node-gyp@12.4.0:
     dependencies:
@@ -15870,8 +15736,6 @@ snapshots:
     optional: true
 
   punycode@2.3.1: {}
-
-  pure-rand@6.1.0: {}
 
   qified@0.10.1:
     dependencies:
@@ -17219,8 +17083,6 @@ snapshots:
 
   utils-merge@1.0.1:
     optional: true
-
-  uuid@11.1.1: {}
 
   validate-npm-package-license@3.0.4:
     dependencies:

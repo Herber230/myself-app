@@ -1,12 +1,6 @@
-import {
-  ConfigurationRepositoryTag,
-  type EntityRepository,
-} from '@entifix/business';
-import {
-  ConfigurationClientInMemory,
-  type EntityLoadRequest,
-} from '@entifix/core';
-import { Context, Effect } from 'effect';
+import type { EntityRepository } from '@entifix/business';
+import type { EntityLoadRequest } from '@entifix/core';
+import { Effect } from 'effect';
 import { describe, expect, it } from 'vitest';
 
 import { fetchServing, Note, NOTES_FILE } from './note.fixture.js';
@@ -16,16 +10,7 @@ import { staticJsonSource } from './static-json-source.js';
 const loadFrom = (
   repository: EntityRepository,
   request: EntityLoadRequest<Note>,
-) =>
-  Effect.runPromise(
-    Effect.provide(
-      repository.load<Note>(request),
-      Context.make(
-        ConfigurationRepositoryTag,
-        new ConfigurationClientInMemory({}),
-      ),
-    ),
-  );
+) => Effect.runPromise(repository.load<Note>(request));
 
 describe('staticJsonSource', () => {
   it('builds a repository from the records the file holds', async () => {

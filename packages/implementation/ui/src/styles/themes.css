@@ -24,12 +24,26 @@
   --color-primary: #1f5f5b;
   --color-primary-content: #ffffff;
   --color-border: #e2e0da;
+  --color-border-control: #85827a;
+  --color-selected: #1f5f5b;
   --color-accent: #1f5f5b;
   --color-focus-ring: #174845;
 
   --color-danger: #b42318;
   --color-danger-subtle: #fef3f2;
   --color-danger-content: #ffffff;
+
+  --color-success: #11803a;
+  --color-success-subtle: #ecf8f1;
+  --color-success-content: #ffffff;
+  --color-warning: #a75c05;
+  --color-warning-subtle: #fcf4eb;
+  --color-warning-content: #ffffff;
+  --color-info: #0274af;
+  --color-info-subtle: #ebf5fb;
+  --color-info-content: #ffffff;
+
+  --color-scrim: rgb(29 31 34 / 0.4);
 
   /* The radar's four rings, innermost first: the teal fading outwards to a
      neutral. Each is dark enough to carry the blip's number in `blip-ink`. */
@@ -58,12 +72,26 @@
     --color-primary: #7cc4ff;
     --color-primary-content: #061328;
     --color-border: #213a63;
+    --color-border-control: #6f86ad;
+    --color-selected: #7cc4ff;
     --color-accent: #7cc4ff;
     --color-focus-ring: #b0dcff;
 
     --color-danger: #ff8b80;
     --color-danger-subtle: #3a1b2a;
     --color-danger-content: #061328;
+
+    --color-success: #6fdc9a;
+    --color-success-subtle: #0f3236;
+    --color-success-content: #061328;
+    --color-warning: #f7bf5e;
+    --color-warning-subtle: #33301f;
+    --color-warning-content: #061328;
+    --color-info: #9ad3ff;
+    --color-info-subtle: #13325e;
+    --color-info-content: #061328;
+
+    --color-scrim: rgb(2 8 20 / 0.6);
 
     --color-radar-ring-1: #7cc4ff;
     --color-radar-ring-2: #5ea8e8;
@@ -92,12 +120,26 @@
     --color-primary: #6cc2b8;
     --color-primary-content: #0b1413;
     --color-border: #2c2f32;
+    --color-border-control: #6f7479;
+    --color-selected: #6cc2b8;
     --color-accent: #6cc2b8;
     --color-focus-ring: #8fd6cd;
 
     --color-danger: #ff8b80;
     --color-danger-subtle: #2c1a1a;
     --color-danger-content: #0b1413;
+
+    --color-success: #5fcf8a;
+    --color-success-subtle: #12291c;
+    --color-success-content: #0b1413;
+    --color-warning: #f0b35a;
+    --color-warning-subtle: #2e2415;
+    --color-warning-content: #0b1413;
+    --color-info: #7cc0e8;
+    --color-info-subtle: #122633;
+    --color-info-content: #0b1413;
+
+    --color-scrim: rgb(0 0 0 / 0.6);
 
     /* The same ramp lifted off the dark ground, and the number inverted with it. */
     --color-radar-ring-1: #6cc2b8;

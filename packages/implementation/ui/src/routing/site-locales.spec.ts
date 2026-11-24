@@ -1,4 +1,4 @@
-import { LOCALES } from '@entifix/core';
+import { defaultLocale, isLocale, locales } from '@entifix/core';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -15,10 +15,12 @@ describe('the site locales', () => {
     expect(SITE_DEFAULT_LOCALE).toBe('en');
   });
 
-  it('are all locales entifix knows', () => {
-    for (const locale of SITE_LOCALES) {
-      expect(LOCALES).toContain(locale);
-    }
+  it('are the locales entifix is told, English the default', async () => {
+    await import('../i18n/install.js');
+    expect(locales()).toEqual(SITE_LOCALES);
+    expect(defaultLocale()).toBe(SITE_DEFAULT_LOCALE);
+    expect(isLocale('es')).toBe(true);
+    expect(isLocale('pt')).toBe(false);
   });
 
   it('recognises a site locale and nothing else', () => {

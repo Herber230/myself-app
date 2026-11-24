@@ -5,7 +5,23 @@ import { expect, type Locator, type Page, test } from '@playwright/test';
  * the first paint, switchable, and the primitives styled by the stylesheet.
  */
 
-const STORAGE_KEY = 'myself-app-theme';
+/** The cookie a chosen theme is kept in (`THEME_COOKIE`). */
+const THEME_COOKIE = 'myself-app-theme';
+
+/** A theme chosen on an earlier visit. */
+async function storeTheme(page: Page, theme: string) {
+  await page
+    .context()
+    .addCookies([
+      { name: THEME_COOKIE, value: theme, domain: 'localhost', path: '/' },
+    ]);
+}
+
+/** The theme kept for the next visit, if any. */
+async function storedTheme(page: Page): Promise<string | undefined> {
+  const cookies = await page.context().cookies();
+  return cookies.find(cookie => cookie.name === THEME_COOKIE)?.value;
+}
 
 /** `--color-surface` of each palette in `app/themes.css`, as computed. */
 const SURFACE = {
@@ -67,7 +83,7 @@ async function themeOption(
   menu: string,
   theme: string,
 ): Promise<Locator> {
-  const trigger = page.getByRole('banner').getByLabel(menu, { exact: true });
+  const trigger = page.getByRole('banner').getByTitle(menu, { exact: true });
   await trigger.waitFor({ state: 'attached' });
   return trigger
     .locator('xpath=..')
@@ -76,7 +92,7 @@ async function themeOption(
 
 /** Opens the theme menu and picks a theme from it. */
 async function chooseTheme(page: Page, theme: string) {
-  const trigger = page.getByRole('banner').getByLabel('Theme', { exact: true });
+  const trigger = page.getByRole('banner').getByTitle('Theme', { exact: true });
   await trigger.click();
   await (await themeOption(page, 'Theme', theme)).click();
 }
@@ -107,9 +123,8 @@ for (const scheme of ['light', 'dark'] as const) {
     const changes = await themeChanges(page);
     expect(changes.length).toBeGreaterThan(0);
     expect(changes.every(theme => theme === 'blue')).toBe(true);
-    expect(
-      await page.evaluate(key => localStorage.getItem(key), STORAGE_KEY),
-    ).toBe('blue');
+    // Only a choice is stored: a first visit leaves nothing behind.
+    expect(await storedTheme(page)).toBeUndefined();
   });
 }
 
@@ -117,10 +132,7 @@ test('a stored theme wins over the system and never flashes', async ({
   page,
 }) => {
   await page.emulateMedia({ colorScheme: 'light' });
-  await page.addInitScript(
-    key => localStorage.setItem(key, 'dark'),
-    STORAGE_KEY,
-  );
+  await storeTheme(page, 'dark');
   await recordThemeChanges(page);
   await page.goto('/es/cv/');
 
@@ -157,10 +169,7 @@ test('the switcher changes the theme, and it survives a reload', async ({
 
 for (const theme of ['blue', 'dark'] as const) {
   test(`paper is light while the screen is ${theme}`, async ({ page }) => {
-    await page.addInitScript(
-      ([key, value]) => localStorage.setItem(key, value),
-      [STORAGE_KEY, theme] as const,
-    );
+    await storeTheme(page, theme);
     await page.goto('/en/cv/');
     await expectPainted(page, theme);
 

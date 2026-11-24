@@ -9,14 +9,15 @@ packages:
 # through this catalog: the swap to a local entifix checkout is entifix's own
 # `dev-sync`, which never touches a manifest here.
 catalog:
-  '@entifix/business': 0.1.3
-  '@entifix/core': 0.1.3
-  '@entifix/i18n': 0.1.3
-  '@entifix/react-controls': 0.1.3
-  '@entifix/react-integration': 0.1.3
-  '@entifix/style': 0.1.3
-  '@entifix/testing-unit': 0.1.3
-  effect: 3.22.2
+  '@entifix/business': 0.23.11
+  '@entifix/core': 0.23.11
+  '@entifix/i18n': 0.23.11
+  '@entifix/react-controls': 0.23.11
+  '@entifix/react-integration': 0.23.11
+  '@entifix/static': 0.23.11
+  '@entifix/style': 0.23.11
+  '@entifix/testing-unit': 0.23.11
+  effect: 4.0.7
   next: 16.3.6
   react: 19.3.0
   react-dom: 19.3.0
@@ -59,13 +60,23 @@ packageExtensions:
 # is released by the same author and adopted the day it ships, so its versions are
 # exempted one by one as the catalog moves.
 minimumReleaseAgeExclude:
-  - '@entifix/business@0.1.3'
-  - '@entifix/core@0.1.3'
-  - '@entifix/i18n@0.1.3'
-  - '@entifix/react-controls@0.1.3'
-  - '@entifix/react-integration@0.1.3'
-  - '@entifix/style@0.1.3'
+  - '@entifix/business@0.23.11'
+  - '@entifix/core@0.23.11'
+  - '@entifix/i18n@0.23.11'
+  - '@entifix/react-controls@0.23.11'
+  - '@entifix/react-integration@0.23.11'
+  - '@entifix/style@0.23.11'
+  - '@entifix/static@0.23.11'
   # A dependency of `@entifix/testing-unit`, never imported directly. Held back
   # like any other version this young, and the install fails without it.
-  - '@entifix/transactions@0.1.3'
-  - '@entifix/testing-unit@0.1.3'
+  - '@entifix/transactions@0.23.11'
+  - '@entifix/testing-unit@0.23.11'
+# Patches to published packages, each pinned to the exact version it was made
+# for: a bump that changes the file fails the install, so none outlives its
+# reason unnoticed (ADR 0025).
+#
+# - `@entifix/react-controls`: `ThemeProvider` copies every theme choice to the
+#   UI-preferences port, whose default store imports Effect, so every page of
+#   the site shipped Effect (+104 KB gzipped). The patch keeps the cookie only.
+patchedDependencies:
+  '@entifix/react-controls@0.23.11': patches/@entifix__react-controls@0.23.11.patch

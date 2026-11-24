@@ -1,6 +1,6 @@
 'use client';
 
-import { SplitButton } from '@entifix/react-controls/primitives';
+import { SplitButton } from '@myself-app/entifix-incubator-react-controls';
 import {
   type ReactNode,
   useEffect,
@@ -8,8 +8,8 @@ import {
   useSyncExternalStore,
 } from 'react';
 
-import { CvPrintButton } from '../../atoms/cv-print-button/cv-print-button.js';
 import { LinkIcon, PrintIcon } from '../../atoms/icons/icons.js';
+import { printSheet } from './print-sheet.js';
 
 const subscribe = () => () => undefined;
 
@@ -76,22 +76,27 @@ export function CvDownloadMenu({
     closeMenu();
   }
 
+  async function print() {
+    closeMenu();
+    await printSheet(fileName);
+  }
+
   return (
     <>
       <SplitButton primary={children} menuLabel={copy.more}>
         <ul className="cv-download-menu">
           <li>
-            <CvPrintButton
-              fileName={fileName}
+            <button
+              type="button"
               className="nav-menu-item"
-              onPrint={closeMenu}
+              onClick={() => void print()}
             >
               <PrintIcon className="cv-download-menu-icon" />
               <span className="cv-download-menu-text">
                 {copy.print}
                 <small>{copy.printHint}</small>
               </span>
-            </CvPrintButton>
+            </button>
           </li>
           {canCopy && (
             <li>

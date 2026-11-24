@@ -1,7 +1,6 @@
 import {
   COLLECTION_TYPES,
   describeEntityColumns,
-  EntifixBuildError,
   type Entity,
   type EntityConstructor,
   type EntityFieldDescriptor,
@@ -29,7 +28,8 @@ export interface ValidationProblem {
 }
 
 /** Thrown when content is served that did not pass. Carries every problem. */
-export class ContentValidationError extends EntifixBuildError {
+export class ContentValidationError extends Error {
+  override readonly name = 'ContentValidationError';
   readonly problems: readonly ValidationProblem[];
 
   constructor(problems: readonly ValidationProblem[]) {
@@ -37,8 +37,6 @@ export class ContentValidationError extends EntifixBuildError {
       `Static content is invalid:\n${problems
         .map(problem => `  ${problem.path} ${problem.message}`)
         .join('\n')}`,
-      undefined,
-      { count: problems.length },
     );
     this.problems = problems;
   }
