@@ -12,6 +12,9 @@ catalogs:
     '@entifix/core':
       specifier: 0.23.11
       version: 0.23.11
+    '@entifix/docs':
+      specifier: 0.23.11
+      version: 0.23.11
     '@entifix/i18n':
       specifier: 0.23.11
       version: 0.23.11
@@ -61,6 +64,9 @@ importers:
       '@commitlint/config-nx-scopes':
         specifier: 21.2.3
         version: 21.2.3(nx@23.2.1(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))
+      '@entifix/docs':
+        specifier: 'catalog:'
+        version: 0.23.11
       '@eslint/js':
         specifier: 10.0.1
         version: 10.0.1(eslint@10.11.0(jiti@2.7.0))
@@ -1372,6 +1378,9 @@ packages:
     resolution: {integrity: sha512-Px1tGndVISxFK2AHy95kaTl7+iahUWimLYorVOvqvidE0i3+Hc/Ii3D07lNxVfftxPVq1TbMm75LRfFLeccdzw==}
     peerDependencies:
       effect: ^4.0.7
+
+  '@entifix/docs@0.23.11':
+    resolution: {integrity: sha512-+hv/1Gp/M9up6ktJJDlX/tmJH36uA54pc/Jou0KPyi1LfL+zKGUCGBPvJB8ETZtVdRCiWB3ev0RdBqujVbIqVA==}
 
   '@entifix/i18n@0.23.11':
     resolution: {integrity: sha512-/+uKhHUZXNNrp25QEXqPXHmZe7TByd0cFwFdL7dsT/3AHeE4BKzsD0L8HZ7ETRDz8sRjSpgrkCvvGleVeKeCaw==}
@@ -9525,6 +9534,8 @@ snapshots:
     dependencies:
       '@swc/helpers': 0.5.23
       effect: 4.0.7
+
+  '@entifix/docs@0.23.11': {}
 
   '@entifix/i18n@0.23.11(effect@4.0.7)(i18next@26.4.2(typescript@6.0.3))':
     dependencies:

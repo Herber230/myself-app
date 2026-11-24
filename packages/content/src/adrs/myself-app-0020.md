@@ -1,4 +1,5 @@
 - Revised: 2026-09-30 — the explorer shows a timeline, then a list beside a reading pane (an accordion on a phone), the chosen record kept in the URL (`?adr=0016`) by a selection parameter that filters nothing; each record carries its key points (`summary`), read by the sync script from its `Decision` section; the page tells how the records are written, found and kept
+- Revised: 2026-11-24 by #88 — entifix's records are read from `@entifix/docs` in `node_modules`, at the installed release, not from a clone; `--check` holds both projects' copies
 
 ## Context
 
@@ -53,8 +54,9 @@ when a fact changes.
 
 ## Consequences
 
-- A record is re-synced after it changes: `node tools/sync-adrs.mjs`, with
-  entifix beside this checkout (or `ENTIFIX_REPO` pointing at it).
+- A record is re-synced after it changes: `node tools/sync-adrs.mjs`.
+  entifix's come from the installed `@entifix/docs`, so a new entifix release
+  is a re-sync too.
 - Copied records are not scanned for placeholders: a record quotes the
   convention when it describes it, and is never written in the content
   package.

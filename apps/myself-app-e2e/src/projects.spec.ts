@@ -1,4 +1,24 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+import { workspaceRoot } from '@nx/devkit';
 import { expect, type Page, test } from '@playwright/test';
+
+/**
+ * entifix's records, and its accepted ones, as the export's data file holds
+ * them: synced from `@entifix/docs`, so the counts move with each release.
+ */
+const ENTIFIX_RECORDS = (
+  JSON.parse(
+    readFileSync(
+      join(workspaceRoot, 'apps/myself-app/out/data/adr.json'),
+      'utf8',
+    ),
+  ) as { project: string; status: string }[]
+).filter(record => record.project === 'entifix');
+const ENTIFIX_ACCEPTED = ENTIFIX_RECORDS.filter(
+  record => record.status === 'accepted',
+).length;
 
 /**
  * A project's page and its decision records (#77, ADR 0020).
@@ -133,7 +153,9 @@ test('the lifecycle opens on request, stays open, and drives the explorer in pla
   await page.evaluate(() => ((window as { stayed?: boolean }).stayed = true));
   await shown.getByRole('link', { name: /^See all/ }).click();
   await expect(page).toHaveURL(/\?status=accepted#decisions$/);
-  await expect(page.getByText('Showing 4 of 4')).toBeVisible();
+  await expect(
+    page.getByText(`Showing ${ENTIFIX_ACCEPTED} of ${ENTIFIX_RECORDS.length}`),
+  ).toBeVisible();
   expect(
     await page.evaluate(() => (window as { stayed?: boolean }).stayed),
   ).toBe(true);

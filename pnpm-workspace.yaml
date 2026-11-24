@@ -11,6 +11,7 @@ packages:
 catalog:
   '@entifix/business': 0.23.11
   '@entifix/core': 0.23.11
+  '@entifix/docs': 0.23.11
   '@entifix/i18n': 0.23.11
   '@entifix/react-controls': 0.23.11
   '@entifix/react-integration': 0.23.11
@@ -62,6 +63,7 @@ packageExtensions:
 minimumReleaseAgeExclude:
   - '@entifix/business@0.23.11'
   - '@entifix/core@0.23.11'
+  - '@entifix/docs@0.23.11'
   - '@entifix/i18n@0.23.11'
   - '@entifix/react-controls@0.23.11'
   - '@entifix/react-integration@0.23.11'

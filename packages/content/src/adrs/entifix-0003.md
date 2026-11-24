@@ -1,4 +1,9 @@
 - Revised: 2026-09-16 by [#2](https://github.com/r10c-technologies/entifix/issues/2) — a release pull request superseded by a new version is closed
+- Revised: 2026-10-20 by [ADR 0005](/projects/entifix/adr/0005/) — `@entifix/static` is a 24th package, bootstrapped by hand like the first 23
+- Revised: 2026-10-24 — a commit's scope no longer narrows its bump: `useCommitScope` is off, because in a fixed group it silently demoted a breaking change to a patch
+- Revised: 2026-10-29 — `@entifix/workflow` is a 25th package, bootstrapped by hand like the others before its first release
+- Revised: 2026-11-21 by [#275](https://github.com/r10c-technologies/entifix/issues/275) — `@entifix/docs` and `@entifix/docs-engine` make 27 packages, and a new one is bootstrapped by `tools/release/bootstrap-package.mjs` rather than by hand
+- Revised: 2026-11-21 — the tag step accepts its own tag on the same commit, so a release whose publish failed is re-run rather than untagged first
 
 ## Context
 
@@ -16,7 +21,17 @@ to configure a trusted publisher for a package that does not exist yet —
 `npm trust github --allow-publish` grants a `createPackage` permission, which
 reads as though it covers the case and does not; the endpoint answers `404`. So
 23 packages were bootstrapped by hand before the trust configuration could be
-written. That is a one-time cost and it is now paid.
+written. That is a one-time cost per package: paid for the first 23, and paid
+again for `@entifix/static` ([ADR 0005](/projects/entifix/adr/0005/))
+and for `@entifix/workflow`
+([ADR 0016](/projects/entifix/adr/0016/)).
+Since #275 the bootstrap is one command,
+`node tools/release/bootstrap-package.mjs`: it publishes a placeholder
+`0.0.0-bootstrap.0` on the `bootstrap` dist-tag for every published package npm
+does not have yet, then writes and verifies its trusted publisher. Run it after
+the pull request adding the package merges and before approving the release's
+`npm-publish` environment, or that release publishes every package but the new
+one.
 
 ## Decision
 
@@ -28,7 +43,7 @@ package-scoped registry token, and signs the provenance attestation that
 belongs to one workflow file on one repository, and to nothing else.
 
 ⚠️ **`.github/workflows/release.yml` cannot be renamed.** The trusted publisher
-claim on all 23 packages names that file. Renaming it revokes this workflow's
+claim on every published package names that file. Renaming it revokes this workflow's
 ability to publish — silently, with no error until a release fails — and every
 package has to be re-trusted one at a time, each behind a 2FA prompt.
 
@@ -69,12 +84,30 @@ step. A tag with no package behind it is a `git push --delete` away from gone,
 while a GitHub Release announcing a version npm never received is a lie that
 consumers read.
 
+The tag step is the one a re-run meets first. 0.23.6's publish failed for one
+package after the tag was pushed, and the re-run would have stopped at its own
+tag. So a tag already naming this commit is the step done, and a tag naming any
+other commit stops the job before npm: the version belongs to a different
+release.
+
 **A commit may not cut a major version.** ADR 0001 fixes the channels while the
 framework is pre-1.0: a breaking change rides the minor, `0.1.x` is the patch
 channel and `0.2.0` is the breaking channel. Nx's
 `adjustSemverBumpsForZeroMajorVersion` implements exactly that and is its
 default; `nx.json` states it anyway, because a default a future version could
 flip is a poor place to keep a rule a record depends on.
+
+> **2026-10-24.** ⚠️ **A commit's scope must not decide its bump, and by default
+> it did.** Nx's `conventionalCommits.useCommitScope` is on unless switched off:
+> a scoped commit counts as _direct_ only for the project its scope names, and
+> every other project in the group takes an _indirect_ bump — which Nx caps at
+> `patch` **even for a breaking change**. `feat(source)!:` names the workspace
+> root, which is in no release group, so two breaking commits resolved to
+> `0.4.3` with both listed under "Breaking Changes" in the same pull request.
+> `feat!:` with no scope had cut `0.4.0` correctly, which is why nothing caught
+> it earlier. Under fixed versioning a scope cannot select anything — every
+> package takes one version — so `nx.json` sets `useCommitScope: false`, and a
+> scope is a label again rather than a filter.
 
 **Commit conventions are checked in CI, not only by a hook.** `.husky/commit-msg`
 runs on one machine and is skipped by `--no-verify`, by a clone where
